@@ -24,12 +24,7 @@
       </template>
 
       <!-- Error -->
-      <div v-else-if="fetchError" class="rounded-xl border border-wc-accent/30 bg-wc-accent/10 p-6 text-center">
-        <p class="text-sm text-wc-accent">{{ fetchError }}</p>
-        <button @click="fetchData" class="mt-3 text-sm text-wc-text-secondary hover:text-wc-text transition-colors">
-          Reintentar
-        </button>
-      </div>
+      <WcErrorState v-else-if="fetchError" :message="fetchError" @retry="fetchData" />
 
       <template v-else>
 
@@ -239,6 +234,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
 import ClientLayout from '../../layouts/ClientLayout.vue';
+import WcErrorState from '../../components/WcErrorState.vue';
 import { useApi } from '../../composables/useApi';
 
 const api = useApi();

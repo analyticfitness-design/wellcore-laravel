@@ -5,6 +5,7 @@ import { useMedals } from '../../composables/useMedals';
 import { useToast } from '../../composables/useToast';
 import { useHaptics } from '../../composables/useHaptics';
 import ClientLayout from '../../layouts/ClientLayout.vue';
+import WcErrorState from '../../components/WcErrorState.vue';
 import CheckinProgress from '../../components/checkin/CheckinProgress.vue';
 import WcRangeSlider from '../../components/checkin/WcRangeSlider.vue';
 import DaysPicker from '../../components/checkin/DaysPicker.vue';
@@ -312,11 +313,7 @@ onBeforeUnmount(() => {
         </div>
       </template>
 
-      <!-- Error -->
-      <div v-else-if="error" class="rounded-card border border-red-500/30 bg-red-500/10 p-6 text-center">
-        <p class="text-sm text-red-400">{{ error }}</p>
-        <button @click="fetchCheckin" class="wc-btn-primary mt-4">Reintentar</button>
-      </div>
+            <WcErrorState v-else-if="error" :message="error" @retry="fetchCheckin" />
 
       <template v-else>
         <!-- Day restriction banner -->

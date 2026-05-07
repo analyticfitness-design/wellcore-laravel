@@ -55,8 +55,8 @@ function selectDay(idx) {
 
     <div class="top-row">
       <button type="button" class="back-btn" @click="emit('back')" aria-label="Volver">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"/>
         </svg>
       </button>
 
@@ -65,7 +65,7 @@ function selectDay(idx) {
         <span class="day-num">D{{ currentDayIndex + 1 }}</span>
         <span class="day-label">{{ currentLabel }}</span>
         <svg v-if="!workoutStarted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9"/>
+          <path d="M6 9l6 6 6-6"/>
         </svg>
       </div>
 
@@ -84,6 +84,15 @@ function selectDay(idx) {
           <span class="label">{{ dayLabel(day, i) }}</span>
         </button>
       </div>
+
+      <!-- Más opciones (3-dots) — fiel al target HTML -->
+      <button type="button" class="back-btn" @click="emit('more')" aria-label="Más opciones">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="5" cy="12" r="1.6"/>
+          <circle cx="12" cy="12" r="1.6"/>
+          <circle cx="19" cy="12" r="1.6"/>
+        </svg>
+      </button>
     </div>
 
     <!-- Mobile dropdown sheet -->
