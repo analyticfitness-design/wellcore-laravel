@@ -111,6 +111,7 @@
 import { computed, ref } from 'vue';
 import ExerciseVariationToggle from './ExerciseVariationToggle.vue';
 import ExerciseCardioChips from './ExerciseCardioChips.vue';
+import { usePlanViewer } from '@/composables/usePlanViewer';
 
 const props = defineProps({
   ejercicio: { type: Object, required: true },
@@ -124,7 +125,11 @@ const emit = defineEmits(['variation-toggle']);
 const coachNoteExpanded = ref(false);
 const gifFailed = ref(false);
 
+const { variationStateFor } = usePlanViewer();
+const localVariantOverride = computed(() => variationStateFor(props.ejercicio?.id).value);
+
 const isUsingVariant = computed(() => {
+  if (typeof localVariantOverride.value === 'boolean') return localVariantOverride.value;
   return !!(props.ejercicio?.is_using_variant);
 });
 
