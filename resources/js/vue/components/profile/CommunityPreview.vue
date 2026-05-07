@@ -159,7 +159,7 @@ const displayName = computed(() => props.name || 'Tu nombre');
   white-space: pre-wrap;
 }
 .preview-bio--empty {
-  color: var(--color-wc-text-quaternary, var(--color-wc-text-tertiary));
+  color: var(--color-wc-text-tertiary);
   font-style: italic;
 }
 </style>
