@@ -517,14 +517,22 @@ const todayDayMeta = computed(() => {
 });
 
 function onTrainNow(semana, dia) {
-  // Reusa la ruta existente del workout player. Si no existe, no falla.
+  // Ruta real Vue: /client/workout/:day? con name 'client-workout'.
+  // Param `day` es el numero del día (1-6). Si la semana no es actual, igual
+  // navegamos al WorkoutPlayer del día — el player soporta query ?week=N para
+  // contextualizar (ver WorkoutPlayer.legacy.vue:622).
+  const dayNumber = Number(dia?.numero) || Number(dia?.dia) || 1;
+  const weekNumber = Number(semana?.numero) || 1;
   try {
-    router.push({ name: 'client.workout-player', params: { semana: semana?.numero, dia: dia?.numero } });
+    router.push({
+      name: 'client-workout',
+      params: { day: dayNumber },
+      query: weekNumber > 1 ? { week: weekNumber } : undefined,
+    });
   } catch {
-    // fallback: navega via window.location
-    if (semana?.numero && dia?.numero) {
-      window.location.href = `/client/workout/play?week=${semana.numero}&day=${dia.numero}`;
-    }
+    // Fallback hard-redirect a la ruta SPA.
+    const qs = weekNumber > 1 ? `?week=${weekNumber}` : '';
+    window.location.href = `/client/workout/${dayNumber}${qs}`;
   }
 }
 
