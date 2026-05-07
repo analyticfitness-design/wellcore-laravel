@@ -70,14 +70,16 @@ function onDiscard() {
       <button
         type="button"
         class="btn btn--ghost"
-        :disabled="saving"
+        :disabled="saving || !visible"
+        :tabindex="visible ? 0 : -1"
         @click="onDiscard"
       >{{ discardLabel }}</button>
 
       <button
         type="button"
         class="btn btn--primary"
-        :disabled="saving"
+        :disabled="saving || !visible"
+        :tabindex="visible ? 0 : -1"
         @click="onSave"
       >
         <svg

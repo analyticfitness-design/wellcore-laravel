@@ -56,13 +56,6 @@ const handleText = computed(() => {
 function onChipClick(item) {
     emit('chip-click', item);
 }
-
-function onChipKey(e, item) {
-    if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        emit('chip-click', item);
-    }
-}
 </script>
 
 <template>
@@ -92,18 +85,20 @@ function onChipKey(e, item) {
         <li
           v-for="item in missing"
           :key="item.key || item.label"
-          class="id-chip"
-          tabindex="0"
-          role="button"
-          @click="onChipClick(item)"
-          @keydown="onChipKey($event, item)"
+          class="id-chips__item"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          <span class="id-chip__label">{{ item.label }}</span>
-          <span v-if="item.points" class="id-chip__pts tabular-nums">+{{ item.points }}</span>
+          <button
+            type="button"
+            class="id-chip"
+            @click="onChipClick(item)"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <span class="id-chip__label">{{ item.label }}</span>
+            <span v-if="item.points" class="id-chip__pts tabular-nums">+{{ item.points }}</span>
+          </button>
         </li>
       </ul>
     </div>
@@ -194,6 +189,7 @@ function onChipKey(e, item) {
   flex-wrap: wrap;
   gap: 6px;
 }
+.id-chips__item { list-style: none; padding: 0; margin: 0; display: contents; }
 
 .id-chip {
   display: inline-flex;
