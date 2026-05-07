@@ -198,11 +198,7 @@ onMounted(handleLoad);
       </Transition>
 
       <!-- Header ───────────────────────────────────────────────── -->
-      <ProfileHeader
-        eyebrow="TU CUENTA"
-        title="MI PERFIL"
-        subtitle="Actualiza tu información personal y datos de entrenamiento."
-      />
+      <ProfileHeader />
 
       <!-- Loading skeleton ─────────────────────────────────────── -->
       <div

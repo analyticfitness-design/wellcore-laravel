@@ -6,9 +6,9 @@
  * Subtítulo: Raleway/Inter (font-sans) max 56ch.
  */
 defineProps({
-    eyebrow:  { type: String, default: 'CUENTA · IDENTIDAD' },
-    title:    { type: String, default: 'MI PERFIL' },
-    subtitle: { type: String, default: 'Mantén actualizada tu información para que tu coach pueda personalizar tu plan al máximo.' },
+    eyebrow:  { type: String, default: 'Cuenta · Identidad' },
+    title:    { type: String, default: 'Mi Perfil' },
+    subtitle: { type: String, default: 'Tu identidad en WellCore. Esta información te conecta con tu coach y con la comunidad — actualízala cuando algo cambie.' },
 });
 </script>
 

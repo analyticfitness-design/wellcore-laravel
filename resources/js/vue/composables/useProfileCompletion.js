@@ -41,13 +41,13 @@ export function useProfileCompletion(initial = { score: 0, missing: [] }) {
         }
     });
 
-    // Contextual encouragement message (latino neutro, tuteo).
+    // Mensaje canónico según el HTML referencia (latino neutro, tuteo):
+    //   - sin pendientes → "Tu perfil está completo y visible en la comunidad."
+    //   - con N pendientes → "Faltan N dato(s) para completar tu perfil."
     const message = computed(() => {
-        const s = state.value.score ?? 0;
-        if (s >= 80) return 'Perfil completo — destacas en la comunidad.';
-        if (s >= 50) return 'Vas bien. Suma los pendientes para tener tu perfil al máximo.';
-        if (s >= 20) return 'Suma los datos pendientes para que tu coach te conozca mejor.';
-        return 'Empieza tu perfil para que tu coach pueda personalizar tu plan.';
+        const n = (state.value.missing ?? []).length;
+        if (n === 0) return 'Tu perfil está completo y visible en la comunidad.';
+        return `Faltan ${n} dato${n === 1 ? '' : 's'} para completar tu perfil.`;
     });
 
     function set(next) {

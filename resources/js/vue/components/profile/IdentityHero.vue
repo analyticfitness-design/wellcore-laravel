@@ -23,6 +23,7 @@ import { computed } from 'vue';
 const props = defineProps({
     name:           { type: String, default: '' },
     email:          { type: String, default: '' },
+    plan:           { type: String, default: '' }, // p.ej. "S1 Activo" — se concatena al email
     completionScore:{ type: Number, default: 0 },
     completionTier: { type: String, default: 'low' }, // 'low' | 'mid' | 'high'
     missing:        { type: Array, default: () => [] }, // [{key, label, points}]
@@ -40,10 +41,16 @@ const tierColor = computed(() => {
 
 const safeMessage = computed(() => {
     if (props.completionMessage) return props.completionMessage;
-    const s = props.completionScore;
-    if (s >= 80) return 'Perfil completo — destacas en la comunidad.';
-    if (s >= 50) return 'Vas bien. Suma los pendientes para tener tu perfil al máximo.';
-    return 'Suma los datos pendientes para que tu coach te conozca mejor.';
+    const n = (props.missing ?? []).length;
+    if (n === 0) return 'Tu perfil está completo y visible en la comunidad.';
+    return `Faltan ${n} dato${n === 1 ? '' : 's'} para completar tu perfil.`;
+});
+
+const handleText = computed(() => {
+    const parts = [];
+    if (props.email) parts.push(props.email);
+    if (props.plan) parts.push(props.plan);
+    return parts.join(' · ');
 });
 
 function onChipClick(item) {
@@ -68,10 +75,10 @@ function onChipKey(e, item) {
       <h2 id="identity-name" class="id-name font-display">
         {{ name || 'Sin nombre' }}
       </h2>
-      <p v-if="email" class="id-handle">{{ email }}</p>
+      <p v-if="handleText" class="id-handle">{{ handleText }}</p>
 
       <div class="id-progress-row">
-        <span class="id-progress-label">Completitud</span>
+        <span class="id-progress-label">Completitud del perfil</span>
         <span
           class="id-progress-value font-display tabular-nums"
           :style="{ color: tierColor }"
@@ -96,7 +103,7 @@ function onChipKey(e, item) {
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           <span class="id-chip__label">{{ item.label }}</span>
-          <span v-if="item.points" class="id-chip__pts tabular-nums">+{{ item.points }}pts</span>
+          <span v-if="item.points" class="id-chip__pts tabular-nums">+{{ item.points }}</span>
         </li>
       </ul>
     </div>
