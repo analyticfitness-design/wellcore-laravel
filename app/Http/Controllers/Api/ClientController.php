@@ -888,6 +888,78 @@ class ClientController extends Controller
         ]);
     }
 
+    /**
+     * POST /api/v/client/metrics/dismiss-tutorial
+     *
+     * Tutorial disappears naturally once the user saves their first metric
+     * (which creates a BiometricLog entry). This endpoint just acknowledges
+     * the dismiss action from the frontend without server-side persistence.
+     */
+    public function dismissMetricsTutorial(Request $request): JsonResponse
+    {
+        $this->resolveClientOrFail($request);
+
+        return response()->json(['ok' => true]);
+    }
+
+    /**
+     * GET /api/v/client/checkins?type=interpretation
+     *
+     * Returns the latest check-in where the coach has left a reply.
+     * Used by the CoachInterpretation card in Metrics v2.
+     */
+    public function clientCheckins(Request $request): JsonResponse
+    {
+        $client = $this->resolveClientOrFail($request);
+        $clientId = $client->id;
+        $type = $request->query('type');
+
+        if ($type === 'interpretation') {
+            $checkin = Checkin::where('client_id', $clientId)
+                ->whereNotNull('coach_reply')
+                ->where('coach_reply', '!=', '')
+                ->orderByDesc('checkin_date')
+                ->first(['coach_reply', 'replied_at', 'checkin_date']);
+
+            if (! $checkin) {
+                return response()->json(['interpretation' => null]);
+            }
+
+            // Resolve coach name from the latest assigned plan
+            $coachName = 'Tu Coach WellCore';
+            $coachInitials = 'WC';
+            $coachId = AssignedPlan::where('client_id', $clientId)
+                ->whereNotNull('assigned_by')
+                ->orderByDesc('valid_from')
+                ->value('assigned_by');
+
+            if ($coachId) {
+                $coach = Admin::find($coachId);
+                if ($coach?->name) {
+                    $coachName = $coach->name;
+                    $parts = explode(' ', trim($coach->name));
+                    $coachInitials = strtoupper(substr($parts[0] ?? '', 0, 1).substr($parts[1] ?? '', 0, 1)) ?: 'WC';
+                }
+            }
+
+            return response()->json([
+                'interpretation' => [
+                    'message' => $checkin->coach_reply,
+                    'date' => ($checkin->replied_at ?? $checkin->checkin_date)?->format('d/m/Y') ?? '--',
+                    'coach_name' => $coachName,
+                    'coach_initials' => $coachInitials,
+                ],
+            ]);
+        }
+
+        $checkins = Checkin::where('client_id', $clientId)
+            ->orderByDesc('checkin_date')
+            ->limit(12)
+            ->get(['client_id', 'checkin_date', 'bienestar', 'dias_entrenados', 'nutricion', 'comentario', 'rpe']);
+
+        return response()->json(['checkins' => $checkins]);
+    }
+
     // ─── Profile ────────────────────────────────────────────────────────
 
     /**
