@@ -189,7 +189,7 @@ const LUGAR_OPTIONS = [
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-wc-text-quaternary, var(--color-wc-text-tertiary));
+  color: var(--color-wc-text-tertiary);
 }
 .section-title {
   font-size: 18px;
@@ -253,7 +253,7 @@ const LUGAR_OPTIONS = [
   transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 .textarea::placeholder {
-  color: var(--color-wc-text-quaternary, var(--color-wc-text-tertiary));
+  color: var(--color-wc-text-tertiary);
 }
 .textarea:hover { border-color: var(--color-wc-border-strong, var(--color-wc-border)); }
 .textarea:focus,

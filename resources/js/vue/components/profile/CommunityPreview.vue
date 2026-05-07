@@ -94,7 +94,7 @@ const displayName = computed(() => props.name || 'Tu nombre');
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-wc-text-quaternary, var(--color-wc-text-tertiary));
+  color: var(--color-wc-text-tertiary);
 }
 
 .preview-row {

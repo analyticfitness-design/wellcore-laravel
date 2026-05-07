@@ -179,7 +179,7 @@ const bioModel        = bind('bio');
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-wc-text-quaternary, var(--color-wc-text-tertiary));
+  color: var(--color-wc-text-tertiary);
 }
 
 .section-title {
