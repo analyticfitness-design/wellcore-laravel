@@ -68,11 +68,25 @@
         // V2 es la única versión (decisión Daniel 2026-05-07). Sin gate, sin fallback a V1.
         $pv2Pct = 100;
         $pv2Eligible = true;
+
+        // Metrics v2 feature flag — controlado via ENV WC_METRICS_V2 / WC_METRICS_V2_PCT
+        $metricsV2Eligible = false;
+        if (class_exists(\App\Services\FeatureFlagService::class)) {
+            try {
+                $metricsV2Eligible = \App\Services\FeatureFlagService::isEnabledForUser(
+                    'metrics_v2',
+                    auth('wellcore')->id()
+                );
+            } catch (\Throwable $e) {
+                $metricsV2Eligible = false;
+            }
+        }
     @endphp
     <script nonce="@cspNonce">
         window.__WC_FEATURES = window.__WC_FEATURES || {};
         window.__WC_FEATURES.plan_viewer_v2 = @json($pv2Eligible);
         window.__WC_FEATURES.plan_viewer_v2_pct = @json($pv2Pct);
+        window.__WC_FEATURES.metrics_v2 = @json($metricsV2Eligible);
     </script>
     @if(session('wc_token'))
     <script nonce="@cspNonce">
