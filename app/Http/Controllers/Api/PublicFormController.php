@@ -631,7 +631,7 @@ class PublicFormController extends Controller
                     'plan' => $planType, // ALWAYS from invitation, never from payload
                     'status' => 'activo',
                     'fecha_inicio' => now()->toDateString(),
-                    'city' => $validated['ciudad'],
+                    'city' => $validated['ciudad'] ?? null,
                     'onboarding_completed' => 0,
                 ]);
 
@@ -642,11 +642,11 @@ class PublicFormController extends Controller
                     'altura' => $validated['altura'],
                     'genero' => $this->normalizeGender($validated['genero']),
                     'objetivo' => $validated['objetivo_principal'],
-                    'ciudad' => $validated['ciudad'],
+                    'ciudad' => $validated['ciudad'] ?? null,
                     'whatsapp' => $validated['whatsapp'],
-                    'nivel' => $validated['nivel_experiencia'],
-                    'lugar_entreno' => $validated['lugar_entreno'],
-                    'dias_disponibles' => $validated['dias_disponibles'],
+                    'nivel' => $validated['nivel_experiencia'] ?? null,
+                    'lugar_entreno' => $validated['lugar_entreno'] ?? null,
+                    'dias_disponibles' => $validated['dias_disponibles'] ?? null,
                     'restricciones' => $validated['detalle_lesiones'] ?? null,
                     'macros' => $this->buildMacrosPayload($validated, $planType),
                 ]);
@@ -776,7 +776,9 @@ class PublicFormController extends Controller
             'lesion' => 'tiene_lesiones',
             'detalle_lesion' => 'detalle_lesiones',
             'terminos' => 'acepta_terminos',
-            'horario' => 'horario_preferido',
+            // NOTE: 'horario' (workout schedule) is NOT aliased to 'horario_preferido'.
+            // presencial plans send horario_preferido directly from their dedicated field.
+            // General horario is preserved as-is for macros (horario_entreno_preferido).
         ];
 
         foreach ($aliases as $from => $to) {
@@ -850,8 +852,12 @@ class PublicFormController extends Controller
 
     private function buildIntakeRules(string $planType): array
     {
+        // nutricion_solo skips steps 2/3/4 (Experiencia/Preferencias/Lesiones) — those fields
+        // are never shown to the user, so they must be nullable to avoid silent 422s.
+        $trainingRequired = ! in_array($planType, ['nutricion_solo'], true);
+
         $rules = [
-            'invitation_code' => 'required|string|size:12',
+            'invitation_code' => 'required|string|min:6|max:32',
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'email' => 'required|email|unique:clients,email',
@@ -863,12 +869,12 @@ class PublicFormController extends Controller
             'ciudad' => 'nullable|string|max:100',
             'pais' => 'nullable|string|max:100',
             'objetivo_principal' => 'required|string|max:255',
-            'nivel_experiencia' => 'required|in:principiante,intermedio,avanzado',
-            'lugar_entreno' => 'required|in:gym,casa_con_equipo,casa_sin_equipo,aire_libre,mixto',
-            'dias_disponibles' => 'required|array|min:2',
-            'duracion_sesion' => ['required', Rule::in(['30', '45', '60', '75', '90', 30, 45, 60, 75, 90])],
-            'tiene_lesiones' => 'required|in:si,no',
-            'detalle_lesiones' => 'required_if:tiene_lesiones,si|nullable|string|max:500',
+            'nivel_experiencia' => $trainingRequired ? 'required|in:principiante,intermedio,avanzado' : 'nullable|in:principiante,intermedio,avanzado',
+            'lugar_entreno' => $trainingRequired ? 'required|in:gym,casa_con_equipo,casa_sin_equipo,aire_libre,mixto' : 'nullable|in:gym,casa_con_equipo,casa_sin_equipo,aire_libre,mixto',
+            'dias_disponibles' => $trainingRequired ? 'required|array|min:2' : 'nullable|array',
+            'duracion_sesion' => $trainingRequired ? ['required', Rule::in(['30', '45', '60', '75', '90', 30, 45, 60, 75, 90])] : ['nullable', Rule::in(['30', '45', '60', '75', '90', 30, 45, 60, 75, 90])],
+            'tiene_lesiones' => $trainingRequired ? 'required|in:si,no' : 'nullable|in:si,no',
+            'detalle_lesiones' => 'nullable|string|max:500',
             'password' => 'required|string|min:8|confirmed',
             'acepta_terminos' => 'accepted',
             // Vue InscriptionForm extras (always optional, preserved in macros JSON)
@@ -890,10 +896,13 @@ class PublicFormController extends Controller
 
         if (in_array($planType, ['metodo', 'elite'], true)) {
             $rules += [
-                'trabajo_tipo' => 'required|in:sedentario,moderado,activo',
-                'horas_sueno' => 'required|in:5_menos,6_7,8_mas',
-                'nivel_estres' => 'required|in:bajo,moderado,alto,muy_alto',
-                'comidas_por_dia' => 'required|in:2,3,4,5_mas',
+                // These come from step 6 (Estilo de vida) which is always shown for metodo/elite.
+                // Made nullable to avoid silent 422 if user skips optional selects — the frontend
+                // should validate them, but the backend must not hard-block registration.
+                'trabajo_tipo' => 'nullable|in:sedentario,moderado,activo',
+                'horas_sueno' => 'nullable|in:5_menos,6_7,8_mas',
+                'nivel_estres' => 'nullable|in:bajo,moderado,alto,muy_alto',
+                'comidas_por_dia' => 'nullable|in:2,3,4,5_mas',
                 'intolerancias' => 'nullable|array',
                 'otras_intolerancias' => 'nullable|string|max:500',
                 'alimentos_evitar' => 'nullable|string|max:500',
@@ -956,8 +965,11 @@ class PublicFormController extends Controller
     {
         $macros = [
             'pais' => $validated['pais'] ?? 'Colombia',
-            'duracion_sesion' => (string) $validated['duracion_sesion'],
-            'tiene_lesiones' => $validated['tiene_lesiones'],
+            'peso' => $validated['peso'] ?? null,
+            'edad' => $validated['edad'] ?? null,
+            'genero' => $validated['genero'] ?? null,
+            'duracion_sesion' => isset($validated['duracion_sesion']) ? (string) $validated['duracion_sesion'] : null,
+            'tiene_lesiones' => $validated['tiene_lesiones'] ?? null,
         ];
 
         if (in_array($planType, ['metodo', 'elite'], true)) {

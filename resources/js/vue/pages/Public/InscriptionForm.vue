@@ -184,9 +184,14 @@ function validateStep(s) {
   } else if (s === 1) {
     if (!form.value.nombre) e.nombre = 'El nombre es obligatorio.';
     if (!form.value.apellido) e.apellido = 'El apellido es obligatorio.';
-    if (!form.value.email) e.email = 'El email es obligatorio.';
+    if (!form.value.email) {
+      e.email = 'El email es obligatorio.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
+      e.email = 'Ingresa un email valido (ej: tu@correo.com).';
+    }
     if (!form.value.whatsapp) e.whatsapp = 'El WhatsApp es obligatorio.';
     if (!form.value.edad) e.edad = 'La edad es obligatoria.';
+    else if (Number(form.value.edad) < 16 || Number(form.value.edad) > 80) e.edad = 'La edad debe estar entre 16 y 80 anos.';
     if (!form.value.peso) e.peso = 'El peso es obligatorio.';
     if (!form.value.estatura) e.estatura = 'La estatura es obligatoria.';
     if (!form.value.genero) e.genero = 'Selecciona tu genero.';
@@ -204,6 +209,18 @@ function validateStep(s) {
   } else if (s === 4) {
     if (form.value.lesion === 'si' && !form.value.detalle_lesion) {
       e.detalle_lesion = 'Describe tu lesion.';
+    }
+  } else if (s === 5) {
+    // Nutricion step: for metodo/elite, comidas_dia is required on the backend
+    if (['metodo', 'elite'].includes(plan) && !form.value.comidas_dia) {
+      e.comidas_dia = 'Selecciona cuantas comidas haces al dia.';
+    }
+  } else if (s === 6) {
+    // Estilo de vida: for metodo/elite, these fields drive macro calculations
+    if (['metodo', 'elite'].includes(plan)) {
+      if (!form.value.horario_trabajo) e.horario_trabajo = 'Selecciona tu horario de trabajo.';
+      if (!form.value.nivel_estres) e.nivel_estres = 'Selecciona tu nivel de estres.';
+      if (!form.value.horas_sueno) e.horas_sueno = 'Selecciona tus horas de sueno.';
     }
   } else if (s === 8) {
     // Elite "Avanzado" step
@@ -262,14 +279,17 @@ function scrollToFirstError() {
 }
 
 async function submit() {
+  if (isLoading.value) return; // guard anti-doble-tap
+  isLoading.value = true; // deshabilitar boton inmediatamente
+
   const stepErrors = validateStep(step.value);
   if (Object.keys(stepErrors).length > 0) {
     errors.value = stepErrors;
+    isLoading.value = false;
     scrollToFirstError();
     return;
   }
 
-  isLoading.value = true;
   errorMessage.value = '';
   errors.value = {};
 
@@ -408,9 +428,9 @@ onMounted(() => {
           <p class="mt-3 text-wc-text-secondary">
             {{ isInvitation
               ? 'Tu cuenta WellCore esta lista. Inicia sesion para empezar.'
-              : 'Tu cuenta ha sido creada. Revisa tu email para los siguientes pasos.' }}
+              : 'Tu solicitud fue recibida. Un coach se comunicara contigo muy pronto.' }}
           </p>
-          <a href="/login" class="mt-6 inline-flex rounded-full bg-wc-accent px-8 py-3 font-semibold text-white hover:bg-wc-accent-hover active:scale-[0.98]">
+          <a v-if="isInvitation" href="/login" class="mt-6 inline-flex rounded-full bg-wc-accent px-8 py-3 font-semibold text-white hover:bg-wc-accent-hover active:scale-[0.98]">
             Iniciar Sesion
           </a>
         </div>
@@ -530,17 +550,17 @@ onMounted(() => {
                 </div>
                 <div>
                   <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Edad *</label>
-                  <input v-model="form.edad" type="number" placeholder="25" min="14" max="80" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                  <input v-model="form.edad" type="number" inputmode="numeric" placeholder="25" min="16" max="80" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                   <p v-if="fieldError('edad')" class="mt-1 text-xs text-red-500">{{ fieldError('edad') }}</p>
                 </div>
                 <div>
                   <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Peso (kg) *</label>
-                  <input v-model="form.peso" type="number" placeholder="70" step="0.1" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                  <input v-model="form.peso" type="number" inputmode="decimal" placeholder="70" step="0.1" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                   <p v-if="fieldError('peso')" class="mt-1 text-xs text-red-500">{{ fieldError('peso') }}</p>
                 </div>
                 <div>
                   <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Estatura (cm) *</label>
-                  <input v-model="form.estatura" type="number" placeholder="170" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                  <input v-model="form.estatura" type="number" inputmode="numeric" placeholder="170" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                   <p v-if="fieldError('estatura')" class="mt-1 text-xs text-red-500">{{ fieldError('estatura') }}</p>
                 </div>
                 <div>
