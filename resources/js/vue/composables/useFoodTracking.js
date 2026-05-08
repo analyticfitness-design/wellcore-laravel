@@ -53,6 +53,8 @@ export function useFoodTracking() {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             await fetchToday();
+        } catch (err) {
+            throw err;
         } finally {
             uploadingIndex.value = null;
         }

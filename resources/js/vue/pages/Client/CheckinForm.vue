@@ -600,7 +600,8 @@ onBeforeUnmount(() => {
               v-if="!isLastStep"
               type="button"
               @click="nextStep"
-              class="btn-press flex-1 rounded-button bg-wc-accent py-3 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover"
+              :disabled="submitting"
+              class="btn-press flex-1 rounded-button bg-wc-accent py-3 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
             >
               Siguiente paso
             </button>

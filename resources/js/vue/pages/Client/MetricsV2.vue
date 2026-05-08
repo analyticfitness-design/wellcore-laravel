@@ -10,10 +10,13 @@ import MetricsForm from '../../components/metrics/MetricsForm.vue';
 import CoachInterpretation from '../../components/metrics/CoachInterpretation.vue';
 import CrossLinkPhotos from '../../components/metrics/CrossLinkPhotos.vue';
 
+import { useApi } from '../../composables/useApi';
 import { useMetrics } from '../../composables/metrics/useMetrics.js';
 import { useFormMode } from '../../composables/metrics/useFormMode.js';
 import { useMeasurementsForm } from '../../composables/metrics/useMeasurementsForm.js';
 import { useCoachInterpretation } from '../../composables/metrics/useCoachInterpretation.js';
+
+const api = useApi();
 
 // ─── Data ───────────────────────────────────────────────────────────────────
 const {
@@ -119,15 +122,7 @@ async function handleQuickSubmit() {
   }
   saving.value = true;
   try {
-    const res = await fetch('/api/v/client/metrics', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-      body: JSON.stringify({ peso: val }),
-    });
-    if (!res.ok) throw new Error('Error al guardar');
+    await api.post('/api/v/client/metrics', { peso: val });
     quickPeso.value = '';
     await refresh();
     triggerAchievement('¡Peso registrado!');

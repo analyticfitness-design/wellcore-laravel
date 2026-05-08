@@ -42,8 +42,12 @@ class PublicFormController extends Controller
             'genero' => 'required|string|max:50',
             'objetivo' => 'required|string|max:500',
             'plan' => 'required|in:esencial,metodo,elite,entreno_solo,nutricion_solo',
-            'experiencia' => 'required|string|max:100',
-            'dias_disponibles' => 'required|string|max:50',
+            'experiencia' => in_array($request->input('plan'), ['nutricion_solo'])
+                ? 'nullable|string|max:100'
+                : 'required|string|max:100',
+            'dias_disponibles' => in_array($request->input('plan'), ['nutricion_solo'])
+                ? 'nullable|string|max:50'
+                : 'required|string|max:50',
             'equipamiento' => 'nullable|string|max:255',
             'lesion' => 'nullable|string|max:500',
             'password' => 'required|string|min:8|confirmed',
@@ -96,6 +100,13 @@ class PublicFormController extends Controller
             'password.confirmed' => 'Las contrasenas no coinciden.',
             'terminos.accepted' => 'Debes aceptar los terminos y condiciones.',
         ]);
+
+        if (Client::withTrashed()->where('email', $validated['email'])->exists()) {
+            return response()->json([
+                'errors' => ['email' => ['Este email ya tiene una cuenta registrada. Inicia sesión desde la app.']],
+                'message' => 'Este email ya está registrado.',
+            ], 422);
+        }
 
         try {
             // Build extras JSON with password_hash, UTM data, and extra fields
@@ -657,10 +668,10 @@ class PublicFormController extends Controller
                     'used_at' => now(),
                 ]);
 
-                $this->convertReferralIfPending($client, $validated['email']);
-
                 return $client;
             });
+
+            $this->convertReferralIfPending($client, $validated['email']);
 
             return response()->json([
                 'success' => true,
@@ -827,18 +838,18 @@ class PublicFormController extends Controller
         if (isset($input['horas_sueno'])) {
             $input['horas_sueno'] = match ((string) $input['horas_sueno']) {
                 'menos_5', '5-6' => '5_menos',
-                '6-7', '7-8'     => '6_7',
-                '8+'             => '8_mas',
-                default          => (string) $input['horas_sueno'],
+                '6-7', '7-8' => '6_7',
+                '8+' => '8_mas',
+                default => (string) $input['horas_sueno'],
             };
         }
 
         // horario_trabajo (job-type) → trabajo_tipo (activity-level) best-effort mapping
         if (isset($input['horario_trabajo']) && empty($input['trabajo_tipo'])) {
             $input['trabajo_tipo'] = match ($input['horario_trabajo']) {
-                'oficina', 'estudiante'               => 'sedentario',
-                'remoto', 'independiente', 'turnos'   => 'moderado',
-                default                               => 'moderado',
+                'oficina', 'estudiante' => 'sedentario',
+                'remoto', 'independiente', 'turnos' => 'moderado',
+                default => 'moderado',
             };
         }
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
@@ -348,6 +348,7 @@ async function fetchTicket(id) {
     fetchAttachments();
   } catch (e) {
     showToast('error', 'No se pudo cargar el ticket.');
+    setTimeout(() => router.push('/coach/plan-tickets'), 2000);
   } finally {
     loading.value = false;
   }
@@ -447,8 +448,11 @@ function formatRelative(d) {
   } catch { return d; }
 }
 
+let _hydrating = false;
+
 function hydrate(t) {
   if (!t) return;
+  _hydrating = true;
   if (t.datos_generales) Object.assign(datosGenerales.value, t.datos_generales);
   if (t.plan_entrenamiento) {
     const pe = { ...t.plan_entrenamiento };
@@ -489,12 +493,14 @@ function hydrate(t) {
   } else if (t.plan_type) {
     datosGenerales.value.plan = t.plan_type;
   }
+  nextTick(() => { _hydrating = false; });
 }
 
 // ============ Auto-save ============
 
 let saveTimer = null;
 function scheduleSave(payload) {
+  if (_hydrating) return;
   if (!ticketId.value) return;
   if (!isEditable.value) return;
   savingIndicator.value = 'saving';
@@ -503,16 +509,18 @@ function scheduleSave(payload) {
 }
 
 async function runSave(payload) {
-  if (!ticketId.value) return;
+  if (!ticketId.value) return false;
   saving.value = true;
   try {
     const { data } = await api.put(`/api/v/coach/plan-tickets/${ticketId.value}`, payload);
     ticket.value = data.ticket;
     savingIndicator.value = 'saved';
     setTimeout(() => { if (savingIndicator.value === 'saved') savingIndicator.value = ''; }, 2000);
+    return true;
   } catch (e) {
     savingIndicator.value = '';
     showToast('error', 'No se pudo guardar.');
+    return false;
   } finally {
     saving.value = false;
   }
@@ -566,7 +574,7 @@ async function submitTicket() {
   try {
     // Force flush any pending save
     clearTimeout(saveTimer);
-    await runSave({
+    const saved = await runSave({
       datos_generales: datosGenerales.value,
       plan_entrenamiento: planEntrenamiento.value,
       plan_nutricional: planNutricional.value,
@@ -574,6 +582,10 @@ async function submitTicket() {
       plan_suplementacion: planSuplementacion.value,
       ...(isElite.value ? { plan_ciclo: planCiclo.value } : {}),
     });
+    if (!saved) {
+      submitting.value = false;
+      return;
+    }
     const { data } = await api.post(`/api/v/coach/plan-tickets/${ticketId.value}/submit`);
     ticket.value = data.ticket;
     showToast('success', 'Ticket enviado al equipo WellCore.');
@@ -611,6 +623,7 @@ function prev() { if (step.value > 0) step.value--; }
 function next() {
   // For new tickets, creating on step 0
   if (isNew.value && step.value === 0 && !ticketId.value) {
+    if (loading.value) return; // guard double-tap
     createTicket();
     return;
   }
@@ -1515,6 +1528,13 @@ onBeforeUnmount(() => {
               </p>
             </div>
           </div>
+
+          <!-- Missing fields — compact near submit -->
+          <ul v-if="missingFields.length" class="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-400 space-y-1 mt-2">
+            <li v-for="f in missingFields" :key="f" class="flex items-center gap-1">
+              <span>—</span> <span>{{ f }}</span>
+            </li>
+          </ul>
 
           <!-- Submit actions -->
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">

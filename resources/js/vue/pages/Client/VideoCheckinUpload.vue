@@ -56,6 +56,9 @@
 
       <form @submit.prevent="submitCheckin" class="space-y-4">
         <!-- Drop zone -->
+        <label class="mb-1.5 block wc-caption">
+          Archivo <span class="text-wc-accent">*</span>
+        </label>
         <div
           @dragover.prevent="dragging = true"
           @dragleave.prevent="dragging = false"
@@ -456,6 +459,10 @@ function validateForm(): boolean {
 
 async function submitCheckin() {
   if (monthlyCount.value >= monthlyLimit.value) return;
+  if (!selectedFile.value) {
+    fieldErrors.value = { ...fieldErrors.value, media_file: ['Selecciona un video o foto antes de enviar.'] };
+    return;
+  }
   if (!validateForm()) return;
 
   fieldErrors.value = {};

@@ -14,6 +14,7 @@ const pendingFile = reactive({});          // mealIndex -> File seleccionado per
 const pendingPreview = reactive({});       // mealIndex -> object URL para preview
 const savingNote = reactive({});           // photoId -> bool (debouncer post-upload)
 const recordingFor = ref(null);            // mealIndex actualmente grabando ('pre-{idx}' o photoId)
+const uploadErrors = reactive({});         // mealIndex -> mensaje de error de upload
 
 function getMealColor(nombre) {
     const n = (nombre || '').toLowerCase();
@@ -46,6 +47,7 @@ function onFileSelected(e, meal) {
 async function confirmUpload(meal) {
     const file = pendingFile[meal.index];
     if (!file) return;
+    delete uploadErrors[meal.index];
     try {
         await food.uploadPhoto(file, meal.nombre, meal.index, noteDrafts[meal.index] || '');
         // limpiar locales tras éxito
@@ -53,8 +55,9 @@ async function confirmUpload(meal) {
         delete pendingFile[meal.index];
         delete pendingPreview[meal.index];
         delete noteDrafts[meal.index];
+        delete uploadErrors[meal.index];
     } catch (err) {
-        console.error('Upload failed', err);
+        uploadErrors[meal.index] = err.response?.data?.message || 'Error al subir la foto. Intenta de nuevo.';
     }
 }
 
@@ -66,26 +69,32 @@ function cancelUpload(mealIndex) {
     delete pendingPreview[mealIndex];
 }
 
+const deleteError = ref('');
 async function removePhoto(meal) {
     if (!meal.photo || meal.photo.coach_seen) return;
     if (!confirm('¿Eliminar esta foto?')) return;
+    deleteError.value = '';
     try {
         await food.deletePhoto(meal.photo.id);
     } catch (err) {
-        console.error('Delete failed', err);
+        deleteError.value = 'No se pudo eliminar la foto. Intenta de nuevo.';
+        setTimeout(() => { deleteError.value = ''; }, 4000);
     }
 }
 
+const noteError = ref('');
 let _saveNoteTimer = null;
 function onPostNoteInput(photo, value) {
     photo.client_note = value;
     if (_saveNoteTimer) clearTimeout(_saveNoteTimer);
     _saveNoteTimer = setTimeout(async () => {
         savingNote[photo.id] = true;
+        noteError.value = '';
         try {
             await food.updateNote(photo.id, value);
         } catch (err) {
-            console.error('Save note failed', err);
+            noteError.value = 'No se pudo guardar la nota. Intenta de nuevo.';
+            setTimeout(() => { noteError.value = ''; }, 4000);
         } finally {
             savingNote[photo.id] = false;
         }
@@ -151,6 +160,14 @@ onMounted(() => {
     </div>
 
     <div v-else class="space-y-6">
+      <!-- Error toasts (delete / note save) -->
+      <Transition name="fade">
+        <div v-if="deleteError || noteError"
+             class="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-400">
+          {{ deleteError || noteError }}
+        </div>
+      </Transition>
+
       <div class="flex items-end justify-between">
         <div>
           <h1 class="font-display text-3xl tracking-wide text-wc-text">MI ALIMENTACIÓN</h1>
@@ -324,6 +341,7 @@ onMounted(() => {
                   {{ food.uploadingIndex.value === meal.index ? 'Subiendo...' : 'Confirmar foto' }}
                 </button>
               </div>
+              <p v-if="uploadErrors[meal.index]" class="text-xs text-red-400 mt-1">{{ uploadErrors[meal.index] }}</p>
             </div>
           </div>
 
@@ -361,3 +379,8 @@ onMounted(() => {
     </div>
   </ClientLayout>
 </template>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style>

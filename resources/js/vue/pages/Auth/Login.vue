@@ -40,6 +40,8 @@ async function login() {
         setTimeout(() => {
             window.location.href = '/v' + (data.redirectUrl || '/client');
         }, 600);
+        // Safety: si en 5 segundos no hubo redirect, liberar el botón
+        setTimeout(() => { isLoading.value = false; }, 5000);
     } catch (err) {
         isLoading.value = false;
         if (err.response?.data?.message) {

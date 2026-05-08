@@ -25,6 +25,7 @@ import { useMedals } from '../../composables/useMedals';
 import { useToast } from '../../composables/useToast';
 import { useApi } from '../../composables/useApi';
 import { localDateStr } from '../../composables/useDate';
+import { useAuthStore } from '../../stores/auth';
 
 import PhotosHero from '../../components/photos/PhotosHero.vue';
 import PrivacyReassurance from '../../components/photos/PrivacyReassurance.vue';
@@ -45,6 +46,14 @@ import { computeChips } from '../../composables/usePhotoValidation';
 const api = useApi();
 const toast = useToast();
 const { fetchMedals } = useMedals();
+const authStore = useAuthStore();
+
+// Coach name para el panel de feedback — se obtiene del __WC_SESSION si está disponible,
+// de lo contrario usa fallback genérico (el store no expone el nombre del coach asignado al cliente).
+const coachDisplayName = computed(() => {
+  const session = window.__WC_SESSION;
+  return (session && session.coachName) || 'Tu coach';
+});
 
 // --- Composables de dominio ---
 const upload = usePhotoUpload();
@@ -512,7 +521,7 @@ onMounted(() => {
         :open="feedbackOpen"
         :session="feedbackSession"
         :active-photo="feedbackPhoto"
-        coach-name="Marina Pérez"
+        :coach-name="coachDisplayName"
         @close="closeFeedback"
         @change-active="onPanelChangeActive"
         @delete-photo="requestDeletePhoto"
