@@ -125,6 +125,8 @@ async function startDictating(target) {
         }
     } catch (err) {
         console.error('Voice failed', err);
+        noteError.value = 'No se pudo iniciar el dictado. Verifica los permisos del micrófono.';
+        setTimeout(() => { noteError.value = ''; }, 4000);
     } finally {
         recordingFor.value = null;
     }

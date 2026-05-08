@@ -1,18 +1,22 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import WcPageHeader from '../../components/WcPageHeader.vue';
 import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
 import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
 const api = useApi();
+const toast = useToast();
 const loading = ref(true);
 const notes = ref([]);
 const noteTypeFilter = ref('all');
 const showForm = ref(false);
 const saving = ref(false);
 const success = ref(false);
+const saveError = ref('');
+const loadError = ref('');
 
 // Form fields
 const noteClient = ref('');
@@ -61,6 +65,7 @@ function editNote(note) {
 async function saveNote() {
     if (!noteText.value.trim()) return;
     saving.value = true;
+    saveError.value = '';
     try {
         const payload = {
             client_id: noteClient.value ? parseInt(noteClient.value) : null,
@@ -79,7 +84,7 @@ async function saveNote() {
         success.value = true;
         setTimeout(() => { success.value = false; }, 3000);
     } catch (e) {
-        // silent
+        saveError.value = 'No se pudo guardar la nota. Intenta de nuevo.';
     } finally {
         saving.value = false;
     }
@@ -91,18 +96,19 @@ async function deleteNote(id) {
         await api.delete(`/api/v/coach/notes/${id}`);
         notes.value = notes.value.filter(n => n.id !== id);
     } catch (e) {
-        // silent
+        toast.error('No se pudo eliminar la nota. Intenta de nuevo.');
     }
 }
 
 async function loadData() {
     loading.value = true;
+    loadError.value = '';
     try {
         const { data } = await api.get('/api/v/coach/notes');
         notes.value = data.notes || [];
         clients.value = data.clients || [];
     } catch (e) {
-        // silent
+        loadError.value = 'No se pudieron cargar las notas.';
     } finally {
         loading.value = false;
     }
@@ -185,11 +191,18 @@ onMounted(loadData);
           <label class="mb-1.5 block font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Nota</label>
           <textarea v-model="noteText" rows="4" placeholder="Escribe tu nota..." class="w-full rounded-button border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent resize-none"></textarea>
         </div>
+        <div v-if="saveError" class="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-400">{{ saveError }}</div>
         <button
           @click="saveNote"
           :disabled="saving || !noteText.trim()"
           class="inline-flex items-center gap-2 rounded-button bg-wc-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-wc-accent-hover transition-colors disabled:opacity-50"
         >{{ saving ? 'Guardando...' : 'Guardar nota' }}</button>
+      </div>
+
+      <!-- Load error -->
+      <div v-if="loadError" class="flex items-center justify-between rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <span>{{ loadError }}</span>
+        <button @click="loadData" class="ml-4 shrink-0 rounded-button border border-red-500/30 px-3 py-1 text-xs font-medium hover:bg-red-500/10 transition-colors">Reintentar</button>
       </div>
 
       <!-- Loading -->

@@ -60,8 +60,14 @@
 
       <!-- Content grid -->
       <div>
+        <!-- Error state -->
+        <div v-if="error && !loading" class="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-center">
+          <p class="text-sm text-red-400 mb-2">{{ error }}</p>
+          <button @click="fetchContents()" class="text-xs underline text-wc-accent">Reintentar</button>
+        </div>
+
         <!-- Empty state -->
-        <div v-if="!loading && contents.length === 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
+        <div v-else-if="!loading && contents.length === 0" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
           <svg class="mx-auto h-12 w-12 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.966 8.966 0 0 0-6 2.292m0-14.25v14.25" />
           </svg>
@@ -233,6 +239,7 @@ const selectedContent = ref(null);
 const search = ref('');
 const categoryFilter = ref('');
 const loading = ref(false);
+const error = ref('');
 
 function youtubeEmbedUrl(url) {
   if (!url) return null;
@@ -267,6 +274,7 @@ async function fetchContents() {
     if (response.data.categories?.length) categories.value = response.data.categories;
   } catch (e) {
     contents.value = [];
+    error.value = 'No se pudo cargar el contenido. Intenta de nuevo.';
   } finally {
     loading.value = false;
   }

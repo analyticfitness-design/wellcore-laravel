@@ -13,6 +13,7 @@ import WcAdminCommandPalette from '../components/ui/wellcore-admin/WcAdminComman
 import AdminTopBarLegacy from '../components/admin/dashboard/AdminTopBar.vue';
 import AdminSidebarLegacy from '../components/admin/dashboard/AdminSidebar.vue';
 import AdminBottomNavLegacy from '../components/admin/dashboard/AdminBottomNav.vue';
+import ToastContainer from '../components/ui/ToastContainer.vue';
 
 const authStore = useAuthStore();
 const route = useRoute();
@@ -160,6 +161,8 @@ const SHORTCUTS = [
     <WcAdminBottomNav />
 
     <WcAdminCommandPalette ref="cmdPalette" :shortcuts="SHORTCUTS" />
+
+    <ToastContainer />
   </div>
 
   <!-- ═══════ LEGACY SHELL (vistas no migradas — Fase 3+ las migra) ═══════ -->
@@ -200,6 +203,8 @@ const SHORTCUTS = [
     </main>
 
     <AdminBottomNavLegacy />
+
+    <ToastContainer />
   </div>
 </template>
 

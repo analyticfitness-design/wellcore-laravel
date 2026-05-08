@@ -390,8 +390,9 @@ async function fetchCheckins() {
     checkins.value = response.data.checkins ?? [];
     monthlyCount.value = response.data.monthly_count ?? 0;
     monthlyLimit.value = response.data.monthly_limit ?? 4;
-  } catch {
+  } catch (err) {
     checkins.value = [];
+    toast.apiError(err, 'No pudimos cargar tu historial de check-ins.');
   } finally {
     loading.value = false;
   }

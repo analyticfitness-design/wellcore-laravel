@@ -25,6 +25,7 @@ const { client, loading, error, activeTab, coaches } = storeToRefs(store);
 // ─── Modales ────────────────────────────────────────────────────────
 const showEditModal = ref(false);
 const editForm = ref({});
+const editError = ref('');
 function openEdit() {
     editForm.value = {
         // El backend acepta status, plan, coach_id por PUT — bio/email
@@ -37,11 +38,16 @@ function openEdit() {
 }
 function cancelEdit() { showEditModal.value = false; }
 async function saveEdit() {
+    editError.value = '';
     const payload = {};
     if (editForm.value.status) payload.status = editForm.value.status;
     if (editForm.value.plan) payload.plan = editForm.value.plan;
     const ok = await store.updateField(payload);
-    if (ok) showEditModal.value = false;
+    if (ok) {
+        showEditModal.value = false;
+    } else {
+        editError.value = store.actionMessage || 'Error al guardar. Intenta de nuevo.';
+    }
 }
 
 const showCoachModal = ref(false);
@@ -176,6 +182,8 @@ onBeforeUnmount(() => {
                   </option>
                 </select>
               </div>
+
+              <p v-if="editError" class="text-xs text-red-400 mt-2">{{ editError }}</p>
 
               <div class="modal-actions">
                 <button type="button" class="modal-btn modal-btn--ghost" @click="cancelEdit">CANCELAR</button>

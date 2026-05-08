@@ -81,6 +81,7 @@ const isToday = computed(() => {
 });
 
 function goToDate(direction) {
+    if (loading.value) return; // prevent concurrent fetches
     const d = new Date(selectedDate.value + 'T12:00:00');
     if (direction === 'prev') {
         d.setDate(d.getDate() - 1);

@@ -228,6 +228,8 @@ async function changePassword() {
 }
 
 // Dark mode
+const darkMode = ref(document.documentElement.classList.contains('dark'));
+
 function toggleDarkMode(toDark) {
     const html = document.documentElement;
     if (toDark) {
@@ -237,10 +239,7 @@ function toggleDarkMode(toDark) {
         html.classList.remove('dark');
         safeStorage.set('darkMode', 'false');
     }
-}
-
-function isDarkMode() {
-    return document.documentElement.classList.contains('dark');
+    darkMode.value = toDark;
 }
 
 onMounted(() => {
@@ -738,7 +737,7 @@ onBeforeUnmount(() => {
             <button
               type="button"
               @click="toggleDarkMode(false)"
-              :class="!isDarkMode() ? 'border-wc-accent ring-2 ring-wc-accent/30' : 'border-wc-border hover:border-wc-border/80'"
+              :class="!darkMode ? 'border-wc-accent ring-2 ring-wc-accent/30' : 'border-wc-border hover:border-wc-border/80'"
               class="relative flex flex-col items-center gap-2 rounded-xl border bg-white p-4 transition-all"
             >
               <div class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
@@ -747,7 +746,7 @@ onBeforeUnmount(() => {
                 </svg>
               </div>
               <span class="text-sm font-medium text-gray-700">Modo Claro</span>
-              <div v-if="!isDarkMode()" class="absolute right-2 top-2">
+              <div v-if="!darkMode" class="absolute right-2 top-2">
                 <div class="flex h-4 w-4 items-center justify-center rounded-full bg-wc-accent">
                   <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
@@ -760,7 +759,7 @@ onBeforeUnmount(() => {
             <button
               type="button"
               @click="toggleDarkMode(true)"
-              :class="isDarkMode() ? 'border-wc-accent ring-2 ring-wc-accent/30' : 'border-wc-border hover:border-wc-border/80'"
+              :class="darkMode ? 'border-wc-accent ring-2 ring-wc-accent/30' : 'border-wc-border hover:border-wc-border/80'"
               class="relative flex flex-col items-center gap-2 rounded-xl border bg-gray-900 p-4 transition-all"
             >
               <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/20">
@@ -769,7 +768,7 @@ onBeforeUnmount(() => {
                 </svg>
               </div>
               <span class="text-sm font-medium text-gray-300">Modo Oscuro</span>
-              <div v-if="isDarkMode()" class="absolute right-2 top-2">
+              <div v-if="darkMode" class="absolute right-2 top-2">
                 <div class="flex h-4 w-4 items-center justify-center rounded-full bg-wc-accent">
                   <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />

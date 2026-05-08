@@ -9,6 +9,7 @@ const api = useApi();
 const loading = ref(true);
 const sending = ref(false);
 const error = ref(null);
+const sendError = ref('');
 
 // Chat data
 const podId = ref(null);
@@ -76,10 +77,12 @@ function subscribeEcho() {
 async function sendMessage() {
     if (!newMessage.value.trim() || !podId.value) return;
 
+    const text = newMessage.value.trim();
     sending.value = true;
+    sendError.value = '';
     try {
         const response = await api.post('/api/v/rise/chat', {
-            message: newMessage.value.trim(),
+            message: text,
         });
         newMessage.value = '';
         // Only push locally if Echo won't deliver it (no Echo) or message came back directly
@@ -95,7 +98,9 @@ async function sendMessage() {
             await pollCallback();
         }
     } catch (err) {
-        error.value = err.response?.data?.message || 'Error al enviar mensaje';
+        newMessage.value = text; // restore text so user doesn't lose it
+        sendError.value = err.response?.data?.message || 'No se pudo enviar el mensaje. Intenta de nuevo.';
+        setTimeout(() => { sendError.value = ''; }, 4000);
     } finally {
         sending.value = false;
     }
@@ -218,6 +223,7 @@ onBeforeUnmount(() => {
 
         <!-- Input bar -->
         <div v-if="podId" class="border-t border-wc-border bg-wc-bg-secondary/50 p-3">
+          <p v-if="sendError" class="text-xs text-red-400 px-1 mb-1">{{ sendError }}</p>
           <form @submit.prevent="sendMessage" class="flex items-center gap-2">
             <input
               type="text"

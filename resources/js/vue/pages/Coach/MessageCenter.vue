@@ -30,6 +30,9 @@ const selectedClient = ref(null);
 const messages = ref([]);
 const newMessage = ref('');
 const sending = ref(false);
+const clientsError = ref(false);
+const messagesError = ref(false);
+const sendError = ref('');
 
 // Coach id — needed to build the channel name
 const coachId = ref(Number(authStore.userId) || null);
@@ -119,16 +122,18 @@ async function loadClients() {
   try {
     const { data } = await api.get('/api/v/coach/messages');
     clients.value = data.clients || [];
+    clientsError.value = false;
     // Sync coachId from API response if not already set from auth store
     if (!coachId.value && data.coach_id) {
       coachId.value = Number(data.coach_id);
     }
   } catch {
-    // silent
+    clientsError.value = true;
   }
 }
 
 async function loadMessages(clientId) {
+  messagesError.value = false;
   try {
     const { data } = await api.get(`/api/v/coach/messages?client_id=${clientId}`);
     messages.value = data.conversation || [];
@@ -148,7 +153,7 @@ async function loadMessages(clientId) {
       );
     }
   } catch {
-    // silent
+    messagesError.value = true;
   }
 }
 
@@ -181,6 +186,7 @@ function scrollToBottom() {
 async function sendMessage() {
   if (!newMessage.value.trim() || !selectedClientId.value) return;
   sending.value = true;
+  sendError.value = '';
   const text = newMessage.value;
   try {
     await api.post('/api/v/coach/messages', {
@@ -200,8 +206,9 @@ async function sendMessage() {
       scrollToBottom();
     }
   } catch {
-    // silent — restore typed text on failure
+    // Restore typed text so the coach doesn't lose their message
     newMessage.value = text;
+    sendError.value = 'No se pudo enviar el mensaje.';
   } finally {
     sending.value = false;
   }
@@ -268,6 +275,10 @@ onBeforeUnmount(() => {
             <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Clientes</p>
           </div>
           <div class="flex-1 overflow-y-auto">
+            <div v-if="clientsError" class="px-4 py-3 text-center text-xs text-red-400">
+              Error al cargar clientes.
+              <button @click="loadClients" class="ml-1 underline hover:no-underline">Reintentar</button>
+            </div>
             <ul v-if="clients.length > 0" class="divide-y divide-[var(--b1)]">
               <li v-for="client in clients" :key="client.id">
                 <button
@@ -329,6 +340,12 @@ onBeforeUnmount(() => {
               </div>
             </div>
 
+            <!-- Messages load error -->
+            <div v-if="messagesError" class="flex items-center justify-between border-b border-wc-border bg-red-500/10 px-4 py-2 text-xs text-red-400">
+              <span>No se pudieron cargar los mensajes.</span>
+              <button @click="loadMessages(selectedClientId)" class="ml-2 shrink-0 underline hover:no-underline">Reintentar</button>
+            </div>
+
             <!-- Messages -->
             <div id="messages-container" class="flex-1 overflow-y-auto px-4 py-4 space-y-3" style="max-height: 55vh;">
               <template v-if="messages.length > 0">
@@ -352,6 +369,7 @@ onBeforeUnmount(() => {
 
             <!-- Message input with template selector -->
             <div class="border-t border-[var(--b1)] px-4 py-3">
+              <p v-if="sendError" class="mb-2 text-xs text-red-400">{{ sendError }}</p>
               <form @submit.prevent="sendMessage" class="flex items-center gap-2">
                 <!-- Template selector -->
                 <div class="relative inline-flex">

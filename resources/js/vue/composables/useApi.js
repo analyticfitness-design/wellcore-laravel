@@ -69,6 +69,11 @@ function createPreviewMockClient() {
 // token swaps remain reactive.
 let _instance = null;
 
+// Guard against re-entrant 401/403 triggers during impersonation restore.
+// Without this, concurrent in-flight requests that all 401 can each call
+// _restoreCoachSession() simultaneously, causing double-redirect loops.
+let _restoringSession = false;
+
 export function useApi() {
     const authStore = useAuthStore();
 
@@ -82,6 +87,7 @@ export function useApi() {
 
     _instance = axios.create({
         baseURL: '',
+        timeout: 20000,
         headers: {
             'Accept': 'application/json',
         },
@@ -117,7 +123,8 @@ export function useApi() {
             // y el token cliente (8h) expiró. Sin este fix queda atrapado en
             // "Acceso solo para clientes" (403) o redirect a /login (401),
             // perdiendo todo el contexto coach.
-            if ((status === 401 || status === 403) && _shouldRestoreCoachSession()) {
+            if ((status === 401 || status === 403) && _shouldRestoreCoachSession() && !_restoringSession) {
+                _restoringSession = true;
                 _restoreCoachSession();
                 return Promise.reject(error);
             }
@@ -126,6 +133,25 @@ export function useApi() {
                 authStore.clearAuth();
                 window.location.href = '/login';
             }
+
+            // 500+ server errors
+            if (error.response && error.response.status >= 500) {
+                // TODO: wire to useToastStore() once a global toast bus is available
+                console.error('[API] Server error', error.response.status, error.config?.url);
+            }
+
+            // Network errors (no response, not an intentional cancellation or timeout)
+            if (!error.response && error.code !== 'ERR_CANCELED' && error.code !== 'ECONNABORTED') {
+                // TODO: wire to useToastStore() for "Sin conexion — verifica tu red"
+                console.error('[API] Network error', error.code, error.config?.url);
+            }
+
+            // Timeout
+            if (error.code === 'ECONNABORTED') {
+                // TODO: wire to useToastStore() for "La solicitud tardó demasiado — intenta de nuevo"
+                console.error('[API] Timeout', error.config?.url);
+            }
+
             return Promise.reject(error);
         }
     );
@@ -198,4 +224,7 @@ function _restoreCoachSession() {
 
     // Hard redirect a /coach para resetear Pinia con el token coach restaurado
     window.location.href = '/coach';
+
+    // Reset the guard after 3s in case the redirect is somehow blocked
+    setTimeout(() => { _restoringSession = false; }, 3000);
 }

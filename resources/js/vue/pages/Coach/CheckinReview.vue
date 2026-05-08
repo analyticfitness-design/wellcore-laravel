@@ -32,6 +32,7 @@ const filteredCheckins = computed(() => {
 function startReply(id) {
     replyingTo.value = id;
     replyText.value = '';
+    replyError.value = '';
 }
 
 function cancelReply() {

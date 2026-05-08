@@ -53,6 +53,12 @@
 
       <template v-else>
 
+        <!-- Load error with retry -->
+        <div v-if="loadError && !loading" class="rounded-lg border border-red-500/30 bg-red-500/10 p-3 flex items-center justify-between mb-4">
+          <span class="text-sm text-red-400">{{ loadError }}</span>
+          <button @click="fetchTickets()" class="text-xs text-wc-accent underline ml-2">Reintentar</button>
+        </div>
+
         <!-- Stats -->
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
@@ -324,6 +330,7 @@ const toast = useToast();
 
 // State
 const loading      = ref(true);
+const loadError    = ref('');
 const tickets      = ref([]);
 const stats        = reactive({ total: 0, open: 0, in_progress: 0, closed: 0 });
 const statusFilter = ref('all');
@@ -373,11 +380,13 @@ const filteredTickets = computed(() => {
 
 async function fetchTickets() {
   loading.value = true;
+  loadError.value = '';
   try {
     const response = await api.get('/api/v/client/tickets');
     tickets.value = response.data.tickets ?? [];
     Object.assign(stats, response.data.stats ?? {});
   } catch (err) {
+    loadError.value = 'No pudimos cargar tus tickets.';
     toast.apiError(err, 'No pudimos cargar tus tickets.');
   } finally {
     loading.value = false;

@@ -105,7 +105,7 @@ onMounted(fetchMedals);
     </div>
 
     <!-- Error -->
-    <div v-else-if="error && !medals.length" class="wc-shell wc-shell--logros">
+    <div v-else-if="error && !loading" class="wc-shell wc-shell--logros">
       <main class="scroll">
         <section class="card section" style="text-align:center; padding:32px; grid-column:span 12;">
           <p style="color:var(--wc-accent); font-size:14px; margin-bottom:12px;">{{ error }}</p>

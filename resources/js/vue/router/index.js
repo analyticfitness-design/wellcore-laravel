@@ -226,7 +226,9 @@ router.beforeEach(async (to, from, next) => {
     }
 
     // Brand profile gate for /coach/strategy/*
-    if (to.meta.requiresBrandProfile && authStore.isAuthenticated && authStore.userType === 'coach') {
+    // NOTE: coaches have userType='admin' (UserType enum only has admin|client).
+    // Use path prefix instead — all strategy routes are under /coach/*.
+    if (to.meta.requiresBrandProfile && authStore.isAuthenticated && to.path.startsWith('/coach')) {
         try {
             const { useCoachStrategyStore } = await import('../stores/coachStrategy');
             const store = useCoachStrategyStore();
@@ -243,6 +245,21 @@ router.beforeEach(async (to, from, next) => {
     }
 
     next();
+});
+
+// Handle chunk load failures after deploys (stale cached routes).
+// Vite splits each lazy route into its own chunk; after a new deploy the
+// old hashed filenames are gone, so returning users get a silent white screen.
+// This forces a hard reload to the target route so the browser fetches fresh chunks.
+router.onError((error, to) => {
+    const isChunkError = (
+        /Loading chunk/.test(error.message) ||
+        /Failed to fetch dynamically imported module/.test(error.message) ||
+        /Importing a module script failed/.test(error.message)
+    );
+    if (isChunkError) {
+        window.location.href = to.fullPath;
+    }
 });
 
 export default router;

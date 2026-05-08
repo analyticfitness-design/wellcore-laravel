@@ -54,6 +54,12 @@ onActivated(async () => {
                     <template v-if="store.isLoadingDrop">
                         <div class="font-mono text-sm text-wc-text-tertiary animate-pulse py-8">Cargando estrategia...</div>
                     </template>
+                    <template v-else-if="store.dropError">
+                        <div class="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400 text-center">
+                            <p class="mb-2">{{ store.dropError }}</p>
+                            <button @click="store.fetchCurrentDrop()" class="underline text-wc-accent text-xs">Reintentar</button>
+                        </div>
+                    </template>
                     <template v-else-if="!store.currentDrop">
                         <StrategyEmptyState />
                     </template>

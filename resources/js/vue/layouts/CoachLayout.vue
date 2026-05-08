@@ -12,6 +12,7 @@ import TopBarIos from '../components/coach/ios/TopBarIos.vue';
 import BottomTabBar from '../components/coach/ios/BottomTabBar.vue';
 import ActionSheet from '../components/coach/ios/ActionSheet.vue';
 import CmdPalette from '../components/coach/ios/CmdPalette.vue';
+import ToastContainer from '../components/ui/ToastContainer.vue';
 
 const props = defineProps({
     urgentCount: { type: Number, default: 0 }
@@ -420,5 +421,8 @@ const cmdPaletteSections = computed(() => [
 
     <!-- Onboarding tour (preservado) -->
     <CoachOnboardingTour v-if="showTour" @done="onTourDone" />
+
+    <!-- Global toast notifications -->
+    <ToastContainer />
   </div>
 </template>

@@ -55,35 +55,29 @@ async function fetchNotifications() {
 }
 
 async function markAsRead(id) {
-    const prevNotifications = notifications.value.slice();
-    const prevUnread = unreadCount.value;
     try {
         await fetch(`${props.endpoint}/${id}/read`, {
             method: 'POST',
             headers: authHeaders(),
         });
-        await fetchNotifications();
     } catch (err) {
         console.warn('[NotificationBell] markAsRead failed:', err);
-        notifications.value = prevNotifications;
-        unreadCount.value = prevUnread;
+        return;
     }
+    fetchNotifications().catch(() => {});
 }
 
 async function markAllAsRead() {
-    const prevNotifications = notifications.value.slice();
-    const prevUnread = unreadCount.value;
     try {
         await fetch(`${props.endpoint}/read-all`, {
             method: 'POST',
             headers: authHeaders(),
         });
-        await fetchNotifications();
     } catch (err) {
         console.warn('[NotificationBell] markAllAsRead failed:', err);
-        notifications.value = prevNotifications;
-        unreadCount.value = prevUnread;
+        return;
     }
+    fetchNotifications().catch(() => {});
 }
 
 function handleNotificationClick(notification) {

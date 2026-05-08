@@ -2,12 +2,15 @@
 import { onMounted, ref, computed } from 'vue';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
 import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
 const api = useApi();
+const toast = useToast();
 
 const loading = ref(true);
+const fetchError = ref('');
 const photos = ref([]);
 const allClients = ref([]);
 const pendingCount = ref(0);
@@ -19,6 +22,7 @@ const reacting = ref({});
 
 async function fetchPhotos() {
     loading.value = true;
+    fetchError.value = '';
     try {
         const params = {};
         if (showReviewed.value) params.reviewed = 1;
@@ -32,7 +36,7 @@ async function fetchPhotos() {
             if (noteMap.value[p.id] === undefined) noteMap.value[p.id] = p.coach_note || '';
         });
     } catch (err) {
-        console.error('Failed to fetch food photos', err);
+        fetchError.value = 'No se pudieron cargar las fotos.';
     } finally {
         loading.value = false;
     }
@@ -44,7 +48,7 @@ async function react(photoId, reaction) {
         await api.post(`/api/v/coach/food-photos/${photoId}/react`, { reaction });
         await fetchPhotos();
     } catch (err) {
-        console.error('React failed', err);
+        toast.error('No se pudo registrar la reacción. Intenta de nuevo.');
     } finally {
         reacting.value[photoId] = false;
     }
@@ -57,7 +61,7 @@ async function saveNote(photoId) {
             note: noteMap.value[photoId] || '',
         });
     } catch (err) {
-        console.error('Save note failed', err);
+        toast.error('No se pudo guardar la nota.');
     } finally {
         savingNote.value[photoId] = false;
     }
@@ -93,6 +97,12 @@ const headerCount = computed(() => `${pendingCount.value} pendiente${pendingCoun
             {{ showReviewed ? 'Ver Pendientes' : 'Ver Revisadas' }}
           </button>
         </div>
+      </div>
+
+      <!-- Fetch error -->
+      <div v-if="fetchError" class="flex items-center justify-between rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <span>{{ fetchError }}</span>
+        <button @click="fetchPhotos" class="ml-4 shrink-0 rounded-lg border border-red-500/30 px-3 py-1 text-xs font-medium hover:bg-red-500/10 transition-colors">Reintentar</button>
       </div>
 
       <!-- Loading -->

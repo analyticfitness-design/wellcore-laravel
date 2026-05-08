@@ -12,6 +12,7 @@ const router = useRouter();
 
 const api = useApi();
 const loading = ref(true);
+const loadError = ref('');
 const activeTab = ref('my_templates');
 
 // Templates
@@ -37,13 +38,14 @@ const filteredTemplates = computed(() => {
 
 async function loadData() {
     loading.value = true;
+    loadError.value = '';
     try {
         const { data } = await api.get('/api/v/coach/plans');
         templates.value = data.templates || [];
         assignedPlans.value = data.assigned || [];
         templateStats.value = data.stats || templateStats.value;
     } catch (e) {
-        // silent
+        loadError.value = 'No se pudieron cargar los planes. Intenta de nuevo.';
     } finally {
         loading.value = false;
     }
@@ -82,6 +84,12 @@ onMounted(loadData);
         >
           {{ tab.label }}
         </button>
+      </div>
+
+      <!-- Load error -->
+      <div v-if="loadError" class="flex items-center justify-between rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <span>{{ loadError }}</span>
+        <button @click="loadData" class="ml-4 shrink-0 rounded-button border border-red-500/30 px-3 py-1 text-xs font-medium hover:bg-red-500/10 transition-colors">Reintentar</button>
       </div>
 
       <!-- Loading -->

@@ -14,6 +14,7 @@ export const useCoachStrategyStore = defineStore('coachStrategy', () => {
     const history = ref([]);
     const historyMeta = ref({ total: 0, current_page: 1 });
     const isLoadingHistory = ref(false);
+    const historyError = ref(null);
 
     const isProfileComplete = computed(() => profile.value?.is_complete === true);
     const hasCurrentDrop = computed(() => currentDrop.value !== null);
@@ -61,10 +62,13 @@ export const useCoachStrategyStore = defineStore('coachStrategy', () => {
 
     async function fetchHistory(page = 1) {
         isLoadingHistory.value = true;
+        historyError.value = null;
         try {
             const res = await coachStrategyApi.getHistory(page);
             history.value = res.data;
             historyMeta.value = res.meta;
+        } catch (e) {
+            historyError.value = e?.response?.data?.message ?? 'Error cargando historial';
         } finally {
             isLoadingHistory.value = false;
         }
@@ -104,21 +108,29 @@ export const useCoachStrategyStore = defineStore('coachStrategy', () => {
     }
 
     async function markPieceSkipped(pieceKey) {
-        if (!currentDrop.value) return;
-        const fresh = await coachStrategyApi.skipPiece(currentDrop.value.id, pieceKey);
-        const idx = currentDrop.value.pieces.findIndex((p) => p.piece_key === pieceKey);
-        if (idx >= 0) currentDrop.value.pieces[idx] = fresh;
-        else currentDrop.value.pieces.push(fresh);
-        return fresh;
+        if (!currentDrop.value) return false;
+        try {
+            const fresh = await coachStrategyApi.skipPiece(currentDrop.value.id, pieceKey);
+            const idx = currentDrop.value.pieces.findIndex((p) => p.piece_key === pieceKey);
+            if (idx >= 0) currentDrop.value.pieces[idx] = fresh;
+            else currentDrop.value.pieces.push(fresh);
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
     async function markPieceInProgress(pieceKey) {
-        if (!currentDrop.value) return;
-        const fresh = await coachStrategyApi.inProgressPiece(currentDrop.value.id, pieceKey);
-        const idx = currentDrop.value.pieces.findIndex((p) => p.piece_key === pieceKey);
-        if (idx >= 0) currentDrop.value.pieces[idx] = fresh;
-        else currentDrop.value.pieces.push(fresh);
-        return fresh;
+        if (!currentDrop.value) return false;
+        try {
+            const fresh = await coachStrategyApi.inProgressPiece(currentDrop.value.id, pieceKey);
+            const idx = currentDrop.value.pieces.findIndex((p) => p.piece_key === pieceKey);
+            if (idx >= 0) currentDrop.value.pieces[idx] = fresh;
+            else currentDrop.value.pieces.push(fresh);
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
     function detectType(pieceKey) {
@@ -139,7 +151,7 @@ export const useCoachStrategyStore = defineStore('coachStrategy', () => {
         // state
         profile, isLoadingProfile, profileError,
         currentDrop, isLoadingDrop, dropError,
-        history, historyMeta, isLoadingHistory,
+        history, historyMeta, isLoadingHistory, historyError,
         // computed
         isProfileComplete, hasCurrentDrop,
         // actions

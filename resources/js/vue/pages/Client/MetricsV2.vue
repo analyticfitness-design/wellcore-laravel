@@ -42,6 +42,7 @@ const {
   form,
   formErrors,
   saving: fullSaving,
+  saveError,
   loadDraft,
   saveDraft,
   updateField,
@@ -202,6 +203,11 @@ function triggerAchievement(message) {
       <div class="skel skel--chart"></div>
     </div>
 
+    <div v-else-if="error" class="flex flex-col items-center gap-3 py-8">
+      <p class="text-sm text-wc-accent">{{ error }}</p>
+      <button @click="refresh()" class="text-xs underline text-wc-text-secondary">Reintentar</button>
+    </div>
+
     <template v-else>
       <!-- Hero -->
       <MetricsHero
@@ -274,6 +280,7 @@ function triggerAchievement(message) {
         @collapse="setQuick"
         @save-draft="saveDraft"
       />
+      <p v-if="saveError" class="mt-2 text-sm text-red-400 px-1">{{ saveError }}</p>
     </template>
   </div>
   </ClientLayout>
