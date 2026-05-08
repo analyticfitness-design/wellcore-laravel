@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 // Categorías de alimentos — keywords en minúsculas sin tildes (para matching robusto).
 // El orden determina prioridad: un alimento matchea la primera categoría que encaje.
@@ -81,43 +81,41 @@ function parseFood(food) {
   return null;
 }
 
-// Extrae todos los alimentos de una comida (soporta alimentos directos y opciones A/B/C)
-function extractFoodsFromMeal(meal) {
+// Extrae alimentos de una comida. Si selectedOption ('a','b','c') está definida,
+// solo incluye esa opción. Sin selectedOption incluye todas con etiqueta.
+function extractFoodsFromMeal(meal, selectedOption) {
   const items = [];
   const mealLabel = meal.nombre || meal.name || '';
 
-  // Alimentos directos (sin opciones múltiples)
+  // Alimentos directos (siempre incluidos)
   const directFoods = meal.alimentos || meal.foods || meal.ingredientes || [];
   for (const food of directFoods) {
     const parsed = parseFood(food);
     if (parsed) items.push({ ...parsed, meal: mealLabel });
   }
 
-  // Opciones — formato canónico v2: opcion_a, opcion_b, opcion_c (top-level del meal)
-  for (const suffix of ['a', 'b', 'c']) {
-    const optFoods = meal[`opcion_${suffix}`];
-    if (!Array.isArray(optFoods) || optFoods.length === 0) continue;
-    for (const food of optFoods) {
-      const parsed = parseFood(food);
-      if (parsed) {
-        items.push({
-          name: parsed.name + ` (Opción ${suffix.toUpperCase()})`,
-          qty: parsed.qty,
-          meal: mealLabel,
-        });
-      }
+  // Construir mapa de opciones (formato canónico v2 + legacy)
+  const optionMap = {};
+  for (const s of ['a', 'b', 'c']) {
+    const optFoods = meal[`opcion_${s}`];
+    if (Array.isArray(optFoods) && optFoods.length > 0) optionMap[s] = optFoods;
+  }
+  const opciones = meal.opciones || meal.options || {};
+  for (const [k, optFoods] of Object.entries(opciones)) {
+    if (Array.isArray(optFoods) && optFoods.length > 0) {
+      optionMap[k] = optionMap[k] ? [...optionMap[k], ...optFoods] : optFoods;
     }
   }
 
-  // Opciones — formato legacy: meal.opciones = { a: [...], b: [...] }
-  const opciones = meal.opciones || meal.options || {};
-  for (const [optKey, optFoods] of Object.entries(opciones)) {
-    if (!Array.isArray(optFoods)) continue;
-    for (const food of optFoods) {
+  if (Object.keys(optionMap).length === 0) return items;
+
+  const keysToShow = selectedOption ? [selectedOption] : Object.keys(optionMap).sort();
+  for (const key of keysToShow) {
+    for (const food of (optionMap[key] || [])) {
       const parsed = parseFood(food);
       if (parsed) {
         items.push({
-          name: parsed.name + ` (Opción ${optKey.toUpperCase()})`,
+          name: selectedOption ? parsed.name : `${parsed.name} (Opción ${key.toUpperCase()})`,
           qty: parsed.qty,
           meal: mealLabel,
         });
@@ -132,14 +130,34 @@ function extractFoodsFromMeal(meal) {
  * useGroceryList — extrae y agrupa alimentos del nutritionPlan.
  *
  * @param {import('vue').Ref|import('vue').ComputedRef} nutritionPlanRef
- * @returns {{ byCategory: ComputedRef, byMeal: ComputedRef }}
+ * @param {import('vue').Ref<string|null>} activeOptionRef — 'a'|'b'|'c'|null
+ * @returns {{ byCategory: ComputedRef, byMeal: ComputedRef, availableOptions: ComputedRef }}
  */
-export function useGroceryList(nutritionPlanRef) {
+export function useGroceryList(nutritionPlanRef, activeOptionRef = ref(null)) {
   const allItems = computed(() => {
     const plan = nutritionPlanRef.value;
     if (!plan) return [];
+    const opt = activeOptionRef.value;
     const meals = plan.comidas || plan.comidas_sugeridas || [];
-    return meals.flatMap(extractFoodsFromMeal);
+    return meals.flatMap((meal) => extractFoodsFromMeal(meal, opt));
+  });
+
+  // Opciones disponibles en el plan (union de todas las comidas)
+  const availableOptions = computed(() => {
+    const plan = nutritionPlanRef.value;
+    if (!plan) return [];
+    const meals = plan.comidas || plan.comidas_sugeridas || [];
+    const opts = new Set();
+    for (const meal of meals) {
+      for (const s of ['a', 'b', 'c']) {
+        if (Array.isArray(meal[`opcion_${s}`]) && meal[`opcion_${s}`].length > 0) opts.add(s);
+      }
+      const opciones = meal.opciones || meal.options || {};
+      for (const [k, v] of Object.entries(opciones)) {
+        if (Array.isArray(v) && v.length > 0) opts.add(k);
+      }
+    }
+    return [...opts].sort();
   });
 
   const byCategory = computed(() => {
@@ -157,15 +175,16 @@ export function useGroceryList(nutritionPlanRef) {
   const byMeal = computed(() => {
     const plan = nutritionPlanRef.value;
     if (!plan) return [];
+    const opt = activeOptionRef.value;
     const meals = plan.comidas || plan.comidas_sugeridas || [];
     return meals
       .map((meal) => ({
         label: meal.nombre || meal.name || 'Comida',
         hora: meal.hora || meal.time || '',
-        items: extractFoodsFromMeal(meal),
+        items: extractFoodsFromMeal(meal, opt),
       }))
       .filter((m) => m.items.length > 0);
   });
 
-  return { byCategory, byMeal };
+  return { byCategory, byMeal, availableOptions };
 }

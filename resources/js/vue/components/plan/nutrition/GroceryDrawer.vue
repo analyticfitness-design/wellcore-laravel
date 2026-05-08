@@ -67,6 +67,25 @@
           </p>
         </div>
 
+        <!-- Selector de opción A / B / C -->
+        <div v-if="availableOptions.length > 0" class="px-5 pb-3 shrink-0 border-b border-wc-border">
+          <p class="font-display text-[9px] tracking-[0.2em] uppercase text-wc-text-tertiary mb-2.5">
+            Elige tu opción esta semana
+          </p>
+          <div class="flex gap-2">
+            <button
+              v-for="opt in availableOptions"
+              :key="opt"
+              type="button"
+              class="rounded-full border px-5 py-1.5 text-xs font-bold tracking-wide transition-all"
+              :class="optionBtnClass(opt)"
+              @click="activeOption = opt"
+            >
+              Opción {{ opt.toUpperCase() }}
+            </button>
+          </div>
+        </div>
+
         <!-- Contenido scrollable -->
         <div class="overflow-y-auto flex-1 px-5 pb-6">
 
@@ -184,19 +203,31 @@ defineEmits(['close']);
 
 const view = ref('category');
 const selectedMealIdx = ref(0);
+const activeOption = ref(null);
 
 const nutritionPlanRef = computed(() => props.nutritionPlan);
-const { byCategory, byMeal } = useGroceryList(nutritionPlanRef);
+const { byCategory, byMeal, availableOptions } = useGroceryList(nutritionPlanRef, activeOption);
 
 const isEmpty = computed(() => byCategory.value.length === 0 && byMeal.value.length === 0);
 
 const selectedMeal = computed(() => byMeal.value[selectedMealIdx.value] ?? null);
+
+const OPTION_COLORS = {
+  a: { active: 'bg-wc-accent border-wc-accent text-white shadow-sm', inactive: 'border-red-600/50 text-red-400 hover:border-red-500' },
+  b: { active: 'bg-blue-500 border-blue-500 text-white shadow-sm', inactive: 'border-blue-600/50 text-blue-400 hover:border-blue-400' },
+  c: { active: 'bg-amber-500 border-amber-500 text-white shadow-sm', inactive: 'border-amber-600/50 text-amber-400 hover:border-amber-400' },
+};
+function optionBtnClass(opt) {
+  const c = OPTION_COLORS[opt] ?? OPTION_COLORS.a;
+  return activeOption.value === opt ? c.active : c.inactive;
+}
 
 // Reset al abrir
 watch(() => props.open, (val) => {
   if (val) {
     view.value = 'category';
     selectedMealIdx.value = 0;
+    activeOption.value = availableOptions.value[0] ?? null;
   }
 });
 
@@ -205,6 +236,13 @@ watch(byMeal, (meals) => {
     selectedMealIdx.value = 0;
   }
 });
+
+// Auto-inicializar opción cuando carga el plan
+watch(availableOptions, (opts) => {
+  if (opts.length > 0 && !opts.includes(activeOption.value)) {
+    activeOption.value = opts[0];
+  }
+}, { immediate: true });
 
 // Multiplica el número inicial de un string por 7 (acumulado semanal).
 // "4 huevos" → "28 huevos" | "250g de pollo" → "1.75kg de pollo"
