@@ -889,6 +889,14 @@ class AdminController extends Controller
                 ]);
             }
 
+            // Sync coach_id on the client record so myCoach() returns the correct coach
+            // regardless of which branch of its fallback chain executes first.
+            $client->update(['coach_id' => $coach->id]);
+
+            // Bust caches so the client dashboard reflects the new coach immediately.
+            Cache::forget("dashboard:{$id}");
+            Cache::forget("client_plan_v3_{$id}");
+
             $messages[] = 'Coach '.$coach->name.' asignado.';
 
             // Notify client about new plan assignment
