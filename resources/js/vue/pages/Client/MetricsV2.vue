@@ -20,7 +20,7 @@ const {
   loading, error,
   entries, latestEntry,
   weeklyCheckins, weeklyVolume,
-  composition, photos,
+  photos,
   hasData, recordsCount,
   daysSinceLast, streak,
   refresh,
@@ -37,7 +37,7 @@ const saving = ref(false);
 // ─── Full form state ─────────────────────────────────────────────────────────
 const {
   form,
-  errors: formErrors,
+  formErrors,
   saving: fullSaving,
   loadDraft,
   saveDraft,
@@ -69,7 +69,7 @@ const weightChange = computed(() => {
 const lastDate = computed(() => latestEntry.value?.fecha ?? null);
 
 const compositionData = computed(() => {
-  if (!latestEntry.value?.porcentajeMusculo && !latestEntry.value?.porcentajeGrasa) return null;
+  if (latestEntry.value?.porcentajeMusculo == null && latestEntry.value?.porcentajeGrasa == null) return null;
   const musc = Number(latestEntry.value.porcentajeMusculo) || 0;
   const grasa = Number(latestEntry.value.porcentajeGrasa) || 0;
   const agua = Math.max(0, 100 - musc - grasa);

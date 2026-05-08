@@ -14,8 +14,8 @@ export function useMetricsChart() {
   }
 
   function weightChartConfig(entries, period = '90d') {
-    const labels = entries.map(d => d.date);
-    const values = entries.map(d => d.value);
+    const labels = entries.map(d => d.date ?? d.log_date ?? d.fecha ?? '');
+    const values = entries.map(d => d.value ?? d.peso ?? null);
 
     return {
       type: 'line',
@@ -86,9 +86,9 @@ export function useMetricsChart() {
     return {
       type: 'doughnut',
       data: {
-        labels: ['Grasa', 'Músculo', 'Otro'],
+        labels: ['Grasa', 'Músculo', 'Agua'],
         datasets: [{
-          data: [comp.grasa, comp.musculo, comp.otro],
+          data: [comp.grasa, comp.musculo, comp.agua],
           backgroundColor: ['#DC2626', '#3B82F6', '#525252'],
           borderColor: '#171717',
           borderWidth: 2,

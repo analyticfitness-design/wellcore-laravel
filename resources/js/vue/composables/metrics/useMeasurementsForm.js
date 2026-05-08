@@ -46,6 +46,10 @@ export function useMeasurementsForm() {
     hasDraft.value = false;
   }
 
+  function updateField(key, value) {
+    if (key in form) form[key] = value;
+  }
+
   function resetForm() {
     Object.assign(form, {
       peso: '', porcentajeMusculo: '', porcentajeGrasa: '',
@@ -104,6 +108,6 @@ export function useMeasurementsForm() {
 
   return {
     form, saving, saveError, formErrors, lastPeso, hasDraft,
-    saveDraft, loadDraft, clearDraft, resetForm, validate, submit,
+    saveDraft, loadDraft, clearDraft, resetForm, validate, submit, updateField,
   };
 }
