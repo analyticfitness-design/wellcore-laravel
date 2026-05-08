@@ -4,7 +4,7 @@
 **Autor:** Daniel Esparza + Claude Opus 4.7
 **Estado:** Implementado
 **Skill location:** `~/.claude/skills/research-validator/SKILL.md`
-**System files:** `E:\WELLCORE FITNESS PLATAFORMA\RESEARCH-VALIDATOR-SYSTEM\`
+**System files:** `E:\WELLCORE FITNESS PLATAFORMA\SISTEMA DE  Y BASES DE DATOS\`
 
 ---
 
@@ -74,7 +74,7 @@ USER OUTPUT (markdown + JSON consolidado opcional)
 ### Componentes (12 MDs + skill + spec)
 
 ```
-E:\WELLCORE FITNESS PLATAFORMA\RESEARCH-VALIDATOR-SYSTEM\
+E:\WELLCORE FITNESS PLATAFORMA\SISTEMA DE  Y BASES DE DATOS\
 ├── README.md                    # Overview + quick start
 ├── 00-PROMPT-MASTER.md          # Prompt master copy-paste a CLI
 ├── 01-CONTEXT-CLAUDE-OPUS.md    # Adapter Claude Code (Agent tool, MCP)
@@ -271,6 +271,6 @@ Si el slash command no auto-completa, simplemente decime:
 ### Sin skill activado (cualquier CLI):
 
 ```
-> [pegar contenido de E:\WELLCORE FITNESS PLATAFORMA\RESEARCH-VALIDATOR-SYSTEM\00-PROMPT-MASTER.md]
+> [pegar contenido de E:\WELLCORE FITNESS PLATAFORMA\SISTEMA DE  Y BASES DE DATOS\00-PROMPT-MASTER.md]
 > Investiga: "..."
 ```
