@@ -117,10 +117,10 @@
                   class="grid grid-cols-[auto_1fr] gap-x-3 px-4 py-2.5"
                 >
                   <span class="font-data text-[11px] text-wc-text-tertiary tabular-nums whitespace-nowrap text-right min-w-[56px] pt-0.5">
-                    {{ item.qty ? multiply7(item.qty) : '·' }}
+                    {{ item.qty || '·' }}
                   </span>
                   <div class="min-w-0">
-                    <p class="text-sm text-wc-text leading-snug">{{ item.qty ? item.name : multiply7(item.name) }}</p>
+                    <p class="text-sm text-wc-text leading-snug">{{ item.name }}</p>
                   </div>
                 </li>
               </ul>
@@ -244,22 +244,6 @@ watch(availableOptions, (opts) => {
   }
 }, { immediate: true });
 
-// Multiplica el número inicial de un string por 7 (acumulado semanal).
-// "4 huevos" → "28 huevos" | "250g de pollo" → "1.75kg de pollo"
-function multiply7(str) {
-  if (!str) return '';
-  return str.replace(
-    /^(\d+(?:[.,]\d+)?)(?: *(g|kg|ml|l|oz|lb))?(?=\s|$)/i,
-    (_, num, unit = '') => {
-      const n = parseFloat(num.replace(',', '.'));
-      const x = n * 7;
-      if (unit.toLowerCase() === 'g' && x >= 1000) {
-        return parseFloat((x / 1000).toFixed(2)) + 'kg';
-      }
-      return parseFloat(x.toFixed(1)) + unit;
-    },
-  );
-}
 
 const SHOPPING_TIPS = [
   'Compra proteínas frescas el mismo día que las consumas o máximo 2 días antes y guárdalas refrigeradas.',

@@ -81,6 +81,88 @@ function parseFood(food) {
   return null;
 }
 
+// === Helpers para acumulado semanal ===
+
+// "200g" → {value:200, unit:'g'} | "2" → {value:2, unit:''} | "al gusto" → null
+function parseNumericQty(qty) {
+  if (!qty) return null;
+  const m = String(qty).match(/^(\d+(?:[.,]\d+)?)\s*(g|kg|ml|l|oz|lb)?(?:\s|$)/i);
+  if (!m) return null;
+  return { value: parseFloat(m[1].replace(',', '.')), unit: (m[2] || '').toLowerCase() };
+}
+
+// Normaliza a unidades base (g, ml) para poder sumar sin errores de unidad
+function toBaseUnit(parsed) {
+  if (!parsed) return null;
+  if (parsed.unit === 'kg') return { value: parsed.value * 1000, unit: 'g' };
+  if (parsed.unit === 'l')  return { value: parsed.value * 1000, unit: 'ml' };
+  return { ...parsed };
+}
+
+// Formatea desde unidad base a string legible: 1400g → "1.4kg"
+function formatQty(value, unit) {
+  const v = value;
+  if (unit === 'g'  && v >= 1000) return `${parseFloat((v / 1000).toFixed(2))}kg`;
+  if (unit === 'ml' && v >= 1000) return `${parseFloat((v / 1000).toFixed(2))}L`;
+  if (!unit) return `${parseFloat(v.toFixed(1))}`;
+  return `${parseFloat(v.toFixed(1))}${unit}`;
+}
+
+// Aplica ×7 a un string de cantidad: "200g"→"1.4kg", "2"→"14", "al gusto"→"al gusto"
+function times7qty(qty) {
+  if (!qty) return '';
+  const parsed = parseNumericQty(qty);
+  if (!parsed) return qty;
+  const base = toBaseUnit(parsed);
+  return formatQty(base.value * 7, base.unit);
+}
+
+// Aplica ×7 al número inicial de un nombre: "4 huevos"→"28 huevos"
+function times7name(name) {
+  if (!name) return '';
+  return name.replace(
+    /^(\d+(?:[.,]\d+)?)(?: *(g|kg|ml|l|oz|lb))?(?=[ \t]|$)/i,
+    (_, num, unit = '') => {
+      const n = parseFloat(num.replace(',', '.'));
+      const x = n * 7;
+      if (unit.toLowerCase() === 'g'  && x >= 1000) return `${parseFloat((x / 1000).toFixed(2))}kg`;
+      if (unit.toLowerCase() === 'ml' && x >= 1000) return `${parseFloat((x / 1000).toFixed(2))}L`;
+      return `${parseFloat(x.toFixed(1))}${unit}`;
+    },
+  );
+}
+
+// Deduplica items por nombre (sumando cantidades numéricas compatibles) y luego aplica ×7.
+// Esto evita que el mismo alimento (ej. pechuga en 3 comidas) genere 3 filas cada una ×7.
+function aggregateForWeek(items) {
+  const map = new Map();
+  for (const item of items) {
+    const key = normalize(item.name);
+    const base = toBaseUnit(parseNumericQty(item.qty));
+
+    if (!map.has(key)) {
+      map.set(key, {
+        name: item.name,
+        qty: item.qty,
+        baseValue: base ? base.value : null,
+        baseUnit:  base ? base.unit  : null,
+      });
+    } else {
+      const ex = map.get(key);
+      if (ex.baseValue !== null && base !== null && ex.baseUnit === base.unit) {
+        ex.baseValue += base.value;
+        ex.qty = formatQty(ex.baseValue, ex.baseUnit);
+      }
+      // Unidades distintas o no-numéricas: mantener primera entrada sin duplicar
+    }
+  }
+
+  return [...map.values()].map((entry) => ({
+    name: entry.qty ? entry.name : times7name(entry.name),
+    qty:  times7qty(entry.qty),
+  }));
+}
+
 // Extrae alimentos de una comida. Si selectedOption ('a','b','c') está definida,
 // solo incluye esa opción. Sin selectedOption incluye todas con etiqueta.
 function extractFoodsFromMeal(meal, selectedOption) {
@@ -165,7 +247,8 @@ export function useGroceryList(nutritionPlanRef, activeOptionRef = ref(null)) {
     for (const cat of [...CATEGORIES, OTROS]) {
       groups.set(cat.key, { ...cat, items: [] });
     }
-    for (const item of allItems.value) {
+    // Agrega por nombre y aplica ×7 antes de mostrar — evita cantidades irracionales
+    for (const item of aggregateForWeek(allItems.value)) {
       const cat = classify(item.name);
       groups.get(cat.key).items.push(item);
     }
