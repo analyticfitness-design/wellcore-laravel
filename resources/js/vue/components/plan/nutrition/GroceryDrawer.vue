@@ -38,7 +38,7 @@
           </button>
         </div>
 
-        <!-- Toggle todo el plan / por comida -->
+        <!-- Toggle semanal / por comida -->
         <div class="px-5 pt-4 pb-3 shrink-0">
           <div class="flex rounded-lg border border-wc-border bg-wc-bg-tertiary p-1 gap-1">
             <button
@@ -49,7 +49,7 @@
                 : 'text-wc-text-secondary hover:text-wc-text'"
               @click="view = 'category'"
             >
-              Todo el plan
+              Semanal
             </button>
             <button
               type="button"
@@ -62,6 +62,9 @@
               Por comida
             </button>
           </div>
+          <p class="mt-2 text-[10px] text-wc-text-tertiary text-center">
+            {{ view === 'category' ? 'Todo lo que necesitas mercar para tu semana' : 'Filtra por comida para mercar día a día' }}
+          </p>
         </div>
 
         <!-- Contenido scrollable -->
@@ -75,7 +78,7 @@
             <p class="text-sm text-wc-text-tertiary">Tu coach está preparando el plan de nutrición.</p>
           </div>
 
-          <!-- Vista: Todo el plan (por categoría) -->
+          <!-- Vista: Semanal (por categoría) -->
           <template v-else-if="view === 'category'">
             <div
               v-for="group in byCategory"
