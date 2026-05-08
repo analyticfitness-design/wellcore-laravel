@@ -929,8 +929,19 @@ class AdminController extends Controller
         DB::transaction(function () use ($id, $client) {
             AuthToken::where('user_id', $id)->where('user_type', 'client')->delete();
             AssignedPlan::where('client_id', $id)->delete();
+
+            // Reset any used invitation tied to this email so it can be reused immediately
+            Invitation::where('email_hint', $client->email)
+                ->where('status', 'used')
+                ->update(['status' => 'pending', 'used_by' => null, 'used_at' => null]);
+
+            // Anonymize email before soft-delete so the address is free for re-registration
+            $client->email = 'del_' . $client->id . '_' . $client->email;
+            $client->save();
             $client->delete();
         });
+
+        Cache::forget('admin_invitations_stats');
 
         return response()->json(['deleted' => true]);
     }
@@ -2037,11 +2048,6 @@ class AdminController extends Controller
         $this->resolveAdminOrFail($request);
 
         $invitation = Invitation::findOrFail($id);
-        $rawStatus = $invitation->getRawOriginal('status') ?? $invitation->status;
-
-        if ($rawStatus !== 'pending') {
-            return response()->json(['message' => 'Solo se pueden eliminar invitaciones pendientes.'], 422);
-        }
 
         $invitation->delete();
         Cache::forget('admin_invitations_stats');

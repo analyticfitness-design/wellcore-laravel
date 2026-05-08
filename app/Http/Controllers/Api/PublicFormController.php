@@ -101,7 +101,7 @@ class PublicFormController extends Controller
             'terminos.accepted' => 'Debes aceptar los terminos y condiciones.',
         ]);
 
-        if (Client::withTrashed()->where('email', $validated['email'])->exists()) {
+        if (Client::where('email', $validated['email'])->exists()) {
             return response()->json([
                 'errors' => ['email' => ['Este email ya tiene una cuenta registrada. Inicia sesión desde la app.']],
                 'message' => 'Este email ya está registrado.',
@@ -621,8 +621,9 @@ class PublicFormController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        // 3. Race-condition guard for email uniqueness (include soft-deleted to avoid UNIQUE crash)
-        if (Client::withTrashed()->where('email', $validated['email'])->exists()) {
+        // 3. Race-condition guard for email uniqueness (soft-deleted emails are anonymized on delete,
+        //    so checking active records only is sufficient and correct)
+        if (Client::where('email', $validated['email'])->exists()) {
             return response()->json([
                 'errors' => ['email' => ['Este email ya tiene una cuenta registrada.']],
             ], 409);
@@ -871,7 +872,7 @@ class PublicFormController extends Controller
             'invitation_code' => 'required|string|min:6|max:32',
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
-            'email' => 'required|email|unique:clients,email',
+            'email' => ['required', 'email', Rule::unique('clients', 'email')->whereNull('deleted_at')],
             'whatsapp' => 'required|string|max:50',
             'edad' => 'required|integer|min:16|max:80',
             'peso' => 'required|numeric|min:30|max:300',
