@@ -1,10 +1,41 @@
-# Spec — Research Validator System v1.0
+# Spec — Research Validator System v1.1
 
-**Fecha:** 2026-05-07
+**Fecha:** 2026-05-07 (v1.0) → 2026-05-08 (v1.1)
 **Autor:** Daniel Esparza + Claude Opus 4.7
-**Estado:** Implementado
+**Estado:** v1.1 implementado — sistema profesional con BD persistence + multi-source aggregation docs + pre-registration + inter-rater reliability
 **Skill location:** `~/.claude/skills/research-validator/SKILL.md`
-**System files:** `E:\WELLCORE FITNESS PLATAFORMA\SISTEMA DE  Y BASES DE DATOS\`
+**System files:** `E:\WELLCORE FITNESS PLATAFORMA\SISTEMA DE  Y BASES DE DATOS\` (16 archivos)
+**Database location:** `E:\WELLCORE FITNESS PLATAFORMA\BASE DE DATOS APLICABLE\` (v1.1, NUEVO)
+
+## Cambios v1.0 → v1.1 (2026-05-08)
+
+1. **Fase 6 añadida:** research-archivist persiste cada investigación en `BASE DE DATOS APLICABLE/`.
+2. **Quick wins aplicados:**
+   - Anti-anchoring rule en Arbiter prompt.
+   - Re-prompt obligatorio para autores en Affirmer.
+   - Selectores Chrome MCP robustos con fallbacks.
+   - `population_variability_high: -3` flag formalizado.
+   - Disclaimer estándar al final del reporte.
+3. **Nuevos archivos del sistema:**
+   - `12-MULTI-SOURCE-AGGREGATION.md` — APIs públicas (PubMed, OpenAlex, Retraction Watch, ClinicalTrials.gov, Semantic Scholar).
+   - `13-PRE-REGISTRATION-PROTOCOL.md` — declaración de criterios antes de buscar.
+   - `14-INTER-RATER-RELIABILITY.md` — protocolo para medir variance del sistema (ICC, σ).
+   - `15-DATABASE-PERSISTENCE.md` — Fase 6 + agente research-archivist.
+4. **Nueva carpeta BD APLICABLE:**
+   - 7 dominios (nutricion, entrenamiento, salud-mental, negocio-fitness, tech-ai, coaching-online, otros).
+   - 2 schemas JSON (`investigation.schema.json`, `index.schema.json`).
+   - Script `_scripts/rebuild-index.py` para regenerar INDEX desde scratch.
+   - INDEX.md (humano) + INDEX.json (máquina, contrato API estable).
+   - Primera investigación migrada: `nutricion/2026-05-07_creatina-fuerza/`.
+5. **Sexto agente:** `research-archivist` con system prompt completo en 05-AGENT-ROLES.md y 11-KIMI-PROMPT.md.
+
+## Lo que NO se implementó en v1.1 (Fases Futuras)
+
+- Statistical bias detection programática (p-curve, funnel plot computacional con scipy/R).
+- Web UI (Next.js + shadcn) para dashboard de investigaciones.
+- Cost optimization automática (caching de Perplexity threads, batching).
+- Auto re-validation cron job mensual.
+- Integración con SISTEMA-CREACION-PLANES (validar premisas científicas de planes contra BD).
 
 ---
 
