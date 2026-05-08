@@ -81,19 +81,35 @@ function parseFood(food) {
   return null;
 }
 
-// Extrae todos los alimentos de una comida (soporta alimentos directos y opciones A/B)
+// Extrae todos los alimentos de una comida (soporta alimentos directos y opciones A/B/C)
 function extractFoodsFromMeal(meal) {
   const items = [];
   const mealLabel = meal.nombre || meal.name || '';
 
-  // Alimentos directos
+  // Alimentos directos (sin opciones múltiples)
   const directFoods = meal.alimentos || meal.foods || meal.ingredientes || [];
   for (const food of directFoods) {
     const parsed = parseFood(food);
     if (parsed) items.push({ ...parsed, meal: mealLabel });
   }
 
-  // Opciones A/B
+  // Opciones — formato canónico v2: opcion_a, opcion_b, opcion_c (top-level del meal)
+  for (const suffix of ['a', 'b', 'c']) {
+    const optFoods = meal[`opcion_${suffix}`];
+    if (!Array.isArray(optFoods) || optFoods.length === 0) continue;
+    for (const food of optFoods) {
+      const parsed = parseFood(food);
+      if (parsed) {
+        items.push({
+          name: parsed.name + ` (Opción ${suffix.toUpperCase()})`,
+          qty: parsed.qty,
+          meal: mealLabel,
+        });
+      }
+    }
+  }
+
+  // Opciones — formato legacy: meal.opciones = { a: [...], b: [...] }
   const opciones = meal.opciones || meal.options || {};
   for (const [optKey, optFoods] of Object.entries(opciones)) {
     if (!Array.isArray(optFoods)) continue;
