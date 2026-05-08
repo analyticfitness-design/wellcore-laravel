@@ -72,6 +72,16 @@
             próxima {{ dayProgress.nextMealLabel.value }}
           </template>
         </p>
+        <!-- Botón Lista de mercado -->
+        <button
+          v-if="hasMeals"
+          type="button"
+          class="flex items-center gap-1.5 rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-1.5 text-xs font-semibold text-wc-text-secondary hover:text-wc-text hover:border-wc-accent/40 transition-colors"
+          @click="groceryOpen = true"
+        >
+          <ShoppingCart :size="14" class="shrink-0" />
+          Lista de mercado
+        </button>
       </div>
 
       <!-- Toast notification swap (global fixed) -->
@@ -125,18 +135,26 @@
         Tu coach está preparando tu plan de nutrición.
       </p>
     </div>
+
+    <!-- Lista de Mercado drawer -->
+    <GroceryDrawer
+      :open="groceryOpen"
+      :nutrition-plan="nutritionPlan"
+      @close="groceryOpen = false"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, reactive } from 'vue';
-import { Check } from 'lucide-vue-next';
+import { Check, ShoppingCart } from 'lucide-vue-next';
 import PlanStrip from './PlanStrip.vue';
 import NutritionDayHero from './NutritionDayHero.vue';
 import AICameraCTA from './AICameraCTA.vue';
 import CoachNote from './CoachNote.vue';
 import DayTimeline from './DayTimeline.vue';
 import MealCard from './MealCard.vue';
+import GroceryDrawer from './GroceryDrawer.vue';
 import { useMealSwap } from '@/composables/useMealSwap';
 import { useDayProgress } from '@/composables/useDayProgress';
 import { useMealCheckins } from '@/composables/useMealCheckins';
@@ -210,6 +228,7 @@ const dayLabel = computed(() => {
 });
 
 // ─── Local meal UI state ───────────────────────────────────────────────
+const groceryOpen = ref(false);
 const openMeals = reactive({});
 const activeOptions = reactive({});
 
