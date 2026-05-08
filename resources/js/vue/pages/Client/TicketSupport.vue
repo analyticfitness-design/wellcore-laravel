@@ -412,19 +412,22 @@ function resetForm() {
 }
 
 async function submitTicket() {
+  submitting.value = true;
+
   formErrors.ticketType  = null;
   formErrors.description = null;
 
   if (!form.ticketType) {
     formErrors.ticketType = 'Selecciona el tipo de solicitud.';
+    submitting.value = false;
     return;
   }
   if (form.description.trim().length < 10) {
     formErrors.description = 'La descripción debe tener al menos 10 caracteres.';
+    submitting.value = false;
     return;
   }
 
-  submitting.value = true;
   try {
     const response = await api.post('/api/v/client/tickets', {
       ticket_type: form.ticketType,
@@ -441,6 +444,11 @@ async function submitTicket() {
     const errors = err?.response?.data?.errors;
     if (errors?.ticket_type?.[0]) formErrors.ticketType  = errors.ticket_type[0];
     if (errors?.description?.[0]) formErrors.description = errors.description[0];
+    // Fallback genérico para errores sin shape esperada (500, red, timeout)
+    if (!errors) {
+      formErrors.description = 'No pudimos enviar tu solicitud. Intenta de nuevo.';
+      toast.error('No pudimos enviar tu solicitud. Intenta de nuevo.');
+    }
   } finally {
     submitting.value = false;
   }

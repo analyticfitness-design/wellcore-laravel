@@ -17,6 +17,7 @@ const success = ref('');
 const token = computed(() => localStorage.getItem('wc_token') || '');
 
 const rules = computed(() => ({
+  currentFilled: currentPassword.value.length > 0,
   length: newPassword.value.length >= 10,
   upper: /[A-Z]/.test(newPassword.value),
   lower: /[a-z]/.test(newPassword.value),

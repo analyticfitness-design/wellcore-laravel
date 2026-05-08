@@ -39,9 +39,17 @@ async function submit() {
   const e = {};
   if (!form.value.nombre) e.nombre = 'El nombre es obligatorio.';
   if (!form.value.apellido) e.apellido = 'El apellido es obligatorio.';
-  if (!form.value.email) e.email = 'El email es obligatorio.';
+  if (!form.value.email) {
+    e.email = 'El email es obligatorio.';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
+    e.email = 'Ingresa un email valido.';
+  }
   if (!form.value.whatsapp) e.whatsapp = 'El WhatsApp es obligatorio.';
-  if (!form.value.edad) e.edad = 'La edad es obligatoria.';
+  if (!form.value.edad) {
+    e.edad = 'La edad es obligatoria.';
+  } else if (Number(form.value.edad) < 14 || Number(form.value.edad) > 80) {
+    e.edad = 'La edad debe estar entre 14 y 80 anos.';
+  }
   if (!form.value.objetivo) e.objetivo = 'Selecciona tu objetivo.';
   if (!form.value.experiencia) e.experiencia = 'Selecciona tu experiencia.';
   if (!form.value.horario) e.horario = 'Selecciona tu horario preferido.';
@@ -53,6 +61,7 @@ async function submit() {
   if (Object.keys(e).length > 0) {
     errors.value = e;
     isLoading.value = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
 
@@ -68,6 +77,7 @@ async function submit() {
     } else {
       errorMessage.value = 'Error de conexion. Intenta de nuevo.';
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } finally {
     isLoading.value = false;
   }
@@ -146,7 +156,7 @@ async function submit() {
               <!-- Edad -->
               <div>
                 <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Edad *</label>
-                <input v-model="form.edad" type="number" placeholder="25" min="14" max="80" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                <input v-model="form.edad" type="number" inputmode="numeric" placeholder="25" min="14" max="80" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                 <p v-if="fieldError('edad')" class="mt-1 text-xs text-red-500">{{ fieldError('edad') }}</p>
               </div>
 

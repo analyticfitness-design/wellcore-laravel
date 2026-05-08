@@ -160,6 +160,7 @@
                   id="coach-comment"
                   v-model="form.comment"
                   rows="3"
+                  maxlength="1000"
                   placeholder="Comparte tu experiencia con tu coach..."
                   class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text placeholder-wc-text-secondary/50 focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent resize-none transition-colors"
                   :class="{ 'border-wc-accent': formErrors.comment }"
@@ -275,16 +276,19 @@ async function fetchData() {
 }
 
 async function submitRating() {
+  submitting.value = true;
+
   // Clear previous errors
   formErrors.rating  = null;
   formErrors.comment = null;
 
   if (!form.rating) {
     formErrors.rating = 'Selecciona una calificación de 1 a 5 estrellas.';
+    submitting.value = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
 
-  submitting.value = true;
   try {
     const response = await api.post('/api/v/client/coach-feedback', {
       rating:  form.rating,
@@ -301,6 +305,11 @@ async function submitRating() {
     if (errors?.comment?.[0]) formErrors.comment = errors.comment[0];
     // Handle cooldown message
     if (err?.response?.data?.message) formErrors.rating = err.response.data.message;
+    // Fallback genérico para errores sin shape esperada (500, red, timeout)
+    if (!errors && !err?.response?.data?.message) {
+      formErrors.rating = 'No pudimos enviar tu valoración. Intenta de nuevo.';
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } finally {
     submitting.value = false;
   }

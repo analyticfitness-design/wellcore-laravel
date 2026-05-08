@@ -147,8 +147,19 @@ async function fetchSettings() {
 
 // Update profile
 async function updateProfile() {
-    savingProfile.value = true;
     profileErrors.value = {};
+
+    // Client-side validation antes de llamar a la API
+    if (!profileForm.value.name?.trim()) {
+        profileErrors.value.name = ['El nombre es obligatorio.'];
+        return;
+    }
+    if (profileForm.value.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileForm.value.email)) {
+        profileErrors.value.email = ['Ingresa un email válido.'];
+        return;
+    }
+
+    savingProfile.value = true;
     try {
         await api.put('/api/v/client/settings', {
             name: profileForm.value.name,
@@ -176,6 +187,12 @@ async function updateProfile() {
 async function changePassword() {
     passwordErrors.value = {};
     passwordError.value = null;
+
+    // Client-side: current password must not be empty
+    if (!passwordForm.value.current_password?.trim()) {
+        passwordErrors.value = { current_password: ['Ingresa tu contraseña actual.'] };
+        return;
+    }
 
     // Client-side: passwords must match
     if (passwordForm.value.password !== passwordForm.value.password_confirmation) {

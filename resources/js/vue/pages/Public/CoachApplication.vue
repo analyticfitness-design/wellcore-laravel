@@ -58,7 +58,11 @@ async function submit() {
   // Client-side validation
   const e = {};
   if (!form.value.name) e.name = 'El nombre es obligatorio.';
-  if (!form.value.email) e.email = 'El email es obligatorio.';
+  if (!form.value.email) {
+    e.email = 'El email es obligatorio.';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
+    e.email = 'Ingresa un email valido.';
+  }
   if (!form.value.whatsapp) e.whatsapp = 'El WhatsApp es obligatorio.';
   if (!form.value.bio) e.bio = 'Cuentanos sobre ti.';
   if (!form.value.experience) e.experience = 'Selecciona tu experiencia.';
@@ -67,6 +71,7 @@ async function submit() {
   if (Object.keys(e).length > 0) {
     errors.value = e;
     isLoading.value = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
 
@@ -82,6 +87,7 @@ async function submit() {
     } else {
       errorMessage.value = 'Error de conexion. Intenta de nuevo.';
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } finally {
     isLoading.value = false;
   }
@@ -101,7 +107,7 @@ async function submit() {
             </svg>
           </div>
           <h2 class="text-2xl font-bold text-wc-text font-display">Aplicacion Enviada</h2>
-          <p class="mt-3 text-wc-text-secondary">Gracias por tu interes en ser coach de WellCore. Revisaremos tu aplicacion y te contactaremos pronto.</p>
+          <p class="mt-3 text-wc-text-secondary">Gracias por tu interes en ser coach de WellCore. Revisaremos tu aplicacion y te contactaremos en los proximos 2-3 dias habiles.</p>
           <a href="/" class="mt-6 inline-flex rounded-full bg-wc-accent px-8 py-3 font-semibold text-white hover:bg-wc-accent-hover active:scale-[0.98]">
             Volver al Inicio
           </a>

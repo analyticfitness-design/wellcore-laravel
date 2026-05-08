@@ -57,9 +57,17 @@ function validateStep(s) {
   if (s === 1) {
     if (!form.value.nombre) e.nombre = 'El nombre es obligatorio.';
     if (!form.value.apellido) e.apellido = 'El apellido es obligatorio.';
-    if (!form.value.email) e.email = 'El email es obligatorio.';
+    if (!form.value.email) {
+      e.email = 'El email es obligatorio.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
+      e.email = 'Ingresa un email valido.';
+    }
     if (!form.value.whatsapp) e.whatsapp = 'El WhatsApp es obligatorio.';
-    if (!form.value.edad) e.edad = 'La edad es obligatoria.';
+    if (!form.value.edad) {
+      e.edad = 'La edad es obligatoria.';
+    } else if (Number(form.value.edad) < 14 || Number(form.value.edad) > 80) {
+      e.edad = 'La edad debe estar entre 14 y 80 anos.';
+    }
     if (!form.value.peso) e.peso = 'El peso es obligatorio.';
     if (!form.value.estatura) e.estatura = 'La estatura es obligatoria.';
     if (!form.value.genero) e.genero = 'Selecciona tu genero.';
@@ -72,7 +80,7 @@ function validateStep(s) {
       e.detalle_lesion = 'Describe tu lesion.';
     }
   } else if (s === 3) {
-    if (!form.value.payment_reference) e.payment_reference = 'Ingresa la referencia de pago.';
+    if (!form.value.payment_reference.trim()) e.payment_reference = 'Ingresa la referencia de pago.';
   }
   return e;
 }
@@ -95,15 +103,17 @@ function prevStep() {
 }
 
 async function submit() {
-  const stepErrors = validateStep(step.value);
-  if (Object.keys(stepErrors).length > 0) {
-    errors.value = stepErrors;
-    return;
-  }
-
   isLoading.value = true;
   errorMessage.value = '';
   errors.value = {};
+
+  const stepErrors = validateStep(step.value);
+  if (Object.keys(stepErrors).length > 0) {
+    errors.value = stepErrors;
+    isLoading.value = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
 
   try {
     await axios.post('/api/v/public/rise-enroll', form.value);
@@ -117,6 +127,7 @@ async function submit() {
     } else {
       errorMessage.value = 'Error de conexion. Intenta de nuevo.';
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } finally {
     isLoading.value = false;
   }
@@ -208,17 +219,17 @@ async function submit() {
                 </div>
                 <div>
                   <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Edad *</label>
-                  <input v-model="form.edad" type="number" placeholder="25" min="14" max="80" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                  <input v-model="form.edad" type="number" inputmode="numeric" placeholder="25" min="14" max="80" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                   <p v-if="fieldError('edad')" class="mt-1 text-xs text-red-500">{{ fieldError('edad') }}</p>
                 </div>
                 <div>
                   <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Peso (kg) *</label>
-                  <input v-model="form.peso" type="number" placeholder="70" step="0.1" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                  <input v-model="form.peso" type="number" inputmode="numeric" placeholder="70" step="0.1" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                   <p v-if="fieldError('peso')" class="mt-1 text-xs text-red-500">{{ fieldError('peso') }}</p>
                 </div>
                 <div>
                   <label class="mb-1.5 block text-sm font-medium text-wc-text-secondary">Estatura (cm) *</label>
-                  <input v-model="form.estatura" type="number" placeholder="170" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
+                  <input v-model="form.estatura" type="number" inputmode="numeric" placeholder="170" class="block w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
                   <p v-if="fieldError('estatura')" class="mt-1 text-xs text-red-500">{{ fieldError('estatura') }}</p>
                 </div>
                 <div>
