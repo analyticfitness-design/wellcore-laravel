@@ -30,6 +30,7 @@
           </div>
           <button
             type="button"
+            aria-label="Cerrar lista de mercado"
             class="flex h-8 w-8 items-center justify-center rounded-lg text-wc-text-tertiary hover:text-wc-text hover:bg-wc-bg-tertiary transition-colors"
             @click="$emit('close')"
           >
@@ -90,7 +91,7 @@
               <ul class="rounded-xl border border-wc-border bg-wc-bg-tertiary divide-y divide-wc-border/50">
                 <li
                   v-for="(item, idx) in group.items"
-                  :key="idx"
+                  :key="group.key + '-' + idx"
                   class="grid grid-cols-[auto_1fr] gap-x-3 px-4 py-2.5"
                 >
                   <span class="font-data text-[11px] text-wc-text-tertiary tabular-nums whitespace-nowrap text-right min-w-[56px] pt-0.5">
@@ -132,7 +133,7 @@
               <ul class="rounded-xl border border-wc-border bg-wc-bg-tertiary divide-y divide-wc-border/50">
                 <li
                   v-for="(item, idx) in selectedMeal.items"
-                  :key="idx"
+                  :key="'meal-' + idx"
                   class="grid grid-cols-[auto_1fr] gap-x-3 px-4 py-2.5"
                 >
                   <span class="font-data text-[11px] text-wc-text-tertiary tabular-nums whitespace-nowrap text-right min-w-[56px] pt-0.5">
@@ -193,6 +194,12 @@ const selectedMeal = computed(() => byMeal.value[selectedMealIdx.value] ?? null)
 watch(() => props.open, (val) => {
   if (val) {
     view.value = 'category';
+    selectedMealIdx.value = 0;
+  }
+});
+
+watch(byMeal, (meals) => {
+  if (selectedMealIdx.value >= meals.length) {
     selectedMealIdx.value = 0;
   }
 });
