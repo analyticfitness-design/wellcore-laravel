@@ -79,7 +79,7 @@ class AssignDaniela extends Command
         $insertPlan = function ($type, $json, $weeks) use ($pdo, $clientId, $coachId, $fi) {
             $exp  = date('Y-m-d', strtotime($fi . ' + ' . ($weeks * 7) . ' days'));
             $stmt = $pdo->prepare(
-                "INSERT INTO assigned_plans (client_id,plan_type,content,version,assigned_by,valid_from,expires_at,active,created_at,updated_at) VALUES (?,?,?,1,?,?,?,1,NOW(),NOW())"
+                "INSERT INTO assigned_plans (client_id,plan_type,content,version,assigned_by,valid_from,expires_at,active,created_at) VALUES (?,?,?,1,?,?,?,1,NOW())"
             );
             $stmt->execute([
                 $clientId,
