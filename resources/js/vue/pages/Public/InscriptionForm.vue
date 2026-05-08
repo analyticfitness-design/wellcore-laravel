@@ -291,10 +291,13 @@ async function submit() {
       // even when the offending fields are on a previous hidden step.
       errorMessage.value = err.response.data.message
         || 'Revisa todos los campos e intenta de nuevo.';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (err.response?.data?.message) {
       errorMessage.value = err.response.data.message;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       errorMessage.value = 'Error de conexion. Intenta de nuevo.';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   } finally {
     isLoading.value = false;
@@ -457,7 +460,7 @@ onMounted(() => {
           </div>
 
           <!-- Error message -->
-          <div v-if="errorMessage" class="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+          <div v-if="errorMessage" data-error="true" class="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
             <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
             </svg>
@@ -909,6 +912,12 @@ onMounted(() => {
                   <p v-if="fieldError('password_confirmation')" :data-error="true" class="mt-1 text-xs text-red-500">{{ fieldError('password_confirmation') }}</p>
                 </div>
               </div>
+            </div>
+
+            <!-- Inline error hint (visible near submit button when there's a server error) -->
+            <div v-if="errorMessage" class="mb-4 flex items-center gap-2 rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400">
+              <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/></svg>
+              Hay un error arriba. Revisa el mensaje en rojo.
             </div>
 
             <!-- Navigation buttons -->
