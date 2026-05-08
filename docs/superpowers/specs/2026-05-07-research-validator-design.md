@@ -87,7 +87,7 @@ E:\WELLCORE FITNESS PLATAFORMA\SISTEMA DE  Y BASES DE DATOS\
 ├── 08-OUTPUT-FORMAT.md          # JSON schemas + markdown templates
 ├── 09-BIAS-GUARDRAILS.md        # Anti-bullshit: p-hacking, COI, file-drawer, retracciones
 ├── 10-USAGE-EXAMPLES.md         # 3 casos worked-out (creatina, meditación, IF)
-└── 11-KIMI-CODE-SETUP.md        # Instalación Kimi + MCP + agentes/skills
+└── 11-KIMI-PROMPT.md            # Prompt + contexto consolidado para Kimi (crea agentes + skill, carga contexto)
 
 C:\Users\GODSF\.claude\skills\research-validator\
 └── SKILL.md                     # Wrapper auto-trigger en Claude Code
@@ -264,7 +264,7 @@ Si el slash command no auto-completa, simplemente decime:
 ### En Kimi Code (cuando lo tengas):
 
 ```
-> Seguí 11-KIMI-CODE-SETUP.md una vez para instalar.
+> Pegá 11-KIMI-PROMPT.md como primer mensaje para crear agentes + skill + contexto.
 > Después: kimi chat → /skill research-validator → investigá tu claim.
 ```
 
