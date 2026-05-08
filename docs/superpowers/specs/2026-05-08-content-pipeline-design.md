@@ -224,8 +224,61 @@ A 30 piezas/mes en Kimi: ~$90-150 USD/mes.
 ✅ Spec design en `wellcore-laravel/docs/superpowers/specs/`
 ✅ BD output con estructura completa (5 dominios, 2 schemas, script Python)
 ✅ INDEX.md + INDEX.json vacíos iniciales (válidos contra schema)
-⏳ Pendiente: test E2E con claim real (Daniel debe correrlo)
-⏳ Pendiente: smoke test en Kimi CLI
+✅ **Test E2E con claim real ejecutado en Kimi (2026-05-08)** — 12 fases completas, 6 formatos generados, premium 82.
+
+---
+
+## Lecciones del primer test E2E + mejoras v1.2 aplicadas
+
+### Hallazgos del run (claim ent_2026-05-08_maquinas-vs-pesos-libres)
+
+**Lo que funcionó:**
+- Caveats integrados en cuerpo de TODOS los 6 formatos (verificado retroactivamente).
+- Sub-claims del source claim cubiertos (sc1, sc4, sc5 mencionados explícitamente).
+- Trend coherence: saturated angle evitado, gap aprovechado.
+- Citations específicas con autor/año/journal verificables.
+
+**Lo que falló:**
+- **Localization Validator v1.1 dio 100/100 pero coló voseo argentino sistémico** (12+ violaciones: "tenés", "querés", "podés", "creés", "escribime", "armo"). Score era falso positivo.
+- Premium 82 sobre source claim 60 sin warning explícito → riesgo de over-confidence.
+- compare_table en story slide 04 heredó nombres `value_normal`/`value_deload` del template DELOAD original.
+- Topic Resolver añadió related_claim spurious (creatina, no relacionado).
+
+### Mejoras v1.2 aplicadas
+
+1. **Localization Validator reforzado** (`04-AGENT-ROLES.md`):
+   - Regex para verbos voseo conjugados en -ás/-és/-ís.
+   - Imperativos voseo en -á/-é/-í.
+   - Lista expandida de verbos comunes con tabla voseo→tuteo.
+   - `rewrite_required: true` cuando voseo_violations > 3 → loop back automático a Voice Aligner.
+
+2. **Self-Audit Agent (Fase 13 NUEVA)** (`04-AGENT-ROLES.md` + `03-PIPELINE-WORKFLOW.md`):
+   - Corre antes de Archivist.
+   - 4 checks: caveat_integration, trend_coherence, sub_claim_coverage, evidence_alignment.
+   - Output: `audit-report.yaml`.
+   - Loop back a fase específica si check high-severity falla.
+
+3. **Premium Validator dimensión 6 condicional** (`07-PREMIUM-QUALITY-CHECKLIST.md`):
+   - Caveat Integration (max 20 pts) cuando source_claim_score < 75.
+   - Verifica caveats en cuerpo, no solo footer.
+   - Si D6 < 14 → loop back a Drafter.
+
+4. **Schema manifest extendido** (`09-OUTPUT-FORMAT.md` + `_schema/content-piece.schema.json`):
+   - Campo `warnings` con sub-categorías (evidence_alignment, caveat_integration, localization_violations, trend_coherence).
+   - Campo `source_claim_snapshot` para detectar drift cross-time.
+   - Campo `audit_report` ref al YAML de Self-Audit.
+
+5. **Story compare_table genérico** (`12-STORIES-DESIGN-SYSTEM.md` + `_plantillas-html/story-template/04-APLICACION.html`):
+   - Renombrado `value_normal`/`value_deload` a `value_a`/`value_b` genéricos.
+   - Plantilla HTML mantiene retro-compatibilidad con clase `.deload` (legacy DELOAD week).
+
+### Update retroactivo del run actual (cp_ent_2026-05-08_maquinas-vs-pesos-libres-hipertrofia)
+
+- **manifest.yaml** actualizado con warnings (high severity para localization + evidence_alignment).
+- **audit-report.yaml** generado retroactivamente con los 5 checks.
+- **INDEX.json** actualizado con `ready_for_publish: false` + `ready_for_publish_blocker: voseo_argentino_systemic`.
+
+⏳ **Pendiente para Daniel:** decidir si re-correr la pieza con v1.2 (preferible) o fix manual de voseo (~10 min).
 
 ---
 
