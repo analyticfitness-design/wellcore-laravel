@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { useAdminAIGeneratorStore } from '../../../stores/adminAIGenerator';
+import { useToast } from '../../../composables/useToast';
 
 const props = defineProps({
     text: { type: String, default: '' },
@@ -9,9 +10,12 @@ const props = defineProps({
 const emit = defineEmits(['approved', 'discarded']);
 
 const store = useAdminAIGeneratorStore();
+const toast = useToast();
 
 const showApprove = ref(false);
 const showEditor = ref(false);
+const showDiscardConfirm = ref(false);
+const isDiscarding = ref(false);
 const editedText = ref('');
 
 const templateName = ref('');
@@ -59,10 +63,21 @@ async function confirmApprove() {
     }
 }
 
-async function onDiscard() {
-    if (!confirm('¿Descartar este draft? La generación se marcará como descartada en el historial.')) return;
-    await store.discard();
-    emit('discarded');
+function onDiscard() {
+    showDiscardConfirm.value = true;
+}
+
+async function confirmDiscard() {
+    isDiscarding.value = true;
+    try {
+        await store.discard();
+        showDiscardConfirm.value = false;
+        emit('discarded');
+    } catch {
+        toast.show('No se pudo descartar el plan. Intenta de nuevo.', 'error');
+    } finally {
+        isDiscarding.value = false;
+    }
 }
 </script>
 
@@ -94,6 +109,30 @@ async function onDiscard() {
       v-model="editedText"
       rows="14"
     ></textarea>
+
+    <!-- Discard confirmation modal -->
+    <Teleport to="body">
+      <div v-if="showDiscardConfirm" class="approve-overlay" @click.self="showDiscardConfirm = false">
+        <div class="approve-modal" role="dialog" aria-modal="true">
+          <p class="approve-eyebrow">CONFIRMAR ACCION</p>
+          <h3 class="approve-title">Descartar draft</h3>
+          <p class="approve-tagline">"La generación se marcará como descartada en el historial."</p>
+          <div class="approve-foot">
+            <button type="button" class="actions-btn" :disabled="isDiscarding" @click="showDiscardConfirm = false">
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="actions-btn actions-btn--danger"
+              :disabled="isDiscarding"
+              @click="confirmDiscard"
+            >
+              {{ isDiscarding ? 'Descartando...' : 'Sí, descartar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- Approve modal (inline) -->
     <Teleport to="body">

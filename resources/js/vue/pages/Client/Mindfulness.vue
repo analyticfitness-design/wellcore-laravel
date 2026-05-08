@@ -483,7 +483,7 @@ import ClientLayout from '../../layouts/ClientLayout.vue';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const SESSION_CIRC = 2 * Math.PI * 88;
-const BREATH_CIRC  = 2 * Math.PI * 92;
+const BREATH_CIRC  = 2 * Math.PI * 88;
 
 // ─── Breathing phase design tokens ───────────────────────────────────────────
 const phaseColors = { inhala: '#DC2626', manten: '#7C3AED', exhala: '#2563EB' };

@@ -104,7 +104,11 @@ async function sendInvitation() {
 
     if (response.data.sent) {
       successMessage.value = response.data.message;
-      sentHistory.value.push(response.data.entry);
+      if (response.data?.entry) {
+        sentHistory.value.push(response.data.entry);
+      } else if (response.data?.id) {
+        sentHistory.value.push(response.data);
+      }
       recipientName.value = '';
       recipientEmail.value = '';
     } else {
@@ -139,7 +143,11 @@ async function sendGift() {
 
     if (response.data.sent) {
       successMessage.value = response.data.message;
-      sentHistory.value.push(response.data.entry);
+      if (response.data?.entry) {
+        sentHistory.value.push(response.data.entry);
+      } else if (response.data?.id) {
+        sentHistory.value.push(response.data);
+      }
       recipientName.value = '';
       recipientEmail.value = '';
       gifterName.value = '';

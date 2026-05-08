@@ -31,6 +31,9 @@ export function useCoachAnnounce() {
         message.value = '';
         pinHours.value = 0;
         image.value = null;
+        sending.value = false;
+        segment.value = { status: ['activo'], plan: null };
+        recipientCount.value = null;
     }
 
     async function previewCount() {
@@ -94,5 +97,7 @@ export function resetCoachAnnounce() {
     message.value = '';
     pinHours.value = 0;
     image.value = null;
+    sending.value = false;
+    segment.value = { status: ['activo'], plan: null };
     recipientCount.value = null;
 }

@@ -704,7 +704,7 @@ async function doToggleHabit(habitType) {
       }
     }
   } catch {
-    // ignore — user can retry
+    toast.show('No se pudo guardar. Intenta de nuevo.', 'error');
   } finally {
     habitsToggling.value[habitType] = false;
   }

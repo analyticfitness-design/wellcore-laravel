@@ -80,8 +80,9 @@ function start() {
     totalRounds.value = config.value.minutes;
     currentRound.value = 1;
     isWork.value = true;
-    seconds.value = config.value.workSec;
-    totalSeconds.value = config.value.workSec;
+    const workSec = Math.max(config.value.workSec ?? 40, 1);
+    seconds.value = workSec;
+    totalSeconds.value = workSec;
     phase.value = 'TRABAJO';
   }
   running.value = true;
@@ -130,7 +131,7 @@ function nextPhase() {
     if (isWork.value) {
       isWork.value = false;
       phase.value = 'DESCANSO';
-      const rest = 60 - config.value.workSec;
+      const rest = Math.max(60 - (config.value.workSec ?? 60), 1);
       seconds.value = rest;
       totalSeconds.value = rest;
       beep();
@@ -143,8 +144,9 @@ function nextPhase() {
       currentRound.value++;
       isWork.value = true;
       phase.value = 'TRABAJO';
-      seconds.value = config.value.workSec;
-      totalSeconds.value = config.value.workSec;
+      const workSecNext = Math.max(config.value.workSec ?? 40, 1);
+      seconds.value = workSecNext;
+      totalSeconds.value = workSecNext;
       beep();
     }
   }

@@ -38,15 +38,27 @@ async function fetchChallenges() {
 // Join challenge
 async function joinChallenge(challengeId) {
     joiningId.value = challengeId;
+
+    const challenge = challenges.value.find(c => c.id === challengeId);
+
+    // Optimistic update
+    const prevJoined = challenge ? challenge.is_joined : false;
+    const prevCount = challenge ? (challenge.participants_count || 0) : 0;
+    if (challenge) {
+        challenge.is_joined = true;
+        challenge.participants_count = prevCount + 1;
+        joinedCount.value++;
+    }
+
     try {
         await api.post(`/api/v/client/challenges/${challengeId}/join`);
-        const challenge = challenges.value.find(c => c.id === challengeId);
-        if (challenge) {
-            challenge.is_joined = true;
-            challenge.participants_count = (challenge.participants_count || 0) + 1;
-            joinedCount.value++;
-        }
     } catch (err) {
+        // Rollback optimistic update
+        if (challenge) {
+            challenge.is_joined = prevJoined;
+            challenge.participants_count = prevCount;
+            joinedCount.value = Math.max(0, joinedCount.value - 1);
+        }
         const status = err.response?.status;
         if (status === 404 || status === 405) {
             toast.info('Proximamente disponible.');

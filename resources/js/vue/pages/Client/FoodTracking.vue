@@ -3,8 +3,10 @@ import { onMounted, reactive, ref } from 'vue';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import { useFoodTracking } from '../../composables/useFoodTracking';
 import { useVoiceTranscription } from '../../composables/useVoiceTranscription';
+import { useToast } from '../../composables/useToast';
 
 const food = useFoodTracking();
+const toast = useToast();
 const fileInputs = ref({});
 const voice = useVoiceTranscription({ lang: 'es-CO' });
 
@@ -34,6 +36,21 @@ function triggerUpload(mealIndex) {
 function onFileSelected(e, meal) {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Validación tipo de archivo
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/heic'];
+    if (!allowed.includes(file.type)) {
+        toast.show('Solo se permiten imágenes (JPG, PNG, WebP).', 'error');
+        e.target.value = '';
+        return;
+    }
+    // Validación tamaño (10 MB máximo)
+    if (file.size > 10 * 1024 * 1024) {
+        toast.show('La imagen no puede superar 10 MB.', 'error');
+        e.target.value = '';
+        return;
+    }
+
     // Save file locally and show preview — el upload sucede al confirmar
     if (pendingPreview[meal.index]) {
         try { URL.revokeObjectURL(pendingPreview[meal.index]); } catch (_) {}
@@ -45,6 +62,7 @@ function onFileSelected(e, meal) {
 }
 
 async function confirmUpload(meal) {
+    if (food.uploadingIndex.value === meal.index) return;
     const file = pendingFile[meal.index];
     if (!file) return;
     delete uploadErrors[meal.index];

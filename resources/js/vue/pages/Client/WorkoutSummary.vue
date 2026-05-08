@@ -2,12 +2,14 @@
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useApi } from '../../composables/useApi';
+import { useToast } from '../../composables/useToast';
 import { useMedals } from '../../composables/useMedals';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
 const { fetchMedals } = useMedals();
 
 const api = useApi();
+const toast = useToast();
 const route = useRoute();
 const router = useRouter();
 
@@ -198,6 +200,8 @@ async function saveFeedback() {
     if (err.response?.status === 422) {
       // Validation error — show generic message
       error.value = 'Datos inv\u00E1lidos. Verifica tus notas.';
+    } else {
+      toast.show('No se pudo guardar tu feedback. Intenta de nuevo.', 'error');
     }
   } finally {
     saving.value = false;
@@ -221,8 +225,7 @@ async function shareToCommunity() {
       clearTimeout(shareTimer);
       shareTimer = setTimeout(() => { shareResult.value = null; }, 4000);
     } else {
-      // Fallback: navigate to community with share intent
-      router.push({ name: 'client-community', query: { share: route.params.sessionId } });
+      toast.show('No se pudo compartir tu entreno. Intenta de nuevo.', 'error');
     }
   } finally {
     sharing.value = false;

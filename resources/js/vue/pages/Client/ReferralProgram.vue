@@ -41,6 +41,7 @@ async function fetchReferrals() {
 
 // Copy link
 async function copyLink() {
+    if (!referralLink.value) return;
     navigator.clipboard.writeText(referralLink.value).then(() => {
         copied.value = true;
         setTimeout(() => { copied.value = false; }, 2500);
@@ -85,6 +86,7 @@ function dismissSuccess() {
 
 // WhatsApp share
 function shareWhatsApp() {
+    if (!referralLink.value) return;
     const text = encodeURIComponent(
         `Hola! Te invito a unirte a WellCore Fitness, la plataforma de entrenamiento personalizado. Usa mi link: ${referralLink.value}`
     );

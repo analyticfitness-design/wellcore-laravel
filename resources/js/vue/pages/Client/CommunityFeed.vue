@@ -438,6 +438,7 @@ function unsubscribeAllPostChannels() {
 // div estaba unmounted bajo Latido y el IntersectionObserver perdió target.
 function switchFeedTab(tab) {
   if (feedTab.value === tab) return;
+  confirmDeleteId.value = null;
   feedTab.value = tab;
   if (tab !== 'latido') {
     fetchFeed(true);
@@ -483,6 +484,9 @@ onBeforeUnmount(() => {
 
 onUnmounted(() => {
   unsubscribeAllPostChannels();
+  if (postMediaPreview.value?.startsWith('blob:')) {
+    URL.revokeObjectURL(postMediaPreview.value);
+  }
 });
 
 // ── Helpers ──────────────────────────────────────────────────────────

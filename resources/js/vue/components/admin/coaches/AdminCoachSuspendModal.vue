@@ -47,11 +47,12 @@ async function submit() {
     loading.value = true;
     error.value = '';
     try {
-        await api.delete(`/api/v/admin/coaches/manage/${props.coach.id}`);
-        // Backend persiste deactivation. La razon queda en sessionStorage para
-        // rastreo correlacionable con audit logs hasta que el endpoint reciba
-        // un reason en el body (follow-up backend).
-        sessionStorage.setItem(`wc_suspend_reason_${props.coach.id}`, reason.value.trim().slice(0, 280));
+        const trimmedReason = reason.value.trim().slice(0, 280);
+        await api.delete(`/api/v/admin/coaches/manage/${props.coach.id}`, {
+            data: { reason: trimmedReason },
+        });
+        // Keep sessionStorage for correlation with audit logs
+        sessionStorage.setItem(`wc_suspend_reason_${props.coach.id}`, trimmedReason);
         emit('success', props.coach);
     } catch (err) {
         if (err.response?.status === 409) {

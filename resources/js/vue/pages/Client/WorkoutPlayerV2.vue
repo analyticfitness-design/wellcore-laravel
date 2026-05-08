@@ -322,6 +322,7 @@ async function toggleSet(exIndex, setIndex) {
 }
 
 async function completeCardioSet({ exIndex, sIdx }) {
+    if (saving.value) return;
     const sets = getSetRows(exIndex);
     const set = sets[sIdx];
     const duration = parseInt(set.duration) || 0;
@@ -352,7 +353,8 @@ async function completeCardioSet({ exIndex, sIdx }) {
             });
         } catch (err) {
             set.completed = false;
-            toast.apiError(err, 'No pudimos guardar ese set.');
+            set.reps = '';
+            toast.show('No se pudo guardar. Intenta de nuevo.', 'error');
         }
     }
 }
@@ -619,7 +621,12 @@ async function startWorkout() {
             day_index: currentDayIndex.value,
             week: hasProgressions.value ? currentWeek.value : null,
         });
-        sessionId.value = response.data.session_id || null;
+        sessionId.value = response.data.session_id ?? response.data.id ?? null;
+        if (!sessionId.value) {
+            toast.show('Error al iniciar sesión de entrenamiento. Intenta de nuevo.', 'error');
+            stopTimer();
+            return;
+        }
         workoutStarted.value = true;
         if (response.data.setData) setData.value = response.data.setData;
     } catch (err) {
@@ -646,7 +653,9 @@ async function finishWorkout() {
         const sid = response.data.session_id || sessionId.value;
         stopTimer();
         clearRestTimer();
-        router.push({ name: 'client-workout-summary', params: { sessionId: sid } });
+        router.push({ name: 'client-workout-summary', params: { sessionId: sid } }).catch(() => {
+            router.push('/client/dashboard').catch(() => router.push('/client'));
+        });
     } catch (err) {
         toast.apiError(err, 'No pudimos finalizar tu entrenamiento.');
     } finally {
@@ -658,21 +667,21 @@ async function abandonWorkout() {
     if (abandoning.value) return;
     abandoning.value = true;
     confirmAbandon.value = false;
-    stopTimer();
-    clearRestTimer();
     try {
         await api.post('/api/v/client/workout/abandon', { session_id: sessionId.value });
+        stopTimer();
+        clearRestTimer();
+        workoutStarted.value = false;
+        sessionId.value = null;
+        setData.value = {};
+        elapsed.value = 0;
+        loadDayExercises();
         toast.info('Entrenamiento abandonado.');
     } catch (err) {
-        toast.apiError(err, 'No pudimos registrar el abandono.');
+        toast.apiError(err, 'No pudimos registrar el abandono. Intenta de nuevo.');
     } finally {
         abandoning.value = false;
     }
-    workoutStarted.value = false;
-    sessionId.value = null;
-    setData.value = {};
-    elapsed.value = 0;
-    loadDayExercises();
 }
 
 function goBack() {

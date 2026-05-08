@@ -7,11 +7,12 @@ const store = useAdminInscriptionsStore();
 const inscription = computed(() => store.contactTarget);
 const sending = ref(false);
 const sent = ref(false);
+const contactError = ref('');
 const waTemplate = ref('');
 const emailTemplate = ref('');
 
 watch(inscription, (val) => {
-    if (!val) { sent.value = false; return; }
+    if (!val) { sent.value = false; contactError.value = ''; return; }
     const nombre = val.nombre?.split(' ')[0] ?? 'hola';
     const plan = val.plan_raw ?? 'tu plan';
     waTemplate.value = `Hola ${nombre}, vi que te interesó el plan ${plan.toUpperCase()} en WellCore. Cuéntame, ¿qué buscas lograr con el entrenamiento?`;
@@ -37,10 +38,16 @@ function openEmail() {
 async function confirmContact() {
     if (!inscription.value || sent.value) return;
     sending.value = true;
-    await store.moveCard(inscription.value.id, 'contactado');
-    sending.value = false;
-    sent.value = true;
-    setTimeout(() => store.closeContact(), 900);
+    contactError.value = '';
+    try {
+        await store.moveCard(inscription.value.id, 'contactado');
+        sent.value = true;
+        setTimeout(() => store.closeContact(), 900);
+    } catch {
+        contactError.value = 'No se pudo registrar el contacto. Intenta de nuevo.';
+    } finally {
+        sending.value = false;
+    }
 }
 </script>
 
@@ -95,6 +102,11 @@ async function confirmContact() {
                             ABRIR EMAIL
                         </button>
                     </div>
+
+                    <!-- Contact error -->
+                    <Transition name="modal-fade">
+                        <div v-if="contactError" class="modal-contact-error">{{ contactError }}</div>
+                    </Transition>
 
                     <!-- Confirm -->
                     <button
@@ -264,6 +276,16 @@ async function confirmContact() {
     border: 1px solid rgba(52,211,153,0.3);
 }
 .modal-confirm:disabled { cursor: not-allowed; opacity: 0.7; }
+.modal-contact-error {
+    border-radius: var(--r-sm, 12px);
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    background: rgba(220, 38, 38, 0.06);
+    padding: 8px 10px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: #F87171;
+    margin-bottom: 4px;
+}
 
 .modal-fade-enter-active { transition: opacity 0.2s; }
 .modal-fade-leave-active { transition: opacity 0.15s; }

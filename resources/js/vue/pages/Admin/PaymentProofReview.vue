@@ -43,6 +43,11 @@ onBeforeUnmount(() => {
         </span>
       </p>
 
+      <div v-if="store.error" class="proofs-error">
+        {{ store.error }}
+        <button @click="store.fetchProofs()" class="proofs-error-retry">Reintentar</button>
+      </div>
+
       <AdminProofKPIs :kpis="store.kpis" />
 
       <AdminProofsQueue />
@@ -71,6 +76,35 @@ onBeforeUnmount(() => {
     margin: -8px 0 0;
 }
 .proofs-refresh { color: var(--c-text-3); opacity: 0.7; }
+
+.proofs-error {
+    border-radius: 10px;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    background: rgba(220, 38, 38, 0.07);
+    padding: 10px 14px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: #F87171;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.proofs-error-retry {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-family: var(--font-display);
+    font-size: 9px;
+    letter-spacing: 1.4px;
+    color: #F87171;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s;
+    flex-shrink: 0;
+}
+.proofs-error-retry:hover { background: rgba(220, 38, 38, 0.12); }
 
 @media (min-width: 1024px) {
     .proofs-eyebrow { margin-top: -10px; }

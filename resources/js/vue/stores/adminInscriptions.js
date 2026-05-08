@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useApi } from '../composables/useApi';
+import { useToast } from '../composables/useToast';
 
 const COLUMN_STATUSES = {
     sin_contactar: ['pendiente', 'nuevo', 'pending_contact'],
@@ -101,25 +102,37 @@ export const useAdminInscriptionsStore = defineStore('adminInscriptions', {
 
         async moveCard(id, toColumn) {
             const api = useApi();
+            const toast = useToast();
             const status = CANONICAL_STATUS[toColumn];
             if (!status) return;
             const idx = this.all.findIndex(i => i.id === id);
+            const prevStatus = idx !== -1 ? this.all[idx].status : null;
             if (idx !== -1) this.all[idx] = { ...this.all[idx], status };
             try {
                 await api.put(`/api/v/admin/inscriptions/${id}`, { status });
             } catch {
-                this.fetchAll({ silent: true });
+                // Rollback to original status
+                if (idx !== -1 && prevStatus !== null) {
+                    this.all[idx] = { ...this.all[idx], status: prevStatus };
+                }
+                toast.show('Error al mover la inscripción.', 'error');
             }
         },
 
         async markRejected(id) {
             const api = useApi();
+            const toast = useToast();
             const idx = this.all.findIndex(i => i.id === id);
+            const prevStatus = idx !== -1 ? this.all[idx].status : null;
             if (idx !== -1) this.all[idx] = { ...this.all[idx], status: 'rechazado' };
             try {
                 await api.put(`/api/v/admin/inscriptions/${id}`, { status: 'rechazado' });
             } catch {
-                this.fetchAll({ silent: true });
+                // Rollback to original status
+                if (idx !== -1 && prevStatus !== null) {
+                    this.all[idx] = { ...this.all[idx], status: prevStatus };
+                }
+                toast.show('Error al rechazar la inscripción.', 'error');
             }
         },
 
