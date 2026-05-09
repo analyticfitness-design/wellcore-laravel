@@ -633,15 +633,20 @@ const bwTestOptions = [
 ];
 
 // Fetch
-// hasRetried se resetea al inicio de cada llamada para que un reload manual
-// (botón Reintentar) vuelva a tener su propia ventana de auto-retry.
-let hasRetried = false;
-async function fetchPlan() {
-  hasRetried = false;
+// Estrategia de recuperación en PWA:
+//   1er fallo de red/timeout → auto-retry silencioso en 3s (el usuario sigue en skeleton)
+//   2do fallo (o manual tras retry) → clearAuth + redirect /login para sesión limpia
+//   Errores con respuesta del servidor (4xx/5xx) → mostrar mensaje, no redirigir
+// fetchPlanRetries se resetea solo en éxito o cuando el usuario pulsa Reintentar.
+let fetchPlanRetries = 0;
+
+async function fetchPlan(manual = false) {
+  if (manual) fetchPlanRetries = 0;
   loading.value = true;
   error.value = null;
   try {
     const response = await api.get('/api/v/client/plan');
+    fetchPlanRetries = 0;
     const d = response.data;
     trainingPlan.value = d.training_plan || null;
     nutritionPlan.value = d.nutrition_plan || null;
@@ -667,19 +672,26 @@ async function fetchPlan() {
     // Init ciclo local storage
     initCicloFromStorage();
   } catch (err) {
-    // Para errores de red o timeout (no errores de auth): auto-retry una vez
-    // después de 3 segundos sin mostrar el estado de error al usuario.
-    // Los errores de auth (401) ya son manejados por useApi con promesa congelada.
-    const isNetworkError = !err.response && err.code !== 'ERR_CANCELED';
+    if (err.code === 'ERR_CANCELED') return;
+
+    const isNetworkError = !err.response;
     const isTimeout = err.code === 'ECONNABORTED';
 
-    if ((isNetworkError || isTimeout) && !hasRetried) {
-      hasRetried = true;
-      loading.value = false;
-      setTimeout(() => fetchPlan(), 3000);
-      return; // no mostrar error aún — el retry está en camino
+    if (isNetworkError || isTimeout) {
+      fetchPlanRetries++;
+      if (fetchPlanRetries === 1) {
+        // 1er fallo: retry silencioso en 3s, usuario no ve error
+        loading.value = false;
+        setTimeout(() => fetchPlan(), 3000);
+        return;
+      }
+      // 2do fallo: sin red ni sesión clara → mandar a login para sesión limpia
+      authStore.clearAuth();
+      router.push('/login');
+      return;
     }
 
+    // El servidor respondió (plan lock, 500, etc.) → mostrar mensaje
     error.value = err.response?.data?.message || 'Error al cargar el plan';
   } finally {
     loading.value = false;
@@ -879,7 +891,7 @@ onBeforeUnmount(() => {
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
         </svg>
         <p class="mt-3 text-sm text-red-400">{{ error }}</p>
-        <button @click="fetchPlan" class="wc-btn-primary mt-4">
+        <button @click="fetchPlan(true)" class="wc-btn-primary mt-4">
           Reintentar
         </button>
       </div>
@@ -923,7 +935,7 @@ onBeforeUnmount(() => {
             :error="error"
             :current-week="currentWeek"
             :total-weeks="totalWeeks ?? 4"
-            @retry="fetchPlan"
+            @retry="fetchPlan(true)"
           />
           <template v-else>
           <template v-if="trainingPlan">

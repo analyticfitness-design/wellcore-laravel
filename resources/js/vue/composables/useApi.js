@@ -129,12 +129,14 @@ export function useApi() {
                 return Promise.reject(error);
             }
 
-            if (error.response && error.response.status === 401) {
+            // 401 = token expirado / inválido
+            // 419 = CSRF expirado (sesión Laravel stale tras horas en background)
+            // Ambos indican sesión muerta: limpiar y redirigir a login sin mostrar
+            // estado de error en el componente (promesa congelada = UI queda en
+            // skeleton loading durante los 1-2s que tarda el redirect en móvil).
+            if (error.response && (error.response.status === 401 || error.response.status === 419)) {
                 authStore.clearAuth();
                 window.location.href = '/login';
-                // Freeze: el redirect está en curso. Retornar una promesa que nunca
-                // se resuelve ni rechaza evita que el componente muestre el estado de
-                // error mientras el navegador procesa la navegación (1-2s en móvil PWA).
                 return new Promise(() => {});
             }
 
