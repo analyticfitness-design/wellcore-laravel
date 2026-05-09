@@ -13,25 +13,32 @@ class FixDanielaGifs extends Command
 
     private const BASE = 'https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master/';
 
-    // Aliases that don't exist in the GIF repo → correct existing alias
+    // Name-based fixes take priority (checked first by substring in exercise nombre)
+    private array $nameFixes = [
+        'oblicuo'   => 'crunches-oblicuos-acostado',
+        'patada'    => 'patada-trasera-en-polea',
+        'kickback'  => 'patada-trasera-en-polea',
+    ];
+
+    // Alias-based fixes (applied when name fix didn't match)
     private array $aliasFixes = [
         'extension-de-cuadriceps-en-maquina'  => 'extension-de-piernas-en-maquina',
         'crunch-en-maquina'                    => 'crunch-sentado-en-maquina',
-        'crunch-oblicuo-en-maquina'            => 'crunches-oblicuos-acostado',
-        'patada-de-gluteo-en-cable'            => 'patada-trasera-en-polea',
-        'kickback-de-gluteo'                   => 'patada-trasera-en-polea',
-        'kickback'                             => 'patada-trasera-en-polea',
         'abduccion-de-cadera-en-maquina'       => 'abduccion-de-cadera-sentado-en-maquina',
-        'plancha-con-soporte'                  => 'plancha-de-rodillas',
+        'plancha-con-soporte'                  => 'plancha-abdominal',
+        'plancha'                              => 'plancha-abdominal',
         'elevacion-de-piernas-colgado'         => 'elevacion-de-piernas-captain-chair',
+        'patada-gluteo-cable'                  => 'patada-trasera-en-polea',
+        'patada-de-gluteo-en-cable'            => 'patada-trasera-en-polea',
+        'kickback'                             => 'patada-trasera-en-polea',
     ];
 
-    // Fix by exercise name when gif_url is null or points to a clearly wrong alias
-    private array $nameFixes = [
-        'patada'    => 'patada-trasera-en-polea',
-        'kickback'  => 'patada-trasera-en-polea',
-        'oblicuo'   => 'crunches-oblicuos-acostado',
-        'plancha'   => 'plancha-de-rodillas',
+    // GIF aliases confirmed to exist in the GitHub repo
+    private array $knownGood = [
+        'extension-de-piernas-en-maquina', 'crunch-sentado-en-maquina',
+        'crunches-oblicuos-acostado', 'patada-trasera-en-polea',
+        'abduccion-de-cadera-sentado-en-maquina', 'plancha-abdominal',
+        'elevacion-de-piernas-captain-chair', 'plancha-de-rodillas',
     ];
 
     public function handle(): int
@@ -42,49 +49,50 @@ class FixDanielaGifs extends Command
             return 1;
         }
 
-        $content = json_decode($plan->content, true);
+        $content  = json_decode($plan->content, true);
         $listOnly = $this->option('list');
-        $changed = 0;
-        $seen = [];
+        $changed  = 0;
+        $seen     = [];
 
-        foreach ($content['semanas'] ?? [] as $si => &$semana) {
-            foreach ($semana['dias'] ?? [] as $di => &$dia) {
-                foreach ($dia['ejercicios'] ?? [] as $ei => &$ej) {
+        foreach ($content['semanas'] as $si => &$semana) {
+            foreach ($semana['dias'] as $di => &$dia) {
+                foreach ($dia['ejercicios'] as $ei => &$ej) {
                     $nombre = $ej['nombre'] ?? '';
                     $url    = $ej['gif_url'] ?? '';
-
-                    // Extract alias from URL
-                    $alias = $url ? str_replace([self::BASE, '.gif'], '', $url) : '(sin gif_url)';
+                    $alias  = $url ? basename(str_replace('.gif', '', $url)) : '(none)';
 
                     if ($listOnly) {
                         $key = $alias . '|' . $nombre;
                         if (! isset($seen[$key])) {
-                            $this->line("  alias={$alias}  |  nombre={$nombre}");
+                            $broken = ! in_array($alias, $this->knownGood, true);
+                            $mark   = $broken ? ' *** BROKEN' : '';
+                            $this->line("  {$alias}  |  {$nombre}{$mark}");
                             $seen[$key] = true;
                         }
                         continue;
                     }
 
-                    // Fix by URL alias
-                    if ($url && isset($this->aliasFixes[$alias])) {
-                        $newAlias       = $this->aliasFixes[$alias];
-                        $ej['gif_url']  = self::BASE . $newAlias . '.gif';
-                        $this->line("  URL fix: {$alias} → {$newAlias}  ({$nombre})");
-                        $changed++;
-                        continue;
+                    // 1. Name-based fix (higher priority — distinguishes exercises sharing the same alias)
+                    $nombreNorm = mb_strtolower($nombre);
+                    foreach ($this->nameFixes as $keyword => $newAlias) {
+                        if (str_contains($nombreNorm, $keyword)) {
+                            $old          = $alias;
+                            $ej['gif_url'] = self::BASE . $newAlias . '.gif';
+                            $content['semanas'][$si]['dias'][$di]['ejercicios'][$ei]['gif_url'] = self::BASE . $newAlias . '.gif';
+                            $this->line("  [name] {$old} → {$newAlias}  ({$nombre})");
+                            $changed++;
+                            continue 2; // next ejercicio
+                        }
                     }
 
-                    // Fix by exercise name when gif_url is missing or unrecognized
-                    if (! $url || $alias === '(sin gif_url)') {
-                        $nombreNorm = mb_strtolower($nombre);
-                        foreach ($this->nameFixes as $keyword => $newAlias) {
-                            if (str_contains($nombreNorm, $keyword)) {
-                                $ej['gif_url'] = self::BASE . $newAlias . '.gif';
-                                $this->line("  Name fix: '{$nombre}' → {$newAlias}");
-                                $changed++;
-                                break;
-                            }
-                        }
+                    // 2. Alias-based fix
+                    if (isset($this->aliasFixes[$alias])) {
+                        $newAlias      = $this->aliasFixes[$alias];
+                        $old           = $alias;
+                        $ej['gif_url'] = self::BASE . $newAlias . '.gif';
+                        $content['semanas'][$si]['dias'][$di]['ejercicios'][$ei]['gif_url'] = self::BASE . $newAlias . '.gif';
+                        $this->line("  [alias] {$old} → {$newAlias}  ({$nombre})");
+                        $changed++;
                     }
                 }
             }
@@ -96,19 +104,19 @@ class FixDanielaGifs extends Command
         }
 
         if ($changed === 0) {
-            $this->info('No broken GIF aliases found in plan 183.');
+            $this->info('No broken GIF aliases found.');
             return 0;
         }
 
-        DB::table('assigned_plans')
-            ->where('id', 183)
-            ->update(['content' => json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+        $newJson = json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $rows    = DB::table('assigned_plans')->where('id', 183)->update(['content' => $newJson]);
+        $this->info("DB rows updated: {$rows}");
 
         foreach (['client_plan_v3_96', 'wp:plan:96', 'wp:weekdays:96'] as $key) {
             Cache::forget($key);
         }
 
-        $this->info("Fixed {$changed} GIF URL(s) in plan 183. Cache cleared.");
+        $this->info("Fixed {$changed} GIF URL(s). Cache cleared.");
         return 0;
     }
 }
