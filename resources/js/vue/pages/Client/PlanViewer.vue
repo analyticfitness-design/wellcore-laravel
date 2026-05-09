@@ -633,7 +633,11 @@ const bwTestOptions = [
 ];
 
 // Fetch
+// hasRetried se resetea al inicio de cada llamada para que un reload manual
+// (botón Reintentar) vuelva a tener su propia ventana de auto-retry.
+let hasRetried = false;
 async function fetchPlan() {
+  hasRetried = false;
   loading.value = true;
   error.value = null;
   try {
@@ -663,6 +667,19 @@ async function fetchPlan() {
     // Init ciclo local storage
     initCicloFromStorage();
   } catch (err) {
+    // Para errores de red o timeout (no errores de auth): auto-retry una vez
+    // después de 3 segundos sin mostrar el estado de error al usuario.
+    // Los errores de auth (401) ya son manejados por useApi con promesa congelada.
+    const isNetworkError = !err.response && err.code !== 'ERR_CANCELED';
+    const isTimeout = err.code === 'ECONNABORTED';
+
+    if ((isNetworkError || isTimeout) && !hasRetried) {
+      hasRetried = true;
+      loading.value = false;
+      setTimeout(() => fetchPlan(), 3000);
+      return; // no mostrar error aún — el retry está en camino
+    }
+
     error.value = err.response?.data?.message || 'Error al cargar el plan';
   } finally {
     loading.value = false;

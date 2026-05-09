@@ -1,9 +1,10 @@
 /**
  * WellCore Service Worker
- * Cache-first for static assets, network-first for API/pages
- * Offline fallback for navigation requests
+ * Cache-first for static assets, network-first for navigation pages
+ * API calls (/api/*) go directly to network — never cached by SW
+ * Offline fallback for navigation requests only
  */
-const CACHE_NAME = 'wellcore-v3';
+const CACHE_NAME = 'wellcore-v4';
 const STATIC_ASSETS = [
     '/manifest.json',
     '/icons/icon-192x192.png',
@@ -43,6 +44,14 @@ self.addEventListener('fetch', (event) => {
     // Skip Livewire requests — they handle their own caching/routing
     if (url.pathname.includes('/livewire')) return;
 
+    // API calls con Bearer token NUNCA se cachean en el SW.
+    // Razones: (1) datos por usuario — cache keys no incluyen Authorization header,
+    // riesgo de cross-user data leak en dispositivos compartidos. (2) cuando el SW
+    // devuelve undefined del cache (sin red + sin cache) el cliente recibe TypeError
+    // sin response.status → componentes muestran "Error al cargar el plan" aunque
+    // el token sea válido. Los composables tienen su propio TTL (60s).
+    if (url.pathname.startsWith('/api/')) return;
+
     // Skip dynamic form routes that break with SW interception
     if (url.pathname.startsWith('/unirse/')) return;
     if (url.pathname.startsWith('/inscripcion')) return;
@@ -69,22 +78,26 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Network-first for pages and API
+    // Network-first for navigation pages (HTML shell)
     event.respondWith(
         fetch(request)
             .then((response) => {
-                if (response.ok && url.origin === self.location.origin) {
+                // Solo cachear navegaciones (HTML), no respuestas de API
+                if (response.ok && request.mode === 'navigate') {
                     const clone = response.clone();
                     caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
                 }
                 return response;
             })
             .catch(() => {
-                // For navigation requests that fail, show offline page
                 if (request.mode === 'navigate') {
-                    return caches.match('/offline.html');
+                    return caches.match(request).then((cached) => cached || caches.match('/offline.html'));
                 }
-                return caches.match(request);
+                // Para cualquier otro GET (no-API, no-asset) sin red: error limpio
+                return new Response(JSON.stringify({ error: 'offline', status: 503 }), {
+                    status: 503,
+                    headers: { 'Content-Type': 'application/json' },
+                });
             })
     );
 });

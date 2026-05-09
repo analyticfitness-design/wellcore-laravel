@@ -132,6 +132,10 @@ export function useApi() {
             if (error.response && error.response.status === 401) {
                 authStore.clearAuth();
                 window.location.href = '/login';
+                // Freeze: el redirect está en curso. Retornar una promesa que nunca
+                // se resuelve ni rechaza evita que el componente muestre el estado de
+                // error mientras el navegador procesa la navegación (1-2s en móvil PWA).
+                return new Promise(() => {});
             }
 
             // 500+ server errors

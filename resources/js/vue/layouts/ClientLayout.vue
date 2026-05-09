@@ -56,8 +56,27 @@ const onWindowResize = () => { windowWidth.value = window.innerWidth; };
 
 let layoutAc = null;
 
+// ── Validación de token al volver de background (PWA) ────────────────────────
+// Cuando la PWA vuelve al foreground después de horas en background, el token
+// puede haber expirado. Verificamos con /api/v/auth/me antes de que cualquier
+// llamada de datos falle con 401 y muestre un estado de error al usuario.
+async function handleVisibilityChange() {
+    if (document.visibilityState !== 'visible') return;
+    if (!authStore.isAuthenticated) return;
+    try {
+        const result = await authStore.refreshMe();
+        if (!result || result.authenticated === false) {
+            authStore.clearAuth();
+            router.push('/login');
+        }
+    } catch {
+        // Error de red — no logout, dejar que el usuario lo intente manualmente
+    }
+}
+
 onMounted(async () => {
     window.addEventListener('resize', onWindowResize, { passive: true });
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     layoutAc = new AbortController();
     const ac = layoutAc;
@@ -162,6 +181,7 @@ const unwatch = router.afterEach(() => {
 
 onBeforeUnmount(() => {
     window.removeEventListener('resize', onWindowResize);
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
     layoutAc?.abort();
 });
 

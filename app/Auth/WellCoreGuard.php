@@ -45,7 +45,12 @@ class WellCoreGuard implements Guard
 
         // Update last_used_at throttled to every 5 min to avoid N writes per session
         if ($authToken->last_used_at === null || $authToken->last_used_at->diffInMinutes(now()) > 5) {
-            $authToken->updateQuietly(['last_used_at' => now()]);
+            $updateData = ['last_used_at' => now()];
+            // Rolling expiry: if token expires within 7 days, extend by 30 more days
+            if ($authToken->expires_at->diffInDays(now()) < 7) {
+                $updateData['expires_at'] = now()->addDays(30);
+            }
+            $authToken->updateQuietly($updateData);
         }
 
         $this->user = match ($authToken->user_type->value) {

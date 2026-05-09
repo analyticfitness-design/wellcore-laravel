@@ -65,7 +65,7 @@ class AuthController extends Controller
             'token' => $token,
             'ip_address' => $request->ip(),
             'fingerprint' => mb_substr((string) $request->userAgent(), 0, 64),
-            'expires_at' => now()->addDays(7),
+            'expires_at' => now()->addDays(30),
             'created_at' => now(),
             'last_used_at' => now(),
         ]);
