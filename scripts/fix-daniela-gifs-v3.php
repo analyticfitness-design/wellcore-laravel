@@ -35,9 +35,9 @@ function findGif(PDO $pdo, array $keywords, string $gifBase, array &$cache): ?st
 {
     foreach ($keywords as $kw) {
         $stmt = $pdo->prepare(
-            "SELECT DISTINCT gif_filename FROM exercise_aliases
+            "SELECT gif_filename FROM exercise_aliases
              WHERE alias LIKE ? AND gif_filename IS NOT NULL
-             ORDER BY score DESC LIMIT 8"
+             GROUP BY gif_filename ORDER BY MAX(score) DESC LIMIT 8"
         );
         $stmt->execute(["%$kw%"]);
         $rows = $stmt->fetchAll(PDO::FETCH_COLUMN);
