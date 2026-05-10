@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminPaymentProofViewController;
+use App\Http\Controllers\Api\SocialController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CoachImpersonateController;
@@ -63,6 +64,13 @@ Route::get('/uploads/photos/{filename}', function (string $filename) {
 
     abort(404);
 })->where('filename', '[^/]+');
+
+// Private media endpoints — need web middleware (session) so <img> tags can auth via session cookie.
+// Duplicated here from api.php so StartSession runs before EnsureAuthenticated.
+Route::middleware('auth')->group(function () {
+    Route::get('/api/v/client/photos/{id}/view', [SocialController::class, 'viewPhoto'])->where('id', '[0-9]+');
+    Route::get('/api/v/client/video-checkins/{id}/view', [SocialController::class, 'viewVideoCheckin'])->where('id', '[0-9]+');
+});
 
 // Health check endpoint (public, no auth — used by uptime monitors and load balancers)
 Route::get('/health', function () {
