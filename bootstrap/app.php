@@ -35,7 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(
             at: ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', '127.0.0.1'],
-            headers: Request::HEADER_X_FORWARDED_FOR,
+            headers: Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_PROTO,
         );
 
         $middleware->validateCsrfTokens(except: ['webhooks/*', 'api/chat', 'api/newsletter']);

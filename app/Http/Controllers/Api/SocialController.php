@@ -1372,10 +1372,7 @@ class SocialController extends Controller
     public function viewPhoto(Request $request, int $id)
     {
         if (! $request->hasValidSignature()) {
-            return response()->json([
-                'message' => 'URL expirada o inválida.',
-                '_debug' => ['server_url' => $request->fullUrl(), 'scheme' => $request->getScheme(), 'host' => $request->getHost()],
-            ], 403);
+            return response()->json(['message' => 'URL expirada o inválida.'], 403);
         }
 
         $photo = ProgressPhoto::find($id);
