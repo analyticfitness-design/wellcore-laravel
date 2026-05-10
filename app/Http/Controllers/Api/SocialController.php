@@ -1371,11 +1371,11 @@ class SocialController extends Controller
      */
     public function viewPhoto(Request $request, int $id)
     {
-        $client = $this->resolveClientOrFail($request);
+        if (! $request->hasValidSignature()) {
+            return response()->json(['message' => 'URL expirada o inválida.'], 403);
+        }
 
-        $photo = ProgressPhoto::where('client_id', $client->id)
-            ->where('id', $id)
-            ->first();
+        $photo = ProgressPhoto::find($id);
 
         if (! $photo || ! $photo->filename) {
             return response()->json(['message' => 'Foto no encontrada.'], 404);
@@ -1833,11 +1833,11 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
      */
     public function viewVideoCheckin(Request $request, int $id)
     {
-        $client = $this->resolveClientOrFail($request);
+        if (! $request->hasValidSignature()) {
+            return response()->json(['message' => 'URL expirada o inválida.'], 403);
+        }
 
-        $checkin = VideoCheckin::where('client_id', $client->id)
-            ->where('id', $id)
-            ->first();
+        $checkin = VideoCheckin::find($id);
 
         if (! $checkin || ! $checkin->media_url) {
             return response()->json(['message' => 'Archivo no encontrado.'], 404);
@@ -1870,7 +1870,11 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
         }
 
         if (Storage::disk('private')->exists($path)) {
-            return url('/api/v/client/video-checkins/'.$id.'/view');
+            return \Illuminate\Support\Facades\URL::temporarySignedRoute(
+                'client.video-checkin.view',
+                now()->addHours(24),
+                ['id' => $id]
+            );
         }
 
         // Legacy: disco public.
@@ -2294,9 +2298,13 @@ Responde EXACTAMENTE con este JSON (sin texto adicional):
             return $filename;
         }
 
-        // Foto en disco privado (nueva subida) → endpoint autenticado.
+        // Foto en disco privado → URL firmada temporalmente (24h), no requiere auth header.
         if ($photoId !== null && Storage::disk('private')->exists($filename)) {
-            return url('/api/v/client/photos/'.$photoId.'/view');
+            return \Illuminate\Support\Facades\URL::temporarySignedRoute(
+                'client.photo.view',
+                now()->addHours(24),
+                ['id' => $photoId]
+            );
         }
 
         // Legacy: disco public (fotos antiguas no migradas).

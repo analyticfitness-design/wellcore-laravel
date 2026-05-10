@@ -201,7 +201,6 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'thr
     Route::post('/supplements/toggle', [SocialController::class, 'toggleSupplement']);
     Route::get('/photos', [SocialController::class, 'photos']);
     Route::post('/photos', [SocialController::class, 'uploadPhoto']);
-    Route::get('/photos/{id}/view', [SocialController::class, 'viewPhoto'])->where('id', '[0-9]+');
     Route::delete('/photos/{id}', [SocialController::class, 'deletePhoto'])->where('id', '[0-9]+');
     Route::get('/photos/{id}/notes', [SocialController::class, 'photoNotes'])->where('id', '[0-9]+');
     Route::post('/photos/{id}/notes/reply', [SocialController::class, 'photoNotesReply'])
@@ -214,8 +213,13 @@ Route::prefix('v/client')->middleware(['auth:wellcore', 'plan.lock:strict', 'thr
     Route::get('/videos', [SocialController::class, 'videos']);
     Route::get('/academia', [SocialController::class, 'academia']);
     Route::get('/video-checkins', [SocialController::class, 'videoCheckinHistory']);
-    Route::get('/video-checkins/{id}/view', [SocialController::class, 'viewVideoCheckin'])->where('id', '[0-9]+');
     Route::post('/video-checkin', [SocialController::class, 'videoCheckinSubmit']);
+});
+
+// Signed media endpoints — no auth middleware, security via URL signature (hasValidSignature)
+Route::prefix('v/client')->middleware('throttle:api')->group(function () {
+    Route::get('/photos/{id}/view', [SocialController::class, 'viewPhoto'])->where('id', '[0-9]+')->name('client.photo.view');
+    Route::get('/video-checkins/{id}/view', [SocialController::class, 'viewVideoCheckin'])->where('id', '[0-9]+')->name('client.video-checkin.view');
 });
 
 // Medals & Achievements (Phase 1 — Backend)
