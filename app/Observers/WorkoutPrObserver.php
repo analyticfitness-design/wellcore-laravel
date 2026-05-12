@@ -42,14 +42,18 @@ class WorkoutPrObserver
             'auto' => true,
         ]);
 
-        event(new NewMessageSent(
-            coachId: $coach->id,
-            clientId: $client->id,
-            senderId: $client->id,
-            senderName: $client->name ?? 'Cliente',
-            messagePreview: mb_substr($text, 0, 100),
-            sentAt: $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
-        ));
+        try {
+            event(new NewMessageSent(
+                coachId: $coach->id,
+                clientId: $client->id,
+                senderId: $client->id,
+                senderName: $client->name ?? 'Cliente',
+                messagePreview: mb_substr($text, 0, 100),
+                sentAt: $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
+            ));
+        } catch (\Throwable $e) {
+            \Log::warning('NewMessageSent broadcast failed (PR observer)', ['error' => $e->getMessage()]);
+        }
     }
 
     private function maybeAutoShare(WorkoutPr $pr, Client $client): void

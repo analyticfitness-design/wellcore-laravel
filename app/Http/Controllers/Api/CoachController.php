@@ -967,14 +967,18 @@ class CoachController extends Controller
             'direction' => 'coach_to_client',
         ]);
 
-        event(new NewMessageSent(
-            coachId: $coachId,
-            clientId: (int) $validated['client_id'],
-            senderId: $coachId,
-            senderName: $coach->name ?? 'Coach',
-            messagePreview: mb_substr($msg->message, 0, 100),
-            sentAt: $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
-        ));
+        try {
+            event(new NewMessageSent(
+                coachId: $coachId,
+                clientId: (int) $validated['client_id'],
+                senderId: $coachId,
+                senderName: $coach->name ?? 'Coach',
+                messagePreview: mb_substr($msg->message, 0, 100),
+                sentAt: $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
+            ));
+        } catch (\Throwable $e) {
+            \Log::warning('NewMessageSent broadcast failed', ['error' => $e->getMessage()]);
+        }
 
         return response()->json(['sent' => true, 'message_id' => $msg->id], 201);
     }

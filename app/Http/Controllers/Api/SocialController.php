@@ -641,14 +641,18 @@ class SocialController extends Controller
             'direction' => 'client_to_coach',
         ]);
 
-        event(new NewMessageSent(
-            coachId: $coach->id,
-            clientId: $clientId,
-            senderId: $clientId,
-            senderName: auth('wellcore')->user()->name ?? 'Cliente',
-            messagePreview: mb_substr($msg->message, 0, 100),
-            sentAt: $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
-        ));
+        try {
+            event(new NewMessageSent(
+                coachId: $coach->id,
+                clientId: $clientId,
+                senderId: $clientId,
+                senderName: auth('wellcore')->user()->name ?? 'Cliente',
+                messagePreview: mb_substr($msg->message, 0, 100),
+                sentAt: $msg->created_at?->toIso8601String() ?? now()->toIso8601String(),
+            ));
+        } catch (\Throwable $e) {
+            \Log::warning('NewMessageSent broadcast failed (social)', ['error' => $e->getMessage()]);
+        }
 
         return response()->json([
             'id' => $msg->id,
