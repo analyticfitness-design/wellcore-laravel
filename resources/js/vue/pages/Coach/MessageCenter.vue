@@ -194,17 +194,17 @@ async function sendMessage() {
       message: text,
     });
     newMessage.value = '';
-    // Only push locally when NOT using Echo (Echo will deliver the event back)
-    if (!echoChannel) {
-      messages.value.push({
-        id: Date.now(),
-        message: text,
-        is_coach: true,
-        time: 'Ahora',
-      });
-      await nextTick();
-      scrollToBottom();
-    }
+    // Always push locally for immediate feedback — Echo's NewMessageSent
+    // only broadcasts metadata (sender_id, preview…), not the full message
+    // object, so waiting for Echo would leave the conversation blank.
+    messages.value.push({
+      id: Date.now(),
+      message: text,
+      is_coach: true,
+      time: 'Ahora',
+    });
+    await nextTick();
+    scrollToBottom();
   } catch {
     // Restore typed text so the coach doesn't lose their message
     newMessage.value = text;

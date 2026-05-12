@@ -127,6 +127,7 @@
                     <button
                         type="submit"
                         wire:loading.attr="disabled"
+                        wire:target="sendMessage"
                         class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-wc-accent text-white transition-all hover:bg-wc-accent-hover active:scale-95 disabled:opacity-60"
                         aria-label="Enviar mensaje"
                     >
