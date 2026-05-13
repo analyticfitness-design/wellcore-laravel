@@ -1,0 +1,59 @@
+{
+    "mcpServers": {},
+    "customInstructions": "Antes de escribir código que toque auth, DB, o arquitectura: leer CONTEXT.md y docs/adr/. Los ADRs son vinculantes — si tu implementación contradice un ADR, reportarlo antes de proceder. Verificar schema real en container antes de asumir tipos de columna. WellCoreGuard es el único sistema de auth válido (no Sanctum, no actingAs()). Solo migraciones aditivas — jamás DROP ni ALTER de tipo.",
+    "hooks": {
+        "Stop": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "\"C:\\Users\\GODSF\\.config\\herd\\bin\\php.bat\" \"C:\\Users\\GODSF\\Herd\\wellcore-laravel\\.claude\\hooks\\session-snapshot.php\"",
+                        "timeout": 8000
+                    }
+                ]
+            }
+        ],
+        "PreToolUse": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "\"C:\\Users\\GODSF\\.config\\herd\\bin\\php.bat\" \"C:\\Users\\GODSF\\Herd\\wellcore-laravel\\.claude\\hooks\\dangerous-actions-blocker.php\"",
+                        "timeout": 8000
+                    }
+                ]
+            },
+            {
+                "matcher": "Edit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "\"C:\\Users\\GODSF\\.config\\herd\\bin\\php.bat\" \"C:\\Users\\GODSF\\Herd\\wellcore-laravel\\.claude\\hooks\\dangerous-actions-blocker.php\"",
+                        "timeout": 8000
+                    }
+                ]
+            },
+            {
+                "matcher": "Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "\"C:\\Users\\GODSF\\.config\\herd\\bin\\php.bat\" \"C:\\Users\\GODSF\\Herd\\wellcore-laravel\\.claude\\hooks\\dangerous-actions-blocker.php\"",
+                        "timeout": 8000
+                    }
+                ]
+            },
+            {
+                "matcher": "MultiEdit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "\"C:\\Users\\GODSF\\.config\\herd\\bin\\php.bat\" \"C:\\Users\\GODSF\\Herd\\wellcore-laravel\\.claude\\hooks\\dangerous-actions-blocker.php\"",
+                        "timeout": 8000
+                    }
+                ]
+            }
+        ]
+    }
+}
