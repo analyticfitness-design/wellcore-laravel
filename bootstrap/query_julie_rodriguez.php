@@ -1,6 +1,6 @@
 <?php
-// Script temporal — buscar plan actual de Julie Rodriguez
-// Ejecutar: php /code/bootstrap/query_julie_rodriguez.php
+// Script temporal — obtener plan activo de Julie Rodriguez (client_id=57, AP_ID=135)
+// Ejecutar via EasyPanel script query-julie-plan
 // ELIMINAR después de usar
 
 $host = 'wellcorefitness_wellcorefitness-mysql';
@@ -15,81 +15,47 @@ try {
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
 
-    // Buscar a Julie Rodriguez
+    // Verificar schema de clients
+    $cols = $pdo->query("SHOW COLUMNS FROM clients")->fetchAll(PDO::FETCH_COLUMN);
+    $nameCol = in_array('nombre', $cols) ? 'nombre' : (in_array('name', $cols) ? 'name' : $cols[1]);
+    echo "=== COLUMNA NOMBRE: $nameCol ===\n";
+
+    // Buscar el plan activo de Julie (client_id=57, plan_type=entrenamiento)
     $stmt = $pdo->prepare("
-        SELECT id, nombre, email, plan, coach_id, created_at
-        FROM clients
-        WHERE nombre LIKE '%julie%' OR nombre LIKE '%Julie%' OR email LIKE '%julie%'
-        ORDER BY id DESC
-        LIMIT 10
+        SELECT id, client_id, plan_type, active, valid_from, expires_at, created_at,
+               SUBSTRING(content, 1, 200) as content_preview
+        FROM assigned_plans
+        WHERE client_id = 57 AND plan_type = 'entrenamiento'
+        ORDER BY created_at DESC
+        LIMIT 5
     ");
     $stmt->execute();
-    $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo "=== CLIENTES ENCONTRADOS ===\n";
-    foreach ($clients as $c) {
-        echo "ID: {$c['id']} | Nombre: {$c['nombre']} | Email: {$c['email']} | Plan: {$c['plan']}\n";
+    echo "=== PLANES ENTRENAMIENTO CLIENT 57 ===\n";
+    foreach ($plans as $p) {
+        echo "AP_ID: {$p['id']} | active: {$p['active']} | from: {$p['valid_from']} | expires: {$p['expires_at']}\n";
+        echo "preview: {$p['content_preview']}\n\n";
     }
 
-    if (empty($clients)) {
-        // Intentar con apellido Rodriguez
-        $stmt2 = $pdo->prepare("
-            SELECT id, nombre, email, plan, coach_id, created_at
-            FROM clients
-            WHERE nombre LIKE '%rodriguez%' OR nombre LIKE '%Rodriguez%'
-            ORDER BY id DESC LIMIT 10
-        ");
-        $stmt2->execute();
-        $clients2 = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-        echo "=== BÚSQUEDA POR APELLIDO RODRIGUEZ ===\n";
-        foreach ($clients2 as $c) {
-            echo "ID: {$c['id']} | Nombre: {$c['nombre']} | Email: {$c['email']} | Plan: {$c['plan']}\n";
-        }
-    }
+    // Extraer el plan activo AP_ID=135 — solo los días (ejercicios por día)
+    $stmt2 = $pdo->prepare("SELECT content FROM assigned_plans WHERE id = 135");
+    $stmt2->execute();
+    $row = $stmt2->fetch(PDO::FETCH_ASSOC);
 
-    // Si encontramos exactamente un Julie Rodriguez, mostrar sus planes
-    $julieId = null;
-    foreach ($clients as $c) {
-        if (stripos($c['nombre'], 'julie') !== false) {
-            $julieId = $c['id'];
-            break;
-        }
-    }
-
-    if ($julieId) {
-        echo "\n=== PLANES ACTIVOS DE CLIENT ID={$julieId} ===\n";
-        $stmt3 = $pdo->prepare("
-            SELECT id, plan_type, active, valid_from, expires_at, assigned_by, created_at
-            FROM assigned_plans
-            WHERE client_id = ?
-            ORDER BY created_at DESC
-            LIMIT 10
-        ");
-        $stmt3->execute([$julieId]);
-        $plans = $stmt3->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($plans as $p) {
-            echo "AP_ID: {$p['id']} | type: {$p['plan_type']} | active: {$p['active']} | from: {$p['valid_from']} | expires: {$p['expires_at']}\n";
-        }
-
-        // Extraer el JSON del plan de entrenamiento activo
-        $stmt4 = $pdo->prepare("
-            SELECT id, plan_type, content, valid_from, expires_at
-            FROM assigned_plans
-            WHERE client_id = ? AND plan_type = 'entrenamiento' AND active = 1
-            ORDER BY created_at DESC LIMIT 1
-        ");
-        $stmt4->execute([$julieId]);
-        $trainPlan = $stmt4->fetch(PDO::FETCH_ASSOC);
-
-        if ($trainPlan) {
-            echo "\n=== PLAN ENTRENAMIENTO ACTIVO (AP ID={$trainPlan['id']}) ===\n";
-            echo "valid_from: {$trainPlan['valid_from']} | expires_at: {$trainPlan['expires_at']}\n";
-            echo "CONTENT JSON:\n";
-            // Pretty print
-            $decoded = json_decode($trainPlan['content'], true);
-            echo json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n";
-        } else {
-            echo "\nNo hay plan de entrenamiento activo para este cliente.\n";
+    if ($row) {
+        $plan = json_decode($row['content'], true);
+        echo "\n=== ESTRUCTURA PLAN AP_ID=135 ===\n";
+        echo "Semanas: " . count($plan['semanas'] ?? []) . "\n";
+        $sem0 = $plan['semanas'][0] ?? null;
+        if ($sem0) {
+            echo "Fase semana 0: " . ($sem0['fase'] ?? 'N/A') . "\n";
+            foreach (($sem0['dias'] ?? []) as $dia) {
+                echo "\n--- " . $dia['dia_semana'] . " (" . ($dia['grupo_muscular'] ?? '') . ") ---\n";
+                foreach (($dia['ejercicios'] ?? []) as $ej) {
+                    echo "  - " . $ej['nombre'] . " | series: " . ($ej['series'] ?? '') . " | reps: " . ($ej['reps'] ?? '') . "\n";
+                }
+            }
         }
     }
 
