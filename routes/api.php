@@ -406,6 +406,10 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::get('/clients/{id}/activity', [AdminController::class, 'clientActivity'])->whereNumber('id');
     Route::put('/clients/{id}', [AdminController::class, 'updateClient'])->where('id', '[0-9]+');
     Route::delete('/clients/{id}', [AdminController::class, 'deleteClient'])->where('id', '[0-9]+');
+
+    // Auditoría global de extensiones manuales — solo superadmin (controller hace el check fino)
+    Route::get('/extensions', [AdminController::class, 'extensionsList']);
+
     Route::get('/payments', [AdminController::class, 'payments']);
     Route::get('/coaches/stats', [AdminController::class, 'coachStats']);
     Route::get('/coaches', [AdminController::class, 'coaches']);
@@ -528,6 +532,11 @@ Route::prefix('v/admin')->middleware(['auth:wellcore', 'throttle:api', 'role:adm
     Route::get('/tools/history', [AdminToolsController::class, 'history']);
     Route::post('/tools/{id}/run', [AdminToolsController::class, 'run'])->where('id', '[\w\-]+');
 });
+
+// Extensión manual de membresía — coach también puede ejecutar (Policy filtra por ownership)
+Route::post('/v/admin/clients/{id}/extend-membership', [AdminController::class, 'extendMembership'])
+    ->middleware(['auth:wellcore', 'throttle:api', 'role:coach,admin,superadmin,jefe'])
+    ->whereNumber('id');
 
 // ───────────────────────────────────────────────────────────────────────────
 // Community Cross-Role (Fase A) — Coach / Admin / Client community endpoints

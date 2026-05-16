@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\ExtendClientMembershipAction;
 use App\Enums\ClientStatus;
 use App\Enums\PlanType;
 use App\Enums\TicketPriority;
@@ -16,6 +17,7 @@ use App\Mail\WelcomeMail;
 use App\Models\Admin;
 use App\Models\AssignedPlan;
 use App\Models\AuditLog;
+use App\Models\PlanExtension;
 use App\Models\PlatformSetting;
 use App\Models\AuthToken;
 use App\Models\ChatMessage;
@@ -38,6 +40,7 @@ use App\Models\Ticket;
 use App\Models\TrainingLog;
 use App\Models\WellcoreNotification;
 use App\Services\AIService;
+use App\Services\PlanLockService;
 use App\Services\PushNotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -90,6 +93,32 @@ class AdminController extends Controller
 
         if (! in_array($role, ['superadmin', 'jefe'])) {
             abort(403, 'Solo superadmins pueden realizar esta acción.');
+        }
+
+        return $admin;
+    }
+
+    /**
+     * Resolve any Admin (superadmin/admin/jefe/coach) — para acciones compartidas
+     * como extender membresía, donde un coach autorizado también puede ejecutar.
+     */
+    protected function resolveAdminOrCoachOrFail(Request $request): Admin
+    {
+        $auth = $this->resolveAuthUser($request);
+
+        if (! $auth) {
+            abort(401, 'Token invalido o expirado.');
+        }
+
+        if ($auth['userType'] !== UserType::Admin) {
+            abort(403, 'Acceso solo para operadores.');
+        }
+
+        $admin = $auth['user'];
+        $role = $admin->role?->value ?? $admin->role ?? '';
+
+        if (! in_array($role, ['admin', 'superadmin', 'jefe', 'coach'])) {
+            abort(403, 'No tienes permisos para esta operación.');
         }
 
         return $admin;
@@ -669,7 +698,7 @@ class AdminController extends Controller
      * Client detail.
      * Ports Admin\ClientDetail.php mount() logic.
      */
-    public function clientDetail(Request $request, int $id): JsonResponse
+    public function clientDetail(Request $request, int $id, PlanLockService $lockService): JsonResponse
     {
         $this->resolveAdminOrFail($request);
 
@@ -686,7 +715,39 @@ class AdminController extends Controller
                 'version' => $p->version,
                 'assigned_by' => $p->assigned_by,
                 'created_at' => $p->created_at?->format('d M Y'),
+                'expires_at' => $p->expires_at?->toDateString(),
             ]);
+
+        // Membership status (for extension panel)
+        $activePlan = $lockService->getActivePlan($client);
+        $membership = [
+            'expires_at' => $activePlan?->expires_at?->toDateString(),
+            'expires_at_formatted' => $activePlan?->expires_at
+                ? Carbon::parse($activePlan->expires_at)->format('d M Y')
+                : null,
+            'days_until_expiry' => $lockService->daysUntilExpiry($client),
+            'is_locked' => $lockService->isLocked($client),
+            'is_in_grace' => $lockService->isInGracePeriod($client),
+            'plan_type' => $activePlan?->plan_type,
+        ];
+
+        // Last 5 extensions for this client (inline history)
+        $recentExtensions = PlanExtension::where('client_id', $id)
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get()
+            ->map(function (PlanExtension $ext) {
+                $actor = Admin::find($ext->actor_admin_id);
+                return [
+                    'id' => $ext->id,
+                    'created_at' => $ext->created_at?->format('d M Y H:i'),
+                    'actor_name' => $actor?->name ?? '(eliminado)',
+                    'actor_role' => $ext->actor_role,
+                    'previous_expires_at' => $ext->previous_expires_at?->toDateString(),
+                    'new_expires_at' => $ext->new_expires_at?->toDateString(),
+                    'notes' => $ext->notes,
+                ];
+            });
 
         // Available coaches (for edit form)
         $coaches = Admin::where('role', 'coach')
@@ -803,6 +864,8 @@ class AdminController extends Controller
             ],
             'plans' => $plans,
             'coaches' => $coaches,
+            'membership' => $membership,
+            'recent_extensions' => $recentExtensions,
             'statusOptions' => array_map(
                 fn ($s) => ['value' => $s->value, 'label' => $s->label()],
                 ClientStatus::cases()
@@ -952,6 +1015,149 @@ class AdminController extends Controller
         Cache::forget('admin_invitations_stats');
 
         return response()->json(['deleted' => true]);
+    }
+
+    // ─── Membership Extension (manual renewal) ──────────────────────────
+
+    /**
+     * POST /api/v/admin/clients/{id}/extend-membership
+     *
+     * Extiende manualmente la fecha de corte (expires_at) de todos los planes
+     * activos del cliente a la fecha indicada. Pensado para casos donde el
+     * pago fue confirmado por canal off-Wompi (transferencia, efectivo, cortesía).
+     *
+     * Permisos: superadmin/admin/jefe (cualquier cliente) o coach (solo los suyos,
+     * validado por ClientPolicy::extendMembership).
+     *
+     * Body:
+     *   - new_expires_at: YYYY-MM-DD (requerido, >= mañana, <= +2 años)
+     *   - notes: string opcional (max 500 chars)
+     */
+    public function extendMembership(
+        Request $request,
+        ExtendClientMembershipAction $action,
+        PlanLockService $lockService,
+        int $id,
+    ): JsonResponse {
+        $actor = $this->resolveAdminOrCoachOrFail($request);
+
+        $client = Client::find($id);
+        if (! $client) {
+            return response()->json(['error' => 'Cliente no encontrado.'], 404);
+        }
+
+        if (! $actor->can('extendMembership', $client)) {
+            abort(403, 'No tienes permiso para extender la membresía de este cliente.');
+        }
+
+        $maxDate = now('America/Bogota')->copy()->addYears(2)->toDateString();
+        $minDate = now('America/Bogota')->copy()->addDay()->toDateString();
+
+        $validated = $request->validate([
+            'new_expires_at' => ['required', 'date_format:Y-m-d', "after_or_equal:{$minDate}", "before_or_equal:{$maxDate}"],
+            'notes' => ['nullable', 'string', 'max:500'],
+        ], [
+            'new_expires_at.after_or_equal' => 'La fecha debe ser al menos mañana.',
+            'new_expires_at.before_or_equal' => 'La fecha no puede ser más de 2 años en el futuro.',
+        ]);
+
+        $newDate = Carbon::parse($validated['new_expires_at'], 'America/Bogota');
+        $result = $action->execute(
+            client: $client,
+            newExpiresAt: $newDate,
+            actor: $actor,
+            notes: $validated['notes'] ?? null,
+        );
+
+        return response()->json([
+            'extended' => true,
+            'message' => "Membresía extendida hasta {$newDate->format('d M Y')}",
+            'plans_updated' => $result['plans_updated'],
+            'previous_expires_at' => $result['previous_expires_at'],
+            'new_expires_at' => $result['new_expires_at'],
+            'extension_id' => $result['extension_id'],
+            'is_locked' => $lockService->isLocked($client->refresh()),
+        ]);
+    }
+
+    /**
+     * GET /api/v/admin/extensions
+     *
+     * Listado paginado de todas las extensiones manuales (auditoría global).
+     * Solo superadmin/jefe — los coaches no ven el historial cross-cliente.
+     *
+     * Query params:
+     *   - actor_admin_id: int opcional
+     *   - date_from: YYYY-MM-DD opcional
+     *   - date_to: YYYY-MM-DD opcional
+     *   - per_page: 25 default, max 100
+     */
+    public function extensionsList(Request $request): JsonResponse
+    {
+        $this->resolveSuperAdminOrFail($request);
+
+        $actorId = $request->integer('actor_admin_id');
+        $dateFrom = $request->query('date_from');
+        $dateTo = $request->query('date_to');
+        $perPage = min(100, max(1, $request->integer('per_page', 25)));
+
+        $query = PlanExtension::query()
+            ->orderByDesc('created_at');
+
+        if ($actorId > 0) {
+            $query->where('actor_admin_id', $actorId);
+        }
+
+        if ($dateFrom) {
+            $query->where('created_at', '>=', Carbon::parse($dateFrom)->startOfDay());
+        }
+
+        if ($dateTo) {
+            $query->where('created_at', '<=', Carbon::parse($dateTo)->endOfDay());
+        }
+
+        $paginator = $query->paginate($perPage);
+
+        $clientIds = $paginator->pluck('client_id')->unique()->all();
+        $actorIds = $paginator->pluck('actor_admin_id')->unique()->all();
+
+        $clients = Client::whereIn('id', $clientIds)->get(['id', 'name', 'email'])->keyBy('id');
+        $actors = Admin::whereIn('id', $actorIds)->get(['id', 'name', 'role'])->keyBy('id');
+
+        $rows = $paginator->getCollection()->map(function (PlanExtension $ext) use ($clients, $actors) {
+            $client = $clients[$ext->client_id] ?? null;
+            $actor = $actors[$ext->actor_admin_id] ?? null;
+
+            return [
+                'id' => $ext->id,
+                'created_at' => $ext->created_at?->format('Y-m-d H:i'),
+                'client' => $client ? [
+                    'id' => $client->id,
+                    'name' => $client->name,
+                    'email' => $client->email,
+                ] : ['id' => $ext->client_id, 'name' => '(eliminado)', 'email' => null],
+                'actor' => $actor ? [
+                    'id' => $actor->id,
+                    'name' => $actor->name,
+                    'role' => $actor->role?->value ?? null,
+                ] : ['id' => $ext->actor_admin_id, 'name' => '(eliminado)', 'role' => null],
+                'actor_role_snapshot' => $ext->actor_role,
+                'previous_expires_at' => $ext->previous_expires_at?->toDateString(),
+                'new_expires_at' => $ext->new_expires_at?->toDateString(),
+                'notes' => $ext->notes,
+                'notification_sent_at' => $ext->notification_sent_at?->format('Y-m-d H:i'),
+            ];
+        });
+
+        return response()->json([
+            'data' => $rows,
+            'meta' => [
+                'total' => $paginator->total(),
+                'per_page' => $paginator->perPage(),
+                'current_page' => $paginator->currentPage(),
+                'last_page' => $paginator->lastPage(),
+            ],
+        ]);
     }
 
     // ─── Payments ───────────────────────────────────────────────────────

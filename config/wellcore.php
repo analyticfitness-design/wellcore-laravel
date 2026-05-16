@@ -135,6 +135,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Audit Email (destinatario de auditorías operativas)
+    |--------------------------------------------------------------------------
+    | Recibe notificaciones cuando coaches/admins ejecutan acciones sensibles
+    | desde el panel (ej. extender membresía manualmente). Default: info@.
+    */
+    'audit_email' => env('WC_AUDIT_EMAIL', 'info@wellcorefitness.com'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Limits
     |--------------------------------------------------------------------------
     */

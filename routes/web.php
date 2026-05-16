@@ -278,6 +278,7 @@ Route::view('/admin/tools', 'vue')->name('admin.tools');
 Route::view('/admin/tickets', 'vue')->name('admin.tickets');
 Route::view('/admin/settings', 'vue')->name('admin.settings');
 Route::view('/admin/payment-proofs', 'vue')->name('admin.payment-proofs');
+Route::view('/admin/extensions', 'vue')->name('admin.extensions');
 
 // Admin file viewer antes del catch-all — de lo contrario el catch-all /admin/{any}
 // intercepta la URL y sirve HTML en lugar del stream de imagen/PDF.
