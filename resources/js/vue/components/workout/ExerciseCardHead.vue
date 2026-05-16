@@ -43,7 +43,11 @@ const reps   = computed(() => props.exercise?.repeticiones || props.exercise?.re
 const descanso = computed(() => props.exercise?.descanso || props.exercise?.rest || '90s');
 const rir = computed(() => {
     const r = props.exercise?.rir;
-    return (r === null || r === undefined || r === '') ? null : Number(r);
+    if (r === null || r === undefined || r === '') return null;
+    const n = Number(r);
+    // Si no es numérico (ej: "—" para cardio sin RIR), no renderizar
+    if (Number.isNaN(n)) return null;
+    return n;
 });
 
 const rirClass = computed(() => {
