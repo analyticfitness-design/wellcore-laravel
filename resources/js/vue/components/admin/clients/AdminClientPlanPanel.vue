@@ -1,7 +1,6 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useAdminClientDetailStore } from '../../../stores/adminClientDetail';
-import ExtendMembershipModal from './ExtendMembershipModal.vue';
 
 const props = defineProps({
     client: { type: Object, default: null },
@@ -13,8 +12,6 @@ const planDetails = computed(() => props.client?.planDetails || {});
 const assignedPlans = computed(() => store.plans || []);
 const membership = computed(() => store.membership || null);
 const recentExtensions = computed(() => store.recentExtensions || []);
-
-const modalOpen = ref(false);
 
 const hasMonthlyPlan = computed(() => !!membership.value?.plan_type);
 const isLocked = computed(() => membership.value?.is_locked === true);
@@ -54,7 +51,7 @@ const stateLabel = computed(() => {
       <button
         type="button"
         class="extend-btn"
-        @click="modalOpen = true"
+        @click="store.openExtendModal()"
       >
         Extender membresía
       </button>
@@ -145,11 +142,6 @@ const stateLabel = computed(() => {
       </div>
     </article>
 
-    <ExtendMembershipModal
-      :open="modalOpen"
-      @close="modalOpen = false"
-      @extended="modalOpen = false"
-    />
   </div>
 </template>
 

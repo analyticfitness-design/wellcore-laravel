@@ -24,6 +24,20 @@ watch(() => props.client, (c) => {
 const statusOptions = computed(() => store.statusOptions || []);
 const planOptions = computed(() => store.planOptions || []);
 
+const membership = computed(() => store.membership || null);
+const hasMonthlyPlan = computed(() => !!membership.value?.plan_type);
+const isLocked = computed(() => membership.value?.is_locked === true);
+const isInGrace = computed(() => membership.value?.is_in_grace === true);
+const daysUntil = computed(() => membership.value?.days_until_expiry);
+const expiresFormatted = computed(() => membership.value?.expires_at_formatted);
+
+const stateLabel = computed(() => {
+    if (!hasMonthlyPlan.value) return { text: 'SIN MENSUAL', cls: 'membership-pill--neutral' };
+    if (isLocked.value) return { text: 'VENCIDO', cls: 'membership-pill--danger' };
+    if (isInGrace.value) return { text: 'POR VENCER', cls: 'membership-pill--warn' };
+    return { text: 'AL DIA', cls: 'membership-pill--success' };
+});
+
 async function handleStatusChange() {
     if (!localStatus.value) return;
     await store.changeStatus(localStatus.value);
@@ -78,6 +92,33 @@ async function handlePlanChange() {
           </button>
         </div>
       </div>
+    </section>
+
+    <section class="card card--membership">
+      <header class="card-head">
+        <span class="card-eyebrow">MEMBRESIA</span>
+        <span class="membership-pill" :class="stateLabel.cls">{{ stateLabel.text }}</span>
+      </header>
+      <div class="membership-grid">
+        <div class="membership-cell">
+          <span class="row-label">FECHA DE CORTE</span>
+          <span class="membership-value">{{ expiresFormatted || '—' }}</span>
+        </div>
+        <div class="membership-cell">
+          <span class="row-label">DIAS RESTANTES</span>
+          <span
+            class="membership-value"
+            :class="{ 'membership-value--danger': isLocked, 'membership-value--warn': isInGrace }"
+          >{{ daysUntil !== null && daysUntil !== undefined ? daysUntil : '—' }}</span>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn btn--accent btn--extend"
+        @click="store.openExtendModal()"
+      >
+        EXTENDER MEMBRESIA
+      </button>
     </section>
 
     <section class="card">
@@ -268,6 +309,54 @@ async function handlePlanChange() {
     color: var(--c-text-3);
 }
 .action-sub--warn { color: #FCD34D; }
+
+.card--membership { border-color: rgba(220, 38, 38, 0.35); }
+.membership-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 8px 0;
+    border-top: 1px solid var(--c-border);
+    border-bottom: 1px solid var(--c-border);
+}
+.membership-cell { display: flex; flex-direction: column; gap: 2px; }
+.membership-value {
+    font-family: var(--font-display);
+    font-feature-settings: 'tnum' 1;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--c-text);
+    line-height: 1.1;
+}
+.membership-value--danger { color: #F87171; }
+.membership-value--warn { color: #FBBF24; }
+.membership-pill {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 8px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: var(--r-pill, 999px);
+    line-height: 1.4;
+}
+.membership-pill--success { background: rgba(16,185,129,0.1); color: #34D399; }
+.membership-pill--warn { background: rgba(251,191,36,0.12); color: #FBBF24; }
+.membership-pill--danger { background: rgba(220,38,38,0.15); color: #F87171; }
+.membership-pill--neutral { background: rgba(255,255,255,0.04); color: var(--c-text-3); }
+
+.btn--extend {
+    width: 100%;
+    background: #DC2626;
+    border-color: #DC2626;
+    color: white;
+    height: 40px;
+}
+.btn--extend:hover:not(:disabled) {
+    background: #B91C1C;
+    border-color: #B91C1C;
+    color: white;
+}
 
 .action-msg {
     border-radius: var(--r-sm, 12px);

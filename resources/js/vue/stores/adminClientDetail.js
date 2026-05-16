@@ -30,6 +30,7 @@ export const useAdminClientDetailStore = defineStore('adminClientDetail', {
         planOptions: [],
         membership: null,
         recentExtensions: [],
+        extendModalOpen: false,
         loading: false,
         error: null,
         lastRefresh: null,
@@ -215,6 +216,9 @@ export const useAdminClientDetailStore = defineStore('adminClientDetail', {
             }
         },
 
+        openExtendModal() { this.extendModalOpen = true; },
+        closeExtendModal() { this.extendModalOpen = false; },
+
         clearMessage() { this.actionMessage = null; },
 
         close() {
@@ -227,6 +231,7 @@ export const useAdminClientDetailStore = defineStore('adminClientDetail', {
             this.planOptions = [];
             this.membership = null;
             this.recentExtensions = [];
+            this.extendModalOpen = false;
             this.error = null;
             this.lastRefresh = null;
             this.activeTab = 'resumen';

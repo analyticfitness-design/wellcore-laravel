@@ -15,6 +15,7 @@ import AdminClientNotesPanel from '../../components/admin/clients/AdminClientNot
 import AdminClientQuickActions from '../../components/admin/clients/AdminClientQuickActions.vue';
 import AdminClientIntakePanel from '../../components/admin/clients/AdminClientIntakePanel.vue';
 import AdminClientActivityPanel from '../../components/admin/clients/AdminClientActivityPanel.vue';
+import ExtendMembershipModal from '../../components/admin/clients/ExtendMembershipModal.vue';
 
 import { useAdminClientDetailStore } from '../../stores/adminClientDetail';
 
@@ -145,6 +146,13 @@ onBeforeUnmount(() => {
           />
         </aside>
       </div>
+
+      <!-- Modal Extender Membresía (compartido entre tab PLAN, sidebar y card RESUMEN) -->
+      <ExtendMembershipModal
+        :open="store.extendModalOpen"
+        @close="store.closeExtendModal()"
+        @extended="store.closeExtendModal()"
+      />
 
       <!-- Modal Edit (status/plan via PUT) -->
       <Teleport to="body">
