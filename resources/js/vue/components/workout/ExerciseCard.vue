@@ -10,12 +10,16 @@
  * - active: botón "Ver ejercicio" expande GIF cinematic + play overlay → YouTube embed
  * - done: thumb mini 48px con check verde overlay + stats en línea
  */
-import { computed, ref } from 'vue';
+import { computed, ref, defineAsyncComponent } from 'vue';
 import ExerciseCardHead from './ExerciseCardHead.vue';
 import LastSessionStrip from './LastSessionStrip.vue';
 import SetRow from './SetRow.vue';
 import VoiceCTA from './VoiceCTA.vue';
 import { getEmbedUrl } from '../../composables/useExerciseMedia';
+import { inferCardioType } from '../../composables/useCardioInference';
+
+// F1a — Cardio module v2 (lazy load para no inflar bundle)
+const CardioPlayer = defineAsyncComponent(() => import('./cardio/CardioPlayer.vue'));
 
 // Track imgs que fallaron — usado para mostrar fallback
 const brokenImgs = ref(new Set());
@@ -86,6 +90,28 @@ const hasMedia        = computed(() => !!exImageUrl(props.exercise) || !!exVideo
 const hasNotes        = computed(() => !!exNotas(props.exercise));
 const hasVariation    = computed(() => !!props.exercise?.variacion?.nombre);
 const isCardio        = computed(() => exIsCardio(props.exercise));
+
+// F1a — Cardio module v2 detection.
+// Si el ejercicio es cardio Y la inferencia lo clasifica como un arquetipo
+// soportado (NO 'free') Y el feature flag global está activo, usar CardioPlayer.
+// El feature flag se controla via localStorage `wc_force_cardio_v2`:
+//   '1' = forzar v2, '0' = forzar legacy (SetRow cardio), null = default (off por ahora).
+const cardioTypeInferred = computed(() => isCardio.value ? inferCardioType(props.exercise) : 'free');
+const cardioV2SupportedTypes = ['continuous_low', 'continuous_moderate', 'intervals', 'tabata'];  // F1a+F1b — F2b agregará circuit
+const cardioV2Enabled = computed(() => {
+    if (!isCardio.value) return false;
+    if (!cardioV2SupportedTypes.includes(cardioTypeInferred.value)) return false;
+    try {
+        const force = localStorage.getItem('wc_force_cardio_v2');
+        if (force === '0') return false;
+        if (force === '1') return true;
+    } catch { /* ignore */ }
+    // Default actual: opt-in via localStorage. Cuando F1b esté listo, cambiar a opt-out.
+    return false;
+});
+
+// Indica al padre que este ejercicio usará v2 dispatcher en vez de SetRow loop
+const useCardioV2 = computed(() => cardioV2Enabled.value);
 const thumbnailUrl    = computed(() => displayImage(props.exercise));
 const videoEmbedUrl   = computed(() => getEmbedUrl(exVideoUrl(props.exercise)));
 const hasYoutubeVideo = computed(() => !!videoEmbedUrl.value);
@@ -164,6 +190,34 @@ function onSetComplete(sIdx) {
 }
 function onSetUncomplete(sIdx) {
     emit('uncomplete-set', { exIndex: props.exerciseIndex, sIdx });
+}
+
+// F1a/F1b — handler para CardioPlayer v2 (cardio continuo + intervalos + tabata)
+function onCardioV2Complete(payload) {
+    // Payload polimorfo según cardioType:
+    //  continuous_*: { cardioType, durationActualSec, durationPlannedSec, speed, incline, rpe, notes }
+    //  intervals/tabata: { cardioType, durationActualSec, durationPlannedSec, roundsPlanned, roundsCompleted, rpe, notes }
+    const metadata = {
+        duration_actual_sec: payload.durationActualSec,
+        duration_planned_sec: payload.durationPlannedSec,
+    };
+    if (payload.roundsPlanned != null) metadata.rounds_planned = payload.roundsPlanned;
+    if (payload.roundsCompleted != null) metadata.rounds_completed = payload.roundsCompleted;
+
+    emit('complete-cardio-set', {
+        exIndex: props.exerciseIndex,
+        sIdx: 0,
+        cardio_v2: true,
+        cardio_type: payload.cardioType,
+        duration_minutes: Math.round((payload.durationActualSec || 0) / 60),
+        speed_kmh: payload.speed || 0,
+        incline_percent: payload.incline || 0,
+        rounds_planned: payload.roundsPlanned ?? null,
+        rounds_completed: payload.roundsCompleted ?? null,
+        rpe: payload.rpe,
+        notes: payload.notes,
+        cardio_metadata: metadata,
+    });
 }
 function onRestClick() {
     emit('start-rest', parseRestSeconds(exDescanso(props.exercise)));
@@ -401,8 +455,19 @@ function onOpenMediaModal() { emit('open-media'); }
         />
       </div>
 
-      <!-- Set rows -->
-      <div class="sets">
+      <!-- F1a — CardioPlayer v2 para tipos estructurados (continuous_low/moderate) -->
+      <div v-if="useCardioV2" class="sets sets--cardio-v2">
+        <CardioPlayer
+          :exercise="exercise"
+          :exercise-index="exerciseIndex"
+          :completed="sets.every((s) => s.completed)"
+          @complete="onCardioV2Complete"
+          @uncomplete="$emit('uncomplete-set', { exIndex: exerciseIndex, sIdx: 0 })"
+        />
+      </div>
+
+      <!-- Set rows (legacy fuerza + cardio free fallback) -->
+      <div v-else class="sets">
         <SetRow
           v-for="(set, sIdx) in sets"
           :key="`s-${exerciseIndex}-${sIdx}`"

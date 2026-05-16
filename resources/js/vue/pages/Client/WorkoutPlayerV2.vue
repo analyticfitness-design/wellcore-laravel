@@ -321,13 +321,25 @@ async function toggleSet(exIndex, setIndex) {
     }
 }
 
-async function completeCardioSet({ exIndex, sIdx }) {
+async function completeCardioSet(payload) {
     if (saving.value) return;
+    const { exIndex, sIdx } = payload;
     const sets = getSetRows(exIndex);
     const set = sets[sIdx];
-    const duration = parseInt(set.duration) || 0;
-    const speed = parseFloat(set.speed) || 0;
-    const incline = parseFloat(set.incline) || 0;
+
+    // F1a — Cardio v2 flow: el payload trae duration/speed/incline + cardio_type + rpe + metadata
+    const isV2 = !!payload.cardio_v2;
+
+    let duration, speed, incline;
+    if (isV2) {
+        duration = payload.duration_minutes || 0;
+        speed    = payload.speed_kmh || 0;
+        incline  = payload.incline_percent || 0;
+    } else {
+        duration = parseInt(set.duration) || 0;
+        speed    = parseFloat(set.speed) || 0;
+        incline  = parseFloat(set.incline) || 0;
+    }
 
     if (duration <= 0) {
         toast.warn('Ingresa la duración antes de marcar.');
@@ -339,18 +351,26 @@ async function completeCardioSet({ exIndex, sIdx }) {
     set.reps = duration;
 
     if (workoutStarted.value) {
+        const body = {
+            session_id: sessionId.value,
+            exercise_index: exIndex,
+            set_number: sIdx + 1,
+            exercise_name: exName(exercises.value[exIndex]),
+            is_cardio: true,
+            duration_minutes: duration,
+            speed_kmh: speed,
+            incline_percent: incline,
+            reps: duration,
+        };
+        if (isV2) {
+            if (payload.cardio_type)         body.cardio_type      = payload.cardio_type;
+            if (payload.rpe != null)         body.rpe              = payload.rpe;
+            if (payload.cardio_metadata)     body.cardio_metadata  = payload.cardio_metadata;
+            if (payload.rounds_planned != null)   body.rounds_planned   = payload.rounds_planned;
+            if (payload.rounds_completed != null) body.rounds_completed = payload.rounds_completed;
+        }
         try {
-            await api.post('/api/v/client/workout/complete-set', {
-                session_id: sessionId.value,
-                exercise_index: exIndex,
-                set_number: sIdx + 1,
-                exercise_name: exName(exercises.value[exIndex]),
-                is_cardio: true,
-                duration_minutes: duration,
-                speed_kmh: speed,
-                incline_percent: incline,
-                reps: duration,
-            });
+            await api.post('/api/v/client/workout/complete-set', body);
         } catch (err) {
             set.completed = false;
             set.reps = '';

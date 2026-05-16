@@ -1,195 +1,102 @@
 # WellCore Laravel
 
 ## Project Overview
-WellCore Fitness platform migrated from PHP vanilla to Laravel 13.
-Fitness coaching platform serving LATAM market with personalized training, nutrition, and coaching.
+WellCore Fitness — Laravel 13 + PHP 8.4, coaching platform LATAM. Strangler Fig: Laravel + PHP vanilla comparten MySQL `wellcore_fitness`. **TODO en producción** — editar → push → EasyPanel → verificar wellcorefitness.com con Chrome MCP.
+
+@CONTEXT.md
 
 ## Tech Stack
-- Laravel 13.1.1 + PHP 8.4
-- Vue 3.5 + TypeScript + Pinia + Vue Router 4 (frontend SPA en migración)
-- Livewire 3 + Alpine.js (componentes legacy, en proceso de migración a Vue 3)
-- Tailwind CSS 4
-- MySQL (shared DB: wellcore_fitness)
-- Vite 8
+Laravel 13.1.1 · PHP 8.4 · Vue 3.5 + TypeScript + Pinia · Livewire 3 + Alpine.js · Tailwind CSS 4 · MySQL · Vite 8
 
-## Key Architecture Decisions
-- Strangler Fig pattern: both apps (vanilla PHP + Laravel) share the same MySQL database
-- Custom WellCoreGuard reads auth_tokens table (compatible with vanilla app tokens)
-- No Laravel migrations for existing tables — models map directly with $table
-- Frontend migration: Livewire → Vue 3 SPA (resources/js/vue/), API via Laravel REST
-- Vue 3 components in resources/js/vue/, consumed via Inertia.js or blade vue.blade.php
+## Architecture
+- Strangler Fig: Laravel + vanilla PHP comparten `wellcore_fitness` DB
+- WellCoreGuard: auth_tokens table (64-char hex, 30-day expiry) — sesión → Bearer → cookie
+- No migrations para tablas existentes — modelos con `$table` explícito en app/Models/
+- Vue 3 SPA en resources/js/vue/ — migración gradual desde Livewire 3
 
 ## Database
-- Connection: MySQL wellcore_fitness (host=127.0.0.1, port=3306)
-- 60+ tables in wellcore_fitness schema
-- DO NOT create destructive migrations
-- All models in app/Models/ with explicit $table declarations
-
-## Auth
-- Custom guard: WellCoreGuard (app/Auth/)
-- Token-based: reads session → Bearer header → cookie
-- Login creates tokens in auth_tokens table (64-char hex, 30-day expiry)
-- Middleware: EnsureAuthenticated, RedirectIfAuthenticated
-
-## Structure
-- app/Livewire/Client/ — 11 client dashboard components
-- app/Livewire/Admin/ — 4 admin dashboard components
-- app/Livewire/Coach/ — 4 coach portal components
-- app/Livewire/Rise/ — 4 RISE program components
-- app/Livewire/Shop/ — 2 shop components
-- app/Livewire/Auth/ — Login, ForgotPassword
-- app/Services/ — AIService, WompiService, PushNotificationService
-- app/Console/Commands/ — 3 scheduled commands (cron replacements)
-- app/Enums/ — 8 PHP enums
-- app/Models/ — 61 Eloquent models
-
-## Commands
-- composer install && npm install
-- npm run dev (development with hot reload)
-- npm run build (production assets)
-- php artisan serve (or use Herd: wellcore-laravel.test)
-- php artisan schedule:run (run scheduled jobs)
-- php artisan wellcore:behavioral-triggers (test behavioral triggers)
-- php artisan wellcore:weekly-summary (test weekly summaries)
+MySQL wellcore_fitness · 60+ tablas · NO migraciones destructivas · Todos los modelos con `$table` explícito
 
 ## Design System
-- Tokens in resources/css/app.css (@theme block)
-- Colors: wc-bg, wc-bg-secondary, wc-bg-tertiary, wc-accent (#DC2626), wc-text, wc-border
-- Fonts: font-display (Bebas Neue), font-sans (Inter), font-data (Barlow), font-mono (JetBrains Mono)
-- Dark mode: .dark class on html, managed by Alpine.js + localStorage
+- Tokens en resources/css/app.css (@theme) · wc-accent: #DC2626
+- Fuentes reales: Oswald (títulos) + Raleway (cuerpo). Bebas Neue + Inter = fallback
+- Dark mode: clase `.dark` en html, Alpine.js + localStorage
 
-## Laravel Agent Team — MANDATORY DELEGATION
+## Deploy Workflow
+1. Editar source localmente (este directorio)
+2. `npm run build` LOCAL — nunca en container EasyPanel
+3. `git add <paths>` → `git commit` → `git push origin main`
+4. Click `silvia-gitpull-load` en EasyPanel via Chrome MCP (NUNCA "Rebuild Docker image")
+5. Verificar: mobile 414×896 + desktop 1440×900, 0 errores consola
 
-IMPORTANT: This is a Laravel project. You MUST delegate tasks to the specialized agents below. Do NOT solve Laravel tasks yourself when a specialized agent exists. Always use the Agent tool to dispatch the correct agent.
+## Context Management
+- **0–70%** — trabajar libremente
+- **70–90%** — usar `/compact` ANTES de continuar
+- **90%+** — `/clear` requerido — respuestas erráticas a este nivel
 
-### Dispatch Rules (ALWAYS apply in this project)
+## Rules (safety-critical)
+- NEVER modificar `C:\Users\GODSF\Herd\wellcorefitness` (vanilla PHP app)
+- NEVER migraciones destructivas (DROP, modificar tipos) — DB compartida
+- NEVER `npm run build` en container EasyPanel — tumba AWS host (OOM)
+- NEVER `killall php-fpm` en EasyPanel — 2026-05-06: 22 min downtime, reboot EC2 manual
+- NEVER `Rebuild Docker image` — solo `silvia-gitpull-load`
+- NEVER `git push --force` a main
 
-| Task type | MUST use agent |
-|-----------|---------------|
-| Architecture, DDD, patterns, service layers | **la-01-architect** |
-| Eloquent, models, business logic, Actions, DTOs | **la-02-backend** |
-| Vue 3 components, composables, Pinia, Vue Router, UI/UX, animaciones, charts, forms | **la-03-vue3** |
-| Tailwind CSS, design tokens, dark mode, UI styling | **la-04-tailwind-ds** |
-| Auth, CSRF, security, validation, middleware, permissions | **la-05-security** |
-| Migrations, schema, queries, optimization, indexes | **la-06-database** |
-| CI/CD, Docker, deploy, EasyPanel, server config | **la-07-devops** |
-| i18n, translations, locale, multi-country | **la-08-i18n** |
-| Payments, Wompi, Stripe, subscriptions | **la-09-payments** |
-| Performance, caching, Redis, N+1, OPcache, profiling | **la-10-performance** |
-| Claude API, AI features, SSE streaming, image analysis | **la-11-ai-architect** |
-| WebSockets, real-time, Laravel Reverb, broadcasting | **la-12-realtime** |
-| Analytics, dashboards, metrics, reporting | **la-13-analytics** |
-| PHPUnit, Pest, Feature tests, component testing | **la-14-testing** |
-| REST API, resources, API auth, OAuth2 | **la-15-api** |
-| PWA, mobile optimization, responsive | **la-16-mobile** |
-| SEO, meta tags, sitemap, schema markup | **la-17-seo-growth** |
-| Multi-tenancy, SaaS, enterprise patterns | **la-18-enterprise** |
+## Supply chain & secrets (CVE-2026-45321 Shai-Hulud y similares)
+- **NEVER `npm install <paquete>` ni `composer require <paquete>`** sin que el paquete ya esté en `package.json`/`composer.json`. El hook `dangerous-actions-blocker.php` lo bloquea. Para agregar uno nuevo: editar manifiesto manualmente → `npm install` / `composer install` (sin args) → revisar diff del lockfile → commit del lockfile.
+- **NEVER `--force`, `--legacy-peer-deps`, `--no-audit`, `--ignore-scripts=false`** en npm/composer. Si necesitás bypassear algo, pregunta al humano primero.
+- **NEVER ejecutar `npm run` ni `composer run` con scripts no listados en `scripts:`** del manifiesto.
+- **NEVER agregar `postinstall`/`preinstall`/`install` scripts** al `package.json` sin revisión manual de Daniel — son el vector primario de supply-chain attacks (Shai-Hulud roba `.npmrc`, `~/.aws`, env vars vía postinstall).
+- **NEVER commitear** `.env`, `.env.backup`, `.env.production`, `node_modules/`, `vendor/`, archivos con tokens/passwords. Verificar con `git status` antes de cada commit.
+- **NEVER ejecutar scripts descargados con `curl ... | bash`** ni `wget ... | sh`. Si el instalador oficial pide eso, descargar primero, leer, ejecutar.
+- **NEVER editar archivos en `node_modules/` o `vendor/`** manualmente (incluyendo stubs para tests). Si necesitás mockear deps, usa `data:` URLs o vitest mocks — NUNCA tocar el directorio real.
+- **Antes de cualquier `npm ci` después de cambios**: revisar `git diff package-lock.json` — paquetes nuevos sin entrada en `package.json` = alerta roja.
+- **Rotación de secrets si hay sospecha de compromiso**: `.env` en producción (`DB_PASSWORD`, `WOMPI_*_SECRET`, `ANTHROPIC_API_KEY`, `AWS_*`, `REVERB_APP_SECRET`, `GOOGLE_CLIENT_SECRET`, `META_CONVERSIONS_TOKEN`) + tokens en `auth_tokens` table. Daniel decide cuándo rotar.
+- **Auditoría periódica**: `npm audit` + `composer audit` en cada PR significativo. Si reportan `high`/`critical`, pausar deploy hasta resolver.
+- **Para auditorías profundas de seguridad usar el prompt** `SECURITY-AUDIT-PROMPT.md` (no improvisar — el prompt define alcance y reglas de no-romper-prod).
 
-### How to dispatch
-```
-// Simple task → one agent
-Agent(subagent_type="la-03-vue3", prompt="...")
+## Test Accounts
+| Rol | Usuario | Contraseña |
+|-----|---------|-----------|
+| Superadmin | daniel.esparza | RISE2026Admin!SuperPower |
+| Cliente nativa | analyticfitcamps@gmail.com | Wellcore6962 |
+| Coach | coachdann | KingLord6962 |
 
-// Complex task → parallel agents
-Agent(la-02-backend) + Agent(la-03-vue3) simultaneously
+## Credentials & Deploy
+Credenciales de producción (EasyPanel, AWS, DB, APIs, Mailjet, Wompi, GitHub):
+@CREDENTIALS-DEPLOY.md
 
-// Explicit user request
-"Usa la-09-payments para integrar Wompi"
-"Lanza la-14-testing para crear tests"
-```
+## Behavioral Rules
 
-## Rules
-- NEVER modify C:\Users\GODSF\Herd\wellcorefitness (vanilla PHP app)
-- NEVER create destructive database migrations
-- All work in this project directory only
-- Use WellCore design tokens for all UI
-- Test credentials: daniel.esparza / RISE2026Admin!SuperPower (superadmin)
+### Razonamiento
+- **Exhaustive on first pass**: Analizar → leer TODOS los archivos relevantes. Sin scan superficial. Si el scope es incierto, preguntar antes de entregar resultados incompletos.
+- **Visible reasoning en decisiones complejas**: Antes de recomendar arquitectura, schema, o solución con múltiples opciones válidas — mostrar el razonamiento paso a paso, listar suposiciones explícitas y nivel de confianza (alto/medio/bajo) antes de la respuesta final.
+- **Anti-speculation**: Si algo está fuera del conocimiento actual o es incierto, decirlo directamente ("No lo sé", "No tengo suficiente info"). Nunca especular con confianza falsa. Preferir incertidumbre honesta sobre respuesta inventada.
+- **If stuck >2 attempts**: Explicar el bloqueador directamente. No seguir intentando en loop.
 
-## Sistema de Creación de Planes (OBLIGATORIO)
+### Honestidad y calidad
+- **Honesty override**: Sin sugar-coating. Si un plan tiene un fallo fatal → decirlo directo, sin disclaimers de cortesía que suavicen el problema. Daniel necesita la verdad dura ahora, no el fracaso después.
+- **Assumption surfacing**: Después de cualquier recomendación compleja, listar las suposiciones ocultas. Para cada una: (a) qué pasa si está equivocada, (b) cómo cambiaría la recomendación. La mayoría de bugs de producción vienen de suposiciones no verificadas.
+- **Pre-mortem en features grandes**: Antes de implementar un cambio que toque >3 archivos, nueva integración, o cambio de schema — identificar los 3 modos de falla más probables en producción. Especialmente crítico con la DB compartida y el deploy directo a prod.
 
-Cuando el usuario pida crear un plan (entrenamiento, nutrición, combinado, cardio, RISE, recomposición), **leer SIEMPRE primero** el sistema de MDs ubicado en:
+### Output
+- **Bias toward action**: Output concreto temprano, iterar. Sin loops de exploración sin producir archivos reales.
+- **Format default para recomendaciones**: (1) resumen en 1 frase, (2) bullets clave (máx 5), (3) siguiente acción concreta. Sin prosa larga cuando los bullets bastan.
 
-`E:\WELLCORE FITNESS PLATAFORMA\SISTEMA-CREACION-PLANES\`
+## Code Quality — Karpathy Guidelines
+Think before coding · Simplicity first · Surgical changes · Verifiable success
 
-Orden de lectura: `00-INDEX.md` primero, luego los demás según aplica. Contiene 10 archivos que definen:
-- Workflow paso a paso
-- Credenciales y accesos
-- CSS y componentes WellCore
-- Reglas por tipo de plan
-- Voz del coach (tuteo, sin IA, sin organización)
-- Catálogo de GIFs + embebido base64
-- Reglas de cardio
-- Metodologías (sin RIR como método)
-- Notificaciones semanales
+## Commands (/command)
+`/checkpoint` · `/commit` · `/ship` · `/security-check` · `/learn` · `/model-route` · `/diagnose` · `/grill-with-docs` · `/handoff` · `/zoom-out`
 
-**No crear planes sin haber consultado este sistema.** Evita errores repetidos de formato, voz, GIFs y metodología.
+@.claude/docs/agents.md
 
-## Community Cross-Role (COMPLETE — A+B+C+D shipped)
+@docs/adr/0001-strangler-fig.md
 
-### Fase A — Backend foundations
-- 9 migrations aditivas, 6 models, 5 services, 6 controllers, 1 policy, 6 events Reverb
-- 16 endpoints REST originales
+@docs/adr/0002-wellcoreguard.md
 
-### Fase B — Coach Community Hub (UI + backend extensions)
-Endpoints adicionales:
-- `GET /api/v/coach/community/threads` — Tab Conversaciones
-- `GET /api/v/coach/community/achievements?period=week|month|all` — Tab Logros
-- `POST /api/v/coach/community/announce` — funcional (post o push) (antes 501)
-- `GET /api/v/coach/clients/count` — preview recipientes en modal
-- `POST/DELETE /api/v/coach/push/subscribe` — service worker push
-- `GET/PATCH /api/v/coach/notifications/preferences` — toggles granulares
+@docs/adr/0003-no-destructive-migrations.md
 
-Frontend Vue 3 SPA:
-- `/coach/community` con 5 tabs (Latido / Posts / Conversaciones / Pulsos / Logros)
-- `/coach/notifications` page con live save
-- Sidebar: nueva sección "Comunidad" + item "Notificaciones" en Personal
-- FAB móvil: 4ta opción "Mensaje al equipo" (CoachAnnounceModal)
-- Real-time threshold-based: auto-prepend si scroll<200px, toast flotante si lejos
-- 11 components compartidos (CoachBadge, OfficialBadge, TeamHealthRing, etc.)
-- 5 composables singleton TTL+dedup: useCoachCommunity, useCoachPulse, useModeration, useCoachAnnounce, usePushSubscription
-- auth.js extendido con 3 reset hooks (anti cache leak en impersonations)
+@.claude/docs/planes.md
 
-Scheduled: `wellcore:precompute-coach-pulse` cada 5min.
-Reverb channels: `coach.{id}.community`, `admin.community`, `user.{type}.{id}`.
-Cache: `wc:coach-pulse:v1:{id}` (60s backend / 25s frontend).
-
-### Fase C — Admin Community Center
-Endpoints adicionales:
-- `GET /api/v/admin/community/coaches/{id}/analytics` (cache 600s)
-- `POST /api/v/admin/community/posts/{id}/pin` (admin override)
-- `POST /api/v/admin/community/posts/{id}/make-global` (superadmin only)
-- `GET/PATCH /api/v/admin/notifications/preferences`
-
-Frontend Vue 3 admin:
-- `/admin/community` con 5 tabs (Pulse Cross-Coach / Live Feed / Broadcast / Moderation / Analytics Coach)
-- `/admin/notifications` admin preferences page
-- 9 components compartidos (CoachAnalyticsTable, Sparkline, Heatmap, KPIBar, Broadcast bars, Moderation cards, Chart.js)
-- 3 composables: useAdminCommunity, useBroadcast, useModerationQueue
-- Drill-down con URL hash sync (`/admin/community#analytics-12`)
-- Migration aditiva: `admin_notification_preferences`
-
-### Fase D — Cross-Role Communication Layer
-Endpoints adicionales:
-- `GET /api/v/community/mention-search?q=` (cache 300s, scope-aware)
-- `GET/PATCH /api/v/client/notifications/preferences`
-
-Frontend Vue 3 cross-portal:
-- MentionInput (textarea wrapper con autocomplete + special tokens @coach/@wellcore)
-- MentionRenderer (chips colored por rol: cliente blue, coach amber, admin red)
-- ReportPostMenu cliente (4 razones + textarea opcional)
-- OnlineRoleIndicator (pulse dot reactive)
-- CommentsThread modificado: sort admin>coach>client + badges + MentionRenderer
-- 2 composables: useMentions (search + extract), useGroupPresence (Echo PresenceChannel filter)
-- `/client/notifications` cliente preferences page
-- Migration aditiva: `client_notification_preferences`
-
-### Total métricas finales
-- **3 migrations aditivas** (coach + admin + client notification_preferences)
-- **24 endpoints REST** cross-portal
-- **10 composables singleton** TTL+dedup+reset (group_pulse, coach_*, admin_*, mentions, presence)
-- **30+ Vue components** nuevos
-- **9 reset hooks** consolidados en `auth.js setAuth/clearAuth`
-- **Cache namespaces**: wc:coach-pulse, wc:admin-community-analytics, wc:admin-coach-analytics, wc:mention-search, wc:coach-community-feed
-- **Reverb channels**: coach.{id}.community, admin.community, user.{type}.{id}, online-users
-
-Specs/plans en `docs/superpowers/{specs,plans}/2026-05-05-community-cross-role-fase-{a,b,c,d}-*`.
+@.claude/docs/validation.md

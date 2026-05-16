@@ -1,0 +1,529 @@
+<script setup>
+/**
+ * SetRow.vue — Fila de un set (peso × reps × completar).
+ *
+ * Átomo del WorkoutPlayer v2. Soporta 3 estados (pending/active/completed),
+ * variante cardio con duración/velocidad/inclinación, y PR badge.
+ *
+ * Touch targets ≥44px en steppers + complete button.
+ * Validación: si reps <= 0 al intentar complete → no emite, dispara shake visual.
+ *
+ * Visual fidelity: replica exactamente el target HTML — número grande del valor
+ * con el rango/unidad pequeño debajo (ej: "9" arriba + "8 – 10" abajo).
+ */
+import { ref, computed } from 'vue';
+
+const props = defineProps({
+    setIndex:     { type: Number, required: true },
+    setNumber:    { type: Number, required: true },
+    state:        { type: String, default: 'pending' },
+    weight:       { type: [Number, String], default: '' },
+    reps:         { type: [Number, String], default: '' },
+    targetWeight: { type: [Number, String, null], default: null },
+    targetReps:   { type: String, default: '' },
+    weightUnit:   { type: String, default: 'kg' },
+    isPr:         { type: Boolean, default: false },
+    isCardio:     { type: Boolean, default: false },
+    isIsometric:  { type: Boolean, default: false },
+    duration:     { type: [Number, String], default: '' },
+    speed:        { type: [Number, String], default: '' },
+    incline:      { type: [Number, String], default: '' },
+    disabled:     { type: Boolean, default: false },
+});
+
+const emit = defineEmits([
+    'update:weight', 'update:reps', 'update:duration', 'update:speed', 'update:incline',
+    'complete', 'uncomplete',
+]);
+
+const shake = ref(false);
+
+const weightStep = computed(() => (props.weightUnit === 'lbs' ? 5 : 2.5));
+
+function clampWeight(v) { return Math.max(0, Number(v) || 0); }
+function clampReps(v)   { return Math.max(0, parseInt(v) || 0); }
+
+function bumpWeight(delta) {
+    const next = clampWeight((parseFloat(props.weight) || 0) + delta);
+    emit('update:weight', next);
+}
+function bumpReps(delta) {
+    const next = clampReps((parseInt(props.reps) || 0) + delta);
+    emit('update:reps', next);
+}
+function bumpDuration(delta) {
+    const next = Math.max(0, (parseInt(props.duration) || 0) + delta);
+    emit('update:duration', next);
+}
+function bumpSpeed(delta) {
+    const next = Math.max(0, +((parseFloat(props.speed) || 0) + delta).toFixed(1));
+    emit('update:speed', next);
+}
+function bumpIncline(delta) {
+    const next = Math.max(0, +((parseFloat(props.incline) || 0) + delta).toFixed(1));
+    emit('update:incline', next);
+}
+
+function onCompleteClick() {
+    if (props.disabled) return;
+    if (props.state === 'completed') {
+        emit('uncomplete');
+        return;
+    }
+    if (!props.isCardio) {
+        const reps = clampReps(props.reps);
+        if (reps <= 0) {
+            shake.value = true;
+            setTimeout(() => { shake.value = false; }, 400);
+            return;
+        }
+    } else {
+        const duration = parseInt(props.duration) || 0;
+        if (duration <= 0) {
+            shake.value = true;
+            setTimeout(() => { shake.value = false; }, 400);
+            return;
+        }
+    }
+    emit('complete');
+}
+
+function onWeightInput(e)   { emit('update:weight',   clampWeight(e.target.value)); }
+function onRepsInput(e)     { emit('update:reps',     clampReps(e.target.value)); }
+function onDurationInput(e) { emit('update:duration', Math.max(0, parseInt(e.target.value) || 0)); }
+function onSpeedInput(e)    { emit('update:speed',    Math.max(0, +parseFloat(e.target.value).toFixed(1) || 0)); }
+function onInclineInput(e)  { emit('update:incline',  Math.max(0, +parseFloat(e.target.value).toFixed(1) || 0)); }
+
+const targetRepsLabel = computed(() => {
+    const tr = String(props.targetReps || '').trim();
+    if (!tr) return '';
+    // Formato compacto "8-10" con guión normal (más estrecho que em-dash)
+    return tr.replace(/\s+/g, '');
+});
+</script>
+
+<template>
+  <div
+    class="wc-set-row group relative grid items-center transition-all duration-200"
+    :class="[
+      isCardio ? 'wc-set-row--cardio' : 'wc-set-row--strength',
+      disabled ? 'opacity-60 pointer-events-none' : '',
+      shake ? 'wc-shake' : '',
+    ]"
+    :data-state="state"
+  >
+    <!-- Active accent bar -->
+    <span
+      v-if="state === 'active'"
+      aria-hidden="true"
+      class="active-bar"
+    ></span>
+
+    <!-- PR badge -->
+    <span
+      v-if="isPr"
+      class="pr-badge"
+    >PR</span>
+
+    <!-- Set number -->
+    <div class="set-num">{{ setNumber }}</div>
+
+    <!-- STRENGTH variant -->
+    <template v-if="!isCardio">
+      <!-- PESO stepper -->
+      <div class="stepper">
+        <button type="button" aria-label="Disminuir peso" class="stepper-btn" @click="bumpWeight(-weightStep)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="val-stack">
+          <span class="stepper-label">Peso</span>
+          <input
+            type="number"
+            inputmode="decimal"
+            :step="weightStep"
+            min="0"
+            :value="weight"
+            class="stepper-input"
+            :placeholder="targetWeight !== null ? String(targetWeight) : '0'"
+            @input="onWeightInput"
+          />
+          <span class="target">{{ weightUnit }}</span>
+        </div>
+        <button type="button" aria-label="Aumentar peso" class="stepper-btn" @click="bumpWeight(+weightStep)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+
+      <!-- REPS stepper -->
+      <div class="stepper">
+        <button type="button" aria-label="Disminuir reps" class="stepper-btn" @click="bumpReps(-1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="val-stack">
+          <span class="stepper-label">Reps</span>
+          <input
+            type="number"
+            inputmode="numeric"
+            step="1"
+            min="0"
+            :value="reps"
+            class="stepper-input"
+            :placeholder="targetReps ? targetReps.toString().split('-')[0].trim() : '0'"
+            @input="onRepsInput"
+          />
+          <span class="target">{{ targetRepsLabel || '—' }}</span>
+        </div>
+        <button type="button" aria-label="Aumentar reps" class="stepper-btn" @click="bumpReps(+1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+    </template>
+
+    <!-- CARDIO variant -->
+    <template v-else>
+      <div class="stepper">
+        <button type="button" class="stepper-btn" @click="bumpDuration(-30)" aria-label="Menos tiempo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="val-stack">
+          <span class="stepper-label">Tiempo</span>
+          <input
+            type="number"
+            inputmode="numeric"
+            step="30"
+            min="0"
+            :value="duration"
+            class="stepper-input"
+            placeholder="0"
+            @input="onDurationInput"
+          />
+          <span class="target">seg</span>
+        </div>
+        <button type="button" class="stepper-btn" @click="bumpDuration(+30)" aria-label="Más tiempo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+      <div class="stepper">
+        <button type="button" class="stepper-btn" @click="bumpSpeed(-0.5)" aria-label="Menos velocidad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="val-stack">
+          <span class="stepper-label">Vel · Inc</span>
+          <div class="cardio-pair">
+            <input type="number" inputmode="decimal" step="0.5" min="0" :value="speed"   class="cardio-input" @input="onSpeedInput"   placeholder="0" aria-label="Velocidad km/h" />
+            <span class="cardio-sep">·</span>
+            <input type="number" inputmode="decimal" step="1"   min="0" :value="incline" class="cardio-input" @input="onInclineInput" placeholder="0" aria-label="Inclinación %" />
+          </div>
+          <span class="target">km/h · %</span>
+        </div>
+        <button type="button" class="stepper-btn" @click="bumpSpeed(+0.5)" aria-label="Más velocidad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+    </template>
+
+    <!-- Complete -->
+    <button
+      type="button"
+      class="complete-btn"
+      :class="{
+        'complete-btn--active': state === 'active',
+        'complete-btn--done':   state === 'completed',
+      }"
+      :aria-label="state === 'completed' ? 'Deshacer set' : 'Completar set'"
+      @click="onCompleteClick"
+    >
+      <svg v-if="state === 'completed'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+      <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    </button>
+  </div>
+</template>
+
+<style scoped>
+.wc-set-row {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  padding: 8px 6px 8px 4px;
+  gap: 6px;
+  border-radius: 14px;
+}
+.wc-set-row--strength { grid-template-columns: 26px 1fr 1fr 42px; }
+.wc-set-row--cardio   { grid-template-columns: 26px 1.2fr 1fr 42px; }
+
+@media (min-width: 768px) {
+  .wc-set-row { padding: 10px 10px 10px 8px; gap: 10px; }
+  .wc-set-row--strength { grid-template-columns: 36px 1fr 1fr 48px; }
+  .wc-set-row--cardio   { grid-template-columns: 36px 1.2fr 1fr 48px; }
+}
+
+@media (min-width: 1024px) {
+  .wc-set-row { grid-template-columns: 44px 1fr 1fr 56px; gap: 14px; padding: 12px 12px 12px 10px; }
+  .wc-set-row--cardio { grid-template-columns: 44px 1.2fr 1fr 56px; }
+}
+
+.wc-set-row[data-state="active"] {
+  background: linear-gradient(180deg, rgba(220,38,38,0.08), rgba(220,38,38,0.02));
+  border-color: rgba(239,68,68,0.30);
+}
+.wc-set-row[data-state="completed"] {
+  background: rgba(16,185,129,0.05);
+  border-color: rgba(16,185,129,0.18);
+}
+.wc-set-row[data-state="completed"] .stepper { opacity: 0.7; }
+
+.active-bar {
+  position: absolute;
+  left: -1px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--color-wc-accent, #DC2626);
+}
+
+.pr-badge {
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  z-index: 10;
+  background: #F59E0B;
+  color: #422006;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px -2px rgba(245,158,11,0.5);
+}
+
+.set-num {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  color: var(--color-wc-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+@media (min-width: 768px)  { .set-num { font-size: 16px; } }
+@media (min-width: 1024px) { .set-num { font-size: 18px; } }
+.wc-set-row[data-state="active"] .set-num    { color: var(--color-wc-accent-glow, #EF4444); }
+.wc-set-row[data-state="completed"] .set-num { color: #10B981; }
+
+/* Stepper container — replica del target HTML */
+.stepper {
+  display: grid;
+  grid-template-columns: 32px 1fr 32px;
+  align-items: stretch;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--color-wc-border);
+  border-radius: 12px;
+  height: 60px;
+  overflow: hidden;
+  position: relative;
+}
+@media (min-width: 768px) {
+  .stepper { grid-template-columns: 40px 1fr 40px; height: 62px; border-radius: 14px; }
+}
+@media (min-width: 1024px) {
+  .stepper { grid-template-columns: 44px 1fr 44px; height: 64px; border-radius: 16px; }
+}
+.wc-set-row[data-state="active"] .stepper {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(239,68,68,0.25);
+}
+.wc-set-row[data-state="completed"] .stepper {
+  background: rgba(16,185,129,0.04);
+  border-color: rgba(16,185,129,0.14);
+}
+
+.stepper-btn {
+  height: 100%;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--color-wc-text-secondary);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.stepper-btn:hover  { background: rgba(255,255,255,0.05); color: var(--color-wc-text); }
+.stepper-btn:active { background: rgba(220,38,38,0.18); color: var(--color-wc-accent-glow, #EF4444); }
+.stepper-btn svg    { width: 16px; height: 16px; }
+
+/* Stack: label (top) + input (middle) + target hint (bottom) — sin overlap */
+.val-stack {
+  display: grid;
+  grid-template-rows: 14px 1fr 14px;
+  align-items: center;
+  justify-items: center;
+  height: 100%;
+  padding: 4px 0;
+  position: relative;
+  min-width: 0;
+}
+
+.stepper-label {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--color-wc-text-tertiary);
+  pointer-events: none;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: visible;
+  max-width: none;
+  text-align: center;
+}
+@media (min-width: 768px) { .stepper-label { letter-spacing: 0.14em; } }
+
+.stepper-input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--color-wc-text);
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  line-height: 1;
+  padding: 0;
+  height: 22px;
+  align-self: center;
+}
+@media (min-width: 768px)  { .stepper-input { font-size: 19px; } }
+@media (min-width: 1024px) { .stepper-input { font-size: 20px; } }
+.stepper-input::placeholder { color: var(--color-wc-text-tertiary); opacity: 0.4; }
+.stepper-input::-webkit-outer-spin-button,
+.stepper-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.stepper-input { -moz-appearance: textfield; }
+
+.val-stack .target {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--color-wc-text-tertiary);
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  pointer-events: none;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: visible;
+  text-align: center;
+}
+@media (min-width: 768px) { .val-stack .target { font-size: 10px; } }
+
+.stepper-input--always { padding-top: 0; }
+
+/* Cardio pair (vel + inc en mismo stepper) */
+.cardio-pair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding-top: 14px;
+}
+.cardio-input {
+  width: 36px;
+  background: transparent;
+  border: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--color-wc-text);
+  font-variant-numeric: tabular-nums;
+  outline: none;
+}
+.cardio-input::-webkit-outer-spin-button,
+.cardio-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.cardio-input { -moz-appearance: textfield; }
+.cardio-sep {
+  color: var(--color-wc-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+.cardio-unit {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-wc-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+}
+
+/* Complete button */
+.complete-btn {
+  width: 100%;
+  height: 60px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--color-wc-border);
+  display: grid;
+  place-items: center;
+  color: var(--color-wc-text-tertiary);
+  transition: all 0.2s var(--ease-out);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+@media (min-width: 768px)  { .complete-btn { height: 62px; border-radius: 14px; } }
+@media (min-width: 1024px) { .complete-btn { height: 64px; border-radius: 16px; } }
+.complete-btn svg { width: 18px; height: 18px; }
+@media (min-width: 1024px) { .complete-btn svg { width: 22px; height: 22px; } }
+
+.complete-btn--active {
+  background: var(--color-wc-accent, #DC2626);
+  border-color: transparent;
+  color: white;
+  box-shadow:
+    0 0 0 0 rgba(239,68,68,0.6),
+    0 6px 20px -4px rgba(220,38,38,0.6);
+  animation: wc-pulse-set-btn 2.4s ease-out infinite;
+}
+@keyframes wc-pulse-set-btn {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4), 0 6px 20px -4px rgba(220,38,38,0.6); }
+  50%      { box-shadow: 0 0 0 8px rgba(239,68,68,0), 0 6px 20px -4px rgba(220,38,38,0.5); }
+}
+.complete-btn--done {
+  background: #10B981;
+  border-color: transparent;
+  color: #042f24;
+  box-shadow: 0 4px 14px -4px rgba(16,185,129,0.45);
+}
+
+/* Shake on validation error */
+@keyframes wc-shake {
+  0%, 100%  { transform: translateX(0); }
+  20%, 60%  { transform: translateX(-4px); }
+  40%, 80%  { transform: translateX(4px); }
+}
+.wc-shake { animation: wc-shake 0.4s ease-out; border-color: rgba(239,68,68,0.5) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .complete-btn--active { animation: none !important; }
+  .wc-shake { animation: none !important; }
+}
+</style>

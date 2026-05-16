@@ -62,13 +62,42 @@ class WorkoutSession extends Model
         $this->save();
     }
 
+    /**
+     * Calcula XP otorgado al cerrar la sesión.
+     *
+     * - Base 40 XP por sesión completada.
+     * - Bonus 25 XP máximo, elegido como max entre:
+     *   - strengthBonus: 25 si registró peso en TODOS sus sets de fuerza
+     *   - cardioBonus:   25 si reportó RPE o tiene cardio_type estructurado,
+     *                    15 si solo completó cardio sin RPE/structured
+     *
+     * Diseño: NO penaliza sesiones cardio-puro (Lizeth sábado HIIT) y
+     * NO duplica el bonus en sesiones mixtas. Toma el bonus más alto.
+     */
     public function awardXp(): int
     {
         $base = 40;
-        $allWeightsLogged = $this->logs()->where('completed', true)->whereNull('weight_kg')->doesntExist();
-        $bonus = $allWeightsLogged ? 25 : 0;
 
-        return $base + $bonus;
+        $strengthLogs = $this->logs()->where('completed', true)->where('is_cardio', false);
+        $cardioLogs   = $this->logs()->where('completed', true)->where('is_cardio', true);
+
+        $strengthBonus = 0;
+        if ($strengthLogs->exists()) {
+            $allWeightsLogged = (clone $strengthLogs)->whereNull('weight_kg')->doesntExist();
+            $strengthBonus = $allWeightsLogged ? 25 : 0;
+        }
+
+        $cardioBonus = 0;
+        if ($cardioLogs->exists()) {
+            $hasRpe = (clone $cardioLogs)->whereNotNull('rpe')->exists();
+            $hasStructured = (clone $cardioLogs)
+                ->whereNotNull('cardio_type')
+                ->where('cardio_type', '!=', 'free')
+                ->exists();
+            $cardioBonus = ($hasRpe || $hasStructured) ? 25 : 15;
+        }
+
+        return $base + max($strengthBonus, $cardioBonus);
     }
 
     public function formattedDuration(): string

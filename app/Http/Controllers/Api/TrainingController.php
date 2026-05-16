@@ -1176,6 +1176,13 @@ class TrainingController extends Controller
             'duration_seconds' => 'nullable|integer|min:0|max:7200',
             'speed_kmh' => 'nullable|numeric|min:0|max:40',
             'incline_percent' => 'nullable|integer|min:0|max:40',
+            // F0 cardio module (2026-05-16) — campos aditivos opcionales
+            'cardio_type' => 'nullable|string|in:continuous_low,continuous_moderate,intervals,tabata,circuit,free',
+            'rounds_planned' => 'nullable|integer|min:0|max:50',
+            'rounds_completed' => 'nullable|integer|min:0|max:50',
+            'rpe' => 'nullable|integer|min:0|max:10',
+            'cardio_metadata' => 'nullable|array',
+            'notes' => 'nullable|string|max:500',
         ]);
 
         $sessionId = (int) $request->input('session_id');
@@ -1198,7 +1205,7 @@ class TrainingController extends Controller
             ], 404);
         }
 
-        $logData = $isCardio ? [
+        $logData = $isCardio ? array_filter([
             'weight_kg' => 0,
             'reps' => (int) $request->input('duration_minutes', 0),
             'is_cardio' => true,
@@ -1206,7 +1213,16 @@ class TrainingController extends Controller
             'speed_kmh' => (float) $request->input('speed_kmh', 0),
             'incline_percent' => (int) $request->input('incline_percent', 0),
             'completed' => true,
-        ] : [
+            // F0 cardio module — solo se persisten si vienen explícitos del cliente
+            'cardio_type' => $request->input('cardio_type'),
+            'rounds_planned' => $request->input('rounds_planned'),
+            'rounds_completed' => $request->input('rounds_completed'),
+            'rpe' => $request->input('rpe'),
+            'cardio_metadata' => $request->input('cardio_metadata')
+                ? json_encode($request->input('cardio_metadata'), JSON_UNESCAPED_UNICODE)
+                : null,
+            'notes' => $request->input('notes'),
+        ], fn ($v) => $v !== null) : [
             'weight_kg' => $weight,
             'reps' => $reps,
             'completed' => true,

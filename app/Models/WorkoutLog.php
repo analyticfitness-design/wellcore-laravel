@@ -32,6 +32,12 @@ class WorkoutLog extends Model
         'heart_rate_avg',
         'duration_seconds',
         'is_isometric',
+        // F0 cardio module (2026-05-16) — columnas aditivas
+        'cardio_type',
+        'rounds_planned',
+        'rounds_completed',
+        'rpe',
+        'cardio_metadata',
     ];
 
     protected $casts = [
@@ -42,6 +48,7 @@ class WorkoutLog extends Model
         'is_pr' => 'boolean',
         'is_cardio' => 'boolean',
         'is_isometric' => 'boolean',
+        'cardio_metadata' => 'array',
     ];
 
     public function session(): BelongsTo
