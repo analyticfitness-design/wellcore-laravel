@@ -28,6 +28,8 @@ export const useAdminClientDetailStore = defineStore('adminClientDetail', {
         coaches: [],
         statusOptions: [],
         planOptions: [],
+        membership: null,
+        recentExtensions: [],
         loading: false,
         error: null,
         lastRefresh: null,
@@ -37,6 +39,7 @@ export const useAdminClientDetailStore = defineStore('adminClientDetail', {
         savingStatus: false,
         savingPlan: false,
         savingCoach: false,
+        savingExtension: false,
         actionMessage: null,
     }),
 
@@ -105,6 +108,8 @@ export const useAdminClientDetailStore = defineStore('adminClientDetail', {
                 this.coaches = data.coaches || [];
                 this.statusOptions = data.statusOptions || [];
                 this.planOptions = data.planOptions || [];
+                this.membership = data.membership || null;
+                this.recentExtensions = data.recent_extensions || [];
                 this.lastRefresh = new Date();
             } catch (err) {
                 this.error = err.response?.data?.message || err.message || 'Error al cargar cliente';
@@ -185,6 +190,31 @@ export const useAdminClientDetailStore = defineStore('adminClientDetail', {
             return ok;
         },
 
+        async extendMembership({ newExpiresAt, notes }) {
+            if (!this.clientId || !newExpiresAt) return false;
+            this.savingExtension = true;
+            const api = useApi();
+            try {
+                const { data } = await api.post(
+                    `/api/v/admin/clients/${this.clientId}/extend-membership`,
+                    { new_expires_at: newExpiresAt, notes: notes || null },
+                );
+                this.actionMessage = data?.message || 'Membresía extendida';
+                await this.fetchDetail({ silent: true });
+                return true;
+            } catch (err) {
+                const errors = err.response?.data?.errors;
+                const firstFieldError = errors ? Object.values(errors)[0]?.[0] : null;
+                this.actionMessage = firstFieldError
+                    || err.response?.data?.message
+                    || err.response?.data?.error
+                    || 'Error al extender membresía';
+                return false;
+            } finally {
+                this.savingExtension = false;
+            }
+        },
+
         clearMessage() { this.actionMessage = null; },
 
         close() {
@@ -195,6 +225,8 @@ export const useAdminClientDetailStore = defineStore('adminClientDetail', {
             this.coaches = [];
             this.statusOptions = [];
             this.planOptions = [];
+            this.membership = null;
+            this.recentExtensions = [];
             this.error = null;
             this.lastRefresh = null;
             this.activeTab = 'resumen';
@@ -207,6 +239,7 @@ export const useAdminClientDetailStore = defineStore('adminClientDetail', {
             this.savingStatus = false;
             this.savingPlan = false;
             this.savingCoach = false;
+            this.savingExtension = false;
         },
     },
 });

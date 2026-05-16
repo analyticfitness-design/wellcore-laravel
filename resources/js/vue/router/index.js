@@ -127,6 +127,7 @@ const routes = [
     { path: '/admin/tickets', name: 'admin-tickets', component: () => import('../pages/Admin/TicketManager.vue'), meta: { auth: true, title: 'Tickets — WellCore Admin' } },
     { path: '/admin/client-requests', name: 'admin-client-requests', component: () => import('../pages/Admin/ClientRequests.vue'), meta: { auth: true, title: 'Solicitudes de Coaches — WellCore Admin' } },
     { path: '/admin/audit-log', name: 'admin-audit-log', component: () => import('../pages/Admin/AuditLog.vue'), meta: { auth: true, title: 'Audit Log — WellCore Admin' } },
+    { path: '/admin/extensions', name: 'admin-extensions', component: () => import('../pages/Admin/ExtensionsAudit.vue'), meta: { auth: true, title: 'Extensiones de Membresía — WellCore Admin' } },
     { path: '/admin/formularios', name: 'admin-forms', component: () => import('../pages/Admin/FormsPreview.vue'), meta: { auth: true, title: 'Formularios — WellCore Admin' } },
     { path: '/admin/forms-preview/:area/:form', name: 'admin-form-preview', component: () => import('../pages/Admin/FormPreviewLoader.vue'), meta: { auth: true, title: 'Vista previa — WellCore Admin' } },
     { path: '/admin/change-password', name: 'admin-change-password', component: () => import('../pages/Auth/ChangePassword.vue'), meta: { auth: true, title: 'Cambiar Contrasena — WellCore' } },
