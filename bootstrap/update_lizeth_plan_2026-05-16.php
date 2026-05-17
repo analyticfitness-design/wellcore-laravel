@@ -228,9 +228,16 @@ if (!is_array($content)) {
 
 $log = [];
 
-// Aplicar mods a cada semana
-foreach ($content['semanas'] ?? [] as $iSem => &$sem) {
-    foreach ($sem['dias'] ?? [] as $iDia => &$dia) {
+// Aplicar mods a cada semana.
+// IMPORTANT: el `??` produciría una expresion temporal y romperia las referencias.
+// Usamos el array directo y validamos con isset antes del foreach.
+if (!isset($content['semanas']) || !is_array($content['semanas'])) {
+    fwrite(STDERR, "ERROR: content sin semanas[]\n");
+    exit(1);
+}
+foreach ($content['semanas'] as $iSem => &$sem) {
+    if (!isset($sem['dias']) || !is_array($sem['dias'])) continue;
+    foreach ($sem['dias'] as $iDia => &$dia) {
         $diaNombre = $dia['dia_semana'] ?? '';
         if (!isset($mods[$diaNombre])) continue;
 
