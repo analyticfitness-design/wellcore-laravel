@@ -99,6 +99,23 @@ return [
             'sslmode' => env('DB_SSLMODE', 'prefer'),
         ],
 
+        // wellcore_kb — DB local de Daniel (Herd) para el motor v2 de creación de planes.
+        // Vive en la laptop, NO en producción. Ver docs/wellcore-engine-v2/03-knowledge-base-schema.md
+        'kb' => [
+            'driver' => 'mysql',
+            'host' => env('KB_DB_HOST', '127.0.0.1'),
+            'port' => env('KB_DB_PORT', '3306'),
+            'database' => env('KB_DB_DATABASE', 'wellcore_kb'),
+            'username' => env('KB_DB_USERNAME', 'root'),
+            'password' => env('KB_DB_PASSWORD', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => 'InnoDB',
+        ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),

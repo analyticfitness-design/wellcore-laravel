@@ -14,8 +14,19 @@ Laravel 13.1.1 · PHP 8.4 · Vue 3.5 + TypeScript + Pinia · Livewire 3 + Alpine
 - No migrations para tablas existentes — modelos con `$table` explícito en app/Models/
 - Vue 3 SPA en resources/js/vue/ — migración gradual desde Livewire 3
 
+## Motor v2 de creación de planes (en desarrollo desde 2026-05-17)
+- Authoring toolchain **local** en Herd MySQL — reemplaza el flujo "Claude Code humano lee 27 MDs"
+- **Killswitch**: `WC_ENGINE_V2_ENABLED=false` en `.env` (default — apagado hasta Sprint 4)
+- DB local `wellcore_kb` con 8 tablas (conexión `kb` en `config/database.php`)
+- 6 stages: INTAKE → SELECT → COMPOSE → VALIDATE → PERSIST → VERIFY
+- Linter pre-INSERT como GATE DURO (30 rules iniciales, DB-driven)
+- **NO toca el frontend Vue ni el schema `assigned_plans`** (excepto 1 migración aditiva en Sprint 4)
+- Diseño completo: `docs/wellcore-engine-v2/` (9 docs)
+- Overview operativo: `app/PlanEngine/README.md`
+- Comandos: `php artisan kb:install`, `kb:seed`, `kb:status` · Slash commands: `/plan-create`, `/engine-health`
+
 ## Database
-MySQL wellcore_fitness · 60+ tablas · NO migraciones destructivas · Todos los modelos con `$table` explícito
+MySQL wellcore_fitness · 60+ tablas · NO migraciones destructivas · Todos los modelos con `$table` explícito · DB local `wellcore_kb` separada para el motor v2 (conexión `kb`)
 
 ## Design System
 - Tokens en resources/css/app.css (@theme) · wc-accent: #DC2626
