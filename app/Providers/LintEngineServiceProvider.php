@@ -22,6 +22,7 @@ use App\Services\LintEngine\Validators\CooldownMissingValidator;
 use App\Services\LintEngine\Validators\CreatinaMissingValidator;
 use App\Services\LintEngine\Validators\ExistsAndIntPositiveValidator;
 use App\Services\LintEngine\Validators\ExistsAndNonEmptyValidator;
+use App\Services\LintEngine\Validators\ExerciseGifFromV2RepoValidator;
 use App\Services\LintEngine\Validators\ExistsInEachValidator;
 use App\Services\LintEngine\Validators\ExternalHeadValidator;
 use App\Services\LintEngine\Validators\HydrationTargetValidator;
@@ -103,6 +104,7 @@ final class LintEngineServiceProvider extends ServiceProvider
             $registry->register(new VitaminaD3MissingValidator($resolver));
             $registry->register(new WarmupMinDurationValidator($resolver));
             $registry->register(new UnilateralBalanceValidator($resolver));
+            $registry->register(new ExerciseGifFromV2RepoValidator($resolver));
 
             return $registry;
         });

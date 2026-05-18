@@ -53,6 +53,18 @@ MySQL wellcore_fitness · 60+ tablas · NO migraciones destructivas · Todos los
 - NEVER `Rebuild Docker image` — solo `silvia-gitpull-load`
 - NEVER `git push --force` a main
 
+## Ley dura Motor v2: ejercicios solo del repo v2 (autoritativa Daniel 2026-05-18)
+**Todo plan de entrenamiento DEBE usar ejercicios del repo oficial `analyticfitness-design/wellcore-exercise-gifs-v2`.**
+- Los nombres de los GIFs en el repo SON los nombres canónicos. No se inventan.
+- El validator `hard_exercise_gif_from_v2_repo` (severity=error) bloquea PERSIST si:
+  - `gif_url` apunta fuera del repo v2
+  - `gif_filename` no existe en `wellcore_kb.exercise_metadata`
+  - el path no termina en `.gif`
+- `ExerciseSelector` filtra ejercicios sin `gif_filename` poblado.
+- `ExerciseMetadata::gifUrl()` throws si no hay `gif_filename` (no inventa).
+- Cuando agregás un ejercicio nuevo: subir GIF al repo v2 → `php artisan kb:import-exercise-catalog`.
+- Auto-sync: `php artisan kb:clean-exercise-catalog --delete` elimina aliases broken.
+
 ## Supply chain & secrets (CVE-2026-45321 Shai-Hulud y similares)
 - **NEVER `npm install <paquete>` ni `composer require <paquete>`** sin que el paquete ya esté en `package.json`/`composer.json`. El hook `dangerous-actions-blocker.php` lo bloquea. Para agregar uno nuevo: editar manifiesto manualmente → `npm install` / `composer install` (sin args) → revisar diff del lockfile → commit del lockfile.
 - **NEVER `--force`, `--legacy-peer-deps`, `--no-audit`, `--ignore-scripts=false`** en npm/composer. Si necesitás bypassear algo, pregunta al humano primero.

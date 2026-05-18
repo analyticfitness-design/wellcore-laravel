@@ -72,11 +72,27 @@ class ExerciseMetadata extends Model
     /**
      * Construye el `gif_url` canónico apuntando al repo v2.
      *
-     * Si `gif_filename` está seteado, lo usa. Si no, usa "{alias}.gif".
+     * LEY DURA: requiere `gif_filename` poblado y matching contra el repo v2.
+     * Si está vacío, throws — no inventamos filename del alias porque puede no existir
+     * en el repo. El selector debe filtrar registros sin filename ANTES de llamar acá.
+     *
+     * Helper estático: resolveGifUrl($filename) para componer URLs ad-hoc desde código
+     * externo (export service, scripts) sin necesitar el modelo.
      */
     public function gifUrl(): string
     {
-        $filename = $this->gif_filename ?? ($this->alias . '.gif');
-        return self::GIF_REPO_BASE_URL . $filename;
+        $filename = $this->gif_filename;
+        if ($filename === null || $filename === '') {
+            throw new \RuntimeException(
+                "ExerciseMetadata id={$this->id} alias='{$this->alias}' no tiene gif_filename. "
+                . 'No se puede construir gif_url. Agregalo manualmente o corré `php artisan kb:reconcile-gifs --force`.'
+            );
+        }
+        return self::resolveGifUrl($filename);
+    }
+
+    public static function resolveGifUrl(string $filename): string
+    {
+        return self::GIF_REPO_BASE_URL . ltrim($filename, '/');
     }
 }

@@ -6,7 +6,7 @@
  * Inserta 4 planes (bundle multi-vertical) en wellcore_fitness.assigned_plans
  * dentro de UNA SOLA transaction atómica.
  *
- * Generado:    2026-05-18T12:30:56-05:00
+ * Generado:    2026-05-18T12:48:29-05:00
  * Cliente:     97
  * Coach:       9
  * Vigencia:    2026-06-01 → 2026-06-29
@@ -37,7 +37,7 @@ $bundle = array (
     'plan_json' => 
     array (
       'plan_type' => 'entrenamiento',
-      'titulo' => 'Plan Upper / Lower 4 días — karen-real',
+      'titulo' => 'Plan Upper / Lower 4 días — karen-final-v2',
       'objetivo' => 'Pérdida de grasa con preservación de masa muscular.',
       'metodologia' => 'Upper / Lower 4 días',
       'frecuencia' => '4 dias/semana',
@@ -128,7 +128,7 @@ $bundle = array (
               array (
                 0 => 
                 array (
-                  'nombre' => 'Dominadas',
+                  'nombre' => 'Dominadas asistidas (banda o máquina)',
                   'series' => 3,
                   'repeticiones' => '12',
                   'descanso' => '90s',
@@ -321,7 +321,7 @@ $bundle = array (
               array (
                 0 => 
                 array (
-                  'nombre' => 'Dominadas',
+                  'nombre' => 'Dominadas asistidas (banda o máquina)',
                   'series' => 4,
                   'repeticiones' => '10',
                   'descanso' => '90s',
@@ -514,7 +514,7 @@ $bundle = array (
               array (
                 0 => 
                 array (
-                  'nombre' => 'Dominadas',
+                  'nombre' => 'Dominadas asistidas (banda o máquina)',
                   'series' => 4,
                   'repeticiones' => '6-8',
                   'descanso' => '150s',
@@ -707,7 +707,7 @@ $bundle = array (
               array (
                 0 => 
                 array (
-                  'nombre' => 'Dominadas',
+                  'nombre' => 'Dominadas asistidas (banda o máquina)',
                   'series' => 5,
                   'repeticiones' => '3-5',
                   'descanso' => '180s',
@@ -853,7 +853,7 @@ $bundle = array (
     'plan_json' => 
     array (
       'plan_type' => 'nutricion',
-      'titulo' => 'Plan IIFYM con déficit calórico moderado — karen-real',
+      'titulo' => 'Plan IIFYM con déficit calórico moderado — karen-final-v2',
       'objetivo' => 'Pérdida de grasa con preservación de masa muscular (1794 kcal/día, déficit moderado).',
       'metodologia' => 'IIFYM con déficit calórico moderado',
       'duracion_semanas' => 4,
@@ -1022,7 +1022,7 @@ $bundle = array (
     'plan_json' => 
     array (
       'plan_type' => 'suplementacion',
-      'titulo' => 'Stack de suplementación — Pérdida de grasa femenina intermedia — karen-real',
+      'titulo' => 'Stack de suplementación — Pérdida de grasa femenina intermedia — karen-final-v2',
       'objetivo' => 'Pérdida de grasa con preservación de masa magra para mujer intermedia en déficit moderado/agresivo. Soporte energético pre-entreno + manejo de sueño/cólicos + base proteica fuerte.',
       'metodologia' => 'Stack Básico WellCore',
       'duracion_semanas' => 4,
@@ -1093,7 +1093,7 @@ $bundle = array (
     'plan_json' => 
     array (
       'plan_type' => 'habitos',
-      'titulo' => 'Plan de hábitos — Hábitos básicos: sueño + hidratación — karen-real',
+      'titulo' => 'Plan de hábitos — Hábitos básicos: sueño + hidratación — karen-final-v2',
       'objetivo' => 'Consolidar pilares de recuperación y consistencia (sueño, hidratación, registro). Los hábitos básicos sostenidos valen más que cualquier suplemento o táctica avanzada.',
       'metodologia' => 'Hábitos básicos: sueño + hidratación',
       'duracion_semanas' => 4,

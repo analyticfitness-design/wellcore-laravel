@@ -178,6 +178,15 @@ final class LintRulesSeeder extends Seeder
             'Agregar al menos un tip o nota_coach recomendando warmup específico de 5-10 min antes de cada sesión.',
             false, $now);
 
+        // LEY DURA del motor v2 (autoritativa Daniel · 2026-05-18):
+        // Todos los ejercicios deben tener gif del repo oficial wellcore-exercise-gifs-v2.
+        // Cualquier ejercicio fuera del catálogo → severity=ERROR, bloquea PERSIST.
+        $r[] = $this->rule('hard_exercise_gif_from_v2_repo', 'entrenamiento', 'error', 'heuristic',
+            'Ejercicio con gif_url fuera del repo wellcore-exercise-gifs-v2 o sin entry en exercise_metadata (LEY DURA)',
+            ['rule' => 'exercise_gif_from_v2_repo'],
+            'Reemplazar el ejercicio por un alias que SÍ exista en exercise_metadata, o agregar el GIF al repo + correr `php artisan kb:import-exercise-catalog`. NO inventar gif_url.',
+            false, $now);
+
         $r[] = $this->rule('heur_supl_creatina_missing', 'suplementacion', 'warning', 'heuristic',
             'Plan de suplementación SIN creatina monohidrato — el suplemento con mejor evidencia costo/beneficio',
             ['rule' => 'creatina_missing'],

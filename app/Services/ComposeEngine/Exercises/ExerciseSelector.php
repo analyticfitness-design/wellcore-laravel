@@ -89,15 +89,19 @@ final class ExerciseSelector
     {
         $level = $profile->level ?? 'intermedio';
 
-        // Filtro común: nunca devolver ejercicios con gif_url broken (verificado por kb:verify-gifs).
-        // 'unknown' SÍ pasa — son ejercicios nuevos sin verificar todavía, mejor incluirlos
-        // y dejar que el LintEngine los detecte. 'missing' tampoco — sin GIF no se renderiza.
+        // LEY DURA: solo ejercicios con gif_filename real (matching contra repo v2).
+        // Si gif_filename está vacío/null, ExerciseMetadata::gifUrl() cae al fallback
+        // "{alias}.gif" que probablemente NO existe en el repo → ExerciseGifFromV2RepoValidator
+        // bloquea el plan entero con severity=error.
+        // Filtramos en el origen: nunca devolver ejercicios sin filename canónico.
         $excludeStatuses = ['broken', 'missing'];
 
         // Búsqueda primaria por muscle_primary.
         $primary = ExerciseMetadata::query()
             ->whereIn('muscle_primary', $muscles)
             ->where('compound_isolation', $compoundIsolation)
+            ->whereNotNull('gif_filename')
+            ->where('gif_filename', '!=', '')
             ->whereNotIn('gif_url_status', $excludeStatuses)
             ->maxLevel($level)
             ->orderBy('id')
@@ -108,6 +112,8 @@ final class ExerciseSelector
         $primaryIds = $primary->pluck('id')->all();
         $secondaryQuery = ExerciseMetadata::query()
             ->where('compound_isolation', $compoundIsolation)
+            ->whereNotNull('gif_filename')
+            ->where('gif_filename', '!=', '')
             ->whereNotIn('gif_url_status', $excludeStatuses)
             ->maxLevel($level)
             ->orderBy('id');
