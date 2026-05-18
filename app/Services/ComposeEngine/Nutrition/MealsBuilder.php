@@ -9,35 +9,72 @@ use App\Services\ComposeEngine\Nutrition\Data\MealSlot;
 /**
  * Construye los slots de comida para un día.
  *
- * Default 5 comidas (estilo WellCore):
- *   Desayuno (20%), Snack AM (10%), Almuerzo (30%), Pre-entreno (15%), Cena (25%)
+ * Reparto canónico WellCore — share suma 1.00 por count:
+ *   3 comidas: Desayuno (30%) · Almuerzo (40%) · Cena (30%)
+ *   4 comidas: Desayuno (25%) · Snack AM (10%) · Almuerzo (35%) · Cena (30%)
+ *   5 comidas: Desayuno (20%) · Snack AM (10%) · Almuerzo (30%) · Pre-entreno (15%) · Cena (25%)
+ *   6 comidas: Desayuno (20%) · Snack AM (10%) · Almuerzo (25%) · Merienda (10%) · Pre-entreno (15%) · Cena (20%)
  *
- * Variantes futuras: 3 comidas (ayuno intermitente), 4 comidas, 6 comidas.
- * Por ahora Sprint 7 solo soporta el 5-meals.
+ * Si el coach pasó horarios explícitos vía preferences.meal_times, se respetan (mismo count que slots).
  */
 final class MealsBuilder
 {
-    /** Reparto canónico WellCore (suma 1.00). */
-    private const FIVE_MEALS_SHARE = [
-        ['name' => 'Desayuno',     'hora' => '07:00', 'share' => 0.20],
-        ['name' => 'Snack AM',     'hora' => '10:30', 'share' => 0.10],
-        ['name' => 'Almuerzo',     'hora' => '13:00', 'share' => 0.30],
-        ['name' => 'Pre-entreno',  'hora' => '17:00', 'share' => 0.15],
-        ['name' => 'Cena',         'hora' => '20:00', 'share' => 0.25],
+    /** Reparto canónico por count. */
+    private const SHARES = [
+        3 => [
+            ['name' => 'Desayuno',    'hora' => '07:00', 'share' => 0.30],
+            ['name' => 'Almuerzo',    'hora' => '13:00', 'share' => 0.40],
+            ['name' => 'Cena',        'hora' => '20:00', 'share' => 0.30],
+        ],
+        4 => [
+            ['name' => 'Desayuno',    'hora' => '07:00', 'share' => 0.25],
+            ['name' => 'Snack AM',    'hora' => '10:30', 'share' => 0.10],
+            ['name' => 'Almuerzo',    'hora' => '13:00', 'share' => 0.35],
+            ['name' => 'Cena',        'hora' => '20:00', 'share' => 0.30],
+        ],
+        5 => [
+            ['name' => 'Desayuno',    'hora' => '07:00', 'share' => 0.20],
+            ['name' => 'Snack AM',    'hora' => '10:30', 'share' => 0.10],
+            ['name' => 'Almuerzo',    'hora' => '13:00', 'share' => 0.30],
+            ['name' => 'Pre-entreno', 'hora' => '17:00', 'share' => 0.15],
+            ['name' => 'Cena',        'hora' => '20:00', 'share' => 0.25],
+        ],
+        6 => [
+            ['name' => 'Desayuno',    'hora' => '07:00', 'share' => 0.20],
+            ['name' => 'Snack AM',    'hora' => '10:30', 'share' => 0.10],
+            ['name' => 'Almuerzo',    'hora' => '13:00', 'share' => 0.25],
+            ['name' => 'Merienda',    'hora' => '16:00', 'share' => 0.10],
+            ['name' => 'Pre-entreno', 'hora' => '18:00', 'share' => 0.15],
+            ['name' => 'Cena',        'hora' => '21:00', 'share' => 0.20],
+        ],
     ];
+
+    public const SUPPORTED_COUNTS = [3, 4, 5, 6];
 
     /**
      * @param array{objetivo_cal: int, macros: array{proteina_g: int, carbohidratos_g: int, grasas_g: int}} $macroPlan
+     * @param string[]|null $customTimes opcional, mismo count que $mealsCount; override del hora canónico
      * @return MealSlot[]
      */
-    public function build(array $macroPlan, int $mealsCount = 5): array
+    public function build(array $macroPlan, int $mealsCount = 5, ?array $customTimes = null): array
     {
-        if ($mealsCount !== 5) {
-            throw new \RuntimeException("MealsBuilder Sprint 7 solo soporta 5 comidas. Recibido: $mealsCount");
+        if (! in_array($mealsCount, self::SUPPORTED_COUNTS, true)) {
+            $supported = implode('|', self::SUPPORTED_COUNTS);
+            throw new \RuntimeException("MealsBuilder soporta {$supported} comidas. Recibido: {$mealsCount}");
+        }
+
+        $shares = self::SHARES[$mealsCount];
+
+        // Si el coach pasó horarios y matchea el count, los usamos.
+        if (is_array($customTimes) && count($customTimes) === $mealsCount) {
+            foreach ($shares as $i => &$slot) {
+                $slot['hora'] = $customTimes[$i];
+            }
+            unset($slot);
         }
 
         $slots = [];
-        foreach (self::FIVE_MEALS_SHARE as $meal) {
+        foreach ($shares as $meal) {
             $slots[] = new MealSlot(
                 name: $meal['name'],
                 horaSugerida: $meal['hora'],

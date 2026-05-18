@@ -61,10 +61,73 @@ it('targetProteinaG distribuida proporcionalmente', function () {
     expect($slots[2]->targetProteinaG)->toBe(54);
 });
 
-it('lanza si mealsCount != 5 (Sprint 7 limitation)', function () {
+it('soporta 3 comidas con reparto 30/40/30', function () {
     $macros = [
         'objetivo_cal' => 2000,
         'macros' => ['proteina_g' => 180, 'carbohidratos_g' => 200, 'grasas_g' => 60],
     ];
-    expect(fn () => $this->builder->build($macros, 3))->toThrow(RuntimeException::class);
+    $slots = $this->builder->build($macros, 3);
+    expect($slots)->toHaveCount(3);
+    expect($slots[0]->name)->toBe('Desayuno');
+    expect($slots[0]->kcalShare)->toBe(0.30);
+    expect($slots[1]->name)->toBe('Almuerzo');
+    expect($slots[1]->kcalShare)->toBe(0.40);
+    expect($slots[2]->name)->toBe('Cena');
+    expect($slots[2]->kcalShare)->toBe(0.30);
+    $totalShare = array_sum(array_map(fn ($s) => $s->kcalShare, $slots));
+    expect($totalShare)->toBeBetween(0.99, 1.01);
+});
+
+it('soporta 4 comidas con shares que suman ~1.00', function () {
+    $macros = [
+        'objetivo_cal' => 2000,
+        'macros' => ['proteina_g' => 180, 'carbohidratos_g' => 200, 'grasas_g' => 60],
+    ];
+    $slots = $this->builder->build($macros, 4);
+    expect($slots)->toHaveCount(4);
+    $totalShare = array_sum(array_map(fn ($s) => $s->kcalShare, $slots));
+    expect($totalShare)->toBeBetween(0.99, 1.01);
+});
+
+it('soporta 6 comidas con shares que suman ~1.00', function () {
+    $macros = [
+        'objetivo_cal' => 2000,
+        'macros' => ['proteina_g' => 180, 'carbohidratos_g' => 200, 'grasas_g' => 60],
+    ];
+    $slots = $this->builder->build($macros, 6);
+    expect($slots)->toHaveCount(6);
+    $totalShare = array_sum(array_map(fn ($s) => $s->kcalShare, $slots));
+    expect($totalShare)->toBeBetween(0.99, 1.01);
+});
+
+it('lanza si mealsCount fuera de [3,4,5,6]', function () {
+    $macros = [
+        'objetivo_cal' => 2000,
+        'macros' => ['proteina_g' => 180, 'carbohidratos_g' => 200, 'grasas_g' => 60],
+    ];
+    expect(fn () => $this->builder->build($macros, 2))->toThrow(RuntimeException::class);
+    expect(fn () => $this->builder->build($macros, 7))->toThrow(RuntimeException::class);
+});
+
+it('override de horarios via customTimes', function () {
+    $macros = [
+        'objetivo_cal' => 2000,
+        'macros' => ['proteina_g' => 180, 'carbohidratos_g' => 200, 'grasas_g' => 60],
+    ];
+    // Karen Vanessa: 4 comidas a 5am/10am/1pm/4pm
+    $slots = $this->builder->build($macros, 4, ['05:00', '10:00', '13:00', '16:00']);
+    expect($slots[0]->horaSugerida)->toBe('05:00');
+    expect($slots[1]->horaSugerida)->toBe('10:00');
+    expect($slots[2]->horaSugerida)->toBe('13:00');
+    expect($slots[3]->horaSugerida)->toBe('16:00');
+});
+
+it('ignora customTimes si count no matchea', function () {
+    $macros = [
+        'objetivo_cal' => 2000,
+        'macros' => ['proteina_g' => 180, 'carbohidratos_g' => 200, 'grasas_g' => 60],
+    ];
+    // 4 comidas pero solo 3 horarios → ignora customTimes, usa canónicos
+    $slots = $this->builder->build($macros, 4, ['05:00', '10:00', '13:00']);
+    expect($slots[0]->horaSugerida)->toBe('07:00');  // canónico
 });

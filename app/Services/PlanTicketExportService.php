@@ -15,12 +15,20 @@ use Illuminate\Support\Carbon;
 
 final class PlanTicketExportService
 {
+    /**
+     * Shape canónico que produce ComposeEngine del motor v2. Sincronizar con los composers reales:
+     *   - app/Services/ComposeEngine/PlanComposer.php             (entrenamiento)
+     *   - app/Services/ComposeEngine/Nutrition/NutritionPlanComposer.php
+     *   - app/Services/ComposeEngine/Habits/HabitsPlanComposer.php
+     *   - app/Services/ComposeEngine/Supplementation/SupplementPlanComposer.php
+     *   - app/Services/ComposeEngine/Cycle/CycleModulationComposer.php
+     */
     public const SECTION_INSTRUCTIONS = [
-        'entrenamiento' => 'Genera JSON con: titulo, metodologia, duracion_semanas, frecuencia_dias, split, objetivo, deload_protocol, semanas[{semana, nombre_bloque, dias[{dia, nombre, ejercicios[{nombre, series, repeticiones, descanso, rir, gif_url, notas, variacion?}]}]}]. Cada ejercicio DEBE usar nombre + gif_url del catalogo v2: tabla wellcore_kb.exercise_metadata (220 GIFs curados, repo analyticfitness-design/wellcore-exercise-gifs-v2). gif_url se construye con ExerciseMetadata::resolveGifUrl($gif_filename). RIR de 1-3 segun plan tier. Seguir metodologia en TESIS_ENTRENAMIENTO_WELLCORE.md.',
-        'nutricion' => 'Genera JSON con: titulo, metodologia, objetivo_calorico (calculado desde TMB Mifflin-St Jeor x factor actividad), macros {proteina_g, carbohidratos_g, grasas_g}, comidas_sugeridas[{nombre, hora, calorias, macros, opciones:["Opcion N: ing1 (Xg) + ing2 (Yg) + ing3 (Zg)", ...]}], hidratacion, tips_nutricionales, notas_coach. SUMA de calorias de comidas = objetivo_calorico. 3 opciones por comida con ±5% variacion de macros. Formato de opciones OBLIGATORIO con " + " separando ingredientes. Seguir TESIS_NUTRICION_WELLCORE.md.',
-        'habitos' => 'Genera JSON con: titulo, areas_foco[], habitos[{habito, frecuencia, metrica, objetivo, categoria}]. Cada habito debe ser mensurable y especifico segun el objetivo del cliente.',
-        'suplementacion' => 'Genera JSON con: titulo, objetivo, suplementos[{nombre, dosis, momento, frecuencia, notas}]. Solo recomendar suplementos respaldados por evidencia relevantes al objetivo del cliente.',
-        'ciclo' => 'Solo Elite. Genera JSON con: name, duracion, descripcion_protocolo, warning (supervision medica), metricas, compounds[], phases[], pct[], labs[], efectos_secundarios[], monitoreo_diario[], emergencia[], notas_coach. Seguir METODOLOGIAS_ELITE_COMPLETAS.md.',
+        'entrenamiento' => 'Shape: {plan_type:"entrenamiento", titulo, objetivo, metodologia, frecuencia, frecuencia_dias, duracion_semanas, fecha_inicio, split:{lunes:["gluteo",...], martes:[...]}, notas_coach, tips[], principios_aplicados[slug,...], semanas[{numero, fase, dias[{dia_semana, grupo_muscular, ejercicios[{nombre, series:int, repeticiones, descanso, rir:int, gif_url}]}]}]}. Cada ejercicio DEBE usar nombre + gif_url del catalogo v2: tabla wellcore_kb.exercise_metadata (220 GIFs curados, repo analyticfitness-design/wellcore-exercise-gifs-v2). gif_url se construye con ExerciseMetadata::resolveGifUrl($gif_filename). RIR descendente sem 1→4 (3→1). Seguir metodologia en TESIS_ENTRENAMIENTO_WELLCORE.md.',
+        'nutricion' => 'Shape: {plan_type:"nutricion", titulo, objetivo, metodologia, duracion_semanas, fecha_inicio, objetivo_cal:int, macros:{proteina_g, carbohidratos_g, grasas_g}, tdee_calculado, bmr_calculado, notas_coach, tips[], principios_aplicados[slug,...], comidas[{nombre, hora, kcal_objetivo:int, macros:{proteina, carbohidratos, grasas}, opcion_a:["ing1 (Xg)", "ing2 (Yg)"], opcion_b:[...], opcion_c:[...]}]}. Macros calculados con Mifflin-St Jeor x factor actividad. SUMA de kcal_objetivo de comidas ≈ objetivo_cal. Cada opcion (a/b/c) es lista de strings con formato "ingrediente (Xg)". Seguir TESIS_NUTRICION_WELLCORE.md.',
+        'habitos' => 'Shape: {plan_type:"habitos", titulo, objetivo, metodologia, duracion_semanas, fecha_inicio, notas_coach, tips[], principios_aplicados[slug,...], habitos[{nombre, categoria:"sueño"|"hidratacion"|"registro"|"tracking"|"ciclo", objetivo, tracking_method, por_que_importa, tips[]}]}. Cada habito mensurable + tracking method definido. Habito "ciclo" solo para mujeres.',
+        'suplementacion' => 'Shape: {plan_type:"suplementacion", titulo, objetivo, metodologia, duracion_semanas, fecha_inicio, stack_info, notas_coach, tips[], principios_aplicados[slug,...], advertencia_legal, suplementos[{nombre, slug, dosis, momento, frecuencia, notas}]}. Solo suplementos con evidence_level >= media en wellcore_kb.principles. Coach_brief.plan_suplementacion sobreescribe (motor respeta lo prescrito).',
+        'ciclo' => 'Solo Elite/Rise femenino. Shape: {plan_type:"ciclo", name, duracion, descripcion_protocolo, warning, metricas, compounds[], phases[], pct[], labs[], efectos_secundarios[], monitoreo_diario[], emergencia[], notas_coach}. Seguir METODOLOGIAS_ELITE_COMPLETAS.md.',
     ];
 
     private const PLAN_TIER_EXPECTATIONS = [

@@ -22,6 +22,7 @@ final class PlanShowCommand extends Command
     protected $signature = 'plan:show
                             {composed_id : ID en wellcore_kb.composed_plans}
                             {--detail : muestra contenido completo (semanas/comidas/etc.)}
+                            {--with-violations : muestra las violations del LintEngine (pre + post fix)}
                             {--json : output JSON crudo}';
 
     protected $description = 'Renderiza un composed_plan en formato humano-leible (resumen o detalle).';
@@ -59,7 +60,68 @@ final class PlanShowCommand extends Command
         // Sprint 39: render principios aplicados al final (todas las verticales)
         $this->renderPrinciples($plan);
 
+        if ($this->option('with-violations')) {
+            $this->renderViolations($cp);
+        }
+
         return 0;
+    }
+
+    /**
+     * Render violations del LintEngine guardadas en composed_plans.
+     * Esquema real: lint_result_pre_json + lint_result_post_json + fixes_applied_json.
+     */
+    private function renderViolations(ComposedPlan $cp): void
+    {
+        // Los campos pueden venir como array (cast) o string (legacy). Normalizamos.
+        $pre = $this->coerceJson($cp->lint_result_pre_json);
+        $post = $this->coerceJson($cp->lint_result_post_json);
+        $fixes = $this->coerceJson($cp->fixes_applied_json);
+
+        $preViolations = $pre['violations'] ?? [];
+        $postViolations = $post['violations'] ?? [];
+
+        $this->newLine();
+        $this->info('═══ LintEngine ═══');
+        $this->line("Pre-fix:  {$cp->violations_before} violations · " . count($fixes) . " fixes aplicados · Post-fix: {$cp->violations_after} violations");
+
+        if ($postViolations !== []) {
+            $this->newLine();
+            $this->warn('Violations restantes (post-fix):');
+            foreach ($postViolations as $v) {
+                $rule = $v['rule_code'] ?? $v['rule'] ?? $v['rule_id'] ?? '?';
+                $severity = $v['severity'] ?? 'warning';
+                $message = $v['message'] ?? '?';
+                $icon = $severity === 'error' ? '✗' : ($severity === 'warning' ? '⚠' : '·');
+                $this->line(sprintf('  %s [%s] %s', $icon, $rule, $message));
+                if (! empty($v['evidence'])) {
+                    $ev = is_array($v['evidence']) ? json_encode($v['evidence'], JSON_UNESCAPED_UNICODE) : (string) $v['evidence'];
+                    $this->line('     evidencia: ' . mb_substr($ev, 0, 200));
+                }
+            }
+        }
+
+        if ($fixes !== []) {
+            $this->newLine();
+            $this->info('Auto-fixes aplicados:');
+            foreach ($fixes as $f) {
+                $rule = $f['rule_code'] ?? $f['rule'] ?? $f['rule_id'] ?? '?';
+                $action = $f['action'] ?? $f['description'] ?? '?';
+                $this->line("  ✓ [{$rule}] {$action}");
+            }
+        }
+
+        if ($preViolations !== $postViolations && $preViolations !== []) {
+            $this->newLine();
+            $this->line('Violations pre-fix (' . count($preViolations) . '):');
+            foreach ($preViolations as $v) {
+                $rule = $v['rule_code'] ?? $v['rule'] ?? $v['rule_id'] ?? '?';
+                $severity = $v['severity'] ?? 'warning';
+                $message = $v['message'] ?? '?';
+                $icon = $severity === 'error' ? '✗' : ($severity === 'warning' ? '⚠' : '·');
+                $this->line(sprintf('  %s [%s] %s', $icon, $rule, $message));
+            }
+        }
     }
 
     private function renderPrinciples(array $plan): void
@@ -231,6 +293,19 @@ final class PlanShowCommand extends Command
                 $this->line("    síntomas: $sintomas");
             }
         }
+    }
+
+    /** Convierte un atributo del modelo (puede ser array casteado o string JSON) en array. */
+    private function coerceJson(mixed $raw): array
+    {
+        if (is_array($raw)) {
+            return $raw;
+        }
+        if (is_string($raw) && $raw !== '') {
+            $decoded = json_decode($raw, true);
+            return is_array($decoded) ? $decoded : [];
+        }
+        return [];
     }
 
     private function renderGenerico(array $plan, bool $detail): void

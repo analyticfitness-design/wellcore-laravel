@@ -74,6 +74,17 @@ final class SupplementPlanComposer
             }
         }
 
+        // Override del coach: si preferences.supplements_override está presente, respetar EXACTO.
+        // - lista vacía → cero suplementos (motor no prescribe)
+        // - lista con nombres → filtrar/agregar para que el output matchee la prescripción del coach
+        $prefs = $ctx->profile->preferences ?? [];
+        if (array_key_exists('supplements_override', $prefs)) {
+            $coachList = $prefs['supplements_override'];
+            $result = $this->applyCoachOverride($coachList, $suplementos, $warnings);
+            $suplementos = $result['suplementos'];
+            $warnings = $result['warnings'];
+        }
+
         $stackInfo = $stack !== null ? [
             'stack_slug' => $stack->slug,
             'stack_nombre' => $stack->name,
@@ -126,6 +137,90 @@ final class SupplementPlanComposer
             'frecuencia' => self::FREQUENCY_LABELS[$frequencyKey] ?? $this->humanizeKey($frequencyKey),
             'notas' => $rationale,
         ];
+    }
+
+    /**
+     * Aplica el override del coach: respeta literalmente la lista que el coach prescribió.
+     *
+     * Política:
+     *   - lista vacía → motor no prescribe nada (warning informativo)
+     *   - cada nombre del coach se busca tolerantemente en el stack del motor
+     *     (LIKE sin acentos/case). Si matchea → keep esa entry rica.
+     *   - si no matchea ningún component del stack → entry custom con placeholders
+     *     "consultar dosis con coach" + warning indicando que es prescripción no canónica.
+     *
+     * @param array<int,string> $coachList nombres que el coach prescribió
+     * @param array<int,array<string,mixed>> $motorList el stack que el motor produjo
+     * @param array<int,string> $warnings array existente, se appendean nuevos
+     * @return array{suplementos: array<int,array<string,mixed>>, warnings: array<int,string>}
+     */
+    private function applyCoachOverride(array $coachList, array $motorList, array $warnings): array
+    {
+        if ($coachList === []) {
+            $warnings[] = 'Coach pidió suplementación vacía (supplements_override=[]). Motor NO prescribe nada.';
+            return ['suplementos' => [], 'warnings' => $warnings];
+        }
+
+        $resolved = [];
+        $unmatched = [];
+
+        foreach ($coachList as $coachName) {
+            $needle = $this->normalizeName((string) $coachName);
+            if ($needle === '') {
+                continue;
+            }
+
+            $found = null;
+            foreach ($motorList as $entry) {
+                $candidate = $this->normalizeName((string) ($entry['nombre'] ?? ''));
+                $slug = $this->normalizeName((string) ($entry['slug'] ?? ''));
+                if (str_contains($candidate, $needle) || str_contains($slug, $needle)
+                    || str_contains($needle, $candidate) || str_contains($needle, $slug)) {
+                    $found = $entry;
+                    break;
+                }
+            }
+
+            if ($found !== null) {
+                $resolved[] = $found;
+            } else {
+                $unmatched[] = $coachName;
+                $resolved[] = [
+                    'nombre' => $coachName,
+                    'slug' => $this->slugify($coachName),
+                    'dosis' => 'Consultá dosis con tu coach',
+                    'momento' => 'Consultá momento con tu coach',
+                    'frecuencia' => 'Según prescripción del coach',
+                    'notas' => 'Suplemento prescrito por el coach, fuera del stack evidence-based canónico. Confirmá dosis y respaldo con el coach antes de comprar.',
+                ];
+            }
+        }
+
+        if ($unmatched !== []) {
+            $warnings[] = 'Coach prescribió suplementos que no matchean catálogo canónico: '
+                . implode(', ', $unmatched)
+                . '. Incluidos como entries custom — confirmá evidencia y dosis con el coach.';
+        }
+
+        return ['suplementos' => $resolved, 'warnings' => $warnings];
+    }
+
+    /**
+     * Normaliza para matching: lower + sin tildes + sin separadores.
+     */
+    private function normalizeName(string $raw): string
+    {
+        $s = mb_strtolower(trim($raw), 'UTF-8');
+        $s = strtr($s, ['á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ñ' => 'n', 'ü' => 'u']);
+        return (string) preg_replace('/[^a-z0-9]/u', '', $s);
+    }
+
+    private function slugify(string $raw): string
+    {
+        $s = mb_strtolower(trim($raw), 'UTF-8');
+        $s = strtr($s, ['á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ñ' => 'n']);
+        $s = (string) preg_replace('/[^a-z0-9]+/u', '-', $s);
+        return trim($s, '-');
     }
 
     private function fallbackBasico(): array

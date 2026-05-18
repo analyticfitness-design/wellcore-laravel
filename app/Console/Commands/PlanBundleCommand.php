@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\Kb\ComposedPlan;
+use App\PlanEngine\Normalization\VocabularyNormalizer;
 use App\Services\ComposeEngine\ComposeEngine;
 use App\Services\DecisionEngine\Data\ClientProfile;
 use App\Services\DecisionEngine\DecisionEngine;
@@ -49,28 +50,39 @@ final class PlanBundleCommand extends Command
     private const FEMALE_ELITE_ONLY = 'ciclo';
 
     protected $signature = 'plan:bundle
-                            {--goal= : profile.goal compartido entre verticales}
-                            {--level= : profile.level}
-                            {--days= : profile.days (int)}
-                            {--gender= : profile.gender}
-                            {--age= : profile.age (int)}
-                            {--weight= : profile.weight_kg (float)}
-                            {--height= : profile.height_cm (float)}
-                            {--tier= : profile.tier (trial|esencial|metodo|elite|rise)}
-                            {--equipment=gym_completo : equipo disponible}
+                            {--ticket-json= : path a JSON exportado de PlanTicket; carga TODOS los defaults sensatos del coach_brief y profile_snapshot}
+                            {--goal= : profile.goal compartido entre verticales (override del ticket)}
+                            {--level= : profile.level (override del ticket)}
+                            {--days= : profile.days (int) (override del ticket)}
+                            {--gender= : profile.gender (override del ticket)}
+                            {--age= : profile.age (int) (override del ticket)}
+                            {--weight= : profile.weight_kg (float) (override del ticket)}
+                            {--height= : profile.height_cm (float) (override del ticket)}
+                            {--tier= : profile.tier (trial|esencial|metodo|elite|rise) (override del ticket)}
+                            {--equipment=gym_completo : equipo disponible (override del ticket)}
                             {--client-handle= : identificador audit del cliente}
-                            {--coach-name= : nombre coach}
+                            {--coach-name= : nombre coach (override del ticket)}
                             {--fecha-inicio= : YYYY-MM-DD}
                             {--only= : lista CSV de verticales a procesar (excluyente)}
                             {--skip= : lista CSV de verticales a excluir}
                             {--no-fix : omitir auto-fix}
                             {--export-dir= : graba JSONs individuales (uno por vertical)}
-                            {--exclude-foods= : CSV de slugs o nombres de alimentos a excluir (ej: brocoli,zuccini,arandanos)}
-                            {--meal-protein= : CSV pares slot:keyword (ej: desayuno:huevos,almuerzo:pollo,cena:tilapia)}
-                            {--split= : CSV pares dia:grupo (ej: lunes:gluteo,martes:hombro+triceps+abs)}
-                            {--json : output JSON estructurado en lugar de tabla}';
+                            {--exclude-foods= : CSV de slugs o nombres de alimentos a excluir (override del coach_brief.plan_nutricional.alimentos_no_incluir)}
+                            {--meal-protein= : CSV pares slot:keyword (override del coach_brief.plan_nutricional)}
+                            {--split= : CSV pares dia:grupo (override del coach_brief.plan_entrenamiento.split)}
+                            {--meals= : num_comidas (int) (override del coach_brief.plan_nutricional.num_comidas)}
+                            {--meal-times= : CSV de horarios HH:MM (override del coach_brief.plan_nutricional.horarios)}
+                            {--supplements= : CSV de slugs/keywords de suplementos a INCLUIR literal (override del coach_brief.plan_suplementacion); usar "none" para vaciar}
+                            {--json : output JSON estructurado en lugar de tabla}
+                            {--show-conflicts : muestra warnings de conflicto entre coach_brief y profile_snapshot}';
 
     protected $description = 'Pipeline E2E multi-vertical: genera 3-5 planes (entreno+nutri+supl+habitos+ciclo) para un cliente en una sola corrida.';
+
+    /** Defaults extraídos del ticket-json. null si no se pasó --ticket-json. */
+    private ?array $ticketDefaults = null;
+
+    /** Lista de conflictos detectados profile_snapshot vs coach_brief vs flags CLI. */
+    private array $conflicts = [];
 
     public function handle(
         DecisionEngine $decision,
@@ -79,9 +91,30 @@ final class PlanBundleCommand extends Command
         AutoFixEngine $autoFix,
         PersistService $persist,
     ): int {
+        // Cargar ticket JSON si se pasó, antes de resolver verticals/profile.
+        $ticketPath = $this->option('ticket-json');
+        if ($ticketPath !== null) {
+            if (! is_file($ticketPath)) {
+                $this->error("--ticket-json no encontrado: {$ticketPath}");
+                return 2;
+            }
+            $raw = file_get_contents($ticketPath);
+            $ticket = json_decode($raw, true);
+            if (! is_array($ticket)) {
+                $this->error("--ticket-json no es JSON válido: {$ticketPath}");
+                return 2;
+            }
+            $this->ticketDefaults = $this->resolveTicketDefaults($ticket);
+        }
+
         $verticals = $this->resolveVerticals();
         if ($verticals === null) {
             return 2;
+        }
+
+        // Mostrar conflictos antes de procesar (si los hay).
+        if ($this->conflicts !== [] && ($this->option('show-conflicts') || $this->ticketDefaults !== null)) {
+            $this->renderConflicts();
         }
 
         $fechaInicio = (string) ($this->option('fecha-inicio') ?: now()->addDay()->toDateString());
@@ -167,43 +200,103 @@ final class PlanBundleCommand extends Command
         return $verticals;
     }
 
+    /**
+     * Resuelve un valor: flag CLI > ticket default > null.
+     * El flag CLI siempre gana. Si no hay flag, usa el default extraído del ticket.
+     */
+    private function resolveValue(string $optionName, string $ticketKey)
+    {
+        $fromFlag = $this->option($optionName);
+        if ($fromFlag !== null && $fromFlag !== '') {
+            return $fromFlag;
+        }
+        return $this->ticketDefaults[$ticketKey] ?? null;
+    }
+
     private function buildProfile(string $vertical): ClientProfile
     {
+        // Normalizar vocabulario externo → keys canónicas del motor.
+        // El JSON del ticket puede traer "perder_grasa", "femenino", "avanzado"
+        // pero decision_rules y methodologies usan "perdida_grasa", "F", "avanzado".
+        $goal   = VocabularyNormalizer::goal($this->resolveValue('goal', 'goal'));
+        $gender = VocabularyNormalizer::gender($this->resolveValue('gender', 'gender'));
+        $level  = VocabularyNormalizer::level($this->resolveValue('level', 'level'));
+
+        $daysRaw   = $this->resolveValue('days', 'days');
+        $ageRaw    = $this->resolveValue('age', 'age');
+        $weightRaw = $this->resolveValue('weight', 'weight');
+        $heightRaw = $this->resolveValue('height', 'height');
+        $tier      = $this->resolveValue('tier', 'tier');
+        $equipment = $this->resolveValue('equipment', 'equipment') ?: 'gym_completo';
+
         return new ClientProfile(
             vertical: $vertical,
-            goal: $this->option('goal'),
-            level: $this->option('level'),
-            days: $this->option('days') !== null ? (int) $this->option('days') : null,
-            gender: $this->option('gender'),
-            equipment: $this->option('equipment'),
-            age: $this->option('age') !== null ? (int) $this->option('age') : null,
-            weightKg: $this->option('weight') !== null ? (float) $this->option('weight') : null,
-            heightCm: $this->option('height') !== null ? (float) $this->option('height') : null,
-            tier: $this->option('tier'),
+            goal: $goal,
+            level: $level,
+            days: $daysRaw !== null ? (int) $daysRaw : null,
+            gender: $gender,
+            equipment: $equipment,
+            age: $ageRaw !== null ? (int) $ageRaw : null,
+            weightKg: $weightRaw !== null ? (float) $weightRaw : null,
+            heightCm: $heightRaw !== null ? (float) $heightRaw : null,
+            tier: $tier,
             preferences: $this->collectPreferences(),
         );
     }
 
     /**
-     * Construye el array preferences a partir de los flags de override:
-     * exclude-foods, meal-protein, split.
+     * Construye el array preferences combinando flags CLI + defaults del ticket.
+     * Flags CLI ganan sobre ticket. Si no hay flag y no hay ticket → key ausente.
      */
     private function collectPreferences(): array
     {
         $prefs = [];
 
-        if ($excludeRaw = $this->option('exclude-foods')) {
+        // Excluded foods: flag CLI > ticket
+        $excludeRaw = $this->option('exclude-foods') ?? ($this->ticketDefaults['excluded_foods_csv'] ?? null);
+        if ($excludeRaw) {
             $prefs['excluded_foods'] = array_values(array_filter(
                 array_map('trim', explode(',', (string) $excludeRaw)),
             ));
         }
 
-        if ($proteinRaw = $this->option('meal-protein')) {
+        // Meal protein: flag CLI > ticket
+        $proteinRaw = $this->option('meal-protein') ?? ($this->ticketDefaults['meal_protein_csv'] ?? null);
+        if ($proteinRaw) {
             $prefs['meal_protein'] = $this->parseCsvPairs((string) $proteinRaw);
         }
 
-        if ($splitRaw = $this->option('split')) {
+        // Split: flag CLI > ticket coach_brief.split
+        $splitRaw = $this->option('split') ?? ($this->ticketDefaults['split_csv'] ?? null);
+        if ($splitRaw) {
             $prefs['split_override'] = $this->parseCsvPairs((string) $splitRaw);
+        }
+
+        // Meals (num_comidas): flag CLI > ticket coach_brief.num_comidas
+        $mealsRaw = $this->option('meals') ?? ($this->ticketDefaults['num_meals'] ?? null);
+        if ($mealsRaw !== null && $mealsRaw !== '') {
+            $prefs['num_meals'] = (int) $mealsRaw;
+        }
+
+        // Meal times: flag CLI > ticket coach_brief.horarios
+        $mealTimesRaw = $this->option('meal-times') ?? ($this->ticketDefaults['meal_times_csv'] ?? null);
+        if ($mealTimesRaw) {
+            $prefs['meal_times'] = array_values(array_filter(
+                array_map('trim', explode(',', (string) $mealTimesRaw)),
+            ));
+        }
+
+        // Supplements: flag CLI > ticket coach_brief.plan_suplementacion.suplementos[]
+        // "none" → vacío explícito (motor genera stack desde cero)
+        $suppsRaw = $this->option('supplements');
+        if ($suppsRaw === 'none') {
+            $prefs['supplements_override'] = [];
+        } elseif ($suppsRaw !== null && $suppsRaw !== '') {
+            $prefs['supplements_override'] = array_values(array_filter(
+                array_map('trim', explode(',', (string) $suppsRaw)),
+            ));
+        } elseif (isset($this->ticketDefaults['supplements'])) {
+            $prefs['supplements_override'] = $this->ticketDefaults['supplements'];
         }
 
         return $prefs;
@@ -374,5 +467,173 @@ final class PlanBundleCommand extends Command
             $this->line('Para exportar a producción (UN script con todos los inserts):');
             $this->line('   php artisan plan:export-bundle-prod-script --composed-ids=' . implode(',', $composedIds) . ' --client-id=<X> --coach-id=<Y>');
         }
+    }
+
+    /**
+     * Extrae defaults sensatos del JSON del ticket (output de PlanTicketExportService).
+     * Detecta conflictos entre coach_brief y profile_snapshot y los registra en $this->conflicts.
+     *
+     * Política: por defecto preferimos coach_brief (es el dato más fresco editado por el coach
+     * en el wizard). Flags CLI sobreescriben todo. Los conflictos se reportan al usuario para
+     * decisión consciente (no son fatales).
+     */
+    private function resolveTicketDefaults(array $ticket): array
+    {
+        $profile = $ticket['profile_snapshot'] ?? [];
+        $brief = $ticket['coach_brief'] ?? [];
+        $datos = $brief['datos_generales'] ?? [];
+        $entreno = $brief['plan_entrenamiento'] ?? [];
+        $nutri = $brief['plan_nutricional'] ?? [];
+        $supl = $brief['plan_suplementacion'] ?? [];
+        $tier = $ticket['plan_tier_expectations'] ?? [];
+
+        $defaults = [];
+
+        // ─── Edad: coach > profile ───
+        $coachAge = isset($datos['edad']) ? (int) $datos['edad'] : null;
+        $profileAge = isset($profile['edad']) ? (int) $profile['edad'] : null;
+        if ($coachAge !== null && $profileAge !== null && $coachAge !== $profileAge) {
+            $this->conflicts[] = "edad: coach={$coachAge} vs profile={$profileAge} → usando {$coachAge} (coach)";
+        }
+        $defaults['age'] = $coachAge ?? $profileAge;
+
+        // ─── Peso: coach > profile ───
+        $coachWeight = isset($datos['peso']) ? (float) $datos['peso'] : null;
+        $profileWeight = isset($profile['peso_actual_kg']) ? (float) $profile['peso_actual_kg'] : null;
+        if ($coachWeight !== null && $profileWeight !== null && abs($coachWeight - $profileWeight) > 0.1) {
+            $this->conflicts[] = "peso: coach={$coachWeight}kg vs profile={$profileWeight}kg → usando {$coachWeight}kg (coach)";
+        }
+        $defaults['weight'] = $coachWeight ?? $profileWeight;
+
+        // ─── Estatura: coach > profile ───
+        $coachHeight = isset($datos['estatura']) ? (float) $datos['estatura'] : null;
+        $profileHeight = isset($profile['estatura_cm']) ? (float) $profile['estatura_cm'] : null;
+        if ($coachHeight !== null && $profileHeight !== null && abs($coachHeight - $profileHeight) > 0.1) {
+            $this->conflicts[] = "estatura: coach={$coachHeight}cm vs profile={$profileHeight}cm → usando {$coachHeight}cm (coach)";
+        }
+        $defaults['height'] = $coachHeight ?? $profileHeight;
+
+        // ─── Género: coach > profile ───
+        $coachGender = $datos['genero'] ?? null;
+        $profileGender = $profile['genero'] ?? null;
+        if ($coachGender !== null && $profileGender !== null
+            && VocabularyNormalizer::gender($coachGender) !== VocabularyNormalizer::gender($profileGender)) {
+            $this->conflicts[] = "genero: coach='{$coachGender}' vs profile='{$profileGender}' → usando '{$coachGender}' (coach)";
+        }
+        $defaults['gender'] = $coachGender ?? $profileGender;
+
+        // ─── Goal/objetivo ───
+        // coach_brief.datos_generales.objetivo es texto libre ("Disminuir porcentaje de grasa")
+        // → normalizer lo mapea. profile_snapshot.objetivo_general suele ser slug.
+        $coachGoal = $datos['objetivo'] ?? null;
+        $profileGoal = $profile['objetivo_general'] ?? null;
+        $normalizedCoach = $coachGoal ? VocabularyNormalizer::goal($coachGoal) : null;
+        $normalizedProfile = $profileGoal ? VocabularyNormalizer::goal($profileGoal) : null;
+        if ($normalizedCoach && $normalizedProfile && $normalizedCoach !== $normalizedProfile) {
+            $this->conflicts[] = "objetivo: coach='{$coachGoal}' (→{$normalizedCoach}) vs profile='{$profileGoal}' (→{$normalizedProfile}) → usando '{$normalizedCoach}'";
+        }
+        $defaults['goal'] = $coachGoal ?? $profileGoal;
+
+        // ─── Nivel ───
+        $defaults['level'] = $entreno['nivel'] ?? $profile['nivel_actividad'] ?? null;
+
+        // ─── Días entrenamiento ───
+        $defaults['days'] = $entreno['dias_semana'] ?? null;
+
+        // ─── Tier (plan contratado) ───
+        $defaults['tier'] = $ticket['client']['plan_contratado'] ?? $ticket['ticket']['plan_type'] ?? null;
+
+        // ─── Equipment / lugar ───
+        $defaults['equipment'] = $entreno['lugar'] === 'gym' ? 'gym_completo' : ($entreno['lugar'] ?? null);
+
+        // ─── Split del coach (coach_brief.plan_entrenamiento.split) ───
+        // Convierte {"lunes": {"grupos": ["gluteos"]}, "martes": {"grupos": ["espalda", "triceps"]}, ...}
+        // a CSV "lunes:gluteos,martes:espalda+triceps,..."
+        $coachSplit = $entreno['split'] ?? null;
+        if (is_array($coachSplit)) {
+            $pairs = [];
+            foreach ($coachSplit as $day => $config) {
+                $grupos = $config['grupos'] ?? [];
+                if (! is_array($grupos) || $grupos === []) {
+                    continue;
+                }
+                // Filtrar "descanso" — el motor no necesita días de descanso explícitos
+                $grupos = array_filter($grupos, fn ($g) => mb_strtolower((string) $g) !== 'descanso');
+                if ($grupos === []) {
+                    continue;
+                }
+                $pairs[] = mb_strtolower($day) . ':' . implode('+', $grupos);
+            }
+            if ($pairs !== []) {
+                $defaults['split_csv'] = implode(',', $pairs);
+            }
+        }
+
+        // ─── Num comidas + horarios (coach_brief.plan_nutricional) ───
+        if (isset($nutri['num_comidas'])) {
+            $defaults['num_meals'] = (int) $nutri['num_comidas'];
+        }
+        $horarios = $nutri['horarios'] ?? null;
+        if (is_array($horarios) && $horarios !== []) {
+            // Normalizar "5 am" → "05:00", "10 am" → "10:00", "1 pm" → "13:00", "4 pm" → "16:00"
+            $normalized = array_map([$this, 'normalizeMealTime'], $horarios);
+            $normalized = array_values(array_filter($normalized));
+            if ($normalized !== []) {
+                $defaults['meal_times_csv'] = implode(',', $normalized);
+            }
+        }
+
+        // ─── Excluded foods (coach_brief.plan_nutricional.alimentos_no_incluir) ───
+        $excluded = $nutri['alimentos_no_incluir'] ?? null;
+        if (is_string($excluded) && trim($excluded) !== '') {
+            $defaults['excluded_foods_csv'] = $excluded;
+        }
+
+        // ─── Suplementos prescritos por el coach ───
+        $coachSupps = $supl['suplementos'] ?? null;
+        if (is_array($coachSupps) && $coachSupps !== []) {
+            $defaults['supplements'] = array_values(array_filter(array_map(
+                fn ($s) => is_array($s) ? ($s['nombre'] ?? null) : null,
+                $coachSupps,
+            )));
+        }
+
+        return $defaults;
+    }
+
+    /**
+     * Normaliza horarios del coach ("5 am", "1 pm") a "HH:MM" 24h.
+     * Si no parsea, devuelve null para que se omita.
+     */
+    private function normalizeMealTime(string $raw): ?string
+    {
+        $raw = mb_strtolower(trim($raw));
+        // Ya formato HH:MM
+        if (preg_match('/^(\d{1,2}):(\d{2})$/', $raw, $m)) {
+            $h = (int) $m[1];
+            return sprintf('%02d:%02d', $h, (int) $m[2]);
+        }
+        // Formato "5 am", "10 am", "1 pm"
+        if (preg_match('/^(\d{1,2})\s*(am|pm|a\.m\.|p\.m\.)/u', $raw, $m)) {
+            $h = (int) $m[1];
+            $ampm = str_starts_with($m[2], 'p') ? 'pm' : 'am';
+            if ($ampm === 'pm' && $h < 12) $h += 12;
+            if ($ampm === 'am' && $h === 12) $h = 0;
+            return sprintf('%02d:00', $h);
+        }
+        return null;
+    }
+
+    private function renderConflicts(): void
+    {
+        if ($this->conflicts === []) {
+            return;
+        }
+        $this->warn('═══ Conflictos detectados entre coach_brief y profile_snapshot ═══');
+        foreach ($this->conflicts as $c) {
+            $this->line('  • ' . $c);
+        }
+        $this->line('Si querés override, usá flags CLI explícitos (--age, --weight, --gender, etc.)');
+        $this->newLine();
     }
 }

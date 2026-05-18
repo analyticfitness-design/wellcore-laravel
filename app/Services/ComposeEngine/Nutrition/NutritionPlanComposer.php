@@ -54,8 +54,22 @@ final class NutritionPlanComposer
         // 1. Calcular macros diarios.
         $macroPlan = $this->macros->calculate($ctx->profile);
 
-        // 2. Build meal slots.
-        $slots = $this->meals->build($macroPlan, 5);
+        // 2. Build meal slots. Consume preferences.num_meals y preferences.meal_times
+        //    (provenientes del coach_brief.plan_nutricional o flags CLI explícitos).
+        $prefs = $ctx->profile->preferences ?? [];
+        $mealsCount = isset($prefs['num_meals']) ? (int) $prefs['num_meals'] : 5;
+        if (! in_array($mealsCount, MealsBuilder::SUPPORTED_COUNTS, true)) {
+            $warnings[] = "num_meals={$mealsCount} no soportado (válidos: 3,4,5,6). Caigo a 5.";
+            $mealsCount = 5;
+        }
+        $customTimes = isset($prefs['meal_times']) && is_array($prefs['meal_times'])
+            ? $prefs['meal_times']
+            : null;
+        if ($customTimes !== null && count($customTimes) !== $mealsCount) {
+            $warnings[] = 'meal_times count (' . count($customTimes) . ") no matchea num_meals ({$mealsCount}). Ignoro custom_times y uso horarios canónicos.";
+            $customTimes = null;
+        }
+        $slots = $this->meals->build($macroPlan, $mealsCount, $customTimes);
 
         // 3. Para cada slot, generar opciones A/B/C.
         $comidas = [];
