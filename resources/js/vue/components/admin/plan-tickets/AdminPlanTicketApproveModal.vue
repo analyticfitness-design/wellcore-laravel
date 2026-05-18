@@ -11,7 +11,10 @@ const props = defineProps({
 const emit = defineEmits(['close', 'confirm']);
 
 const adminNotes = ref('');
+const planIdsRaw = ref('');
+const forceWithoutPlans = ref(false);
 const notesInputRef = ref(null);
+const planIdsInputRef = ref(null);
 
 const clientName = computed(() => props.ticket?.client_name ?? 'Cliente');
 const planLabel = computed(() => {
@@ -19,11 +22,30 @@ const planLabel = computed(() => {
     return t.charAt(0).toUpperCase() + t.slice(1);
 });
 
+// Parse "12, 34, 56" → [12, 34, 56]. Ignora basura.
+const parsedPlanIds = computed(() => {
+    return planIdsRaw.value
+        .split(/[,\s]+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((s) => Number(s))
+        .filter((n) => Number.isInteger(n) && n > 0);
+});
+
+const hasParsedIds = computed(() => parsedPlanIds.value.length > 0);
+const ticketAlreadyHasIds = computed(() => Array.isArray(props.ticket?.generated_plan_ids) && props.ticket.generated_plan_ids.length > 0);
+// Si el ticket ya tiene IDs cargados desde antes (e.g., motor v2 los insertó vía API),
+// el admin puede aprobar sin volver a pegarlos.
+const canApprove = computed(() => hasParsedIds.value || ticketAlreadyHasIds.value || forceWithoutPlans.value);
+const showOverrideOption = computed(() => !hasParsedIds.value && !ticketAlreadyHasIds.value);
+
 watch(() => props.open, async (isOpen) => {
     if (isOpen) {
         adminNotes.value = '';
+        planIdsRaw.value = '';
+        forceWithoutPlans.value = false;
         await nextTick();
-        notesInputRef.value?.focus();
+        planIdsInputRef.value?.focus();
     }
 });
 
@@ -32,8 +54,12 @@ function onBackdropClick() {
 }
 
 function onConfirm() {
-    if (props.submitting) return;
-    emit('confirm', { adminNotes: adminNotes.value.trim() || null });
+    if (props.submitting || !canApprove.value) return;
+    emit('confirm', {
+        adminNotes: adminNotes.value.trim() || null,
+        generatedPlanIds: parsedPlanIds.value,
+        forceCompleteWithoutPlans: forceWithoutPlans.value && !hasParsedIds.value && !ticketAlreadyHasIds.value,
+    });
 }
 
 function onKey(e) {
@@ -77,6 +103,42 @@ function onKey(e) {
                     </div>
 
                     <label class="modal-field">
+                        <span class="modal-label">
+                            IDs de planes generados
+                            <span v-if="ticketAlreadyHasIds" class="modal-label-aside">(ya tiene {{ ticket.generated_plan_ids.length }} cargados)</span>
+                            <span v-else-if="!hasParsedIds" class="modal-label-aside modal-label-aside--required">requerido</span>
+                        </span>
+                        <input
+                            ref="planIdsInputRef"
+                            v-model="planIdsRaw"
+                            type="text"
+                            class="modal-input"
+                            :placeholder="ticketAlreadyHasIds ? `${ticket.generated_plan_ids.join(', ')} (se conservan si dejas vacio)` : 'ej: 1234, 1235, 1236'"
+                            :disabled="submitting"
+                            autocomplete="off"
+                            inputmode="numeric"
+                        />
+                        <span class="modal-hint">
+                            IDs de assigned_plans creados por el motor v2 o por Claude Code para este ticket. Separados por coma o espacio.
+                        </span>
+                    </label>
+
+                    <label v-if="showOverrideOption" class="modal-field modal-field--inline">
+                        <input
+                            v-model="forceWithoutPlans"
+                            type="checkbox"
+                            class="modal-checkbox"
+                            :disabled="submitting"
+                        />
+                        <span class="modal-checkbox-label">
+                            <strong>Override</strong> — aprobar sin planes generados.
+                            <span class="modal-checkbox-hint">
+                                Solo si los planes ya existen por otra via (ej. script PHP) y el cliente ya los puede ver. No recomendado.
+                            </span>
+                        </span>
+                    </label>
+
+                    <label class="modal-field">
                         <span class="modal-label">Notas internas (opcional)</span>
                         <textarea
                             ref="notesInputRef"
@@ -102,10 +164,16 @@ function onKey(e) {
                         <button
                             type="button"
                             class="modal-btn modal-btn--primary"
+                            :class="{ 'modal-btn--warning': forceWithoutPlans && !hasParsedIds && !ticketAlreadyHasIds }"
                             @click="onConfirm"
-                            :disabled="submitting"
+                            :disabled="submitting || !canApprove"
+                            :title="!canApprove ? 'Ingresa al menos un ID de plan generado o activa el override' : ''"
                         >
-                            {{ submitting ? 'Aprobando...' : 'Aprobar y activar plan' }}
+                            {{ submitting
+                                ? 'Aprobando...'
+                                : (forceWithoutPlans && !hasParsedIds && !ticketAlreadyHasIds
+                                    ? 'Aprobar SIN planes (override)'
+                                    : 'Aprobar y activar plan') }}
                         </button>
                     </footer>
                 </div>
@@ -232,6 +300,76 @@ function onKey(e) {
 .modal-textarea:focus { outline: none; border-color: rgba(255,255,255,0.12); }
 .modal-textarea:disabled { opacity: 0.6; cursor: not-allowed; }
 
+.modal-input {
+    border-radius: var(--r-sm, 12px);
+    background: rgba(0, 0, 0, 0.30);
+    border: 1px solid var(--c-border);
+    color: var(--c-text);
+    font-family: var(--font-mono, monospace);
+    font-feature-settings: 'tnum' 1;
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 10px 12px;
+    transition: border-color 0.15s var(--ease-out, ease);
+}
+.modal-input::placeholder {
+    color: var(--c-text-3);
+    font-family: var(--font-editorial, var(--font-sans));
+    font-style: italic;
+}
+.modal-input:focus { outline: none; border-color: rgba(255,255,255,0.18); }
+.modal-input:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.modal-hint {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--c-text-3);
+    margin-top: -2px;
+}
+
+.modal-label-aside {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--c-text-3);
+    margin-left: 6px;
+    font-weight: 400;
+}
+.modal-label-aside--required { color: #F87171; }
+
+.modal-field--inline {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--r-sm, 12px);
+    border: 1px dashed var(--c-border);
+    background: rgba(245, 158, 11, 0.04);
+}
+.modal-checkbox {
+    width: 16px; height: 16px;
+    margin-top: 2px;
+    accent-color: #FCD34D;
+    cursor: pointer;
+}
+.modal-checkbox:disabled { cursor: not-allowed; }
+.modal-checkbox-label {
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--c-text-2);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.modal-checkbox-label strong { color: #FCD34D; font-weight: 600; }
+.modal-checkbox-hint {
+    font-size: 11px;
+    color: var(--c-text-3);
+}
+
 .modal-error {
     font-family: var(--font-sans);
     font-size: 12px;
@@ -270,6 +408,10 @@ function onKey(e) {
     color: #04221A;
 }
 .modal-btn--primary:hover:not(:disabled) { filter: brightness(1.08); }
+.modal-btn--warning {
+    background: #FCD34D;
+    color: #2A1B00;
+}
 .modal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .modal-enter-active, .modal-leave-active { transition: opacity 0.18s var(--ease-out, ease); }

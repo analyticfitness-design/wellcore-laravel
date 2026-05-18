@@ -57,10 +57,10 @@ const actionError = ref('');
 function openApprove() { actionError.value = ''; approveOpen.value = true; }
 function openReject()  { actionError.value = ''; rejectOpen.value = true; }
 
-async function confirmApprove({ adminNotes }) {
+async function confirmApprove({ adminNotes, generatedPlanIds, forceCompleteWithoutPlans }) {
     actionError.value = '';
     try {
-        const fresh = await store.approve({ adminNotes });
+        const fresh = await store.approve({ adminNotes, generatedPlanIds, forceCompleteWithoutPlans });
         approveOpen.value = false;
         if (fresh) listStore.applyTicketUpdate(fresh);
     } catch (err) {

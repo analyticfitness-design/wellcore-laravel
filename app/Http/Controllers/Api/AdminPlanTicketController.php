@@ -193,6 +193,7 @@ class AdminPlanTicketController extends Controller
             'generated_plan_ids' => ['sometimes', 'array'],
             'generated_plan_ids.*' => ['integer'],
             'rejection_code' => ['sometimes', 'nullable', 'string', Rule::in(self::REJECTION_CODES)],
+            'force_complete_without_plans' => ['sometimes', 'boolean'],
         ]);
 
         $ticket = PlanTicket::find($id);
@@ -205,6 +206,21 @@ class AdminPlanTicketController extends Controller
 
         if ($newStatus === PlanTicketStatus::Rechazado && empty($validated['rejection_code'])) {
             return response()->json(['error' => 'rejection_code es requerido al rechazar.'], 422);
+        }
+
+        // Workflow guard: completar requiere planes generados o un override explícito.
+        // Evita que el cliente vea el ticket aprobado sin contenido nuevo activado.
+        if ($newStatus === PlanTicketStatus::Completado) {
+            $newIds = $validated['generated_plan_ids'] ?? [];
+            $existingIds = is_array($ticket->generated_plan_ids) ? $ticket->generated_plan_ids : [];
+            $force = (bool) ($validated['force_complete_without_plans'] ?? false);
+
+            if (empty($newIds) && empty($existingIds) && ! $force) {
+                return response()->json([
+                    'error' => 'No se puede marcar como completado sin generated_plan_ids. Pasa los IDs de los planes que el motor v2 (o Claude Code) generó, o marca force_complete_without_plans=true para override explícito.',
+                    'code' => 'missing_generated_plan_ids',
+                ], 422);
+            }
         }
 
         // Idempotencia: si el ticket ya está en el estado solicitado, devolver 200 sin

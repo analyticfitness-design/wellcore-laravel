@@ -16,7 +16,7 @@ use Illuminate\Support\Carbon;
 final class PlanTicketExportService
 {
     public const SECTION_INSTRUCTIONS = [
-        'entrenamiento' => 'Genera JSON con: titulo, metodologia, duracion_semanas, frecuencia_dias, split, objetivo, deload_protocol, semanas[{semana, nombre_bloque, dias[{dia, nombre, ejercicios[{nombre, series, repeticiones, descanso, rir, gif_url, notas, variacion?}]}]}]. Cada ejercicio DEBE usar nombre + gif_url del catalogo CATALOGO_GIF_265.md. RIR de 1-3 segun plan tier. Seguir metodologia en TESIS_ENTRENAMIENTO_WELLCORE.md.',
+        'entrenamiento' => 'Genera JSON con: titulo, metodologia, duracion_semanas, frecuencia_dias, split, objetivo, deload_protocol, semanas[{semana, nombre_bloque, dias[{dia, nombre, ejercicios[{nombre, series, repeticiones, descanso, rir, gif_url, notas, variacion?}]}]}]. Cada ejercicio DEBE usar nombre + gif_url del catalogo v2: tabla wellcore_kb.exercise_metadata (220 GIFs curados, repo analyticfitness-design/wellcore-exercise-gifs-v2). gif_url se construye con ExerciseMetadata::resolveGifUrl($gif_filename). RIR de 1-3 segun plan tier. Seguir metodologia en TESIS_ENTRENAMIENTO_WELLCORE.md.',
         'nutricion' => 'Genera JSON con: titulo, metodologia, objetivo_calorico (calculado desde TMB Mifflin-St Jeor x factor actividad), macros {proteina_g, carbohidratos_g, grasas_g}, comidas_sugeridas[{nombre, hora, calorias, macros, opciones:["Opcion N: ing1 (Xg) + ing2 (Yg) + ing3 (Zg)", ...]}], hidratacion, tips_nutricionales, notas_coach. SUMA de calorias de comidas = objetivo_calorico. 3 opciones por comida con ±5% variacion de macros. Formato de opciones OBLIGATORIO con " + " separando ingredientes. Seguir TESIS_NUTRICION_WELLCORE.md.',
         'habitos' => 'Genera JSON con: titulo, areas_foco[], habitos[{habito, frecuencia, metrica, objetivo, categoria}]. Cada habito debe ser mensurable y especifico segun el objetivo del cliente.',
         'suplementacion' => 'Genera JSON con: titulo, objetivo, suplementos[{nombre, dosis, momento, frecuencia, notas}]. Solo recomendar suplementos respaldados por evidencia relevantes al objetivo del cliente.',
@@ -99,6 +99,7 @@ final class PlanTicketExportService
             'attachments' => $this->buildAttachments($ticket),
             'coach_comments' => $this->buildComments($ticket),
             'plan_tier_expectations' => $tierExpectations,
+            'motor_v2_methodologies' => $this->buildMotorV2Methodologies(),
             'instructions' => $this->buildInstructions($planType, $tierExpectations),
             'coach_brief' => [
                 'datos_generales' => $ticket->datos_generales ?? (object) [],
@@ -215,6 +216,15 @@ final class PlanTicketExportService
 
         $ageFromBirth = $this->computeAge($client?->birth_date);
 
+        // Separar macros (gramos) de intake_data (cuestionario completo).
+        // Históricamente, el cuestionario del intake se guardó en la columna
+        // `client_profiles.macros` y `intake_data` quedó null. Detectamos cuál
+        // es cuál por el shape del payload.
+        [$macrosAsignados, $intakeData] = $this->splitMacrosFromIntake(
+            $profile?->macros,
+            $profile?->intake_data,
+        );
+
         return [
             'edad' => $ageFromBirth ?? ($profile?->edad !== null ? (int) $profile->edad : ($inscription?->edad !== null ? (int) $inscription->edad : null)),
             'peso_actual_kg' => $pesoActual,
@@ -227,9 +237,82 @@ final class PlanTicketExportService
             'objetivo_general' => $profile?->objetivo ?? $inscription?->objetivo,
             'restricciones_medicas' => $profile?->restricciones ?? ($inscription?->lesion ? trim(($inscription->lesion ?? '').' '.($inscription->detalle_lesion ?? '')) : null),
             'experiencia_previa' => $inscription?->experiencia,
-            'macros_asignados' => $profile?->macros,
-            'intake_data' => $profile?->intake_data,
+            'macros_asignados' => $macrosAsignados,
+            'intake_data' => $intakeData,
         ];
+    }
+
+    /**
+     * Resuelve qué columna tiene los gramos asignados ({proteina_g, carbohidratos_g, grasas_g})
+     * y cuál tiene el cuestionario del intake.
+     *
+     * Reglas:
+     * - macros_asignados solo se reporta si encontramos al menos una key de macros reales
+     *   (proteina_g/carbs_g/grasas_g o variantes en EN). Devolvemos solo esas keys, no el payload entero.
+     * - intake_data prefiere $intakeRaw; si está vacío y $macrosRaw parece cuestionario,
+     *   lo usa como fallback (recupera datos guardados en la columna equivocada).
+     *
+     * @return array{0: ?array, 1: ?array} [macros_asignados, intake_data]
+     */
+    private function splitMacrosFromIntake(mixed $macrosRaw, mixed $intakeRaw): array
+    {
+        $macrosArr = is_array($macrosRaw) ? $macrosRaw : null;
+        $intakeArr = is_array($intakeRaw) && ! empty($intakeRaw) ? $intakeRaw : null;
+
+        $macrosAsignados = $this->extractMacroGrams($macrosArr);
+
+        // Si intake_data ya está poblado, úsalo. Si no, y $macrosRaw parece cuestionario,
+        // úsalo como intake_data (recuperación del bug histórico).
+        if ($intakeArr === null && $macrosArr !== null && $this->looksLikeIntake($macrosArr)) {
+            $intakeArr = $macrosArr;
+        }
+
+        return [$macrosAsignados, $intakeArr];
+    }
+
+    /**
+     * Extrae {proteina_g, carbohidratos_g, grasas_g, kcal} si están presentes.
+     * Devuelve null si no hay ni un solo macro real.
+     */
+    private function extractMacroGrams(?array $raw): ?array
+    {
+        if (! $raw) {
+            return null;
+        }
+
+        $aliases = [
+            'proteina_g'      => ['proteina_g', 'protein_g', 'proteina', 'protein'],
+            'carbohidratos_g' => ['carbohidratos_g', 'carbs_g', 'carbohidratos', 'carbs'],
+            'grasas_g'        => ['grasas_g', 'fat_g', 'grasas', 'fat'],
+            'kcal'            => ['kcal', 'calorias', 'calories', 'objetivo_calorico'],
+        ];
+
+        $out = [];
+        foreach ($aliases as $canonical => $candidates) {
+            foreach ($candidates as $key) {
+                if (array_key_exists($key, $raw) && is_numeric($raw[$key])) {
+                    $out[$canonical] = (float) $raw[$key];
+                    continue 2;
+                }
+            }
+        }
+
+        return $out === [] ? null : $out;
+    }
+
+    /**
+     * Heurística: el array tiene formato de cuestionario de intake si contiene
+     * keys características del wizard (no son macros).
+     */
+    private function looksLikeIntake(array $raw): bool
+    {
+        $intakeKeys = ['como_conocio', 'coaching_previo', 'dieta_actual', 'intolerancias', 'experiencia_macros', 'rutina_actual', 'horario_trabajo', 'duracion_sesion'];
+        foreach ($intakeKeys as $k) {
+            if (array_key_exists($k, $raw)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function buildPreviousPlans(?int $clientId): array
@@ -308,6 +391,53 @@ final class PlanTicketExportService
         ])->all();
     }
 
+    /**
+     * Catálogo vivo de metodologías del motor v2 (BD wellcore_kb.methodologies).
+     *
+     * Si la conexión `kb` falla (killswitch OFF, DB no aprovisionada en prod,
+     * tabla aún sin seedear) devolvemos un bloque con `available: false` para
+     * que el consumidor downstream sepa que debe caer al `metodologia_base`
+     * hardcoded en plan_tier_expectations.
+     */
+    private function buildMotorV2Methodologies(): array
+    {
+        try {
+            $rows = \App\Models\Kb\Methodology::query()
+                ->where('status', 'active')
+                ->orderBy('vertical')
+                ->orderBy('slug')
+                ->get(['slug', 'name', 'vertical', 'description', 'target_days_min', 'target_days_max', 'target_level', 'target_goal', 'version']);
+
+            $byVertical = [];
+            foreach ($rows as $m) {
+                $byVertical[$m->vertical][] = [
+                    'slug' => $m->slug,
+                    'name' => $m->name,
+                    'description' => $m->description,
+                    'target_days_min' => $m->target_days_min,
+                    'target_days_max' => $m->target_days_max,
+                    'target_level' => $m->target_level,
+                    'target_goal' => $m->target_goal,
+                    'version' => $m->version,
+                ];
+            }
+
+            return [
+                'available' => true,
+                'source' => 'wellcore_kb.methodologies',
+                'total_active' => $rows->count(),
+                'by_vertical' => $byVertical,
+                'note' => 'Estas son las metodologias que el motor v2 puede recomendar. El DecisionEngine las filtra por client_profile (goal, level, dias). Si "available": false, fallback al string en plan_tier_expectations.metodologia_base.',
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'available' => false,
+                'reason' => 'No fue posible leer wellcore_kb.methodologies. Probablemente el motor v2 esta apagado (WC_ENGINE_V2_ENABLED=false) o la BD kb no esta aprovisionada en este entorno.',
+                'error_class' => get_class($e),
+            ];
+        }
+    }
+
     private function tierExpectations(?string $planType): ?array
     {
         if (! $planType) {
@@ -328,8 +458,8 @@ final class PlanTicketExportService
         return [
             'global' => $global,
             'workflow' => [
-                '1. Leer este JSON completo (profile_snapshot, previous_plans_summary, recent_checkins_summary, attachments, coach_brief, notas_coach).',
-                '2. Consultar referencias: CATALOGO_GIF_265.md, TESIS_ENTRENAMIENTO_WELLCORE.md, TESIS_NUTRICION_WELLCORE.md, METODOLOGIAS_ELITE_COMPLETAS.md y las guias plan-*.md.',
+                '1. Leer este JSON completo (profile_snapshot, previous_plans_summary, recent_checkins_summary, attachments, coach_brief, notas_coach, motor_v2_methodologies).',
+                '2. Consultar referencias: catalogo v2 de ejercicios (tabla wellcore_kb.exercise_metadata con 220 GIFs · repo analyticfitness-design/wellcore-exercise-gifs-v2), TESIS_ENTRENAMIENTO_WELLCORE.md, TESIS_NUTRICION_WELLCORE.md, METODOLOGIAS_ELITE_COMPLETAS.md y las guias plan-*.md.',
                 '3. Generar un JSON por cada seccion listada en plan_tier_expectations.incluye ('.($includesCiclo ? 'incluyendo ciclo' : 'sin ciclo').').',
                 '4. Subir cada plan via POST /api/v/admin/clients/{client_id}/plans con payload {name, plan_type, methodology, save_template: true, content_json: {...}}.',
                 '5. Marcar el ticket como completado: POST /api/v/admin/plan-tickets/{ticket_id}/status body {status: "completado", generated_plan_ids: [ids creados]}.',
@@ -348,7 +478,13 @@ final class PlanTicketExportService
                 'content_json' => 'el JSON del plan segun el schema correspondiente',
             ],
             'references' => [
-                'exercise_catalog' => 'CATALOGO_GIF_265.md — usar SOLO ejercicios de ese catalogo con su gif_url',
+                'exercise_catalog' => [
+                    'source_of_truth' => 'wellcore_kb.exercise_metadata (220 GIFs curados por Daniel · motor v2)',
+                    'gif_repo' => 'https://github.com/analyticfitness-design/wellcore-exercise-gifs-v2',
+                    'gif_url_base' => \App\Models\Kb\ExerciseMetadata::GIF_REPO_BASE_URL,
+                    'gif_url_resolver' => 'ExerciseMetadata::resolveGifUrl($gif_filename)',
+                    'note' => 'NO usar el catalogo legacy CATALOGO_GIF_265.md (deprecado). Cualquier ejercicio que no exista en exercise_metadata se rechaza por el LintEngine.',
+                ],
                 'training_methodology' => 'TESIS_ENTRENAMIENTO_WELLCORE.md — periodizacion y progresion',
                 'nutrition_methodology' => 'TESIS_NUTRICION_WELLCORE.md — calculo de macros, flexible dieting',
                 'elite_protocols' => 'METODOLOGIAS_ELITE_COMPLETAS.md — protocolos hormonales, ciclo, bloodwork',

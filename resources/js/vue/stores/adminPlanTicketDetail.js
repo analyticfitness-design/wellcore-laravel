@@ -120,7 +120,7 @@ export const useAdminPlanTicketDetailStore = defineStore('adminPlanTicketDetail'
             }
         },
 
-        async approve({ adminNotes = null, generatedPlanIds = [] } = {}) {
+        async approve({ adminNotes = null, generatedPlanIds = [], forceCompleteWithoutPlans = false } = {}) {
             if (this.actionInFlight) return;
             const id = this.ticket?.id;
             if (!id) throw new Error('No hay ticket cargado.');
@@ -132,6 +132,9 @@ export const useAdminPlanTicketDetailStore = defineStore('adminPlanTicketDetail'
                 if (adminNotes && adminNotes.trim()) body.admin_notas = adminNotes.trim();
                 if (Array.isArray(generatedPlanIds) && generatedPlanIds.length) {
                     body.generated_plan_ids = generatedPlanIds.map((n) => Number(n)).filter(Number.isFinite);
+                }
+                if (forceCompleteWithoutPlans) {
+                    body.force_complete_without_plans = true;
                 }
                 const { data } = await api.post(`/api/v/admin/plan-tickets/${id}/status`, body);
                 if (data?.ticket) this.ticket = data.ticket;
