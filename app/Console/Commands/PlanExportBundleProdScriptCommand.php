@@ -198,24 +198,24 @@ if (DRY_RUN) {
 );
 
 // ─── 1. Verificar cliente ───────────────────────────────────────────────────
-\$stmt = \$pdo->prepare("SELECT id, full_name, email FROM clients WHERE id = ? LIMIT 1");
+\$stmt = \$pdo->prepare("SELECT id, name, email FROM clients WHERE id = ? LIMIT 1");
 \$stmt->execute([CLIENT_ID]);
 \$client = \$stmt->fetch(PDO::FETCH_ASSOC);
 if (! \$client) {
     fwrite(STDERR, "✗ ERROR: cliente CLIENT_ID=" . CLIENT_ID . " no existe.\\n");
     exit(1);
 }
-echo "✓ Cliente: #{\$client['id']} {\$client['full_name']} <{\$client['email']}>\\n";
+echo "✓ Cliente: #{\$client['id']} {\$client['name']} <{\$client['email']}>\\n";
 
-// ─── 2. Verificar coach ─────────────────────────────────────────────────────
-\$stmt = \$pdo->prepare("SELECT id, full_name FROM coaches WHERE id = ? LIMIT 1");
+// ─── 2. Verificar coach (en tabla admins, role=coach|jefe|admin) ────────────
+\$stmt = \$pdo->prepare("SELECT id, name, role FROM admins WHERE id = ? LIMIT 1");
 \$stmt->execute([COACH_ID]);
 \$coach = \$stmt->fetch(PDO::FETCH_ASSOC);
 if (! \$coach) {
-    fwrite(STDERR, "✗ ERROR: coach COACH_ID=" . COACH_ID . " no existe.\\n");
+    fwrite(STDERR, "✗ ERROR: coach COACH_ID=" . COACH_ID . " no existe en admins.\\n");
     exit(1);
 }
-echo "✓ Coach: #{\$coach['id']} {\$coach['full_name']}\\n";
+echo "✓ Coach: #{\$coach['id']} {\$coach['name']} (role: {\$coach['role']})\\n";
 
 // ─── 3. Planes activos previos por plan_type ───────────────────────────────
 \$planTypes = array_column(\$bundle, 'plan_type');
