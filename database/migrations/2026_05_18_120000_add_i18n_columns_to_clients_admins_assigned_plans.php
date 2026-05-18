@@ -50,8 +50,16 @@ return new class extends Migration
         }
 
         if (Schema::hasTable('assigned_plans') && ! Schema::hasColumn('assigned_plans', 'plan_data_en')) {
+            // Producción tiene la columna user-facing como `content` (longtext);
+            // ambientes locales pueden tener `plan_data`. Anclamos al primer candidato
+            // existente; si ninguno existe, agregamos al final sin after().
             Schema::table('assigned_plans', function (Blueprint $table): void {
-                $table->json('plan_data_en')->nullable()->after('plan_data');
+                $column = $table->json('plan_data_en')->nullable();
+                if (Schema::hasColumn('assigned_plans', 'plan_data')) {
+                    $column->after('plan_data');
+                } elseif (Schema::hasColumn('assigned_plans', 'content')) {
+                    $column->after('content');
+                }
             });
         }
     }
