@@ -4,6 +4,7 @@ import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import { useApi } from '../composables/useApi';
 import NotificationBell from '../components/NotificationBell.vue';
+import LanguageSwitcher from '../components/common/LanguageSwitcher.vue';
 import CoachImpersonationBanner from '../components/CoachImpersonationBanner.vue';
 import SuperadminImpersonationBanner from '../components/SuperadminImpersonationBanner.vue';
 import RenewalBanner from '../components/RenewalBanner.vue';
@@ -373,6 +374,9 @@ const bottomNav = [
         <div class="flex shrink-0 items-center gap-3">
           <!-- Notification Bell — SP-4 community notifications endpoint -->
           <NotificationBell endpoint="/api/v/notifications" :poll-interval="30000" />
+
+          <!-- Language Switcher (es/en) — Fase 1 i18n -->
+          <LanguageSwitcher />
 
           <!-- Dark Mode Toggle -->
           <button

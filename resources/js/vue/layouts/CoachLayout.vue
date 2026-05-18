@@ -9,6 +9,7 @@ import CoachContractGate from '../components/coach/CoachContractGate.vue';
 import SuperadminImpersonationBanner from '../components/SuperadminImpersonationBanner.vue';
 
 import TopBarIos from '../components/coach/ios/TopBarIos.vue';
+import LanguageSwitcher from '../components/common/LanguageSwitcher.vue';
 import BottomTabBar from '../components/coach/ios/BottomTabBar.vue';
 import ActionSheet from '../components/coach/ios/ActionSheet.vue';
 import CmdPalette from '../components/coach/ios/CmdPalette.vue';
@@ -374,6 +375,9 @@ const cmdPaletteSections = computed(() => [
         <template #bell-icon>
           <NotificationBell endpoint="/api/v/coach/notifications" />
         </template>
+        <template #language>
+          <LanguageSwitcher />
+        </template>
       </TopBarIos>
 
       <!-- TOPBAR desktop (iOS) -->
@@ -391,6 +395,9 @@ const cmdPaletteSections = computed(() => [
       >
         <template #bell-icon>
           <NotificationBell endpoint="/api/v/coach/notifications" />
+        </template>
+        <template #language>
+          <LanguageSwitcher />
         </template>
       </TopBarIos>
 

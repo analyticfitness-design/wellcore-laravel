@@ -86,6 +86,8 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
         </slot>
       </button>
 
+      <slot name="language" />
+
       <button
         class="h-9 w-9 inline-flex items-center justify-center rounded-[10px] border border-[var(--b1)] active:scale-[0.92] transition"
         style="background: var(--s1); transition-duration: var(--t-tap); transition-timing-function: var(--ease-spring-ios);"
@@ -168,6 +170,8 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
           </svg>
         </slot>
       </button>
+
+      <slot name="language" />
 
       <button
         class="h-9 w-9 inline-flex items-center justify-center rounded-[9px] border border-[var(--b1)] hover:border-[var(--b2)] active:scale-[0.93] transition"
