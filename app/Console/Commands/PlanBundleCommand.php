@@ -347,12 +347,15 @@ final class PlanBundleCommand extends Command
 
             // COMPOSE
             $clientHandle = $this->option('client-handle');
-            $coachName = $this->option('coach-name');
+            // Nombre real del cliente: --client-handle se sigue usando como identificador audit,
+            // pero para personalizar notas usamos el nombre real del ticket (si disponible).
+            $clientNameReal = $this->ticketDefaults['client_name'] ?? $clientHandle;
+            $coachName = $this->option('coach-name') ?? $this->ticketDefaults['coach_name'] ?? null;
             $equipment = array_map('trim', explode(',', (string) ($this->option('equipment') ?: 'gym_completo')));
 
             $composeResult = $compose->composeForMethodology(
                 $profile, $methodologySlug, $fechaInicio,
-                $clientHandle, $coachName, $equipment,
+                $clientNameReal, $coachName, $equipment,
             );
 
             // LINT pre
@@ -545,6 +548,10 @@ final class PlanBundleCommand extends Command
 
         // ─── Equipment / lugar ───
         $defaults['equipment'] = $entreno['lugar'] === 'gym' ? 'gym_completo' : ($entreno['lugar'] ?? null);
+
+        // ─── Nombres reales del cliente y coach (no client-handle) ───
+        $defaults['client_name'] = $ticket['client']['name'] ?? null;
+        $defaults['coach_name'] = $ticket['coach']['name'] ?? null;
 
         // ─── Split del coach (coach_brief.plan_entrenamiento.split) ───
         // Convierte {"lunes": {"grupos": ["gluteos"]}, "martes": {"grupos": ["espalda", "triceps"]}, ...}

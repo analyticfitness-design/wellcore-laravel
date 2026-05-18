@@ -121,4 +121,50 @@ final class PeriodizationApplier
 
         return $variants;
     }
+
+    /**
+     * Técnica de intensificación a aplicar según fase + posición del ejercicio.
+     *
+     * Reglas (MD 08-METODOLOGIAS §229-241):
+     *   - Solo al ÚLTIMO ejercicio del grupo (cierre).
+     *   - Drop set: hipertrofia, peak
+     *   - Rest-pause: fuerza, hipertrofia (avanzado)
+     *   - Cluster sets: fuerza máxima, peak
+     *   - Isometría: core only (descartado acá)
+     *   - Series rectas (default): adaptación, deload, recuperación
+     *
+     * @return array{nombre: string, descripcion: string}|null
+     */
+    public function intensificationFor(
+        string $fase,
+        int $position,
+        int $totalInDay,
+        bool $isCompound,
+    ): ?array {
+        // Solo al cierre del día — no aplicar a compounds principales.
+        $isLastOfDay = $position === $totalInDay - 1;
+        if (! $isLastOfDay || $totalInDay < 3) {
+            return null;
+        }
+        // Compounds no llevan dropset (riesgo lesión); el cierre es típicamente isolation.
+        if ($isCompound) {
+            return null;
+        }
+
+        return match ($fase) {
+            'Hipertrofia' => [
+                'nombre' => 'Drop Set',
+                'descripcion' => 'En la última serie: bajá ~20-30% el peso y seguí hasta el fallo técnico. Sin descanso entre la serie principal y el drop.',
+            ],
+            'Peak' => [
+                'nombre' => 'Rest-Pause',
+                'descripcion' => 'Última serie al RIR 0. Descansá 15s y hacé 3-5 reps más. Repetí 2× total. Acumulás reps sin agregar más series.',
+            ],
+            'Fuerza Máxima', 'Fuerza' => [
+                'nombre' => 'Cluster Set',
+                'descripcion' => 'Última serie: hacé 2 reps, descansá 20s, 2 reps más, 20s, 2 reps más. Carga alta con técnica controlada.',
+            ],
+            default => null,
+        };
+    }
 }

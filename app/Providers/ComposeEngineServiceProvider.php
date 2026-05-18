@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Services\ComposeEngine\Coach\CoachNotesBuilder;
 use App\Services\ComposeEngine\ComposeEngine;
+use App\Services\ComposeEngine\Exercises\ExerciseNotesBuilder;
 use App\Services\ComposeEngine\Exercises\ExerciseSelector;
 use App\Services\ComposeEngine\Nutrition\FoodSelector;
 use App\Services\ComposeEngine\Nutrition\MacroCalculator;
@@ -34,6 +36,8 @@ final class ComposeEngineServiceProvider extends ServiceProvider
         $this->app->singleton(SplitBuilder::class);
         $this->app->singleton(ExerciseSelector::class);
         $this->app->singleton(PeriodizationApplier::class);
+        $this->app->singleton(ExerciseNotesBuilder::class);
+        $this->app->singleton(CoachNotesBuilder::class);
 
         // PrincipleInjector (Sprint 32+34) — usado por TODOS los composers
         $this->app->singleton(PrincipleInjector::class);
@@ -44,6 +48,8 @@ final class ComposeEngineServiceProvider extends ServiceProvider
                 exerciseSelector: $app->make(ExerciseSelector::class),
                 periodization: $app->make(PeriodizationApplier::class),
                 principleInjector: $app->make(PrincipleInjector::class),
+                notesBuilder: $app->make(ExerciseNotesBuilder::class),
+                coachNotesBuilder: $app->make(CoachNotesBuilder::class),
             );
         });
 
@@ -58,6 +64,7 @@ final class ComposeEngineServiceProvider extends ServiceProvider
                 meals: $app->make(MealsBuilder::class),
                 foods: $app->make(FoodSelector::class),
                 principleInjector: $app->make(PrincipleInjector::class),
+                coachNotesBuilder: $app->make(CoachNotesBuilder::class),
             );
         });
 

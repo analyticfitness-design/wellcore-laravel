@@ -31,11 +31,24 @@ final class ExerciseSelector
         $selected = [];
         $usedIds = [];
 
-        // 1 compuesto principal por cada target muscular (hasta 2)
+        // Target de volumen por nivel (MD 20 §881-885):
+        //   principiante: 5-7 ejercicios (2 compounds + 3-5 isolations)
+        //   intermedio: 6-9 ejercicios (2-3 compounds + 4-6 isolations)
+        //   avanzado: 7-10 ejercicios (2-3 compounds + 5-7 isolations)
+        $level = $profile->level ?? 'intermedio';
+        [$compoundsTarget, $isolationsTarget] = match ($level) {
+            'principiante' => [2, 4],   // 6 total
+            'avanzado'     => [3, 6],   // 9 total
+            default        => [2, 5],   // 7 total (intermedio)
+        };
+
+        // 1 compuesto principal por cada target muscular hasta `compoundsTarget`.
         $compounds = $this->fetchByMuscleTargets($day->muscleTargets, $profile, $equipmentAvailable, 'compound');
         $compoundCount = 0;
+
+        // Primera ronda: 1 compound por muscle target.
         foreach ($day->muscleTargets as $muscle) {
-            if ($compoundCount >= 2) {
+            if ($compoundCount >= $compoundsTarget) {
                 break;
             }
             $candidate = $compounds->first(function (ExerciseMetadata $e) use ($muscle, $usedIds) {
@@ -48,26 +61,61 @@ final class ExerciseSelector
             }
         }
 
-        // 2-3 isolations / accesorios cubriendo el resto
-        $isolations = $this->fetchByMuscleTargets($day->muscleTargets, $profile, $equipmentAvailable, 'isolation');
-        $isolationTarget = 3;
-        foreach ($day->muscleTargets as $muscle) {
-            if (count($selected) >= ($compoundCount + $isolationTarget)) {
-                break;
-            }
-            $candidate = $isolations->first(function (ExerciseMetadata $e) use ($muscle, $usedIds) {
-                return $e->muscle_primary === $muscle && ! isset($usedIds[$e->id]);
-            });
-            if ($candidate !== null) {
-                $selected[] = $candidate;
-                $usedIds[$candidate->id] = true;
+        // Segunda ronda compound: si quedan slots, agregar más compounds de los targets.
+        if ($compoundCount < $compoundsTarget) {
+            foreach ($compounds as $e) {
+                if ($compoundCount >= $compoundsTarget) {
+                    break;
+                }
+                if (! isset($usedIds[$e->id])) {
+                    $selected[] = $e;
+                    $usedIds[$e->id] = true;
+                    $compoundCount++;
+                }
             }
         }
 
-        // Fallback: si no llegamos a mínimo 3 ejercicios, completar con compound de cualquier muscle_target.
-        if (count($selected) < 3) {
+        // Isolations / accesorios cubriendo el resto.
+        $isolations = $this->fetchByMuscleTargets($day->muscleTargets, $profile, $equipmentAvailable, 'isolation');
+
+        // Primera ronda: 1-2 isolations por muscle target.
+        $perMuscleTarget = max(1, (int) ceil($isolationsTarget / max(count($day->muscleTargets), 1)));
+        $perMuscleCount = [];
+        foreach ($day->muscleTargets as $muscle) {
+            $perMuscleCount[$muscle] = 0;
+        }
+        foreach ($isolations as $candidate) {
+            if (count($selected) >= ($compoundsTarget + $isolationsTarget)) {
+                break;
+            }
+            if (isset($usedIds[$candidate->id])) {
+                continue;
+            }
+            $muscle = $candidate->muscle_primary;
+            if (in_array($muscle, $day->muscleTargets, true) && ($perMuscleCount[$muscle] ?? 0) < $perMuscleTarget) {
+                $selected[] = $candidate;
+                $usedIds[$candidate->id] = true;
+                $perMuscleCount[$muscle]++;
+            }
+        }
+
+        // Fallback: si todavía hay slots, agregar cualquier isolation restante.
+        if (count($selected) < ($compoundsTarget + $isolationsTarget)) {
+            foreach ($isolations as $e) {
+                if (count($selected) >= ($compoundsTarget + $isolationsTarget)) {
+                    break;
+                }
+                if (! isset($usedIds[$e->id])) {
+                    $selected[] = $e;
+                    $usedIds[$e->id] = true;
+                }
+            }
+        }
+
+        // Fallback final: si no llegamos a mínimo 4, agregar más compounds.
+        if (count($selected) < 4) {
             foreach ($compounds as $e) {
-                if (count($selected) >= 4) {
+                if (count($selected) >= 5) {
                     break;
                 }
                 if (! isset($usedIds[$e->id])) {
