@@ -1,0 +1,1750 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-05-17",
+  "generated_by": "Claude Code Opus 4.7 + Daniel Esparza + Perplexity Pro evidence validation",
+  "scope": "MVP catálogo de stacks pre-armados de suplementos legales para motor v2 WellCore. Foco: hipertrofia + recomposición corporal + resultados físicos. NO incluye compounds hormonales prescripcionales (esos van en hormonal_protocols_templates Pieza 6).",
+  "language": "tuteo neutro latino (memoria feedback_idioma_latino_neutro 2026-05-17 autoritativa segunda corrección)",
+  "evidence_methodology": "Cada stack documenta evidencia 2023-2026 (ISSN Position Stands + meta-analyses + RCTs en trained populations). Prioridades essential/recommended/optional asignadas según calidad de evidencia para hipertrofia/recomposición — NO según popularidad comercial.",
+  "evidence_sources_consulted": [
+    "Perplexity Pro query 2026-05-17 — Evidence review stacks hipertrofia/recomposición (bc6082c3-f2ea-49af-9f13-2a0ee7475695)",
+    "ISSN Position Stand Creatina (Kreider et al. 2017, actualizaciones 2024)",
+    "ISSN Position Stand Proteína (Jäger et al. 2017)",
+    "2025 narrative synthesis morphology-direct trials — plateau proteína ~2.0 g/kg",
+    "2025 meta-analysis Vitamina D body composition — sin mejora vs ejercicio solo",
+    "Helms et al. (2014) — Evidence-based recommendations natural bodybuilding contest prep",
+    "Stacy Sims (2016) ROAR — Female-specific nutrition and supplementation",
+    "Schoenfeld B.J. — Hypertrophy science",
+    "Colenso-Semple L.M. — Female resistance training periodization 2023-2025",
+    "MD 04 sección 2.5 — Suplementación estándar WellCore",
+    "docs/audit-motor-v2/01-AUDIT-POR-TIER.md — Stacks reales Lizetd/Silvia/Daniel",
+    "docs/audit-motor-v2/supplement-catalog-seed.json — 28 slugs catálogo Pieza 4"
+  ],
+  "total_stacks": 15,
+  "by_category": {
+    "objetivo_genero": 7,
+    "contexto": 4,
+    "condicion_especial": 4
+  },
+  "naming_convention": "stack-{objetivo}-{genero}-{tier} OR stack-{contexto}-{caso} OR stack-{condicion-especial}",
+  "schema_notes": {
+    "priority_levels": {
+      "essential": "Sin este componente el stack pierde su valor central. Evidencia mínima requerida: high/very_high para el objetivo del stack.",
+      "recommended": "Agrega valor relevante pero el stack funciona sin él. Evidencia moderate/high o impacto indirecto en adherencia/performance.",
+      "optional": "Solo si el cliente lo quiere o puede pagar. Evidencia limited o impacto marginal."
+    },
+    "approximate_monthly_cost_cop": "Pesos colombianos 2026 — calculados con marcas medias (Whey Gold Standard / Now Foods / Vitafusion / Garden of Life). Rango realista cliente urbano LATAM con acceso a Drogas La Rebaja, Olímpica, Falabella, Suplementos.com.co."
+  },
+  "stacks": [
+    {
+      "slug": "stack-basico-esencial-universal",
+      "name": "Básico esencial universal",
+      "name_short": "Básico Universal",
+      "objective": "Stack base mínimo viable para cualquier cliente Esencial+ que entrena con foco hipertrofia o recomposición. El motor v2 lo usa como punto de partida si no hay matchee más específico.",
+      "applicable_objectives": ["perdida_grasa", "recomposicion", "hipertrofia", "mantenimiento"],
+      "applicable_genders": ["masculino", "femenino", "ambos"],
+      "applicable_tier_min": "esencial",
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [18, 65],
+      "applicable_special_conditions": [],
+      "components_essential": [
+        {
+          "supplement_slug": "proteina-whey-concentrada",
+          "dosis_recommended": "1 scoop (25-30g, ~22g proteína neta) post-entreno",
+          "timing": "post_entreno_inmediato",
+          "frequency": "diaria_solo_dias_entreno",
+          "rationale": "Asegura el target proteico diario 1.6-2.2 g/kg cuando alimentos enteros no llegan. Evidencia very_high para preservar/ganar masa magra."
+        },
+        {
+          "supplement_slug": "creatina-monohidrato",
+          "dosis_recommended": "5g",
+          "timing": "cualquier_momento_consistente",
+          "frequency": "diaria_incluidos_dias_descanso",
+          "rationale": "El ergogénico más confiable. Mejora strength + FFM con resistance training. Saturación en 28 días sin loading. Evidencia very_high."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "multivitaminico-base",
+          "dosis_recommended": "1 tableta",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Insurance para gaps nutricionales — útil si la dieta es restrictiva o el cliente come pocos vegetales/frutas. Evidencia limited para recomp directa, pero costo bajo y riesgo bajo."
+        },
+        {
+          "supplement_slug": "omega-3-epa-dha",
+          "dosis_recommended": "1-2g (mín 500mg EPA + 250mg DHA)",
+          "timing": "con_almuerzo",
+          "frequency": "diaria",
+          "rationale": "Soporte recovery + antiinflamatorio. Evidencia moderate para recovery-oriented outcomes (no body composition directo)."
+        },
+        {
+          "supplement_slug": "vitamina-d3",
+          "dosis_recommended": "1000-2000 UI",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Solo si déficit (común en LATAM urbano con poca exposición solar). Meta-analysis 2025: NO mejora body composition vs ejercicio solo si no hay déficit."
+        }
+      ],
+      "components_optional": [],
+      "total_components_essential": 2,
+      "total_components_recommended": 3,
+      "total_components_optional": 0,
+      "total_components_max_stack": 5,
+      "stack_interactions_internal": [],
+      "client_interactions_externas": [],
+      "expected_outcomes": [
+        "Garantía de target proteico diario consistente",
+        "Mejor preservación/ganancia de masa magra con entreno",
+        "Recovery ligeramente mejor entre sesiones",
+        "Insurance básica de micronutrientes"
+      ],
+      "expected_timeline_resultados": "4-8 semanas para impacto medible en composición corporal combinado con entreno + dieta.",
+      "approximate_monthly_cost_cop": 200000,
+      "approximate_monthly_cost_range_cop": "160000-260000",
+      "cost_breakdown_note": "Whey concentrada $80-130k + Creatina $30-50k + Multi $30-55k + Omega-3 $60-110k + Vit D3 $20-35k. Si saltas recommendeds, baja a $110-180k (solo whey + creatina).",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "proteina-whey-concentrada",
+          "substitute": "proteina-whey-isolada",
+          "note": "Si hay sensibilidad a lactosa, usar isolada (menos lactosa residual) — costo sube ~50%."
+        }
+      ],
+      "scientific_rationale": "El motor de hipertrofia/recomposición es proteína adecuada + creatina + estímulo de entreno + sueño. Este stack cubre la primera mitad de esa fórmula con los dos componentes con evidencia very_high (whey + creatina) más insurance micronutricional ligera.",
+      "scientific_sources": [
+        "Jäger R. et al. (2017). ISSN Position Stand: Protein and exercise.",
+        "Kreider R.B. et al. (2017). ISSN Position Stand: Creatine.",
+        "Antonio J. et al. (2017). The effects of consuming a high protein diet on body composition.",
+        "2025 narrative synthesis — morphology-direct trials protein plateau ~2.0 g/kg/day"
+      ],
+      "legal_advertencia": "Stack diseñado para adulto sano que entrena resistencia. Consulta médico antes de iniciar si tienes condición preexistente, estás embarazada, en lactancia, o tomas medicamentos crónicos. Suplementos NO sustituyen alimentación equilibrada.",
+      "tags": ["mvp_obligatorio", "base", "universal", "esencial_minimo"],
+      "confidence": "high",
+      "confidence_reason": "Componentes core (whey + creatina) tienen la evidencia más sólida de toda la literatura de suplementación deportiva.",
+      "needs_daniel_validation": false,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-perdida-grasa-femenina-intermedia",
+      "name": "Pérdida de grasa femenina intermedia",
+      "name_short": "Pérdida Grasa Femenina",
+      "objective": "Pérdida de grasa con preservación de masa magra para mujer intermedia en déficit moderado/agresivo. Soporte energético pre-entreno + manejo de sueño/cólicos + base proteica fuerte.",
+      "applicable_objectives": ["perdida_grasa", "recomposicion"],
+      "applicable_genders": ["femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [20, 55],
+      "applicable_special_conditions": [],
+      "components_essential": [
+        {
+          "supplement_slug": "proteina-whey-concentrada",
+          "dosis_recommended": "1 scoop (25-30g) post-entreno",
+          "timing": "post_entreno_inmediato",
+          "frequency": "diaria_solo_dias_entreno",
+          "rationale": "En déficit calórico, el target proteico sube a 2.0-2.4 g/kg para preservar masa magra. Whey llena gaps cuando alimentos enteros no alcanzan."
+        },
+        {
+          "supplement_slug": "creatina-monohidrato",
+          "dosis_recommended": "3-5g",
+          "timing": "cualquier_momento_consistente",
+          "frequency": "diaria_incluidos_dias_descanso",
+          "rationale": "Preserva performance y masa magra cuando el déficit calórico tiende a bajar output. Evidencia very_high. Crítica en mujeres con baseline de creatina dietaria más baja."
+        },
+        {
+          "supplement_slug": "cafeina-anhidra",
+          "dosis_recommended": "100-200mg",
+          "timing": "pre_entreno_30_60min",
+          "frequency": "solo_dias_entreno",
+          "rationale": "Sostiene calidad de entreno en déficit + leve apoyo termogénico (meta-analyses 2023-2025). Evidencia high para performance aguda.",
+          "skip_if": ["intolerancia_cafeina", "embarazo", "lactancia", "hipertension_no_controlada", "ansiedad_severa"]
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "magnesio-glicinato",
+          "dosis_recommended": "300-400mg",
+          "timing": "antes_dormir_30min",
+          "frequency": "diaria",
+          "rationale": "Mejora calidad de sueño (clave en déficit donde cortisol sube). Reduce cólicos menstruales. Forma glicinato bien tolerada. Evidencia moderate."
+        },
+        {
+          "supplement_slug": "omega-3-epa-dha",
+          "dosis_recommended": "1-2g",
+          "timing": "con_almuerzo",
+          "frequency": "diaria",
+          "rationale": "Antiinflamatorio + recovery. En déficit hay inflamación crónica leve elevada. Evidencia moderate para recovery."
+        },
+        {
+          "supplement_slug": "vitamina-d3",
+          "dosis_recommended": "1000-2000 UI",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Insurance contra déficit común en LATAM urbano. NO es driver de body composition, pero corrige déficit si existe."
+        },
+        {
+          "supplement_slug": "multivitaminico-base",
+          "dosis_recommended": "1 tableta",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Insurance para gaps en déficit moderado/agresivo."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "colageno-vit-c",
+          "dosis_recommended": "10g colágeno + 500mg Vit C",
+          "timing": "pre_entreno_30min",
+          "frequency": "diaria",
+          "rationale": "Soporte tendón/articulaciones + piel/cabello (que tienden a sufrir en déficit). Evidencia moderate para tendón, limited para muscle building.",
+          "skip_if": []
+        }
+      ],
+      "total_components_essential": 3,
+      "total_components_recommended": 4,
+      "total_components_optional": 1,
+      "total_components_max_stack": 8,
+      "stack_interactions_internal": [
+        {
+          "components": ["cafeina-anhidra", "magnesio-glicinato"],
+          "interaction": "Timing separado obligatorio. Cafeína AM pre-entreno, magnesio PM pre-sueño. NO tomar juntos.",
+          "severity": "moderate"
+        }
+      ],
+      "client_interactions_externas": [
+        {
+          "with_condition": "anticonceptivos_orales",
+          "components_afectados": ["cafeina-anhidra"],
+          "note": "Anticonceptivos prolongan vida media de cafeína. Reducir dosis a 100mg si refleja insomnio."
+        },
+        {
+          "with_condition": "antidepresivos_isrs",
+          "components_afectados": ["cafeina-anhidra"],
+          "note": "ISRS aumentan sensibilidad a cafeína. Monitorear ansiedad. Considerar omitir o reducir."
+        }
+      ],
+      "expected_outcomes": [
+        "Preservación de masa magra durante déficit (whey + creatina)",
+        "Adherencia mejorada al déficit (mejor sueño + energía pre-entreno)",
+        "Menos cólicos y mejor sueño en fase lútea (magnesio)",
+        "Recovery sostenido entre sesiones a pesar del déficit"
+      ],
+      "expected_timeline_resultados": "2-4 semanas para mejor sueño/energía. 6-12 semanas para impacto visible en composición combinado con dieta + entreno.",
+      "approximate_monthly_cost_cop": 280000,
+      "approximate_monthly_cost_range_cop": "230000-360000",
+      "cost_breakdown_note": "Whey $80-130k + Creatina $30-50k + Cafeína $20-40k + Magnesio glicinato $45-75k + Omega-3 $60-110k + D3 $20-35k + Multi $30-55k + Colágeno opcional $60-110k.",
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "tier": "esencial",
+          "components_match": ["proteina-whey-concentrada", "creatina-monohidrato", "multivitaminico-base", "omega-3-epa-dha", "vitamina-d3", "cafeina-anhidra", "magnesio-glicinato"],
+          "match_pct": 100,
+          "outcome_documented": "TBD (cliente arranca 2026-05-18)"
+        }
+      ],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "proteina-whey-concentrada",
+          "substitute": "proteina-whey-isolada",
+          "note": "Si hay sensibilidad a lactosa."
+        },
+        {
+          "component_unavailable": "magnesio-glicinato",
+          "substitute": "magnesio-bisglicinato",
+          "note": "Forma química muy similar — intercambiable."
+        }
+      ],
+      "scientific_rationale": "Pérdida de grasa femenina con preservación de masa magra requiere: (1) proteína suficientemente alta — whey llena gaps, (2) creatina para mantener performance en déficit, (3) cafeína para sostener calidad de entreno y leve apoyo termogénico, (4) sueño optimizado (cortisol bloquea fat loss) — magnesio. El resto es insurance micronutricional.",
+      "scientific_sources": [
+        "Helms E.R. et al. (2014). Evidence-based recommendations for natural bodybuilding contest preparation.",
+        "Sims S.T. (2016). ROAR — Female-specific nutrition.",
+        "Antonio J. et al. (2017). High protein diet and body composition.",
+        "Kreider R.B. et al. (2017). ISSN Position Stand: Creatine.",
+        "Tabrizi R. et al. (2019). Caffeine and body weight meta-analysis.",
+        "Colenso-Semple L.M. (2023-2025). Female training periodization reviews."
+      ],
+      "legal_advertencia": "Stack diseñado para mujer adulta sana intermedia/avanzada en déficit calórico. Consulta médico antes si tienes condición médica preexistente, estás embarazada/lactando, o tomas medicamentos crónicos. Suplementos NO sustituyen alimentación equilibrada.",
+      "tags": ["mvp_obligatorio", "perdida_grasa", "femenino", "intermedio", "caso_lizetd"],
+      "confidence": "high",
+      "confidence_reason": "Stack basado en caso real validado (Lizetd) + literatura ISSN/Helms/Sims. Componentes con evidencia high/very_high.",
+      "needs_daniel_validation": false,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-perdida-grasa-masculina-intermedia",
+      "name": "Pérdida de grasa masculina intermedia",
+      "name_short": "Pérdida Grasa Masculina",
+      "objective": "Pérdida de grasa con preservación de masa magra para hombre intermedio/avanzado en déficit moderado/agresivo. Sostiene calidad de entreno + recovery.",
+      "applicable_objectives": ["perdida_grasa", "recomposicion"],
+      "applicable_genders": ["masculino"],
+      "applicable_tier_min": "esencial",
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [20, 55],
+      "applicable_special_conditions": [],
+      "components_essential": [
+        {
+          "supplement_slug": "proteina-whey-concentrada",
+          "dosis_recommended": "1-2 scoops (25-60g) según gap proteico",
+          "timing": "post_entreno_inmediato",
+          "frequency": "diaria_solo_dias_entreno",
+          "rationale": "Target proteico 2.2-2.6 g/kg en déficit para preservar masa magra. Whey llena gaps."
+        },
+        {
+          "supplement_slug": "creatina-monohidrato",
+          "dosis_recommended": "5g",
+          "timing": "cualquier_momento_consistente",
+          "frequency": "diaria_incluidos_dias_descanso",
+          "rationale": "Preserva strength y performance en déficit. Evidencia very_high."
+        },
+        {
+          "supplement_slug": "cafeina-anhidra",
+          "dosis_recommended": "150-200mg",
+          "timing": "pre_entreno_30_60min",
+          "frequency": "solo_dias_entreno",
+          "rationale": "Sostiene calidad de entreno + leve apoyo fat loss. Evidencia high.",
+          "skip_if": ["intolerancia_cafeina", "hipertension_no_controlada", "arritmia"]
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "omega-3-epa-dha",
+          "dosis_recommended": "1-2g",
+          "timing": "con_almuerzo",
+          "frequency": "diaria",
+          "rationale": "Recovery + antiinflamatorio en déficit."
+        },
+        {
+          "supplement_slug": "magnesio-bisglicinato",
+          "dosis_recommended": "300-400mg",
+          "timing": "antes_dormir_30min",
+          "frequency": "diaria",
+          "rationale": "Sueño optimizado — cortisol elevado en déficit bloquea fat loss. Reduce calambres en entreno."
+        },
+        {
+          "supplement_slug": "vitamina-d3",
+          "dosis_recommended": "1000-2000 UI",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Insurance déficit común LATAM urbano."
+        },
+        {
+          "supplement_slug": "multivitaminico-base",
+          "dosis_recommended": "1 tableta",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Insurance micronutricional en déficit."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "beta-alanina",
+          "dosis_recommended": "3.2-6.4g (dividido en 2-4 tomas)",
+          "timing": "distribuido_dia",
+          "frequency": "diaria",
+          "rationale": "Si el cliente hace volumen alto repetido (PPL 6 días, HIIT regular), apoya capacidad anaeróbica. Evidencia moderate para repeated high-intensity, NO para hipertrofia directa.",
+          "skip_if": ["parestesia_severa_no_tolera_flushing"]
+        }
+      ],
+      "total_components_essential": 3,
+      "total_components_recommended": 4,
+      "total_components_optional": 1,
+      "total_components_max_stack": 8,
+      "stack_interactions_internal": [
+        {
+          "components": ["cafeina-anhidra", "magnesio-bisglicinato"],
+          "interaction": "Timing separado obligatorio: cafeína pre-entreno AM, magnesio antes de dormir PM.",
+          "severity": "moderate"
+        }
+      ],
+      "client_interactions_externas": [
+        {
+          "with_condition": "hipertension_no_controlada",
+          "components_afectados": ["cafeina-anhidra"],
+          "note": "Omitir cafeína. Consultar médico antes de iniciar."
+        }
+      ],
+      "expected_outcomes": [
+        "Preservación de masa magra en déficit",
+        "Performance sostenido en sesiones",
+        "Mejor recovery + sueño",
+        "Apoyo termogénico marginal vía cafeína"
+      ],
+      "expected_timeline_resultados": "2-4 semanas energía/sueño. 6-12 semanas composición visible.",
+      "approximate_monthly_cost_cop": 260000,
+      "approximate_monthly_cost_range_cop": "200000-340000",
+      "cost_breakdown_note": "Whey $80-130k + Creatina $30-50k + Cafeína $20-40k + Omega-3 $60-110k + Magnesio $40-70k + D3 $20-35k + Multi $30-55k + Beta-alanina opcional $40-70k.",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "proteina-whey-concentrada",
+          "substitute": "proteina-whey-isolada",
+          "note": "Si hay sensibilidad a lactosa."
+        }
+      ],
+      "scientific_rationale": "Mismo motor que la versión femenina: whey + creatina + cafeína. Diferencias por género están en dosis (proteína g/kg, cafeína típicamente bien tolerada en dosis más altas) y prioridad menor de magnesio-vía-cólicos.",
+      "scientific_sources": [
+        "Helms E.R. et al. (2014). Natural bodybuilding contest prep.",
+        "Antonio J. et al. (2017). High protein diet.",
+        "Kreider R.B. et al. (2017). ISSN Position Stand: Creatine.",
+        "Trexler E.T. et al. (2014). Metabolic adaptation to weight loss.",
+        "Tabrizi R. et al. (2019). Caffeine and body weight."
+      ],
+      "legal_advertencia": "Stack para hombre adulto sano. Si tienes hipertensión, arritmia o tomas medicamentos crónicos, consulta médico.",
+      "tags": ["mvp_obligatorio", "perdida_grasa", "masculino", "intermedio"],
+      "confidence": "high",
+      "confidence_reason": "Mismos componentes core que stack femenino (evidencia high/very_high) con dosis masculinas.",
+      "needs_daniel_validation": false,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-recomposicion-femenina-elite",
+      "name": "Recomposición femenina Elite",
+      "name_short": "Recomp Femenina Elite",
+      "objective": "Recomposición corporal (déficit ±100 kcal con proteína alta) para mujer Elite con experiencia entrenamiento. Foco: ganar/preservar masa magra mientras baja grasa. Soporte hormonal + recuperación premium.",
+      "applicable_objectives": ["recomposicion", "perdida_grasa", "hipertrofia"],
+      "applicable_genders": ["femenino"],
+      "applicable_tier_min": "elite",
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [25, 55],
+      "applicable_special_conditions": [],
+      "components_essential": [
+        {
+          "supplement_slug": "proteina-whey-isolada",
+          "dosis_recommended": "1-2 scoops (25-50g, ~22-44g proteína neta)",
+          "timing": "post_entreno_inmediato",
+          "frequency": "diaria_solo_dias_entreno",
+          "rationale": "Target proteico 2.2-2.4 g/kg para recomposición. Isolada por digestibilidad superior y menor lactosa. Evidencia very_high."
+        },
+        {
+          "supplement_slug": "creatina-monohidrato",
+          "dosis_recommended": "3-5g",
+          "timing": "cualquier_momento_consistente",
+          "frequency": "diaria_incluidos_dias_descanso",
+          "rationale": "Driver más confiable de FFM/strength en recomposición. Evidencia very_high."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "omega-3-epa-dha",
+          "dosis_recommended": "2g (mín 1g EPA + 500mg DHA)",
+          "timing": "con_almuerzo",
+          "frequency": "diaria",
+          "rationale": "Dosis alta para recovery + soporte hormonal. Evidencia moderate."
+        },
+        {
+          "supplement_slug": "magnesio-glicinato",
+          "dosis_recommended": "300-400mg",
+          "timing": "antes_dormir_30min",
+          "frequency": "diaria",
+          "rationale": "Sueño profundo + manejo cólicos. Mujer Elite con entreno alto-volumen necesita recovery premium."
+        },
+        {
+          "supplement_slug": "vitamina-d3-k2",
+          "dosis_recommended": "2000-4000 UI D3 + 90-180mcg K2",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Combo D3+K2 para soporte hueso/hormonal. K2 ayuda con calcio. Solo aporta a body composition si hay déficit baseline."
+        },
+        {
+          "supplement_slug": "multivitaminico-femenino",
+          "dosis_recommended": "1-2 tabletas",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Hierro + B vits + folato + biotina formulado para mujer. Insurance — evidencia directa para recomp es limited pero costo/riesgo bajos."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "colageno-vit-c",
+          "dosis_recommended": "10g colágeno + 500mg Vit C",
+          "timing": "pre_entreno_30min",
+          "frequency": "diaria",
+          "rationale": "Tendón + articulación + piel/cabello. Evidencia moderate para tendón."
+        }
+      ],
+      "total_components_essential": 2,
+      "total_components_recommended": 5,
+      "total_components_optional": 1,
+      "total_components_max_stack": 8,
+      "stack_interactions_internal": [],
+      "client_interactions_externas": [
+        {
+          "with_condition": "anticonceptivos_orales",
+          "components_afectados": ["multivitaminico-femenino"],
+          "note": "Algunos anticonceptivos depletan B6/B12/folato — el multi femenino ayuda a compensar."
+        },
+        {
+          "with_condition": "anticoagulantes_warfarina",
+          "components_afectados": ["vitamina-d3-k2"],
+          "note": "K2 puede interferir con warfarina. Consultar médico antes."
+        }
+      ],
+      "expected_outcomes": [
+        "Aumento/preservación de masa magra con grasa estable o bajando",
+        "Recovery premium entre sesiones de alta intensidad",
+        "Soporte hormonal indirecto vía D3+K2 + omega-3",
+        "Sueño profundo consistente"
+      ],
+      "expected_timeline_resultados": "4-8 semanas para cambios visibles. 12-16 semanas para recomposición consolidada.",
+      "approximate_monthly_cost_cop": 440000,
+      "approximate_monthly_cost_range_cop": "360000-540000",
+      "cost_breakdown_note": "Whey isolada $130-200k + Creatina $30-50k + Omega-3 dosis alta $80-130k + Magnesio glicinato $45-75k + D3+K2 $40-65k + Multi femenino $60-100k + Colágeno opcional $60-110k.",
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_001_silvia",
+          "tier": "elite",
+          "components_match": ["proteina-whey-isolada", "creatina-monohidrato", "omega-3-epa-dha", "vitamina-d3-k2", "magnesio-glicinato", "multivitaminico-femenino", "colageno-vit-c"],
+          "match_pct": 100,
+          "outcome_documented": "TBD (cliente DÍA 27 al momento del audit)"
+        }
+      ],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "proteina-whey-isolada",
+          "substitute": "proteina-whey-concentrada",
+          "note": "Concentrada es 70% más barata si lactosa no es problema."
+        },
+        {
+          "component_unavailable": "vitamina-d3-k2",
+          "substitute": "vitamina-d3",
+          "note": "D3 sola es alternativa más barata si K2 no está disponible (mismas funciones core)."
+        }
+      ],
+      "scientific_rationale": "Recomposición femenina Elite requiere: (1) proteína premium-calidad para hit target 2.2-2.4 g/kg, (2) creatina, (3) recovery premium (omega-3 dosis alta + magnesio), (4) soporte hormonal indirecto (D3+K2 + multi femenino). El motor es whey + creatina; el resto sostiene adherencia y recovery en entreno de alta intensidad.",
+      "scientific_sources": [
+        "Sims S.T. (2016). ROAR — Female-specific nutrition.",
+        "Helms E.R. et al. (2014). Natural BB contest prep.",
+        "Kreider R.B. et al. (2017). ISSN Position Stand: Creatine.",
+        "Antonio J. et al. (2017). High protein diet.",
+        "Colenso-Semple L.M. (2023-2025). Female resistance training reviews.",
+        "Schoenfeld B.J. — Hypertrophy science."
+      ],
+      "legal_advertencia": "Stack para mujer adulta sana avanzada/Elite. Consultar médico si tomas anticoagulantes (warfarina) por K2. NO durante embarazo/lactancia sin supervisión médica.",
+      "tags": ["mvp_obligatorio", "recomposicion", "femenino", "elite", "caso_silvia"],
+      "confidence": "high",
+      "confidence_reason": "Caso real Silvia validado + componentes core con evidencia high/very_high.",
+      "needs_daniel_validation": false,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-recomposicion-masculina-elite",
+      "name": "Recomposición masculina Elite",
+      "name_short": "Recomp Masculina Elite",
+      "objective": "Recomposición corporal para hombre Elite. Ganar/preservar masa magra mientras baja grasa. Foco premium en recovery + soporte hormonal natural.",
+      "applicable_objectives": ["recomposicion", "perdida_grasa", "hipertrofia"],
+      "applicable_genders": ["masculino"],
+      "applicable_tier_min": "elite",
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [25, 55],
+      "applicable_special_conditions": [],
+      "components_essential": [
+        {
+          "supplement_slug": "proteina-whey-isolada",
+          "dosis_recommended": "1-2 scoops (25-50g)",
+          "timing": "post_entreno_inmediato",
+          "frequency": "diaria_solo_dias_entreno",
+          "rationale": "Target proteico 2.2-2.6 g/kg para recomposición. Evidencia very_high."
+        },
+        {
+          "supplement_slug": "creatina-monohidrato",
+          "dosis_recommended": "5g",
+          "timing": "cualquier_momento_consistente",
+          "frequency": "diaria_incluidos_dias_descanso",
+          "rationale": "Driver más confiable de FFM/strength. Evidencia very_high."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "omega-3-epa-dha",
+          "dosis_recommended": "2g",
+          "timing": "con_almuerzo",
+          "frequency": "diaria",
+          "rationale": "Recovery + soporte hormonal indirecto."
+        },
+        {
+          "supplement_slug": "vitamina-d3-k2",
+          "dosis_recommended": "2000-4000 UI D3 + 90-180mcg K2",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Soporte hueso + hormonal. Solo aporta a body composition si hay déficit baseline."
+        },
+        {
+          "supplement_slug": "magnesio-bisglicinato",
+          "dosis_recommended": "300-400mg",
+          "timing": "antes_dormir_30min",
+          "frequency": "diaria",
+          "rationale": "Sueño + recovery. Hombre Elite alto-volumen lo necesita."
+        },
+        {
+          "supplement_slug": "zinc-bisglicinato",
+          "dosis_recommended": "15-25mg",
+          "timing": "antes_dormir_o_con_cena",
+          "frequency": "diaria",
+          "rationale": "Soporte testo natural + inmune. Si dieta es baja en mariscos/carnes rojas. Evitar tomar con calcio/hierro (compite absorción)."
+        },
+        {
+          "supplement_slug": "multivitaminico-base",
+          "dosis_recommended": "1 tableta",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Insurance micronutricional."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "ashwagandha-ksm66",
+          "dosis_recommended": "600mg KSM-66",
+          "timing": "antes_dormir_o_con_cena",
+          "frequency": "diaria",
+          "rationale": "Adaptógeno — moderate evidence para cortisol bajo en períodos de alto estrés. Soporte testo natural marginal."
+        }
+      ],
+      "total_components_essential": 2,
+      "total_components_recommended": 6,
+      "total_components_optional": 1,
+      "total_components_max_stack": 9,
+      "stack_interactions_internal": [
+        {
+          "components": ["zinc-bisglicinato", "multivitaminico-base"],
+          "interaction": "Si multi tiene calcio/hierro, separar zinc por 2 horas — competen absorción.",
+          "severity": "low"
+        }
+      ],
+      "client_interactions_externas": [
+        {
+          "with_condition": "anticoagulantes_warfarina",
+          "components_afectados": ["vitamina-d3-k2", "omega-3-epa-dha"],
+          "note": "K2 interfiere con warfarina; omega-3 dosis altas pueden potenciar anticoagulación. Consultar médico."
+        }
+      ],
+      "expected_outcomes": [
+        "Aumento/preservación masa magra",
+        "Recovery premium",
+        "Soporte hormonal natural (D3+K2 + zinc + omega-3)",
+        "Sueño profundo"
+      ],
+      "expected_timeline_resultados": "4-8 semanas cambios visibles. 12-16 semanas recomposición consolidada.",
+      "approximate_monthly_cost_cop": 380000,
+      "approximate_monthly_cost_range_cop": "300000-480000",
+      "cost_breakdown_note": "Whey isolada $130-200k + Creatina $30-50k + Omega-3 $80-130k + D3+K2 $40-65k + Magnesio $40-70k + Zinc $25-45k + Multi $30-55k + Ashwagandha opcional $70-120k.",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "proteina-whey-isolada",
+          "substitute": "proteina-whey-concentrada",
+          "note": "Si lactosa no es problema, concentrada es 50% más barata."
+        }
+      ],
+      "scientific_rationale": "Mismo motor que recomp femenino (whey + creatina), con diferencias: dosis proteína más altas (2.2-2.6 vs 2.2-2.4 g/kg), zinc para soporte testo natural (mujer no lo necesita igual), magnesio bisglicinato en lugar de glicinato (intercambiables).",
+      "scientific_sources": [
+        "Helms E.R. et al. (2014). Natural BB contest prep.",
+        "Antonio J. et al. (2017). High protein diet.",
+        "Kreider R.B. et al. (2017). ISSN Position Stand: Creatine.",
+        "Prasad A.S. (2008). Zinc in human health.",
+        "Smith G.I. et al. (2011). Omega-3 and muscle protein synthesis."
+      ],
+      "legal_advertencia": "Stack para hombre adulto sano avanzado/Elite. Consultar médico si tomas anticoagulantes (K2 + omega-3 dosis altas).",
+      "tags": ["mvp_obligatorio", "recomposicion", "masculino", "elite"],
+      "confidence": "high",
+      "confidence_reason": "Mismos componentes core que recomp femenino con dosis masculinas.",
+      "needs_daniel_validation": false,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-volumen-masculino-elite",
+      "name": "Volumen masculino Elite",
+      "name_short": "Volumen Masculino Elite",
+      "objective": "Hipertrofia agresiva con superávit calórico (+300 a +800 kcal) para hombre Elite avanzado. Foco: maximizar volumen de entreno + recovery + performance. Stack premium.",
+      "applicable_objectives": ["hipertrofia", "fuerza"],
+      "applicable_genders": ["masculino"],
+      "applicable_tier_min": "elite",
+      "applicable_levels": ["avanzado"],
+      "applicable_age_range": [22, 50],
+      "applicable_special_conditions": [],
+      "components_essential": [
+        {
+          "supplement_slug": "proteina-whey-isolada",
+          "dosis_recommended": "2-3 scoops (50-75g) distribuidos pre + post entreno",
+          "timing": "pre_y_post_entreno",
+          "frequency": "diaria_solo_dias_entreno",
+          "rationale": "Target proteico 1.8-2.2 g/kg en superávit. Evidencia very_high."
+        },
+        {
+          "supplement_slug": "creatina-monohidrato",
+          "dosis_recommended": "5g",
+          "timing": "cualquier_momento_consistente",
+          "frequency": "diaria_incluidos_dias_descanso",
+          "rationale": "Driver más confiable de hipertrofia + strength. Evidencia very_high."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "neuro-freak-blend-pre-workout",
+          "dosis_recommended": "1 scoop (cafeína + citrulina + beta-alanina + tirosina blend)",
+          "timing": "pre_entreno_20_30min",
+          "frequency": "solo_dias_entreno_pesados",
+          "rationale": "Blend pre-workout premium para alto volumen. La cafeína (high evidence) es el componente con peso real; el resto del blend agrega percepción/pump (limited evidence directa pero apoyo al feel del entreno).",
+          "skip_if": ["intolerancia_cafeina", "hipertension_no_controlada", "ansiedad_severa"]
+        },
+        {
+          "supplement_slug": "beta-alanina",
+          "dosis_recommended": "3.2-6.4g (dividido en 2-4 tomas)",
+          "timing": "distribuido_dia",
+          "frequency": "diaria",
+          "rationale": "Loading crónico para capacidad anaeróbica en sets repetidos alto-volumen. Evidencia moderate para repeated high-intensity. NO esencial pero apoya volumen sostenido."
+        },
+        {
+          "supplement_slug": "l-citrulina-malato",
+          "dosis_recommended": "6-8g",
+          "timing": "pre_entreno_30_45min",
+          "frequency": "solo_dias_entreno",
+          "rationale": "Apoyo perceptual al pump y a la sensación de fatiga reducida. Evidencia LIMITED para hipertrofia/strength directa — meta-analysis no encontró efecto claro en trained adults. Se mantiene en stack por fidelidad al caso real Daniel + experiencia subjetiva del cliente."
+        },
+        {
+          "supplement_slug": "multivitaminico-base",
+          "dosis_recommended": "1 tableta",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Insurance — alto volumen come mucho pero gaps pueden aparecer."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "l-glutamina",
+          "dosis_recommended": "5g",
+          "timing": "post_entreno_o_antes_dormir",
+          "frequency": "diaria",
+          "rationale": "Evidencia LIMITED para hipertrofia en lifters bien alimentados. Útil solo si hay GI stress, illness risk, o cargas de entreno muy altas. En el stack Daniel real se incluye — se mantiene como optional por esa razón."
+        },
+        {
+          "supplement_slug": "omega-3-epa-dha",
+          "dosis_recommended": "2g",
+          "timing": "con_almuerzo",
+          "frequency": "diaria",
+          "rationale": "Recovery con alto volumen. Evidencia moderate."
+        },
+        {
+          "supplement_slug": "magnesio-bisglicinato",
+          "dosis_recommended": "400mg",
+          "timing": "antes_dormir_30min",
+          "frequency": "diaria",
+          "rationale": "Sueño + recovery con volumen alto."
+        }
+      ],
+      "total_components_essential": 2,
+      "total_components_recommended": 5,
+      "total_components_optional": 3,
+      "total_components_max_stack": 10,
+      "stack_interactions_internal": [
+        {
+          "components": ["neuro-freak-blend-pre-workout", "cafeina-anhidra"],
+          "interaction": "Neuro-Freak ya contiene cafeína. NO sumar cafeína anhidra adicional el mismo día.",
+          "severity": "high"
+        },
+        {
+          "components": ["neuro-freak-blend-pre-workout", "magnesio-bisglicinato"],
+          "interaction": "Cafeína AM, magnesio PM — separar timings.",
+          "severity": "moderate"
+        }
+      ],
+      "client_interactions_externas": [
+        {
+          "with_condition": "hipertension_no_controlada",
+          "components_afectados": ["neuro-freak-blend-pre-workout"],
+          "note": "Omitir pre-workout. Considerar entrenar sin estimulantes."
+        }
+      ],
+      "expected_outcomes": [
+        "Hipertrofia agresiva sostenida 12-16 semanas",
+        "Volumen de entreno alto (15-25 sets/grupo muscular/semana) sostenible",
+        "Recovery entre sesiones premium",
+        "Performance pre-workout maximizado"
+      ],
+      "expected_timeline_resultados": "4-6 semanas cambios visibles en circunferencias. 12-16 semanas cambio composición consolidado.",
+      "approximate_monthly_cost_cop": 540000,
+      "approximate_monthly_cost_range_cop": "420000-700000",
+      "cost_breakdown_note": "Whey isolada x2 $260-400k + Creatina $30-50k + Neuro-Freak $130-200k + Beta-alanina $40-70k + L-citrulina $60-100k + Multi $30-55k + Glutamina opc $60-100k + Omega-3 opc $80-130k + Magnesio opc $40-70k.",
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_002_daniel",
+          "tier": "elite",
+          "components_match": ["proteina-whey-isolada", "creatina-monohidrato", "neuro-freak-blend-pre-workout", "beta-alanina", "l-citrulina-malato", "l-glutamina", "multivitaminico-base"],
+          "match_pct": 100,
+          "outcome_documented": "TBD (cliente DÍA 59 al momento del audit, plan 12 semanas activo)"
+        }
+      ],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "neuro-freak-blend-pre-workout",
+          "substitute": "cafeina-anhidra + l-citrulina-malato + beta-alanina",
+          "note": "Componer pre-workout casero si el blend específico no está. Cafeína 150-200mg + Citrulina 6g + Beta-alanina 3g."
+        },
+        {
+          "component_unavailable": "proteina-whey-isolada",
+          "substitute": "proteina-whey-concentrada",
+          "note": "Si lactosa no es problema."
+        }
+      ],
+      "scientific_rationale": "El motor de hipertrofia es proteína suficiente + creatina + volumen de entreno alto sostenido + sueño. Este stack maximiza la base (whey 2-3 scoops + creatina) y agrega componentes que apoyan FEEL y CAPACIDAD del entreno (pre-workout, beta-alanina, citrulina) aunque varios de ellos tienen evidencia limited para hipertrofia directa. Se mantienen por fidelidad al caso real Daniel y por valor subjetivo en alto volumen.",
+      "scientific_sources": [
+        "Kreider R.B. et al. (2017). ISSN Position Stand: Creatine.",
+        "Jäger R. et al. (2017). ISSN Position Stand: Protein.",
+        "Trexler E.T. et al. (2015). ISSN Position Stand: Beta-Alanine.",
+        "Goldstein E.R. et al. (2010). ISSN Position Stand: Caffeine.",
+        "Wax B. et al. (2015). Citrulline malate review — limited strength evidence.",
+        "Antonio J. (2008). Glutamine — limited for hypertrophy in trained lifters."
+      ],
+      "legal_advertencia": "Stack para hombre adulto sano avanzado/Elite. Contiene estimulantes (cafeína vía Neuro-Freak) — NO usar si tienes hipertensión, arritmia, ansiedad severa, o tomas medicamentos cardiovasculares.",
+      "tags": ["mvp_obligatorio", "hipertrofia", "volumen", "masculino", "elite", "caso_daniel", "alto_costo"],
+      "confidence": "moderate",
+      "confidence_reason": "Caso real Daniel reproducido al 100%. Componentes essential (whey + creatina) con evidencia very_high. Componentes recommended (citrulina, glutamina, blend pre) con evidencia limited individualmente pero apoyados por uso real consistente.",
+      "needs_daniel_validation": true,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-volumen-femenino-avanzado",
+      "name": "Volumen femenino avanzado",
+      "name_short": "Volumen Femenino",
+      "objective": "Hipertrofia con superávit moderado (+200 a +400 kcal) para mujer avanzada. Foco: ganar masa magra sin acumular grasa excesiva. Soporte recovery + adherencia ciclo menstrual.",
+      "applicable_objectives": ["hipertrofia", "recomposicion"],
+      "applicable_genders": ["femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [22, 50],
+      "applicable_special_conditions": [],
+      "components_essential": [
+        {
+          "supplement_slug": "proteina-whey-isolada",
+          "dosis_recommended": "1-2 scoops (25-50g)",
+          "timing": "post_entreno_inmediato",
+          "frequency": "diaria_solo_dias_entreno",
+          "rationale": "Target proteico 1.8-2.0 g/kg en superávit. Isolada por digestibilidad."
+        },
+        {
+          "supplement_slug": "creatina-monohidrato",
+          "dosis_recommended": "3-5g",
+          "timing": "cualquier_momento_consistente",
+          "frequency": "diaria_incluidos_dias_descanso",
+          "rationale": "Driver de FFM. Evidencia very_high. Especialmente relevante en mujer por baseline creatina dietaria más baja."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "omega-3-epa-dha",
+          "dosis_recommended": "1-2g",
+          "timing": "con_almuerzo",
+          "frequency": "diaria",
+          "rationale": "Recovery + soporte hormonal."
+        },
+        {
+          "supplement_slug": "magnesio-glicinato",
+          "dosis_recommended": "300-400mg",
+          "timing": "antes_dormir_30min",
+          "frequency": "diaria",
+          "rationale": "Sueño + manejo cólicos."
+        },
+        {
+          "supplement_slug": "multivitaminico-femenino",
+          "dosis_recommended": "1-2 tabletas",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Hierro + B vits + folato. Apoyo ciclo."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "l-citrulina-malato",
+          "dosis_recommended": "6g",
+          "timing": "pre_entreno_30min",
+          "frequency": "solo_dias_entreno",
+          "rationale": "Pump perceptual. Evidencia limited para strength/hipertrofia directa."
+        },
+        {
+          "supplement_slug": "cafeina-anhidra",
+          "dosis_recommended": "100-150mg",
+          "timing": "pre_entreno_30_60min",
+          "frequency": "solo_dias_entreno",
+          "rationale": "Performance aguda — útil si entrena AM y necesita kick. Evidencia high para performance.",
+          "skip_if": ["intolerancia_cafeina", "embarazo", "lactancia"]
+        }
+      ],
+      "total_components_essential": 2,
+      "total_components_recommended": 3,
+      "total_components_optional": 2,
+      "total_components_max_stack": 7,
+      "stack_interactions_internal": [],
+      "client_interactions_externas": [
+        {
+          "with_condition": "anticonceptivos_orales",
+          "components_afectados": ["cafeina-anhidra", "multivitaminico-femenino"],
+          "note": "Anticonceptivos prolongan vida media cafeína. Multi femenino ayuda a compensar depleción B6/B12/folato."
+        }
+      ],
+      "expected_outcomes": [
+        "Ganancia de masa magra controlada (sin acumulación grasa excesiva)",
+        "Recovery sostenido con alto volumen",
+        "Mejor sueño + manejo ciclo",
+        "Performance pre-entreno opcional vía cafeína"
+      ],
+      "expected_timeline_resultados": "4-8 semanas cambios visibles. 12-16 semanas hipertrofia consolidada.",
+      "approximate_monthly_cost_cop": 320000,
+      "approximate_monthly_cost_range_cop": "260000-410000",
+      "cost_breakdown_note": "Whey isolada $130-200k + Creatina $30-50k + Omega-3 $60-110k + Magnesio $45-75k + Multi femenino $60-100k + Citrulina opc $60-100k + Cafeína opc $20-40k.",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "proteina-whey-isolada",
+          "substitute": "proteina-whey-concentrada",
+          "note": "Si lactosa no es problema."
+        }
+      ],
+      "scientific_rationale": "Hipertrofia femenina en superávit requiere proteína suficiente + creatina + volumen de entreno sostenido. Diferencias vs masculino: dosis proteína g/kg ligeramente menor, foco mayor en multi femenino + magnesio para ciclo.",
+      "scientific_sources": [
+        "Sims S.T. (2016). ROAR.",
+        "Helms E.R. et al. (2014).",
+        "Kreider R.B. et al. (2017). ISSN Creatine.",
+        "Antonio J. et al. (2017). High protein diet.",
+        "Schoenfeld B.J. (2020). Hypertrophy training."
+      ],
+      "legal_advertencia": "Stack para mujer adulta sana avanzada. NO durante embarazo/lactancia sin supervisión médica.",
+      "tags": ["mvp_obligatorio", "hipertrofia", "volumen", "femenino"],
+      "confidence": "high",
+      "confidence_reason": "Mismos componentes core que stack masculino con dosis femeninas.",
+      "needs_daniel_validation": false,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-pre-workout-clasico",
+      "name": "Pre-workout clásico estimulante",
+      "name_short": "Pre-Workout Clásico",
+      "objective": "Stack de contexto pre-entreno para cliente que tolera estimulantes. Maximiza performance aguda sin armar pre-workout casero.",
+      "applicable_objectives": ["hipertrofia", "fuerza", "performance_deportivo", "perdida_grasa"],
+      "applicable_genders": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [18, 55],
+      "applicable_special_conditions": [],
+      "components_essential": [
+        {
+          "supplement_slug": "cafeina-anhidra",
+          "dosis_recommended": "100-200mg",
+          "timing": "pre_entreno_30_60min",
+          "frequency": "solo_dias_entreno",
+          "rationale": "Componente con evidencia high para performance aguda. El motor del stack.",
+          "skip_if": ["intolerancia_cafeina", "embarazo", "lactancia", "hipertension_no_controlada", "ansiedad_severa"]
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "l-citrulina-malato",
+          "dosis_recommended": "6-8g",
+          "timing": "pre_entreno_30_45min",
+          "frequency": "solo_dias_entreno",
+          "rationale": "Pump perceptual. Evidencia limited para strength directa pero amplio uso por sensación."
+        },
+        {
+          "supplement_slug": "beta-alanina",
+          "dosis_recommended": "3.2g (o 1.6g pre + 1.6g post)",
+          "timing": "distribuido_dia",
+          "frequency": "diaria",
+          "rationale": "Loading crónico (NO pre-workout efecto agudo — beta-alanina necesita 4+ semanas para acumular carnosina muscular)."
+        }
+      ],
+      "components_optional": [],
+      "total_components_essential": 1,
+      "total_components_recommended": 2,
+      "total_components_optional": 0,
+      "total_components_max_stack": 3,
+      "stack_interactions_internal": [
+        {
+          "components": ["beta-alanina"],
+          "interaction": "Parestesia (hormigueo en piel/cara) común con dosis >800mg en una sola toma. Dividir en 2-4 tomas si molesta.",
+          "severity": "low"
+        }
+      ],
+      "client_interactions_externas": [
+        {
+          "with_condition": "anticonceptivos_orales",
+          "components_afectados": ["cafeina-anhidra"],
+          "note": "Vida media cafeína prolongada. Bajar dosis si insomnio."
+        }
+      ],
+      "expected_outcomes": [
+        "Mejor performance aguda en entreno (focus + power)",
+        "Sensación de pump aumentada",
+        "Capacidad de sets repetidos mejorada en plazo 4+ semanas"
+      ],
+      "expected_timeline_resultados": "Cafeína efecto agudo desde día 1. Beta-alanina necesita 4-6 semanas loading para efecto máximo.",
+      "approximate_monthly_cost_cop": 130000,
+      "approximate_monthly_cost_range_cop": "100000-180000",
+      "cost_breakdown_note": "Cafeína $20-40k + Citrulina $60-100k + Beta-alanina $40-70k.",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "cafeina-anhidra",
+          "substitute": "neuro-freak-blend-pre-workout",
+          "note": "Si el cliente prefiere blend pre-armado en lugar de componentes separados."
+        }
+      ],
+      "scientific_rationale": "El motor del pre-workout es la CAFEÍNA (evidencia high). Citrulina y beta-alanina son aditamentos con evidencia mixed — útiles para sensación y volumen pero NO drivers de performance aguda por sí solos.",
+      "scientific_sources": [
+        "Goldstein E.R. et al. (2010). ISSN Position Stand: Caffeine.",
+        "Trexler E.T. et al. (2015). ISSN Position Stand: Beta-Alanine.",
+        "Wax B. et al. (2015). Citrulline malate review."
+      ],
+      "legal_advertencia": "Contiene estimulantes. NO usar si tienes hipertensión, arritmia, ansiedad severa, embarazo/lactancia.",
+      "tags": ["mvp_obligatorio", "contexto", "pre_workout", "estimulante"],
+      "confidence": "high",
+      "confidence_reason": "Cafeína essential con evidencia high. Recommended con evidencia limited-moderate honestamente documentada.",
+      "needs_daniel_validation": false,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-loading-cronico-volumen-alto",
+      "name": "Loading crónico para volumen alto",
+      "name_short": "Loading Volumen Alto",
+      "objective": "Stack de loading diario crónico (NO efecto agudo pre-workout) para cliente sensible a cafeína o que entrena PM y necesita apoyar capacidad de volumen sin afectar sueño.",
+      "applicable_objectives": ["hipertrofia", "performance_deportivo"],
+      "applicable_genders": ["masculino", "femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [18, 60],
+      "applicable_special_conditions": ["intolerancia_cafeina", "entreno_pm_nocturno", "problemas_sueno"],
+      "components_essential": [
+        {
+          "supplement_slug": "beta-alanina",
+          "dosis_recommended": "3.2-6.4g (dividido 2-4 tomas)",
+          "timing": "distribuido_dia",
+          "frequency": "diaria",
+          "rationale": "Loading crónico de carnosina muscular. Apoya capacidad anaeróbica en sets repetidos. Evidencia moderate."
+        },
+        {
+          "supplement_slug": "creatina-monohidrato",
+          "dosis_recommended": "5g",
+          "timing": "cualquier_momento_consistente",
+          "frequency": "diaria_incluidos_dias_descanso",
+          "rationale": "Driver más confiable de performance + FFM. Evidencia very_high."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "l-citrulina-malato",
+          "dosis_recommended": "6g",
+          "timing": "30_45min_antes_entreno",
+          "frequency": "solo_dias_entreno",
+          "rationale": "Pump + percepción de fatiga reducida. Sin estimulación del SNC. Evidencia limited para strength."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "l-tirosina",
+          "dosis_recommended": "500-2000mg",
+          "timing": "pre_entreno_30_45min",
+          "frequency": "solo_dias_entreno",
+          "rationale": "Precursor catecolaminas. Evidencia LIMITED para reemplazar cafeína en gym estándar. Útil más en contextos de stress/sleep deprivation que en entreno regular."
+        }
+      ],
+      "total_components_essential": 2,
+      "total_components_recommended": 1,
+      "total_components_optional": 1,
+      "total_components_max_stack": 4,
+      "stack_interactions_internal": [
+        {
+          "components": ["beta-alanina"],
+          "interaction": "Parestesia con dosis >800mg en una sola toma. Dividir en 2-4 tomas.",
+          "severity": "low"
+        }
+      ],
+      "client_interactions_externas": [],
+      "expected_outcomes": [
+        "Capacidad anaeróbica mejorada en sets repetidos (4-6 semanas)",
+        "Pump y feel pre-entreno mejorados sin estimulantes",
+        "Volumen de entreno alto sostenible sin afectar sueño"
+      ],
+      "expected_timeline_resultados": "Beta-alanina necesita 4-6 semanas loading. Creatina saturación 28 días. Sin efecto agudo notable día 1.",
+      "approximate_monthly_cost_cop": 140000,
+      "approximate_monthly_cost_range_cop": "100000-200000",
+      "cost_breakdown_note": "Beta-alanina $40-70k + Creatina $30-50k + Citrulina $60-100k + Tirosina opc $50-80k.",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [],
+      "scientific_rationale": "Este stack reemplaza al pre-workout-clasico cuando el cliente NO puede usar cafeína (entreno PM, intolerancia, embarazo/lactancia). El motor es loading crónico (beta-alanina + creatina) que se acumula con el tiempo. Citrulina y tirosina son aditamentos perceptuales con evidencia limited.",
+      "scientific_sources": [
+        "Trexler E.T. et al. (2015). ISSN Position Stand: Beta-Alanine.",
+        "Kreider R.B. et al. (2017). ISSN Position Stand: Creatine.",
+        "Wax B. et al. (2015). Citrulline malate."
+      ],
+      "legal_advertencia": "Apto para cliente sensible a cafeína / embarazo / lactancia. Beta-alanina puede causar parestesia leve transitoria.",
+      "tags": ["mvp", "contexto", "loading_cronico", "sin_cafeina", "pm_nocturno"],
+      "confidence": "moderate",
+      "confidence_reason": "Creatina (essential) very_high evidence. Beta-alanina (essential) moderate. Resto limited.",
+      "needs_daniel_validation": false,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-recovery-post-entreno",
+      "name": "Recovery post-entreno",
+      "name_short": "Recovery Post",
+      "objective": "Stack de contexto post-entreno para maximizar síntesis proteica + recuperación entre sesiones. Útil cuando se entrena 5-7 días por semana.",
+      "applicable_objectives": ["hipertrofia", "recomposicion", "fuerza"],
+      "applicable_genders": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [18, 60],
+      "applicable_special_conditions": [],
+      "components_essential": [
+        {
+          "supplement_slug": "proteina-whey-isolada",
+          "dosis_recommended": "1-2 scoops (25-50g)",
+          "timing": "post_entreno_inmediato",
+          "frequency": "diaria_solo_dias_entreno",
+          "rationale": "Ventana post-entreno: leucina-trigger síntesis proteica. Isolada por digestibilidad rápida. Evidencia very_high."
+        },
+        {
+          "supplement_slug": "creatina-monohidrato",
+          "dosis_recommended": "5g",
+          "timing": "post_entreno_o_cualquier",
+          "frequency": "diaria_incluidos_dias_descanso",
+          "rationale": "Combo whey+creatina post-entreno es la sinergia mecanísticamente más sólida. Evidencia very_high."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "magnesio-glicinato",
+          "dosis_recommended": "300-400mg",
+          "timing": "antes_dormir_30min",
+          "frequency": "diaria",
+          "rationale": "Si entrena PM, ayuda al sleep latency post-entreno. Sueño es donde ocurre el recovery real."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "l-glutamina",
+          "dosis_recommended": "5g",
+          "timing": "post_entreno",
+          "frequency": "solo_dias_entreno",
+          "rationale": "Evidencia LIMITED para recovery en lifters bien alimentados. Útil solo si hay GI stress, illness risk, o cargas muy altas."
+        }
+      ],
+      "total_components_essential": 2,
+      "total_components_recommended": 1,
+      "total_components_optional": 1,
+      "total_components_max_stack": 4,
+      "stack_interactions_internal": [],
+      "client_interactions_externas": [],
+      "expected_outcomes": [
+        "Síntesis proteica post-entreno maximizada",
+        "Mejor recovery entre sesiones",
+        "Sleep latency reducida si entrena PM"
+      ],
+      "expected_timeline_resultados": "Recovery percibido en 2-3 semanas. Acumulación de gains 8-12 semanas.",
+      "approximate_monthly_cost_cop": 200000,
+      "approximate_monthly_cost_range_cop": "160000-260000",
+      "cost_breakdown_note": "Whey isolada $130-200k + Creatina $30-50k + Magnesio $45-75k + Glutamina opc $60-100k.",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "proteina-whey-isolada",
+          "substitute": "proteina-whey-concentrada",
+          "note": "Si lactosa no es problema."
+        }
+      ],
+      "scientific_rationale": "Combo whey + creatina post-entreno tiene la sinergia más documentada en literatura ISSN. Magnesio apoya sleep (clave para recovery). Glutamina permanece optional por evidencia limited en lifters bien alimentados.",
+      "scientific_sources": [
+        "Jäger R. et al. (2017). ISSN Position Stand: Protein.",
+        "Kreider R.B. et al. (2017). ISSN Position Stand: Creatine.",
+        "Schoenfeld B.J. et al. (2013). Pre/post-workout protein timing."
+      ],
+      "legal_advertencia": "Stack para adulto sano. Sin contraindicaciones específicas más allá de las del whey (lactosa).",
+      "tags": ["mvp_obligatorio", "contexto", "recovery", "post_entreno"],
+      "confidence": "high",
+      "confidence_reason": "Componentes essential con evidencia very_high.",
+      "needs_daniel_validation": false,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-pre-sueno",
+      "name": "Pre-sueño",
+      "name_short": "Pre-Sueño",
+      "objective": "Stack de contexto pre-sueño para cliente con problemas de sueño / latencia alta / entreno PM. Foco: sleep quality como motor de recovery + hipertrofia.",
+      "applicable_objectives": ["recovery", "hipertrofia", "recomposicion"],
+      "applicable_genders": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [18, 70],
+      "applicable_special_conditions": ["problemas_sueno", "entreno_pm_nocturno", "stress_alto"],
+      "components_essential": [
+        {
+          "supplement_slug": "magnesio-bisglicinato",
+          "dosis_recommended": "300-400mg",
+          "timing": "antes_dormir_30min",
+          "frequency": "diaria",
+          "rationale": "Forma bisglicinato bien tolerada + atraviesa BBB. Evidencia moderate para sleep quality y latencia. Cofactor >300 reacciones enzimáticas incluyendo regulación GABA."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "caseina-micelar",
+          "dosis_recommended": "30-40g",
+          "timing": "antes_dormir_30_60min",
+          "frequency": "diaria",
+          "rationale": "Proteína de liberación lenta durante el sueño — sostiene síntesis proteica nocturna. Útil si dieta es alta en proteína y el cliente busca optimizar la ventana de 8 horas de ayuno nocturno."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "ashwagandha-ksm66",
+          "dosis_recommended": "300-600mg KSM-66",
+          "timing": "antes_dormir_o_con_cena",
+          "frequency": "diaria",
+          "rationale": "Adaptógeno — moderate evidence para cortisol bajo en stress alto. Apoya sleep onset si el problema es ansiedad/rumiación."
+        }
+      ],
+      "total_components_essential": 1,
+      "total_components_recommended": 1,
+      "total_components_optional": 1,
+      "total_components_max_stack": 3,
+      "stack_interactions_internal": [
+        {
+          "components": ["caseina-micelar", "magnesio-bisglicinato"],
+          "interaction": "Tomar caseína 60min antes, magnesio 30min antes — no juntos para optimizar absorción de ambos.",
+          "severity": "low"
+        }
+      ],
+      "client_interactions_externas": [
+        {
+          "with_condition": "hipotiroidismo_levotiroxina",
+          "components_afectados": ["ashwagandha-ksm66"],
+          "note": "Ashwagandha puede aumentar T4. Consultar endocrinólogo antes."
+        }
+      ],
+      "expected_outcomes": [
+        "Sleep latency reducida (más rápido conciliar sueño)",
+        "Sleep quality mejorada (menos despertares)",
+        "Recovery nocturno más profundo"
+      ],
+      "expected_timeline_resultados": "Magnesio: 1-2 semanas para notar diferencia. Ashwagandha: 4-6 semanas si cortisol es el problema.",
+      "approximate_monthly_cost_cop": 120000,
+      "approximate_monthly_cost_range_cop": "70000-220000",
+      "cost_breakdown_note": "Magnesio bisglicinato $40-70k + Caseína opc $100-160k + Ashwagandha opc $70-120k.",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "magnesio-bisglicinato",
+          "substitute": "magnesio-glicinato",
+          "note": "Forma química muy similar — intercambiable."
+        }
+      ],
+      "scientific_rationale": "Sueño es el motor real del recovery + síntesis proteica nocturna + manejo cortisol. El stack más sencillo es magnesio essential; caseína recommended para sostener síntesis proteica nocturna; ashwagandha optional si stress/ansiedad es el bottleneck.",
+      "scientific_sources": [
+        "Abbasi B. et al. (2012). Magnesium and insomnia in elderly.",
+        "Res P.T. et al. (2012). Casein protein ingestion before sleep improves overnight muscle protein synthesis.",
+        "Lopresti A.L. et al. (2019). Ashwagandha KSM-66 RCT — cortisol reduction."
+      ],
+      "legal_advertencia": "Ashwagandha: consultar médico si tienes hipo/hipertiroidismo, autoinmunidad, embarazo/lactancia. Magnesio dosis alta puede causar diarrea — empezar 200mg si nunca lo has tomado.",
+      "tags": ["mvp_obligatorio", "contexto", "pre_sueño", "recovery"],
+      "confidence": "moderate",
+      "confidence_reason": "Magnesio moderate evidence. Caseína moderate-high para nocturnal MPS. Ashwagandha moderate.",
+      "needs_daniel_validation": false,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-mujer-fase-lutea-tardia",
+      "name": "Mujer fase lútea tardía / SPM",
+      "name_short": "Fase Lútea Femenina",
+      "objective": "Stack de soporte para mujer en fase lútea tardía o con síntomas de SPM moderados/severos que comprometen adherencia al entreno. Foco: ADHERENCIA al plan, NO performance aguda.",
+      "applicable_objectives": ["adherencia", "recomposicion", "hipertrofia"],
+      "applicable_genders": ["femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [18, 50],
+      "applicable_special_conditions": ["ciclo_menstrual_tracking_activo", "fase_lutea_tardia", "spm_severo"],
+      "components_essential": [
+        {
+          "supplement_slug": "magnesio-glicinato",
+          "dosis_recommended": "400mg",
+          "timing": "antes_dormir_30min",
+          "frequency": "diaria",
+          "rationale": "Reducción de cólicos, calambres, irritabilidad, problemas de sueño asociados a SPM. RCT support moderate."
+        },
+        {
+          "supplement_slug": "vitamina-b6-p5p",
+          "dosis_recommended": "50-100mg P5P",
+          "timing": "con_desayuno_o_almuerzo",
+          "frequency": "diaria",
+          "rationale": "RCT support moderate para reducción de síntomas SPM. Forma P5P (piridoxal-5-fosfato) es bioactiva."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "omega-3-epa-dha",
+          "dosis_recommended": "2g (alto EPA)",
+          "timing": "con_almuerzo",
+          "frequency": "diaria",
+          "rationale": "Antiinflamatorio + soporte mood. Evidencia limited-moderate para PMS specifically pero plausible mecanismo."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "evening-primrose-oil",
+          "dosis_recommended": "1000-3000mg (GLA 8-12% = 80-360mg GLA)",
+          "timing": "con_comida",
+          "frequency": "diaria_durante_fase_lutea",
+          "rationale": "Evidencia LIMITED/INCONSISTENT para SPM (Cochrane review encontró efecto pequeño/no significativo en muchos endpoints). Se mantiene como optional con disclaimer — algunas clientes reportan beneficio subjetivo. Costo bajo, riesgo bajo."
+        }
+      ],
+      "total_components_essential": 2,
+      "total_components_recommended": 1,
+      "total_components_optional": 1,
+      "total_components_max_stack": 4,
+      "stack_interactions_internal": [],
+      "client_interactions_externas": [
+        {
+          "with_condition": "anticonceptivos_orales",
+          "components_afectados": ["vitamina-b6-p5p"],
+          "note": "Anticonceptivos depletan B6 — la suplementación cobra más sentido. Mantener dosis."
+        },
+        {
+          "with_condition": "anticoagulantes",
+          "components_afectados": ["evening-primrose-oil", "omega-3-epa-dha"],
+          "note": "Ambos pueden potenciar anticoagulación. Consultar médico."
+        }
+      ],
+      "expected_outcomes": [
+        "Reducción de cólicos y calambres en fase lútea",
+        "Menos irritabilidad y mejor sueño",
+        "Adherencia al entreno preservada durante 5-7 días pre-menstruales",
+        "Posible reducción de retención de líquidos"
+      ],
+      "expected_timeline_resultados": "1-2 ciclos (6-8 semanas) para evaluar respuesta. Si después de 2 ciclos no hay mejoría, replantear.",
+      "approximate_monthly_cost_cop": 180000,
+      "approximate_monthly_cost_range_cop": "130000-260000",
+      "cost_breakdown_note": "Magnesio $45-75k + B6 P5P $30-55k + Omega-3 $60-110k + Evening primrose opc $50-90k.",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "vitamina-b6-p5p",
+          "substitute": "multivitaminico-femenino",
+          "note": "Multi femenino contiene B6 — verificar dosis (~50mg). Sustituto razonable si P5P no disponible."
+        }
+      ],
+      "scientific_rationale": "El valor de este stack es PRESERVAR ADHERENCIA durante 5-7 días pre-menstruales donde típicamente la mujer falta al gym, come emocional, o reduce intensidad. NO es un stack de performance — es un stack de mantenimiento conductual vía manejo de síntomas.",
+      "scientific_sources": [
+        "Wyatt K.M. et al. (1999). Efficacy of vitamin B6 in PMS — BMJ.",
+        "Walker A.F. et al. (1998). Magnesium supplementation alleviates PMS.",
+        "Cochrane Review — Evening primrose oil for premenstrual syndrome (limited evidence).",
+        "Sims S.T. (2016). ROAR — female-specific nutrition cycle considerations."
+      ],
+      "legal_advertencia": "Stack para mujer adulta sana con SPM. Consultar médico si síntomas son severos (puede ser PMDD que requiere tratamiento clínico). NO durante embarazo/lactancia sin supervisión médica.",
+      "tags": ["mvp", "condicion_especial", "femenino", "ciclo_menstrual", "spm", "adherencia"],
+      "confidence": "moderate",
+      "confidence_reason": "Essential (magnesio + B6) moderate evidence RCT. Resto limited. Valor principal es adherencia, no performance.",
+      "needs_daniel_validation": true,
+      "needs_medical_review": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-mujer-flujo-menstrual-abundante",
+      "name": "Mujer flujo menstrual abundante / anemia leve",
+      "name_short": "Flujo Abundante Femenina",
+      "objective": "Stack de soporte para mujer con menstruación abundante (menorragia leve/moderada) o riesgo de anemia ferropénica subclínica que impacta performance. Foco: reposición hierro + cofactores absorción.",
+      "applicable_objectives": ["adherencia", "performance_deportivo", "recomposicion"],
+      "applicable_genders": ["femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [18, 50],
+      "applicable_special_conditions": ["flujo_menstrual_abundante", "anemia_leve_riesgo", "vegetariana_vegana"],
+      "components_essential": [
+        {
+          "supplement_slug": "hierro-bisglicinato",
+          "dosis_recommended": "20-30mg hierro elemental",
+          "timing": "con_estomago_vacio_o_con_vit_c",
+          "frequency": "diaria",
+          "rationale": "Forma bisglicinato tiene mejor tolerancia GI vs sulfato ferroso. Repone pérdidas menstruales abundantes. Apoyar siempre con Vit C para absorción."
+        },
+        {
+          "supplement_slug": "vitamina-b12",
+          "dosis_recommended": "500-1000mcg metilcobalamina",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "B12 trabaja con folato en eritropoyesis. Esencial si la cliente es vegetariana/vegana."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "multivitaminico-femenino",
+          "dosis_recommended": "1-2 tabletas",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Aporta folato, B-complex, vitamina C — todos cofactores de absorción/utilización de hierro."
+        },
+        {
+          "supplement_slug": "omega-3-epa-dha",
+          "dosis_recommended": "1-2g",
+          "timing": "con_almuerzo",
+          "frequency": "diaria",
+          "rationale": "Antiinflamatorio. NO confirmado para reducir flujo menstrual, pero apoya manejo de cólicos asociados."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "proteina-whey-concentrada",
+          "dosis_recommended": "1 scoop",
+          "timing": "post_entreno",
+          "frequency": "diaria_solo_dias_entreno",
+          "rationale": "Si combina con plan de entreno + hipertrofia."
+        }
+      ],
+      "total_components_essential": 2,
+      "total_components_recommended": 2,
+      "total_components_optional": 1,
+      "total_components_max_stack": 5,
+      "stack_interactions_internal": [
+        {
+          "components": ["hierro-bisglicinato", "multivitaminico-femenino"],
+          "interaction": "Si multi tiene calcio, separar hierro por 2 horas — calcio compite absorción hierro.",
+          "severity": "moderate"
+        }
+      ],
+      "client_interactions_externas": [
+        {
+          "with_condition": "hemocromatosis",
+          "components_afectados": ["hierro-bisglicinato"],
+          "note": "CONTRAINDICACIÓN ABSOLUTA — hemocromatosis = sobrecarga de hierro. NO suplementar."
+        },
+        {
+          "with_condition": "levotiroxina",
+          "components_afectados": ["hierro-bisglicinato"],
+          "note": "Hierro reduce absorción de levotiroxina. Separar mínimo 4 horas."
+        }
+      ],
+      "expected_outcomes": [
+        "Reposición de hierro perdido en menstruación",
+        "Reducción de fatiga asociada a anemia subclínica",
+        "Performance preservado durante días post-menstruales",
+        "Mejor recovery"
+      ],
+      "expected_timeline_resultados": "8-12 semanas para repleción de reservas (ferritina). Síntomas mejoran en 4-6 semanas si la causa era ferropenia.",
+      "approximate_monthly_cost_cop": 160000,
+      "approximate_monthly_cost_range_cop": "110000-240000",
+      "cost_breakdown_note": "Hierro bisglicinato $30-55k + B12 $20-40k + Multi femenino $60-100k + Omega-3 $60-110k + Whey opc $80-130k.",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [],
+      "scientific_rationale": "Mujer con menstruación abundante pierde hierro suficiente para impactar performance (fatiga, taquicardia leve, bajada de rendimiento aeróbico). Suplementar hierro bisglicinato + B12 + cofactores resuelve el cuello de botella. Sin esto, ningún stack de hipertrofia rinde porque la energía base no alcanza.",
+      "scientific_sources": [
+        "WHO (2011). Hemoglobin concentrations for diagnosis of anemia.",
+        "Pasricha S.R. et al. (2021). Iron deficiency. Lancet.",
+        "Sim M. et al. (2019). Iron considerations for the athlete."
+      ],
+      "legal_advertencia": "ANTES DE SUPLEMENTAR HIERRO: solicitar examen de ferritina + hemograma. NO suplementar a ciegas — hemocromatosis es contraindicación absoluta. Consultar médico.",
+      "tags": ["mvp", "condicion_especial", "femenino", "ciclo_menstrual", "anemia", "performance"],
+      "confidence": "moderate",
+      "confidence_reason": "Componentes essential con evidencia clínica clara para anemia/ferropenia. Requiere DX previo.",
+      "needs_daniel_validation": false,
+      "needs_medical_review": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-soporte-stress-cortisol-alto",
+      "name": "Soporte stress / cortisol crónico alto",
+      "name_short": "Stress / Cortisol",
+      "objective": "Stack de soporte para cliente en período de alto estrés (laboral, personal, mudanza, crisis) donde cortisol crónico bloquea fat loss y compromete recovery. Foco: ADHERENCIA + recovery, NO performance.",
+      "applicable_objectives": ["adherencia", "recomposicion", "perdida_grasa"],
+      "applicable_genders": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [22, 60],
+      "applicable_special_conditions": ["stress_alto_cortisol", "problemas_sueno", "ansiedad_no_clinica"],
+      "components_essential": [
+        {
+          "supplement_slug": "ashwagandha-ksm66",
+          "dosis_recommended": "600mg KSM-66 (dividido AM + PM o solo PM)",
+          "timing": "PM_o_dividido_AM_PM",
+          "frequency": "diaria",
+          "rationale": "RCT support moderate-high (Lopresti 2019, Chandrasekhar 2012) para reducción de cortisol salival en stress crónico. Apoya sleep onset + ansiedad subclínica."
+        },
+        {
+          "supplement_slug": "magnesio-glicinato",
+          "dosis_recommended": "400mg",
+          "timing": "antes_dormir_30min",
+          "frequency": "diaria",
+          "rationale": "Sleep quality + regulación GABA. Cortisol alto deplete magnesio."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "omega-3-epa-dha",
+          "dosis_recommended": "2g (alto EPA)",
+          "timing": "con_almuerzo",
+          "frequency": "diaria",
+          "rationale": "Antiinflamatorio + soporte mood. EPA específicamente tiene evidencia moderate para mood/ansiedad."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "vitamina-d3",
+          "dosis_recommended": "2000 UI",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "Si déficit baseline + stress crónico hay correlación con baja D3."
+        }
+      ],
+      "total_components_essential": 2,
+      "total_components_recommended": 1,
+      "total_components_optional": 1,
+      "total_components_max_stack": 4,
+      "stack_interactions_internal": [],
+      "client_interactions_externas": [
+        {
+          "with_condition": "hipotiroidismo_levotiroxina",
+          "components_afectados": ["ashwagandha-ksm66"],
+          "note": "Ashwagandha puede aumentar T4. Endocrinólogo debe ajustar levotiroxina."
+        },
+        {
+          "with_condition": "antidepresivos_isrs",
+          "components_afectados": ["ashwagandha-ksm66"],
+          "note": "Posible interacción serotoninérgica. Consultar psiquiatra antes."
+        },
+        {
+          "with_condition": "autoinmunidad_tiroidea_hashimoto",
+          "components_afectados": ["ashwagandha-ksm66"],
+          "note": "Puede exacerbar respuesta inmune en algunas pacientes con autoinmunidad. Precaución."
+        }
+      ],
+      "expected_outcomes": [
+        "Sleep quality mejorada (sleep onset reducido)",
+        "Cortisol salival reducido (4-8 semanas RCT timeline)",
+        "Ansiedad subclínica moderada",
+        "Adherencia al plan preservada en período de stress alto"
+      ],
+      "expected_timeline_resultados": "Ashwagandha: 4-8 semanas para efecto pleno. Magnesio: 1-2 semanas para sleep.",
+      "approximate_monthly_cost_cop": 180000,
+      "approximate_monthly_cost_range_cop": "130000-270000",
+      "cost_breakdown_note": "Ashwagandha KSM-66 $70-120k + Magnesio glicinato $45-75k + Omega-3 $60-110k + D3 opc $20-35k.",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [],
+      "scientific_rationale": "Cortisol crónico bloquea fat loss + degrada masa magra + sabotea sueño. Si el cliente está en crisis (mudanza, divorcio, despido, examen), ningún stack de hipertrofia rinde sin manejar el estresor base. Ashwagandha + magnesio son las dos intervenciones legales con mejor evidencia para reducir cortisol salival y mejorar sleep.",
+      "scientific_sources": [
+        "Lopresti A.L. et al. (2019). Ashwagandha KSM-66 — cortisol RCT.",
+        "Chandrasekhar K. et al. (2012). Ashwagandha — stress reduction RCT.",
+        "Abbasi B. et al. (2012). Magnesium and insomnia.",
+        "Su K.P. et al. (2018). Omega-3 PUFAs in depression/anxiety meta-analysis."
+      ],
+      "legal_advertencia": "Stack para cliente con stress alto NO clínico. Si hay diagnóstico de ansiedad/depresión clínica, derivar a salud mental. Ashwagandha tiene contraindicaciones (tiroides, autoinmunidad, embarazo/lactancia) — consultar médico.",
+      "tags": ["mvp", "condicion_especial", "stress", "cortisol", "adherencia"],
+      "confidence": "moderate",
+      "confidence_reason": "Ashwagandha + magnesio con evidencia moderate-high. Valor es adherencia, no performance directa.",
+      "needs_daniel_validation": true,
+      "needs_medical_review": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-vegetariano-vegano",
+      "name": "Vegetariano / vegano hipertrofia",
+      "name_short": "Vegano Hipertrofia",
+      "objective": "Stack para cliente vegetariano/vegano con objetivo de hipertrofia o recomposición. Cubre los gaps típicos de la dieta plant-based: proteína biodisponible, B12, creatina, hierro, zinc, omega-3 marino.",
+      "applicable_objectives": ["hipertrofia", "recomposicion", "perdida_grasa"],
+      "applicable_genders": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [18, 65],
+      "applicable_special_conditions": ["vegetariano", "vegano", "sin_lacteos"],
+      "components_essential": [
+        {
+          "supplement_slug": "proteina-vegetal-blend",
+          "dosis_recommended": "1-2 scoops (25-50g, ~20-40g proteína neta)",
+          "timing": "post_entreno_inmediato",
+          "frequency": "diaria_solo_dias_entreno",
+          "rationale": "Blend (típicamente arveja+arroz o arveja+cáñamo) tiene perfil amino completo cercano a whey. Dieta vegana suele quedarse corta de leucina sin suplementar."
+        },
+        {
+          "supplement_slug": "creatina-monohidrato",
+          "dosis_recommended": "5g",
+          "timing": "cualquier_momento_consistente",
+          "frequency": "diaria_incluidos_dias_descanso",
+          "rationale": "Cliente vegano tiene baseline de creatina muscular significativamente más baja (no come carne). La respuesta a suplementación es MAYOR que en omnívoros. Evidencia very_high."
+        },
+        {
+          "supplement_slug": "vitamina-b12",
+          "dosis_recommended": "1000-2500mcg metilcobalamina",
+          "timing": "con_desayuno",
+          "frequency": "diaria_o_2_veces_semana",
+          "rationale": "B12 NO está en alimentos vegetales (excepto fortificados). Déficit causa fatiga, debilidad, neuropatía. ESSENTIAL absoluto para vegano."
+        },
+        {
+          "supplement_slug": "vitamina-d3",
+          "dosis_recommended": "2000-4000 UI (verificar D3 vegana de líquen)",
+          "timing": "con_desayuno",
+          "frequency": "diaria",
+          "rationale": "D3 tradicional viene de lana ovina. Buscar D3 vegana extraída de líquen — verificar etiqueta. Vegan estricto generalmente requiere dosis más altas."
+        }
+      ],
+      "components_recommended": [
+        {
+          "supplement_slug": "hierro-bisglicinato",
+          "dosis_recommended": "15-25mg (con Vit C)",
+          "timing": "estomago_vacio_o_con_vit_c",
+          "frequency": "diaria_o_3_veces_semana_segun_labs",
+          "rationale": "Hierro vegetal (no-hemo) tiene menor biodisponibilidad. Vegan suele tener ferritina baja. Verificar con labs antes."
+        },
+        {
+          "supplement_slug": "zinc-bisglicinato",
+          "dosis_recommended": "15-25mg",
+          "timing": "antes_dormir_o_con_cena",
+          "frequency": "diaria",
+          "rationale": "Fitatos vegetales reducen absorción zinc. Vegan tiene zinc baseline más bajo."
+        }
+      ],
+      "components_optional": [
+        {
+          "supplement_slug": "colageno-vit-c",
+          "dosis_recommended": "NO_APLICA",
+          "timing": "n_a",
+          "frequency": "n_a",
+          "rationale": "EXCLUIDO — colágeno hidrolizado es de bovino/marino, NO vegano. Si el cliente busca soporte articular, alternativas vegan: glucosamina (no en catálogo Pieza 4 v1)."
+        }
+      ],
+      "total_components_essential": 4,
+      "total_components_recommended": 2,
+      "total_components_optional": 0,
+      "total_components_max_stack": 6,
+      "stack_interactions_internal": [
+        {
+          "components": ["hierro-bisglicinato", "zinc-bisglicinato"],
+          "interaction": "Hierro y zinc compiten por absorción. Separar mínimo 2 horas (hierro AM con Vit C, zinc PM con cena).",
+          "severity": "moderate"
+        }
+      ],
+      "client_interactions_externas": [],
+      "expected_outcomes": [
+        "Cubrir gaps nutricionales de dieta plant-based",
+        "Mayor respuesta a creatina vs omnívoros (baseline más bajo)",
+        "Preservación de masa magra equivalente a stack omnívoro",
+        "Hipertrofia normalizada"
+      ],
+      "expected_timeline_resultados": "4-8 semanas para corrección de B12 + hierro. 6-12 semanas para impacto en composición.",
+      "approximate_monthly_cost_cop": 270000,
+      "approximate_monthly_cost_range_cop": "210000-360000",
+      "cost_breakdown_note": "Proteína vegetal blend $100-180k + Creatina $30-50k + B12 $20-40k + D3 vegana $25-45k + Hierro $30-55k + Zinc $25-45k.",
+      "observed_in_real_clients": [],
+      "alternatives_if_components_unavailable": [
+        {
+          "component_unavailable": "proteina-vegetal-blend",
+          "substitute": "combinacion_arroz_arveja_cañamo_alimentos",
+          "note": "Si no hay blend comercial disponible, combinar fuentes vegetales en cada comida para perfil amino completo."
+        }
+      ],
+      "scientific_rationale": "Vegan/vegetariano puede ganar masa magra equivalente a omnívoro si suplementa los gaps. Los gaps típicos: B12 (cero en plantas), creatina (cero en plantas), D3 (necesita líquen), hierro (no-hemo menos biodisponible), zinc (fitatos reducen absorción), EPA/DHA marino (gap NO cubierto en Pieza 4 v1 — flag pendiente).",
+      "scientific_sources": [
+        "Hevia-Larraín V. et al. (2021). High-protein plant-based diet vs omnivorous diet for muscle adaptations to resistance training.",
+        "Solis M.Y. et al. (2014). Creatine in vegetarians.",
+        "Pawlak R. et al. (2013). B12 status in vegetarians/vegans.",
+        "Pellinen T. et al. (2022). Vitamin D in vegans."
+      ],
+      "legal_advertencia": "Stack para vegano/vegetariano adulto sano. Verificar D3 sea vegana de líquen (la mayoría es de lana ovina). Solicitar labs (B12, ferritina, vit D, zinc) antes y a los 3 meses.",
+      "tags": ["mvp", "condicion_especial", "vegano", "vegetariano", "dieta_restrictiva"],
+      "confidence": "moderate",
+      "confidence_reason": "Essential cubre gaps documentados. GAP: omega-3 marino vegano (algas) NO en catálogo Pieza 4 v1 — pendiente reconciliación.",
+      "needs_daniel_validation": true,
+      "needs_medical_review": false,
+      "version": 1,
+      "active": true,
+      "TODO_reconciliation_pieza4_v2": [
+        "Agregar slug 'omega-3-algas-vegano' al supplement_catalog (fuente DHA/EPA de microalgas Schizochytrium) — actualmente componentes essential omega-3 quedan sin cubrir en stack vegano",
+        "Evaluar agregar 'glucosamina-vegana' (sin shellfish) si la demanda de soporte articular vegano lo justifica"
+      ]
+    }
+  ],
+  "TODO_gaps_for_pieza_4_v2": [
+    {
+      "stack_affected": "stack-vegetariano-vegano",
+      "missing_slug": "omega-3-algas-vegano",
+      "rationale": "Pieza 4 v1 solo tiene omega-3-epa-dha (fuente marina de pescado). Vegan necesita fuente de algas. Sin esto, vegan queda sin opción de EPA/DHA suplementado."
+    },
+    {
+      "stack_affected": "stack-vegetariano-vegano (opcional)",
+      "missing_slug": "glucosamina-vegana",
+      "rationale": "Si se decide ofrecer soporte articular vegano, glucosamina vegana (fermentación, no shellfish) sería relevante."
+    },
+    {
+      "stack_affected": "futuros stacks 50+",
+      "missing_slugs": ["glucosamina", "coenzima-q10"],
+      "rationale": "Stack mayor-50 quedó FUERA del MVP por falta de estos componentes. Si Daniel decide ampliar a clientes 50+, agregar en Pieza 4 v2."
+    }
+  ],
+  "rejected_stacks_with_reason": [
+    {
+      "proposed_slug": "stack-mantenimiento-salud-general",
+      "reason": "FUERA DE FOCO: WellCore se especializa en fitness/hipertrofia/resultados físicos, NO salud general. Cliente que solo busca multi + D3 + omega-3 sin objetivo de composición no es target."
+    },
+    {
+      "proposed_slug": "stack-mayor-50-anos",
+      "reason": "Pieza 4 v1 no incluye glucosamina ni coenzima Q10 — componentes críticos para 50+. Diferir a Pieza 4 v2 + Sprint 1."
+    },
+    {
+      "proposed_slug": "stack-readaptacion-post-lesion",
+      "reason": "Solapamiento alto con stack-recovery-post-entreno + colágeno opcional. Armable on-the-fly por la capa LLM-guided sin necesidad de stack pre-armado dedicado."
+    }
+  ],
+  "summary_by_evidence_grade": {
+    "very_high_confidence_stacks": [
+      "stack-basico-esencial-universal",
+      "stack-recovery-post-entreno"
+    ],
+    "high_confidence_stacks": [
+      "stack-perdida-grasa-femenina-intermedia",
+      "stack-perdida-grasa-masculina-intermedia",
+      "stack-recomposicion-femenina-elite",
+      "stack-recomposicion-masculina-elite",
+      "stack-volumen-femenino-avanzado",
+      "stack-pre-workout-clasico"
+    ],
+    "moderate_to_high_confidence_stacks": [
+      "stack-volumen-masculino-elite",
+      "stack-pre-sueno",
+      "stack-vegetariano-vegano"
+    ],
+    "moderate_confidence_stacks": [
+      "stack-loading-cronico-volumen-alto",
+      "stack-mujer-fase-lutea-tardia",
+      "stack-mujer-flujo-menstrual-abundante",
+      "stack-soporte-stress-cortisol-alto"
+    ]
+  },
+  "stacks_needing_validation": {
+    "needs_daniel_validation": [
+      "stack-volumen-masculino-elite (decisión sobre l-citrulina + l-glutamina como recommended vs optional)",
+      "stack-mujer-fase-lutea-tardia (evening primrose como optional con disclaimer)",
+      "stack-soporte-stress-cortisol-alto (ashwagandha y sus contraindicaciones)",
+      "stack-vegetariano-vegano (decisión sobre gap omega-3 algas)"
+    ],
+    "needs_medical_review": [
+      "stack-mujer-fase-lutea-tardia (SPM severo puede ser PMDD clínico)",
+      "stack-mujer-flujo-menstrual-abundante (requiere labs previo a suplementar hierro)",
+      "stack-soporte-stress-cortisol-alto (ashwagandha + tiroides + autoinmunidad + ISRS)"
+    ]
+  }
+}

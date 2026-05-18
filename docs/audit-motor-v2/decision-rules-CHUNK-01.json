@@ -1,0 +1,346 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "01 of 12",
+    "chunk_description": "Categoría A — Selección de metodología, primeras 6 rules de 9 (A1-A6). Esperar OK de Daniel antes del próximo chunk.",
+    "category": "A. SELECCIÓN DE METODOLOGÍA",
+    "rule_type": "select_methodology",
+    "depends_on": {
+      "methodologies_seed": "docs/audit-motor-v2/methodologies-seed.json",
+      "scope_proposal": "docs/audit-motor-v2/decision-rules-SCOPE-PROPUESTA.md"
+    },
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ],
+    "execution_phase_global": "select",
+    "voz": "voseo colombiano neutro amable (vos sos/podés/sabés)",
+    "perplexity_verification_pending": "Refs Schoenfeld 2017/2018/Helms 2019/Issurin 2010 marcadas con verified:false hasta consulta Perplexity Pro Chrome MCP bulk al cierre de Fase 3"
+  },
+  "rules": [
+    {
+      "slug": "select-metodologia-3d-principiante",
+      "name": "Full Body 3 días para cliente principiante con 3 días disponibles",
+      "rule_type": "select_methodology",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.days_per_week", "op": "equals", "value": 3},
+          {"field": "client.level", "op": "equals", "value": "principiante"}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.preferences", "op": "includes", "value": "metodologia_explicita"}
+        ]
+      },
+      "output": {
+        "type": "methodology_recommendation",
+        "primary": {
+          "slug": "full-body-3d",
+          "confidence": 0.92,
+          "rationale": "El principiante responde mejor a frecuencia 3× por grupo muscular por semana. Full-body 3d permite que cada compuesto (squat, press, peso muerto, dominada) se practique 3 veces, acelerando la curva de aprendizaje motor en las primeras 4-8 semanas — que es lo que más le importa al principiante: técnica primero, hipertrofia después."
+        },
+        "alternatives": [
+          {
+            "slug": "upper-lower-4d",
+            "confidence": 0.65,
+            "rationale": "Si el principiante quiere agregar 1 día más y mantener 2× frecuencia por grupo"
+          }
+        ]
+      },
+      "priority": 100,
+      "execution_phase": "select",
+      "exception_when": [
+        {"field": "client.active_injuries", "op": "is_not_null", "value": null, "note": "Rules de categoría H (injuries) tienen priority 150-200 y override estructura del split base"}
+      ],
+      "scientific_rationale": "Schoenfeld et al. (2016) en meta-análisis mostraron que para principiantes la frecuencia 3×/semana por grupo muscular produce ganancias significativamente mayores que 1×/semana, manteniendo el volumen igual. Para intermedios y avanzados el efecto se diluye y el volumen total importa más que la frecuencia. Helms en The Muscle and Strength Pyramid recomienda full-body para fase de readaptación motora.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2016). Effects of resistance training frequency on measures of muscle hypertrophy: A systematic review and meta-analysis. Sports Medicine 46(11), 1689-1697.", "verified": false},
+        {"citation": "Helms E.R., Morgan A., Valdez A. (2019). The Muscle and Strength Pyramid: Training, 2nd ed.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "metodologia_base", "principiante"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "select-metodologia-4d-cualquier-nivel",
+      "name": "Upper/Lower 4 días para cliente con 4 días buscando hipertrofia o recomposición",
+      "rule_type": "select_methodology",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.days_per_week", "op": "equals", "value": 4},
+          {"field": "client.objective", "op": "in", "value": ["hipertrofia", "recomposicion", "mantenimiento"]}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "methodology_recommendation",
+        "primary": {
+          "slug": "upper-lower-4d",
+          "confidence": 0.90,
+          "rationale": "Upper/Lower 4d entrega 2× frecuencia por grupo muscular (cada grupo se entrena 2 veces por semana), que es el sweet spot de hipertrofia para intermedios y mantiene buena recuperación para avanzados. Con 4 días disponibles, fragmentar más (PPL 4d incompleto, body-part 4d con grupos saltados) sacrifica frecuencia o volumen — Upper/Lower es la opción menos comprometida."
+        },
+        "alternatives": [
+          {
+            "slug": "ppl-6d",
+            "confidence": 0.45,
+            "rationale": "Si el cliente puede sumar 2 días más en el futuro, PPL 6d es la progresión natural"
+          },
+          {
+            "slug": "full-body-3d",
+            "confidence": 0.50,
+            "rationale": "Cliente que prefiere menos compromiso de tiempo puede bajar a 3d"
+          }
+        ]
+      },
+      "priority": 100,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "La literatura de hipertrofia (Schoenfeld 2016, Helms 2019) coincide en que frecuencia 2× por grupo muscular es óptima en intermedios cuando el volumen semanal se iguala. Upper/Lower 4d cumple esto sin requerir el volumen de PPL 6d, que es difícil de recuperar para clientes con vida fuera del gym.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2016). Effects of resistance training frequency on measures of muscle hypertrophy: A systematic review and meta-analysis. Sports Medicine 46(11), 1689-1697.", "verified": false},
+        {"citation": "Helms E.R., Morgan A., Valdez A. (2019). The Muscle and Strength Pyramid: Training, 2nd ed.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "metodologia_base", "intermedio_avanzado"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "select-metodologia-5d-intermedio-hipertrofia",
+      "name": "Body Part Split 5 días para cliente intermedio con 5 días buscando hipertrofia",
+      "rule_type": "select_methodology",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.days_per_week", "op": "equals", "value": 5},
+          {"field": "client.level", "op": "in", "value": ["intermedio", "avanzado"]},
+          {"field": "client.objective", "op": "in", "value": ["hipertrofia", "recomposicion"]},
+          {"field": "client.location", "op": "in", "value": ["gym", "gym_completo"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.preferences", "op": "includes", "value": "tiempo_minimo"}
+        ]
+      },
+      "output": {
+        "type": "methodology_recommendation",
+        "primary": {
+          "slug": "body-part-split-5d",
+          "confidence": 0.90,
+          "rationale": "Cliente intermedio o avanzado con 5 días gym y objetivo hipertrofia puede manejar volumen alto por grupo muscular (16-22 series semanales). Frecuencia 1× por grupo es suficiente cuando el volumen es alto y la técnica está consolidada. Permite técnicas avanzadas (drop set, rest-pause) en últimas semanas del bloque sin comprometer recuperación."
+        },
+        "alternatives": [
+          {
+            "slug": "ppl-6d",
+            "confidence": 0.70,
+            "rationale": "Si cliente puede sumar 1 día más, PPL 6d entrega 2× frecuencia por grupo con volumen similar"
+          },
+          {
+            "slug": "phat-power-hypertrophy",
+            "confidence": 0.55,
+            "rationale": "Si cliente combina objetivos hipertrofia+fuerza, PHAT mezcla días pesados y de hipertrofia"
+          }
+        ]
+      },
+      "priority": 100,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "Schoenfeld 2017 (dose-response meta-analysis) demostró que el volumen total semanal por grupo es el driver principal de hipertrofia. 16-22 series/semana por grupo es óptimo en intermedios. Body Part Split 5d permite alcanzar ese volumen sin sacrificar recuperación entre sesiones del mismo grupo (96+ horas). En frecuencia 1× con volumen alto vs frecuencia 2× con volumen igualado, los outcomes son comparables para intermedios — el factor decisivo es preferencia y recuperación.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Contreras B., Krieger J., et al. (2017). Resistance Training Volume Enhances Muscle Hypertrophy but Not Strength in Trained Men. Medicine and Science in Sports and Exercise 51(1).", "verified": false},
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2017). Dose-response relationship between weekly resistance training volume and increases in muscle mass: A systematic review and meta-analysis. Journal of Sports Sciences 35(11), 1073-1082.", "verified": false},
+        {"citation": "Helms E.R. (2019). The Muscle and Strength Pyramid: Training, 2nd ed.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Plan armado con body-part-split-5d + 6to día HIIT sábado. Variante con foco glúteo aplicada via override I1 (no esta rule)."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "metodologia_principal", "intermedio_avanzado"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "select-metodologia-5d-avanzado-fuerza",
+      "name": "PHAT Power+Hypertrophy 5 días para cliente avanzado con objetivo fuerza primario",
+      "rule_type": "select_methodology",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.days_per_week", "op": "equals", "value": 5},
+          {"field": "client.level", "op": "equals", "value": "avanzado"},
+          {"field": "client.objective", "op": "in", "value": ["fuerza", "fuerza_hipertrofia"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lumbalgia_aguda"},
+          {"field": "client.active_injuries", "op": "includes", "value": "lumbalgia_cronica"}
+        ]
+      },
+      "output": {
+        "type": "methodology_recommendation",
+        "primary": {
+          "slug": "phat-power-hypertrophy",
+          "confidence": 0.85,
+          "rationale": "Cliente avanzado priorizando fuerza necesita días pesados (5RM-3RM en sentadilla, peso muerto, press) sin perder volumen total. PHAT (Power Hypertrophy Adaptive Training) combina 2 días power (compuestos pesados RIR 1-2) + 3 días hipertrofia (volumen alto RIR 2-3) — solución validada para avanzados que no quieren elegir entre fuerza y tamaño."
+        },
+        "alternatives": [
+          {
+            "slug": "body-part-split-5d",
+            "confidence": 0.55,
+            "rationale": "Si el cliente prefiere hipertrofia con técnicas avanzadas en lugar de fuerza pura"
+          },
+          {
+            "slug": "bloques-12sem-metodo",
+            "confidence": 0.70,
+            "rationale": "Si el cliente está dispuesto a periodizar 12 sem (bloques Adaptación→Hipertrofia→Fuerza→Peak), maximiza fuerza con bloque dedicado"
+          }
+        ]
+      },
+      "priority": 110,
+      "execution_phase": "select",
+      "exception_when": [
+        {"field": "client.active_injuries", "op": "is_not_null", "value": null, "note": "Lesiones que afectan compuestos pesados (lumbar, rodilla, hombro) descartan PHAT — categoría H toma control"}
+      ],
+      "scientific_rationale": "PHAT fue popularizado por Layne Norton como solución para physique competitors avanzados que necesitaban mantener fuerza máxima sin sacrificar hipertrofia. La separación entre días power (intensidad alta, volumen bajo) y días hypertrophy (volumen alto, intensidad moderada) permite trabajar ambas adaptaciones sin interferencia significativa (concurrent training effect). Aplicable solo a avanzados porque requiere técnica consolidada en compuestos pesados.",
+      "scientific_sources": [
+        {"citation": "Norton L. (2011). PHAT — Power Hypertrophy Adaptive Training. Simply Shredded.", "verified": false, "note": "Fuente práctica, no peer-reviewed. Validar evidencia indirecta en literatura concurrent training."},
+        {"citation": "Wilson J.M., Marin P.J., Rhea M.R., et al. (2012). Concurrent training: a meta-analysis examining interference of aerobic and resistance exercises. Journal of Strength and Conditioning Research 26(8), 2293-2307.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["metodologia_avanzado", "objetivo_fuerza"],
+      "confidence": "moderate",
+      "needs_daniel_validation": true,
+      "validation_note": "PHAT está en el seed de Pieza 1 pero su evidencia directa es práctica (Layne Norton), no académica. Daniel valida si prefiere bloques periodizados 12sem (bloques-12sem-metodo) para misma situación.",
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "select-metodologia-6d-intermedio-avanzado",
+      "name": "Push/Pull/Legs 6 días para cliente intermedio o avanzado con 6 días disponibles",
+      "rule_type": "select_methodology",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.days_per_week", "op": "equals", "value": 6},
+          {"field": "client.level", "op": "in", "value": ["intermedio", "avanzado"]},
+          {"field": "client.objective", "op": "in", "value": ["hipertrofia", "recomposicion"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.preferences", "op": "includes", "value": "tiempo_minimo"}
+        ]
+      },
+      "output": {
+        "type": "methodology_recommendation",
+        "primary": {
+          "slug": "ppl-6d",
+          "confidence": 0.90,
+          "rationale": "PPL 6d entrega 2× frecuencia por grupo muscular con volumen alto (18-24 series/semana). Es el split más eficiente para clientes serios que pueden gym 6 días: cada sesión de 60-90 min entrena 1 cadena (push/pull/legs) con tiempo suficiente para 4-5 ejercicios. Para principiantes el volumen es excesivo — solo intermedio/avanzado."
+        },
+        "alternatives": [
+          {
+            "slug": "body-part-split-5d",
+            "confidence": 0.70,
+            "rationale": "Si cliente quiere 1 día de descanso adicional, body-part-split-5d + cardio sábado mantiene volumen alto con menor frecuencia"
+          },
+          {
+            "slug": "gvt-10x10",
+            "confidence": 0.40,
+            "rationale": "Bloque corto (4 sem) de hipertrofia extrema con volumen máximo por grupo, no sostenible largo plazo"
+          }
+        ]
+      },
+      "priority": 100,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "PPL 6d permite 2× frecuencia por grupo cumpliendo el sweet spot de Schoenfeld 2016 (frecuencia ≥2×/semana es óptima cuando se iguala volumen). Es preferido por avanzados porque alcanza el volumen total óptimo (18-24 sets/semana por grupo) sin sesiones excesivamente largas. La distribución Push/Pull/Legs separa antagonistas para reducir fatiga sistémica acumulada.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2016). Effects of resistance training frequency on measures of muscle hypertrophy: A systematic review and meta-analysis. Sports Medicine 46(11), 1689-1697.", "verified": false},
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2017). Dose-response relationship between weekly resistance training volume and increases in muscle mass: A systematic review and meta-analysis. Journal of Sports Sciences 35(11), 1073-1082.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_002_daniel",
+          "matched": true,
+          "outcome": "Daniel Elite hombre 12 sem 6d hipertrofia matchea esta rule. Stack performance via F4 (categoría F)."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "metodologia_principal", "intermedio_avanzado", "6d"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "select-metodologia-12sem-metodo-tier",
+      "name": "Bloques periodizados 12 semanas para cliente Método intermedio",
+      "rule_type": "select_methodology",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.duracion_semanas_solicitada", "op": "equals", "value": 12},
+          {"field": "client.tier", "op": "equals", "value": "metodo"},
+          {"field": "client.level", "op": "in", "value": ["intermedio", "avanzado"]}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "methodology_recommendation",
+        "primary": {
+          "slug": "bloques-12sem-metodo",
+          "confidence": 0.90,
+          "rationale": "Tier Método dura 12 semanas por contrato. La progresión 3-3-3-3 (Adaptación → Hipertrofia → Fuerza Máxima → Peak) maximiza adaptaciones secuenciales: el bloque de adaptación consolida técnica con RIR 3, el de hipertrofia construye masa con volumen alto RIR 2, el de fuerza convierte la masa en producción de fuerza con RIR 1, y el peak testea con RIR 0. Es el contrato implícito de Método: progresión visible cada 3 semanas."
+        },
+        "alternatives": [
+          {
+            "slug": "periodizacion-dup",
+            "confidence": 0.65,
+            "rationale": "DUP (Daily Undulating Periodization) si el cliente prefiere variabilidad de carga dentro de la semana en lugar de bloques largos"
+          },
+          {
+            "slug": "phat-power-hypertrophy",
+            "confidence": 0.55,
+            "rationale": "Si el cliente Método es avanzado y prioriza fuerza+hipertrofia simultáneamente"
+          }
+        ]
+      },
+      "priority": 110,
+      "execution_phase": "select",
+      "exception_when": [
+        {"field": "client.preferences", "op": "includes", "value": "evitar_fase_peak", "note": "Algunos clientes no quieren testear RIR 0 — reemplazar bloque Peak por Mantenimiento"}
+      ],
+      "scientific_rationale": "La periodización por bloques (Issurin 2010) maximiza adaptaciones específicas dedicando cada bloque a una sola cualidad. Frente a la periodización lineal clásica (volumen alto bajando hacia intensidad alta), los bloques 3-3-3-3 ofrecen suficiente exposición a cada estímulo para que el cuerpo se adapte (mínimo 3 semanas por adaptación según Issurin). La fase Peak final permite consolidar las ganancias en producción de fuerza máxima sin sobrecarga acumulada — coherente con el modelo de fitness-fatigue de Banister.",
+      "scientific_sources": [
+        {"citation": "Issurin V.B. (2010). New horizons for the methodology and physiology of training periodization. Sports Medicine 40(3), 189-206.", "verified": false},
+        {"citation": "Williams T.D., Tolusso D.V., Fedewa M.V., Esco M.R. (2017). Comparison of Periodized and Non-Periodized Resistance Training on Maximal Strength: A Meta-Analysis. Sports Medicine 47(10), 2083-2100.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "observed_gap": "Los 3 clientes Método auditados (Karen, Lizeth Ojeda, Tatis Hortua) no tenían plan accesible. Daniel debe validar contra 1-2 templates Método curados manualmente antes del Sprint 1.",
+      "tags": ["mvp_obligatorio", "metodologia_metodo", "12_semanas", "periodizacion_bloques"],
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "validation_note": "Alta confianza en la lógica, pero sin cliente real Método observado para corroborar. Daniel arma 1-2 templates manuales antes del Sprint 1 para verificar contra prácticas reales.",
+      "version": 1,
+      "active": true
+    }
+  ],
+  "_next_chunk": {
+    "chunk": "02 of 12",
+    "scope": "Categoría A — rules A7-A9 (3 rules restantes) + Categoría B — rules B1-B3 (split body-part-default, focus-gluteo, upper-lower-default). Total chunk 02: 6 rules.",
+    "blocked_by_daniel_validation": true
+  },
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre de Fase 3 — verificar las 8 citas científicas marcadas verified:false en este chunk."
+  ]
+}

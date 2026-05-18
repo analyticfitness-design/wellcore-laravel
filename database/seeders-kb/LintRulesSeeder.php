@@ -142,6 +142,127 @@ final class LintRulesSeeder extends Seeder
             'Reducir cardio a 25-30 min en sesiones de hipertrofia o moverlo a día separado.',
             false, $now);
 
+        $r[] = $this->rule('heur_volume_imbalance', 'entrenamiento', 'warning', 'heuristic',
+            'Desbalance de volumen >2× entre grupos antagonistas (pecho/espalda, cuad/isquio, bíceps/tríceps) genera adaptaciones asimétricas y riesgo postural',
+            ['rule' => 'volume_balance_per_muscle', 'max_ratio' => 2.0, 'min_series_per_group' => 4],
+            'Aumentar volumen del grupo subordinado o reducir del dominante para mantener ratio ≤2:1 entre antagonistas. Estándar: 0.8-1.2 es ideal, máx 1.5 antes de revisar.',
+            false, $now);
+
+        $r[] = $this->rule('heur_progression_inverted', 'entrenamiento', 'warning', 'heuristic',
+            'RIR aumenta semana a semana en una fase no-deload — rompe sobrecarga progresiva (debería bajar o mantenerse)',
+            ['rule' => 'progression_adequate', 'tolerance' => 0.5],
+            'En periodización lineal: RIR semana 1 > RIR semana 2 > ... > RIR semana 4 (peak). Solo Deload/Recuperación rompen esta regla. Revisar y bajar RIR de semanas posteriores.',
+            false, $now);
+
+        $r[] = $this->rule('heur_frequency_methodology_mismatch', 'entrenamiento', 'error', 'heuristic',
+            'frecuencia_dias del plan no coincide con target_days_min/max de la methodology declarada',
+            ['rule' => 'frequency_matches_methodology'],
+            'Revisar split del plan o cambiar la methodology declarada. Ej: PPL 6d requiere 6 días disponibles; con 4 días usar Upper/Lower o Full Body.',
+            false, $now);
+
+        $r[] = $this->rule('heur_min_volume_per_muscle', 'entrenamiento', 'warning', 'heuristic',
+            'Grupo muscular mayor con menos de 10 series/semana — volumen insuficiente para hipertrofia (Schoenfeld 2017)',
+            ['rule' => 'min_volume_per_muscle', 'min_series_per_week' => 10],
+            'Agregar 1-2 ejercicios adicionales (o aumentar series) para el grupo subordinado. Estándar mínimo viable: 10 series/sem para hipertrofia.',
+            false, $now);
+
+        $r[] = $this->rule('heur_push_pull_imbalance', 'entrenamiento', 'warning', 'heuristic',
+            'Desbalance >1.5× entre series push (empuje) vs pull (jalón) — riesgo de síndrome cruzado superior y mal postura',
+            ['rule' => 'push_pull_balance', 'max_ratio' => 1.5, 'min_series' => 8],
+            'Equilibrar series de empuje y jalón. Cada vez que empujás (press, fondos) debe haber un jalón equivalente (remo, dominadas, jalón polea).',
+            false, $now);
+
+        $r[] = $this->rule('heur_warmup_missing', 'entrenamiento', 'warning', 'heuristic',
+            'Plan sin mención de calentamiento — riesgo de lesión aguda elevado',
+            ['rule' => 'warmup_missing'],
+            'Agregar al menos un tip o nota_coach recomendando warmup específico de 5-10 min antes de cada sesión.',
+            false, $now);
+
+        $r[] = $this->rule('heur_supl_creatina_missing', 'suplementacion', 'warning', 'heuristic',
+            'Plan de suplementación SIN creatina monohidrato — el suplemento con mejor evidencia costo/beneficio',
+            ['rule' => 'creatina_missing'],
+            'Agregar creatina monohidrato 5g/día al stack. Excepciones: contraindicación renal documentada.',
+            false, $now);
+
+        $r[] = $this->rule('heur_supl_omega3_missing', 'suplementacion', 'warning', 'heuristic',
+            'Plan de suplementación SIN omega-3 (EPA+DHA) — evidencia consistente para anti-inflamación y recuperación',
+            ['rule' => 'omega3_missing'],
+            'Agregar omega-3 con 1-2g EPA+DHA combinados/día. Origen: pescado azul o suplemento purificado.',
+            false, $now);
+
+        $r[] = $this->rule('heur_proteina_daily_mismatch', 'nutricion', 'warning', 'heuristic',
+            'Mismatch entre macros.proteina_g target y suma de proteína de las comidas (>10% diff)',
+            ['rule' => 'proteina_daily_target', 'tolerance_pct' => 10.0],
+            'Revisar MealsBuilder o ajustar manualmente los macros por comida para que sumen al target.',
+            false, $now);
+
+        $r[] = $this->rule('heur_warmup_lesion_specific', 'entrenamiento', 'warning', 'heuristic',
+            'Plan menciona lesión/dolor en zona específica pero NO incluye warmup dirigido a esa zona',
+            ['rule' => 'warmup_lesion_specific'],
+            'Para cada zona afectada agregar movilidad/activación específica (ej. hombro: rotación externa banda + pull-aparts antes de presses).',
+            false, $now);
+
+        $r[] = $this->rule('heur_hydration_target', 'nutricion', 'warning', 'heuristic',
+            'Plan de nutrición SIN target de hidratación o con target <25 ml/kg/día',
+            ['rule' => 'hydration_target'],
+            'Agregar `macros.hidratacion_ml_dia` (recomendado 30-35 ml/kg/día). Para un adulto de 70 kg, ~2100-2450 ml/día.',
+            false, $now);
+
+        $r[] = $this->rule('heur_cooldown_missing', 'entrenamiento', 'warning', 'heuristic',
+            'Plan de entrenamiento sin mención de vuelta a la calma / cooldown / enfriamiento',
+            ['rule' => 'cooldown_missing'],
+            'Agregar al menos un tip o nota recomendando 5 min de estiramiento final, caminata suave o respiración para bajar pulsaciones.',
+            false, $now);
+
+        $r[] = $this->rule('heur_macros_coherencia', 'nutricion', 'warning', 'heuristic',
+            'Macros incoherentes: kcal declarada NO coincide con (proteina*4 + carbs*4 + grasa*9) ±5%',
+            ['rule' => 'macros_coherencia', 'tolerance_pct' => 5.0],
+            'Revisar MacroCalculator o ajustar manualmente macros.proteina_g/carbohidratos_g/grasa_g para que la suma (4P + 4C + 9G) coincida con macros.kcal.',
+            false, $now);
+
+        $r[] = $this->rule('heur_sleep_tracking', 'habitos', 'warning', 'heuristic',
+            'Plan de hábitos SIN tracking explícito de sueño (categoria=sueno o keywords)',
+            ['rule' => 'sleep_tracking'],
+            'Agregar al menos 1 habit con categoria="sueno" y tracking_method="diario". Ej: nombre="Sueño 7-9h", objetivo="dormir 7-9h y registrar calidad 1-5".',
+            false, $now);
+
+        $r[] = $this->rule('heur_rest_day_missing', 'entrenamiento', 'warning', 'heuristic',
+            'Plan de entrenamiento con 7 días seguidos sin descanso explícito',
+            ['rule' => 'rest_day_missing'],
+            'Marcar al menos 1 día (típicamente Domingo) como "Descanso", "Off", o "Movilidad + caminata suave" en split{}.',
+            false, $now);
+
+        $r[] = $this->rule('heur_supl_vitamina_d3_missing', 'suplementacion', 'warning', 'heuristic',
+            'Plan de suplementación SIN vitamina D3',
+            ['rule' => 'vitamina_d3_missing'],
+            'Agregar vitamina D3 con 2000-5000 IU/día con grasa. Considerar combinación con K2 (MK-7).',
+            false, $now);
+
+        $r[] = $this->rule('heur_warmup_min_duration', 'entrenamiento', 'warning', 'heuristic',
+            'Calentamiento con duración <5 min (insuficiente fisiológicamente)',
+            ['rule' => 'warmup_min_duration', 'min_min' => 5],
+            'Aumentar a 5-10 min: 2-3 min cardio liviano + 2-3 min movilidad + 2-3 min activación específica del primer ejercicio.',
+            false, $now);
+
+        $r[] = $this->rule('heur_unilateral_balance', 'entrenamiento', 'warning', 'heuristic',
+            'Plan de entrenamiento sin ejercicios unilaterales en la semana',
+            ['rule' => 'unilateral_balance'],
+            'Agregar al menos 1 unilateral por semana (zancada, búlgara, press alterno, remo unilateral, paso adelante).',
+            false, $now);
+
+        // ─── SCHEMA: habitos (2) ─────────────────────────────────────────────
+        $r[] = $this->rule('schema_habitos_missing_array', 'habitos', 'error', 'schema',
+            'Plan de hábitos debe tener `habitos[]` con al menos 1 item',
+            ['json_path' => '$.habitos', 'validator' => 'array_non_empty'],
+            'Agregá `habitos[]` con al menos 3 hábitos básicos (sueño, hidratación, registro).',
+            false, $now);
+
+        $r[] = $this->rule('schema_habitos_missing_keys', 'habitos', 'error', 'schema',
+            'Cada item de `habitos[i]` debe tener `nombre`, `categoria`, `objetivo` y `tracking_method`',
+            ['json_path' => '$.habitos[*]', 'validator' => 'has_required_keys', 'required_keys' => ['nombre', 'categoria', 'objetivo', 'tracking_method']],
+            'Agregá los 4 campos canónicos: nombre (string), categoria (sueño|hidratacion|registro|tracking|ciclo), objetivo (string), tracking_method (string).',
+            false, $now);
+
         $r[] = $this->rule('heur_voz_castellano_peninsular', null, 'error', 'heuristic',
             'Detecta vocabulario peninsular (vosotros, habéis, vuestro) — viola voz LATAM',
             [
@@ -221,14 +342,14 @@ final class LintRulesSeeder extends Seeder
             '`gif_url` no matchea el repo oficial GitHub raw — caso Cristian error #2',
             [
                 'json_path' => '$..ejercicios[*].gif_url',
-                'expected_pattern' => '^https://raw\\.githubusercontent\\.com/analyticfitness-design/wellcore-exercise-gifs/master/',
+                'expected_pattern' => '^https://raw\\.githubusercontent\\.com/analyticfitness-design/wellcore-exercise-gifs-v2/main/',
                 'auto_fix' => [
                     'type' => 'rewrite_domain',
                     'from_pattern' => '^https?://(?:www\\.)?wellcorefitness\\.com/storage/exercises/',
-                    'to_prefix' => 'https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master/',
+                    'to_prefix' => 'https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs-v2/main/',
                 ],
             ],
-            'La URL canónica es: https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master/{alias}.gif. NO usar wellcorefitness.com/storage/exercises/ (no existe en producción).',
+            'La URL canónica es: https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs-v2/main/{alias}.gif. NO usar wellcorefitness.com/storage/exercises/ (no existe en producción).',
             true, $now);
 
         $r[] = $this->rule('external_gif_url_inaccessible', 'entrenamiento', 'error', 'external_head',
@@ -251,6 +372,77 @@ final class LintRulesSeeder extends Seeder
                 'allowed_values' => ['entrenamiento', 'nutricion', 'habitos', 'suplementacion', 'ciclo'],
             ],
             'plan_type debe ser uno de: entrenamiento, nutricion, habitos, suplementacion, ciclo. Cualquier otro valor (incluido string vacío) es rechazado.',
+            false, $now);
+
+        // ─── BLOQUE D Sprints 91-95: lint rules sin validator nuevo ────────────
+        $r[] = $this->rule('heur_voz_anglicismos_innecesarios', null, 'warning', 'heuristic',
+            'Anglicismos innecesarios en voz del coach (workout, set, rep, bulk, cut)',
+            [
+                'json_paths' => ['$.notas_coach', '$.tips[*]'],
+                'patterns' => [
+                    ['regex' => '\\bworkout(s)?\\b', 'case_insensitive' => true],
+                    ['regex' => '\\bbulk(ing)?\\b', 'case_insensitive' => true],
+                    ['regex' => '\\bcut(ting)?\\b', 'case_insensitive' => true],
+                    ['regex' => '\\bset(s)?\\b(?!\\s+de)', 'case_insensitive' => true],
+                ],
+                'auto_fix' => [
+                    'type' => 'regex_replace_table',
+                    'replacements' => [
+                        'workout' => 'entreno', 'workouts' => 'entrenos',
+                        'bulk' => 'volumen', 'bulking' => 'fase de volumen',
+                        'cut' => 'definición', 'cutting' => 'fase de definición',
+                    ],
+                ],
+            ],
+            'Sustituir anglicismos por equivalentes en castellano latino: workout→entreno, bulk→volumen, cut→definición.',
+            true, $now);
+
+        $r[] = $this->rule('heur_marketing_garantizado', null, 'error', 'heuristic',
+            'Palabras prohibidas de marketing engañoso (garantizado, milagroso, secreto, transformación 100%)',
+            [
+                'json_paths' => ['$.notas_coach', '$.tips[*]', '$.objetivo'],
+                'patterns' => [
+                    ['regex' => '\\bgarantizad[oa]s?\\b', 'case_insensitive' => true],
+                    ['regex' => '\\bmilagros[oa]s?\\b', 'case_insensitive' => true],
+                    ['regex' => '\\bsecret[oa]s?\\b\\s+(formula|metodo)', 'case_insensitive' => true],
+                    ['regex' => '\\btransformación\\s+(100|garantizada|asegurada)', 'case_insensitive' => true],
+                    ['regex' => '\\bresultados?\\s+(garantizados?|asegurados?)', 'case_insensitive' => true],
+                ],
+            ],
+            'Eliminar palabras de marketing engañoso. Reemplazar por lenguaje preciso: "garantizado"→"esperable si sigues el plan", "milagroso"→eliminar.',
+            false, $now);
+
+        $r[] = $this->rule('heur_objetivo_demasiado_corto', null, 'warning', 'heuristic',
+            'Campo objetivo con menos de 30 caracteres — probablemente vago o incompleto',
+            [
+                'json_paths' => ['$.objetivo'],
+                'patterns' => [
+                    ['regex' => '^.{0,29}$', 'case_insensitive' => false],
+                ],
+            ],
+            'Expandir objetivo con métrica + plazo + contexto. Ej: "Hipertrofia tren superior — ganar 2-3 kg masa magra en 12 semanas, foco pecho y espalda".',
+            false, $now);
+
+        $r[] = $this->rule('heur_macros_proteina_minima', 'nutricion', 'warning', 'heuristic',
+            'macros.proteina_g por debajo de 1.2 g/kg estimado — riesgo de catabolismo en déficit/hipertrofia',
+            [
+                'json_paths' => ['$.macros'],
+                'patterns' => [
+                    ['regex' => '"proteina_g"\\s*:\\s*[0-9]{1,2}([^0-9]|$)', 'case_insensitive' => false],
+                ],
+            ],
+            'Subir macros.proteina_g a mínimo 1.6 g/kg (recomp: 2.0-2.4 g/kg, hipertrofia: 1.6-2.2 g/kg, mantenimiento: 1.2 g/kg).',
+            false, $now);
+
+        $r[] = $this->rule('heur_supl_creatina_overlap', 'suplementacion', 'warning', 'heuristic',
+            'Detectados múltiples productos de creatina en el mismo stack (duplicación)',
+            [
+                'json_paths' => ['$.notas_coach', '$.tips[*]'],
+                'patterns' => [
+                    ['regex' => '(creatina[^.]{1,80}){2,}', 'case_insensitive' => true],
+                ],
+            ],
+            'Verificar que solo hay UN producto de creatina (monohidrato 5g/día). Eliminar suplementos redundantes (creatina HCL + monohidrato simultáneo).',
             false, $now);
 
         return $r;

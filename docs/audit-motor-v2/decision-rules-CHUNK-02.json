@@ -1,0 +1,333 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "02 of 12",
+    "chunk_description": "Cierre Categoría A (A7-A9) + arranque Categoría B (B1-B3). Mix de rule_types: select_methodology + select_split.",
+    "categories": [
+      "A. SELECCIÓN DE METODOLOGÍA (rules A7-A9)",
+      "B. SELECCIÓN DE SPLIT (rules B1-B3)"
+    ],
+    "depends_on": {
+      "methodologies_seed": "docs/audit-motor-v2/methodologies-seed.json",
+      "exercise_patterns_proposal": "docs/audit-motor-v2/exercise-patterns-agrupacion-PROPUESTA.md",
+      "previous_chunk": "docs/audit-motor-v2/decision-rules-CHUNK-01.json",
+      "scope_proposal": "docs/audit-motor-v2/decision-rules-SCOPE-PROPUESTA.md"
+    },
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ],
+    "execution_phase_global": "select",
+    "voz": "voseo colombiano neutro amable",
+    "perplexity_verification_pending": "Refs Contreras 2015 (EMG hip-thrust), Issurin 2010 (bloques), Helms 2019, Schoenfeld 2016/2017 marcadas verified:false hasta consulta Perplexity Pro Chrome MCP bulk al cierre de Fase 3"
+  },
+  "rules": [
+    {
+      "slug": "select-metodologia-4sem-elite-mujer",
+      "name": "Bloques agresivos 4 semanas para cliente Elite femenina avanzada",
+      "rule_type": "select_methodology",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.duracion_semanas_solicitada", "op": "equals", "value": 4},
+          {"field": "client.tier", "op": "equals", "value": "elite"},
+          {"field": "client.gender", "op": "equals", "value": "femenino"},
+          {"field": "client.level", "op": "in", "value": ["intermedio", "avanzado"]}
+        ],
+        "any_of": [
+          {"field": "client.objective", "op": "in", "value": ["recomposicion", "hipertrofia", "perdida_grasa"]}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "methodology_recommendation",
+        "primary": {
+          "slug": "bloques-4sem-elite-agresiva",
+          "confidence": 0.85,
+          "rationale": "Cliente Elite mujer pidiendo ciclo de 4 sem (en lugar del estándar Elite 12-16 sem) necesita bloque condensado: 1 sem Adaptación → 2 sem Progresión con volumen +5-10% semanal → 1 sem Pico con técnicas avanzadas (drop set, rest-pause, pirámide). Patrón observado en Silvia con outcome favorable. NO es un ciclo de novato — solo aplicable a intermedio/avanzado con base técnica."
+        },
+        "alternatives": [
+          {
+            "slug": "entrenamiento-femenino-autoregulado",
+            "confidence": 0.70,
+            "rationale": "Si la cliente tracking ciclo menstrual activo, autorregulación por fase puede dar mejores outcomes que el bloque rígido"
+          },
+          {
+            "slug": "body-part-split-5d",
+            "confidence": 0.50,
+            "rationale": "Si la cliente prefiere split estándar sin técnicas avanzadas tan agresivas"
+          }
+        ]
+      },
+      "priority": 130,
+      "execution_phase": "select",
+      "exception_when": [
+        {"field": "client.active_injuries", "op": "is_not_null", "value": null, "note": "Categoría H toma control y desactiva técnicas avanzadas (drop set/rest-pause)"}
+      ],
+      "scientific_rationale": "El bloque corto de 4 semanas Elite es una variante de 'mini-cycle' donde la progresión se acelera por la base técnica ya consolidada. Issurin (2010) demuestra que adaptaciones pueden lograrse en bloques de 3-4 semanas cuando la atleta tiene historial de entrenamiento sólido. En mujeres entrenadas, la respuesta a volumen alto + técnicas intensificadoras es comparable a la masculina cuando la nutrición y descanso están controlados (Roberts et al. 2020).",
+      "scientific_sources": [
+        {"citation": "Issurin V.B. (2010). New horizons for the methodology and physiology of training periodization. Sports Medicine 40(3), 189-206.", "verified": false},
+        {"citation": "Roberts B.M., Nuckols G., Krieger J.W. (2020). Sex Differences in Resistance Training: A Systematic Review and Meta-Analysis. Journal of Strength and Conditioning Research 34(5), 1448-1460.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_001_silvia",
+          "matched": true,
+          "outcome": "Silvia Elite 4 sem femenino tier elite. Plan armado con bloques-4sem-elite-agresiva — 1 Adapt + 2 Progresión + 1 Pico, 5d. Stack via F3."
+        }
+      ],
+      "tags": ["metodologia_elite", "femenino", "4_semanas", "caso_silvia"],
+      "confidence": "moderate",
+      "needs_daniel_validation": true,
+      "validation_note": "Solo 1 cliente real observado (Silvia). Si el patrón 4 sem Elite mujer no se repite en otras clientes, considerar bajar priority o marcar como excepción.",
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "select-metodologia-cliente-vuelve-pausa-larga",
+      "name": "Preparación readaptativa para cliente que vuelve después de pausa larga",
+      "rule_type": "select_methodology",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.return_from_pause_months", "op": "greater_than_or_equal", "value": 3}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "methodology_recommendation",
+        "primary": {
+          "slug": "full-body-3d",
+          "confidence": 0.88,
+          "rationale": "Cliente que vuelve después de 3+ meses sin entrenar necesita fase de readaptación motora (Preparación). Full-body 3d permite reactivar todos los patrones de movimiento con frecuencia 3× por grupo en volumen bajo (RIR 3-4) durante 2-4 semanas antes de pasar a metodología 'real'. Salir corriendo a Body Part Split 5d con volumen alto = lesión o agujetas paralizantes en 1-2 semanas.",
+          "phase_override": "Preparación"
+        },
+        "alternatives": [
+          {
+            "slug": "entrenamiento-femenino-autoregulado",
+            "confidence": 0.65,
+            "rationale": "Si la cliente es mujer y prefiere ajustar día a día según RPE/energía en lugar de un plan fijo"
+          },
+          {
+            "slug": "upper-lower-4d",
+            "confidence": 0.60,
+            "rationale": "Si el cliente tiene más prisa por volver a estructura típica y la pausa fue 3-4 meses (no 6+)"
+          }
+        ]
+      },
+      "priority": 150,
+      "execution_phase": "select",
+      "exception_when": [
+        {"field": "client.preferences", "op": "includes", "value": "saltar_preparacion", "note": "Cliente explícitamente acepta riesgo y firma — Daniel valida caso por caso"}
+      ],
+      "scientific_rationale": "La pérdida de fuerza y masa muscular tras pausa de 3+ meses es significativa (~20-30% de fuerza, 5-10% de masa magra). El proceso de re-síntesis ('muscle memory') es más rápido que la construcción inicial pero requiere fase de re-acomodación motora controlada. Joanisse et al. (2018) muestran que el efecto memory está mediado por mionúcleos residuales — el músculo recupera tamaño rápido si no se sobrecarga prematuramente.",
+      "scientific_sources": [
+        {"citation": "Joanisse S., Nederveen J.P., Snijders T., et al. (2018). Skeletal Muscle Regeneration, Repair and Remodelling in Aging: The Importance of Muscle Stem Cells and Vascularization. Gerontology 64(2), 91-100.", "verified": false},
+        {"citation": "Gundersen K. (2016). Muscle memory and a new cellular model for muscle atrophy and hypertrophy. Journal of Experimental Biology 219(2), 235-242.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["caso_especial", "readaptacion", "anti_lesion"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "select-metodologia-recomposicion-8sem",
+      "name": "Recomposición 8 semanas en 2 bloques para cliente buscando perder grasa preservando músculo",
+      "rule_type": "select_methodology",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.objective", "op": "equals", "value": "recomposicion"},
+          {"field": "client.duracion_semanas_solicitada", "op": "greater_than_or_equal", "value": 8},
+          {"field": "client.level", "op": "in", "value": ["intermedio", "avanzado"]}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "methodology_recommendation",
+        "primary": {
+          "slug": "recomposicion-8sem-2bloques",
+          "confidence": 0.85,
+          "rationale": "Recomposición (perder grasa preservando músculo) requiere protocolo dedicado: 8 semanas en 2 bloques de 4 — primer bloque déficit ligero (-200 a -300 kcal) con volumen alto y proteína 2.2g/kg, segundo bloque ajusta según composición observada. La proteína es lo último que se baja. Sueño y manejo de estrés son críticos. NO aplicable a principiantes (que pueden recomponer en mantenimiento sin protocolo especial)."
+        },
+        "alternatives": [
+          {
+            "slug": "body-part-split-5d",
+            "confidence": 0.60,
+            "rationale": "Si el cliente prefiere split estándar y maneja la nutrición por su cuenta"
+          },
+          {
+            "slug": "bloques-12sem-metodo",
+            "confidence": 0.55,
+            "rationale": "Si el cliente tiene 12 semanas disponibles y quiere combinar recomp con periodización clásica (con bloque hipertrofia más largo)"
+          }
+        ]
+      },
+      "priority": 120,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "La recomposición es viable en intermedios y avanzados con déficit calórico moderado (-200 a -300 kcal/día), proteína alta (2.0-2.4 g/kg), volumen de entrenamiento preservado y sueño 7-9h. Barakat et al. (2020) revisaron la evidencia y concluyen que la recomp es más probable en personas con margen de mejora (overweight no-trained, returnees), pero también ocurre en intermedios con protocolo estricto. La división en 2 bloques permite ajustar nutrición según outcomes medidos (peso + pliegues + fotos).",
+      "scientific_sources": [
+        {"citation": "Barakat C., Pearson J., Escalante G., Campbell B., De Souza E.O. (2020). Body Recomposition: Can Trained Individuals Build Muscle and Lose Fat at the Same Time? Strength and Conditioning Journal 42(5), 7-21.", "verified": false},
+        {"citation": "Helms E.R., Aragon A.A., Fitschen P.J. (2014). Evidence-based recommendations for natural bodybuilding contest preparation: nutrition and supplementation. Journal of the International Society of Sports Nutrition 11, 20.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["objetivo_recomposicion", "8_semanas", "intermedio_avanzado"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "split-body-part-5d-default",
+      "name": "Split estándar Body Part 5 días — distribución clásica L:Pecho/Tri … V:Pierna F",
+      "rule_type": "select_split",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.methodology_selected", "op": "equals", "value": "body-part-split-5d"}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.preferences", "op": "includes", "value": "priorizar_gluteo"},
+          {"field": "client.preferences", "op": "includes", "value": "priorizar_pierna"},
+          {"field": "client.preferences", "op": "includes", "value": "priorizar_espalda"}
+        ]
+      },
+      "output": {
+        "type": "split_assignment",
+        "dias": [
+          {"numero": 1, "label": "Lunes", "nombre_dia": "Pecho + Tríceps", "grupos_primarios": ["pecho", "triceps"], "grupos_secundarios": ["hombro_anterior", "core_anterior"], "compuesto_principal_pattern": "press-banca", "intensidad_esperada": "alta", "duracion_estimada_min": 75},
+          {"numero": 2, "label": "Martes", "nombre_dia": "Espalda + Bíceps", "grupos_primarios": ["dorsal_ancho", "espalda_alta", "biceps"], "grupos_secundarios": ["antebrazo", "trapecio"], "compuesto_principal_pattern": "dominada", "intensidad_esperada": "alta", "duracion_estimada_min": 75},
+          {"numero": 3, "label": "Miércoles", "nombre_dia": "Pierna (cuádriceps-dominante)", "grupos_primarios": ["cuadriceps", "gluteo_mayor"], "grupos_secundarios": ["aductor", "gemelo"], "compuesto_principal_pattern": "sentadilla", "intensidad_esperada": "alta", "duracion_estimada_min": 80},
+          {"numero": 4, "label": "Jueves", "nombre_dia": "Hombros + Brazos + Abs", "grupos_primarios": ["hombro_lateral", "hombro_posterior", "biceps", "triceps"], "grupos_secundarios": ["hombro_anterior", "core_anterior", "core_lateral"], "compuesto_principal_pattern": "press-militar", "intensidad_esperada": "media-alta", "duracion_estimada_min": 70},
+          {"numero": 5, "label": "Viernes", "nombre_dia": "Pierna (femoral + glúteo dominante)", "grupos_primarios": ["femoral", "gluteo_mayor"], "grupos_secundarios": ["abductor", "gemelo"], "compuesto_principal_pattern": "peso-muerto-rumano", "intensidad_esperada": "alta", "duracion_estimada_min": 75}
+        ],
+        "dias_descanso": [6, 7],
+        "rotacion_pattern": "fija_5d",
+        "frecuencia_por_grupo": {
+          "pecho": 1, "espalda": 1, "pierna_quad": 1, "pierna_fem": 1, "hombro": 1, "brazos": 2, "core": 1
+        }
+      },
+      "priority": 100,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "Distribución clásica del split por grupo. Brazos aparecen 2× por semana (martes con espalda + jueves dedicado) porque son los grupos con mayor capacidad de recuperación. Pierna se divide en quad-dominante (miércoles, sentadilla) y femoral-dominante (viernes, peso muerto rumano) para reducir el solapamiento sistémico de fatiga lumbar y CNS. El descanso 96h entre piernas y el jueves de hombros entre pecho y espalda facilita recuperación.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2016). Effects of resistance training frequency on measures of muscle hypertrophy: A systematic review and meta-analysis. Sports Medicine 46(11), 1689-1697.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["split_estandar", "body_part_split"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "split-body-part-5d-focus-gluteo",
+      "name": "Split Body Part 5d variante foco glúteo (2× frecuencia glúteo) — caso femenino",
+      "rule_type": "select_split",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.methodology_selected", "op": "equals", "value": "body-part-split-5d"}
+        ],
+        "any_of": [
+          {"field": "client.preferences", "op": "includes", "value": "priorizar_gluteo"},
+          {"field": "client.focus_muscle_group", "op": "equals", "value": "gluteo"}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "split_assignment",
+        "dias": [
+          {"numero": 1, "label": "Lunes", "nombre_dia": "Glúteo (compuesto)", "grupos_primarios": ["gluteo_mayor", "gluteo_medio"], "grupos_secundarios": ["aductor", "femoral"], "compuesto_principal_pattern": "hip-thrust", "intensidad_esperada": "alta", "duracion_estimada_min": 75, "nota": "Hip-thrust desplaza a sentadilla como compuesto principal — mayor activación EMG del glúteo mayor"},
+          {"numero": 2, "label": "Martes", "nombre_dia": "Hombros + Tríceps + Abs", "grupos_primarios": ["hombro_lateral", "hombro_posterior", "triceps"], "grupos_secundarios": ["core_anterior", "core_lateral"], "compuesto_principal_pattern": "press-militar", "intensidad_esperada": "media-alta", "duracion_estimada_min": 65},
+          {"numero": 3, "label": "Miércoles", "nombre_dia": "Cuádriceps + Aductor + Pantorrilla", "grupos_primarios": ["cuadriceps", "aductor"], "grupos_secundarios": ["gemelo", "soleo"], "compuesto_principal_pattern": "sentadilla", "intensidad_esperada": "media-alta", "duracion_estimada_min": 70, "nota": "Sentadilla NO al fallo — preservar reserva para día 5 glúteo"},
+          {"numero": 4, "label": "Jueves", "nombre_dia": "Espalda + Bíceps + Abs", "grupos_primarios": ["dorsal_ancho", "espalda_alta", "biceps"], "grupos_secundarios": ["antebrazo", "core_lateral"], "compuesto_principal_pattern": "jalon-vertical", "intensidad_esperada": "alta", "duracion_estimada_min": 70},
+          {"numero": 5, "label": "Viernes", "nombre_dia": "Glúteo (femoral-dominante) + Gemelo", "grupos_primarios": ["gluteo_mayor", "femoral"], "grupos_secundarios": ["gemelo", "abductor"], "compuesto_principal_pattern": "peso-muerto-rumano", "intensidad_esperada": "alta", "duracion_estimada_min": 75, "nota": "Segundo día de glúteo con foco posterior cadena — RDL + sentadilla búlgara + abducción + kickback"}
+        ],
+        "dias_descanso": [6, 7],
+        "dias_opcionales_addon": [
+          {"numero": 6, "label": "Sábado", "tipo": "hiit_dedicado", "nota": "Opcional via rule B7 si days_per_week=6 y objetivo perdida_grasa"}
+        ],
+        "rotacion_pattern": "fija_5d_glúteo_2x",
+        "frecuencia_por_grupo": {
+          "gluteo": 2, "femoral": 1, "cuadriceps": 1, "espalda": 1, "hombro": 1, "brazos": 1, "core": 2
+        }
+      },
+      "priority": 150,
+      "execution_phase": "select",
+      "exception_when": [
+        {"field": "client.active_injuries", "op": "includes", "value": "lumbalgia_aguda", "note": "Excluye hip-thrust pesado y peso-muerto-rumano — categoría H sustituye por puente-glúteo con banda + abducción"}
+      ],
+      "scientific_rationale": "El glúteo mayor tiene alta tolerancia al volumen y recupera en 48-72h, lo que permite frecuencia 2× por semana sin sobrecarga. Contreras et al. (2015) muestran que el hip-thrust produce activación EMG significativamente mayor del glúteo mayor que la sentadilla — por eso se elige como compuesto principal del día 1, no la sentadilla. La separación entre día 1 (compuesto/concentrico-dominante) y día 5 (posterior cadena/RDL-dominante) cubre ambas funciones del glúteo (extensión de cadera horizontal vs vertical) sin solapar fatiga.",
+      "scientific_sources": [
+        {"citation": "Contreras B., Vigotsky A.D., Schoenfeld B.J., Beardsley C., Cronin J. (2015). A Comparison of Gluteus Maximus, Biceps Femoris, and Vastus Lateralis Electromyographic Activity in the Back Squat and Barbell Hip Thrust Exercises. Journal of Applied Biomechanics 31(6), 452-458.", "verified": false},
+        {"citation": "Schoenfeld B.J., Vigotsky A.D., Contreras B., et al. (2018). Differential effects of attentional focus strategies during long-term resistance training. European Journal of Sport Science 18(5), 705-712.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Plan armado con esta variante. Override I1 (priorizar_gluteo) la activa sobre B1 default."
+        }
+      ],
+      "tags": ["split_variante", "focus_gluteo", "femenino", "caso_lizetd"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "split-upper-lower-4d-default",
+      "name": "Split Upper/Lower 4 días — distribución estándar L:Upper · M:Lower · J:Upper · V:Lower",
+      "rule_type": "select_split",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.methodology_selected", "op": "equals", "value": "upper-lower-4d"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "split_assignment",
+        "dias": [
+          {"numero": 1, "label": "Lunes", "nombre_dia": "Upper A (pecho/espalda foco)", "grupos_primarios": ["pecho", "dorsal_ancho", "espalda_alta"], "grupos_secundarios": ["hombro_anterior", "biceps", "triceps"], "compuesto_principal_pattern": "press-banca", "compuesto_secundario_pattern": "remo-horizontal", "intensidad_esperada": "alta", "duracion_estimada_min": 75},
+          {"numero": 2, "label": "Martes", "nombre_dia": "Lower A (cuádriceps foco)", "grupos_primarios": ["cuadriceps", "gluteo_mayor"], "grupos_secundarios": ["aductor", "core_anterior", "gemelo"], "compuesto_principal_pattern": "sentadilla", "intensidad_esperada": "alta", "duracion_estimada_min": 75},
+          {"numero": 3, "label": "Jueves", "nombre_dia": "Upper B (hombros/brazos foco)", "grupos_primarios": ["hombro_lateral", "hombro_posterior", "biceps", "triceps"], "grupos_secundarios": ["pecho", "espalda_alta", "trapecio"], "compuesto_principal_pattern": "press-militar", "compuesto_secundario_pattern": "dominada", "intensidad_esperada": "media-alta", "duracion_estimada_min": 70},
+          {"numero": 4, "label": "Viernes", "nombre_dia": "Lower B (femoral/glúteo foco)", "grupos_primarios": ["femoral", "gluteo_mayor"], "grupos_secundarios": ["abductor", "core_lateral", "gemelo"], "compuesto_principal_pattern": "peso-muerto-rumano", "intensidad_esperada": "alta", "duracion_estimada_min": 75}
+        ],
+        "dias_descanso": [3, 6, 7],
+        "rotacion_pattern": "fija_4d_AB",
+        "frecuencia_por_grupo": {
+          "pecho": 1, "espalda": 1, "pierna_quad": 1, "pierna_fem": 1, "hombro": 1, "brazos": 1, "core": 2
+        },
+        "nota_periodizacion": "Cada Upper y cada Lower tienen variante A y B para que el cliente no repita los mismos ejercicios 2 veces en la semana — alterna patrones (ej. compuestos en A, máquinas/aisladores en B)"
+      },
+      "priority": 100,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "Distribución Lun/Mar + Jue/Vie con descanso miércoles + fin de semana permite recuperación CNS entre las dos exposiciones de cada cadena. La diferenciación Upper A vs Upper B y Lower A vs Lower B (variantes en lugar de repetición exacta) reduce la monotonía de estímulo y permite distribuir volumen entre patrones complementarios — clave para hipertrofia con frecuencia 2× según Schoenfeld 2016.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2016). Effects of resistance training frequency on measures of muscle hypertrophy: A systematic review and meta-analysis. Sports Medicine 46(11), 1689-1697.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["split_estandar", "upper_lower", "4_dias"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    }
+  ],
+  "_next_chunk": {
+    "chunk": "03 of 12",
+    "scope": "Cierre Categoría B (B4-B7: ppl-6d-default, ppl-6d-focus-pierna, full-body-3d-compuestos-rotatorios, hiit-sabado-add-on). Total: 4 rules. Probable mezcla con primeras rules de Categoría C (cálculo macros) si queremos chunks de 6.",
+    "blocked_by_daniel_validation": true
+  },
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre de Fase 3 — verificar refs Contreras 2015 (EMG hip-thrust vs squat), Schoenfeld 2016/2017, Issurin 2010, Joanisse 2018, Gundersen 2016, Barakat 2020, Helms 2014, Roberts 2020."
+  ]
+}

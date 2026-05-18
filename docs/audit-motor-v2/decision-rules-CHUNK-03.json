@@ -1,0 +1,338 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "03 of 12",
+    "chunk_description": "Cierre Categoría B (B4-B7: PPL default, PPL focus-pierna, full-body compuestos rotatorios, HIIT sábado add-on) + arranque Categoría C (C1-C2: fórmulas TMB Mifflin-St Jeor).",
+    "categories": [
+      "B. SELECCIÓN DE SPLIT (rules B4-B7)",
+      "C. CÁLCULO DE MACROS (rules C1-C2)"
+    ],
+    "depends_on": {
+      "methodologies_seed": "docs/audit-motor-v2/methodologies-seed.json",
+      "previous_chunks": ["docs/audit-motor-v2/decision-rules-CHUNK-01.json", "docs/audit-motor-v2/decision-rules-CHUNK-02.json"],
+      "scope_proposal": "docs/audit-motor-v2/decision-rules-SCOPE-PROPUESTA.md"
+    },
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ],
+    "execution_phase_global": "select",
+    "perplexity_verification_pending": "Refs Mifflin 1990, Frankenfield 2005, Schoenfeld 2016, Schoenfeld 2018, Tabata 1996 marcadas verified:false hasta consulta Perplexity Pro Chrome MCP bulk al cierre de Fase 3"
+  },
+  "rules": [
+    {
+      "slug": "split-ppl-6d-default",
+      "name": "Split PPL 6 días — distribución estándar Push/Pull/Legs × 2",
+      "rule_type": "select_split",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.methodology_selected", "op": "equals", "value": "ppl-6d"}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.preferences", "op": "includes", "value": "priorizar_pierna"},
+          {"field": "client.focus_muscle_group", "op": "equals", "value": "pierna"}
+        ]
+      },
+      "output": {
+        "type": "split_assignment",
+        "dias": [
+          {"numero": 1, "label": "Lunes", "nombre_dia": "Push A (pecho foco)", "grupos_primarios": ["pecho", "hombro_anterior", "triceps"], "grupos_secundarios": ["hombro_lateral", "core_anterior"], "compuesto_principal_pattern": "press-banca", "intensidad_esperada": "alta", "duracion_estimada_min": 75},
+          {"numero": 2, "label": "Martes", "nombre_dia": "Pull A (espalda dorsal foco)", "grupos_primarios": ["dorsal_ancho", "espalda_alta", "biceps"], "grupos_secundarios": ["hombro_posterior", "antebrazo"], "compuesto_principal_pattern": "dominada", "intensidad_esperada": "alta", "duracion_estimada_min": 75},
+          {"numero": 3, "label": "Miércoles", "nombre_dia": "Legs A (cuádriceps foco)", "grupos_primarios": ["cuadriceps", "gluteo_mayor"], "grupos_secundarios": ["aductor", "gemelo", "core_anterior"], "compuesto_principal_pattern": "sentadilla", "intensidad_esperada": "alta", "duracion_estimada_min": 80},
+          {"numero": 4, "label": "Jueves", "nombre_dia": "Push B (hombros foco)", "grupos_primarios": ["hombro_lateral", "hombro_posterior", "triceps"], "grupos_secundarios": ["pecho", "hombro_anterior"], "compuesto_principal_pattern": "press-militar", "intensidad_esperada": "media-alta", "duracion_estimada_min": 70},
+          {"numero": 5, "label": "Viernes", "nombre_dia": "Pull B (espalda alta + bíceps foco)", "grupos_primarios": ["espalda_alta", "trapecio", "biceps"], "grupos_secundarios": ["dorsal_ancho", "antebrazo"], "compuesto_principal_pattern": "remo-horizontal", "intensidad_esperada": "alta", "duracion_estimada_min": 70},
+          {"numero": 6, "label": "Sábado", "nombre_dia": "Legs B (femoral + glúteo foco)", "grupos_primarios": ["femoral", "gluteo_mayor"], "grupos_secundarios": ["abductor", "gemelo", "core_lateral"], "compuesto_principal_pattern": "peso-muerto-rumano", "intensidad_esperada": "alta", "duracion_estimada_min": 75}
+        ],
+        "dias_descanso": [7],
+        "rotacion_pattern": "fija_6d_AB",
+        "frecuencia_por_grupo": {
+          "pecho": 1, "espalda": 2, "pierna_quad": 1, "pierna_fem": 1, "hombro": 2, "brazos": 2, "core": 2
+        },
+        "nota_recuperacion": "Solo 1 día de descanso (domingo). Solo apto para intermedio/avanzado con recuperación robusta y nutrición/sueño bajo control."
+      },
+      "priority": 100,
+      "execution_phase": "select",
+      "exception_when": [
+        {"field": "client.sleep_quality", "op": "less_than", "value": 6, "note": "Cliente con sueño <6h/noche o calidad <6/10 — bajar a PPL 5d con día descanso adicional"}
+      ],
+      "scientific_rationale": "PPL 6d entrega 2× frecuencia por grupo cumpliendo Schoenfeld 2016. La separación A/B dentro de cada cadena (Push A foco pecho, Push B foco hombros) distribuye volumen entre cabezas musculares y permite mantener intensidad alta sin sobrecargar el mismo patrón motor 2 veces por semana. La pierna se separa en quad-dominante (miércoles) y posterior-dominante (sábado) para reducir solapamiento de fatiga lumbar.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2016). Effects of resistance training frequency on measures of muscle hypertrophy: A systematic review and meta-analysis. Sports Medicine 46(11), 1689-1697.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_002_daniel",
+          "matched": true,
+          "outcome": "Daniel Elite 12 sem 6d hipertrofia matchea PPL 6d default. Stack performance via F4."
+        }
+      ],
+      "tags": ["split_estandar", "ppl", "6_dias", "intermedio_avanzado"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "split-ppl-6d-focus-pierna",
+      "name": "Split PPL 6d variante foco pierna (Legs en L y J — 72h descanso entre piernas)",
+      "rule_type": "select_split",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.methodology_selected", "op": "equals", "value": "ppl-6d"}
+        ],
+        "any_of": [
+          {"field": "client.preferences", "op": "includes", "value": "priorizar_pierna"},
+          {"field": "client.focus_muscle_group", "op": "equals", "value": "pierna"}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "split_assignment",
+        "dias": [
+          {"numero": 1, "label": "Lunes", "nombre_dia": "Legs A (cuádriceps-dominante)", "grupos_primarios": ["cuadriceps", "gluteo_mayor"], "grupos_secundarios": ["aductor", "gemelo"], "compuesto_principal_pattern": "sentadilla", "intensidad_esperada": "alta", "duracion_estimada_min": 80},
+          {"numero": 2, "label": "Martes", "nombre_dia": "Push A (pecho foco)", "grupos_primarios": ["pecho", "hombro_anterior", "triceps"], "grupos_secundarios": ["hombro_lateral"], "compuesto_principal_pattern": "press-banca", "intensidad_esperada": "alta", "duracion_estimada_min": 70},
+          {"numero": 3, "label": "Miércoles", "nombre_dia": "Pull A (espalda dorsal foco)", "grupos_primarios": ["dorsal_ancho", "espalda_alta", "biceps"], "grupos_secundarios": ["antebrazo"], "compuesto_principal_pattern": "dominada", "intensidad_esperada": "alta", "duracion_estimada_min": 70},
+          {"numero": 4, "label": "Jueves", "nombre_dia": "Legs B (femoral-dominante + glúteo)", "grupos_primarios": ["femoral", "gluteo_mayor"], "grupos_secundarios": ["abductor", "gemelo"], "compuesto_principal_pattern": "peso-muerto-rumano", "intensidad_esperada": "alta", "duracion_estimada_min": 80},
+          {"numero": 5, "label": "Viernes", "nombre_dia": "Push B (hombros + brazos foco)", "grupos_primarios": ["hombro_lateral", "hombro_posterior", "triceps"], "grupos_secundarios": ["pecho", "hombro_anterior"], "compuesto_principal_pattern": "press-militar", "intensidad_esperada": "media-alta", "duracion_estimada_min": 70},
+          {"numero": 6, "label": "Sábado", "nombre_dia": "Pull B (espalda alta + bíceps foco)", "grupos_primarios": ["espalda_alta", "trapecio", "biceps"], "grupos_secundarios": ["dorsal_ancho", "antebrazo"], "compuesto_principal_pattern": "remo-horizontal", "intensidad_esperada": "alta", "duracion_estimada_min": 70}
+        ],
+        "dias_descanso": [7],
+        "rotacion_pattern": "fija_6d_legs_lunes_jueves",
+        "frecuencia_por_grupo": {
+          "pecho": 1, "espalda": 2, "pierna_quad": 1, "pierna_fem": 1, "hombro": 2, "brazos": 2, "core": 1
+        },
+        "nota_recuperacion": "Beneficio principal: 72h descanso entre ambas sesiones de pierna (L → J) vs 72h descanso en el default (X → S) pero con el L de pierna como día más fresco de la semana. Mejor para clientes que priorizan pierna y notan fatiga lumbar acumulada."
+      },
+      "priority": 130,
+      "execution_phase": "select",
+      "exception_when": [
+        {"field": "client.active_injuries", "op": "includes", "value": "lumbalgia_aguda"},
+        {"field": "client.active_injuries", "op": "includes", "value": "lesion_rodilla"}
+      ],
+      "scientific_rationale": "Colocar las dos sesiones de pierna en L y J (separación 72h con cadena distinta entre ambas) aprovecha la mayor frescura del CNS al inicio de la semana para la pierna pesada (sentadilla). La fatiga residual de Legs A se disipa antes de Legs B porque la pierna NO se trabaja en M/X — solo Push/Pull, que solicitan principalmente miembro superior. En PPL default (Legs miércoles + sábado) la pierna entra menos fresca al miércoles.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2016). Effects of resistance training frequency on measures of muscle hypertrophy: A systematic review and meta-analysis. Sports Medicine 46(11), 1689-1697.", "verified": false},
+        {"citation": "Bartolomei S., Sadres E., Church D.D., et al. (2017). Comparison of the recovery response from high-intensity and high-volume resistance exercise in trained men. European Journal of Applied Physiology 117(7), 1287-1298.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["split_variante", "focus_pierna", "ppl"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "split-full-body-3d-compuestos-rotatorios",
+      "name": "Split Full Body 3 días — compuesto principal rotando entre sentadilla / peso muerto / press",
+      "rule_type": "select_split",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.methodology_selected", "op": "equals", "value": "full-body-3d"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "split_assignment",
+        "dias": [
+          {"numero": 1, "label": "Lunes", "nombre_dia": "Full Body A (sentadilla + horizontal push + horizontal pull)", "grupos_primarios": ["cuadriceps", "gluteo_mayor", "pecho", "espalda_alta"], "grupos_secundarios": ["triceps", "biceps", "core_anterior"], "compuesto_principal_pattern": "sentadilla", "compuesto_secundario_pattern": "press-banca", "compuesto_terciario_pattern": "remo-horizontal", "intensidad_esperada": "alta", "duracion_estimada_min": 70},
+          {"numero": 2, "label": "Miércoles", "nombre_dia": "Full Body B (peso muerto + vertical pull + vertical push)", "grupos_primarios": ["femoral", "gluteo_mayor", "dorsal_ancho", "hombro_anterior"], "grupos_secundarios": ["espalda_baja", "biceps", "triceps", "trapecio"], "compuesto_principal_pattern": "peso-muerto", "compuesto_secundario_pattern": "dominada", "compuesto_terciario_pattern": "press-militar", "intensidad_esperada": "alta", "duracion_estimada_min": 75},
+          {"numero": 3, "label": "Viernes", "nombre_dia": "Full Body C (press militar + sentadilla goblet + peso muerto rumano)", "grupos_primarios": ["hombro_lateral", "cuadriceps", "femoral", "gluteo_mayor"], "grupos_secundarios": ["triceps", "core_lateral", "gemelo"], "compuesto_principal_pattern": "press-militar", "compuesto_secundario_pattern": "sentadilla", "compuesto_terciario_pattern": "peso-muerto-rumano", "intensidad_esperada": "media-alta", "duracion_estimada_min": 65}
+        ],
+        "dias_descanso": [2, 4, 6, 7],
+        "rotacion_pattern": "rotacion_compuestos_ABC",
+        "frecuencia_por_grupo": {
+          "pecho": 1, "espalda": 2, "pierna_quad": 2, "pierna_fem": 2, "hombro": 2, "brazos": 3, "core": 3
+        },
+        "nota_pedagogica": "Full body 3d cubre TODO el cuerpo en cada sesión, pero cada día tiene UN compuesto que es el foco principal (mayor carga y reps). Variar el compuesto entre días evita que el cliente vea 3 lunes idénticos en 4 semanas. La rotación sentadilla → peso muerto → press desarrolla los 3 patrones fundamentales en paralelo."
+      },
+      "priority": 100,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "Full body 3d con rotación de compuesto principal mantiene frecuencia 2-3× por grupo (sweet spot Schoenfeld 2016) mientras evita la monotonía motora del 'mismo Full Body 3 días/semana'. Para principiantes esta variabilidad es pedagógicamente importante: cada día introduce un patrón motor distinto como protagonista. La distribución de compuestos también balancea la carga lumbar (no se hace peso muerto el mismo día que sentadilla pesada).",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2016). Effects of resistance training frequency on measures of muscle hypertrophy: A systematic review and meta-analysis. Sports Medicine 46(11), 1689-1697.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["split_estandar", "full_body", "principiante", "3_dias"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "split-hiit-sabado-add-on",
+      "name": "Add-on día 6 sábado HIIT — para Esencial 6d con objetivo pérdida grasa",
+      "rule_type": "select_split_addon",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.tier", "op": "in", "value": ["esencial", "metodo"]},
+          {"field": "client.days_per_week", "op": "equals", "value": 6},
+          {"field": "client.objective", "op": "in", "value": ["perdida_grasa", "recomposicion"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_rodilla"},
+          {"field": "client.active_injuries", "op": "includes", "value": "hipertension_no_controlada"}
+        ]
+      },
+      "output": {
+        "type": "split_addon",
+        "dia_addon": {
+          "numero": 6,
+          "label": "Sábado",
+          "nombre_dia": "HIIT dedicado",
+          "tipo": "hiit_dedicado",
+          "duracion_estimada_min": 30,
+          "estructura_sugerida": [
+            {"bloque": "calentamiento", "min": 5, "intensidad": "baja", "modo": "caminadora_inclinada"},
+            {"bloque": "intervals_principales", "min": 20, "estructura": "8 rondas × (60s alto / 90s recovery)", "intensidad": "alta", "modos_sugeridos": ["bicicleta_estatica", "escaladora", "remo_concept2"]},
+            {"bloque": "cooldown", "min": 5, "intensidad": "baja", "modo": "caminadora_horizontal"}
+          ],
+          "metodologia_slug_relacionada": "hiit-estructurado",
+          "rpe_objetivo": "7-8 en intervalos altos, 4-5 en recovery",
+          "rir_no_aplica": "HIIT no usa RIR (es métrica de resistencia, no fuerza)"
+        },
+        "advertencia_coach": "Si el cliente reporta fatiga acumulada después de 2-3 semanas, mover HIIT del sábado al día de descanso del split base y dejar el sábado opcional."
+      },
+      "priority": 110,
+      "execution_phase": "select",
+      "exception_when": [
+        {"field": "client.cardio_tolerance", "op": "less_than", "value": 5, "note": "Cliente con tolerancia cardio <5/10 — empezar con LISS 30 min en lugar de HIIT, escalar gradualmente"}
+      ],
+      "scientific_rationale": "HIIT (entrenamiento por intervalos de alta intensidad) produce déficit calórico agudo + EPOC (exceso de consumo de oxígeno post-ejercicio) prolongado que puede sumar 6-15% al gasto energético del día. Tabata original (1996) demostró mejoras significativas de VO2max con protocolos breves. En contexto de pérdida de grasa con 5 días de pesas + 1 HIIT, el HIIT NO sustituye al cardio LISS post-pesas — lo agrega como estímulo metabólico distinto.",
+      "scientific_sources": [
+        {"citation": "Tabata I., Nishimura K., Kouzaki M., et al. (1996). Effects of moderate-intensity endurance and high-intensity intermittent training on anaerobic capacity and VO2max. Medicine and Science in Sports and Exercise 28(10), 1327-1330.", "verified": false},
+        {"citation": "Wewege M., van den Berg R., Ward R.E., Keech A. (2017). The effects of high-intensity interval training vs. moderate-intensity continuous training on body composition in overweight and obese adults: a systematic review and meta-analysis. Obesity Reviews 18(6), 635-646.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Lizetd 6 días Esencial con HIIT sábado. Matchea esta rule directamente."
+        }
+      ],
+      "tags": ["addon", "hiit", "perdida_grasa", "6_dias"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "tmb-mifflin-st-jeor-hombre",
+      "name": "TMB Mifflin-St Jeor para hombre — TMB = 10×kg + 6.25×cm − 5×edad + 5",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.sexo", "op": "equals", "value": "masculino"},
+          {"field": "client.peso_kg", "op": "is_not_null", "value": null},
+          {"field": "client.estatura_cm", "op": "is_not_null", "value": null},
+          {"field": "client.edad", "op": "is_not_null", "value": null}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "tmb",
+        "formula": "TMB = 10 × peso_kg + 6.25 × estatura_cm − 5 × edad + 5",
+        "formula_machine_readable": "10*client.peso_kg + 6.25*client.estatura_cm - 5*client.edad + 5",
+        "unit_output": "kcal/dia",
+        "next_step": "factor_actividad",
+        "ejemplo_calculo": {
+          "input": {"peso_kg": 75, "estatura_cm": 178, "edad": 30},
+          "calculo": "10*75 + 6.25*178 − 5*30 + 5 = 750 + 1112.5 − 150 + 5 = 1717.5 kcal/dia",
+          "tmb_resultado": 1717.5
+        }
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "La fórmula Mifflin-St Jeor (1990) es la más precisa para estimar TMB en población general moderna según la revisión de la Academia de Nutrición y Dietética (Frankenfield et al. 2005). Tiene error promedio de ~10% vs ~14% de Harris-Benedict y no requiere medir % grasa corporal (vs Katch-McArdle que sí lo requiere). Es la opción default para clientes WellCore (LATAM, composición corporal heterogénea, sin medición DEXA disponible).",
+      "scientific_sources": [
+        {"citation": "Mifflin M.D., St Jeor S.T., Hill L.A., Scott B.J., Daugherty S.A., Koh Y.O. (1990). A new predictive equation for resting energy expenditure in healthy individuals. American Journal of Clinical Nutrition 51(2), 241-247.", "verified": false},
+        {"citation": "Frankenfield D., Roth-Yousey L., Compher C. (2005). Comparison of predictive equations for resting metabolic rate in healthy nonobese and obese adults: a systematic review. Journal of the American Dietetic Association 105(5), 775-789.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_002_daniel",
+          "matched": true,
+          "outcome": "TMB calculada para Daniel (~83kg, ~178cm, edad ~30) = 1842.5 kcal/día base."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "macros", "tmb", "hombre"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "tmb-mifflin-st-jeor-mujer",
+      "name": "TMB Mifflin-St Jeor para mujer — TMB = 10×kg + 6.25×cm − 5×edad − 161",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.sexo", "op": "equals", "value": "femenino"},
+          {"field": "client.peso_kg", "op": "is_not_null", "value": null},
+          {"field": "client.estatura_cm", "op": "is_not_null", "value": null},
+          {"field": "client.edad", "op": "is_not_null", "value": null}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "tmb",
+        "formula": "TMB = 10 × peso_kg + 6.25 × estatura_cm − 5 × edad − 161",
+        "formula_machine_readable": "10*client.peso_kg + 6.25*client.estatura_cm - 5*client.edad - 161",
+        "unit_output": "kcal/dia",
+        "next_step": "factor_actividad",
+        "ejemplo_calculo": {
+          "input": {"peso_kg": 60, "estatura_cm": 165, "edad": 28},
+          "calculo": "10*60 + 6.25*165 − 5*28 − 161 = 600 + 1031.25 − 140 − 161 = 1330.25 kcal/dia",
+          "tmb_resultado": 1330.25
+        }
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.ciclo_menstrual_fase", "op": "equals", "value": "lutea_tardia", "note": "Fase lútea tardía: TMB sube ~50-150 kcal/día por aumento de temperatura basal. Categoría G aplica delta sobre la TMB calculada acá."}
+      ],
+      "scientific_rationale": "Mifflin-St Jeor para mujeres usa offset −161 en lugar de +5 del hombre, reflejando la menor masa magra promedio. La fórmula mantiene precisión ~10% en mujeres no atletas. Para atletas con masa magra alta (porcentaje grasa <18-22%), Katch-McArdle sería más precisa pero requiere medición % grasa — fuera del intake estándar WellCore. En mujeres con ciclo menstrual tracking, la fase lútea tardía puede agregar 50-150 kcal/día por aumento del metabolismo basal (aplicado vía categoría G).",
+      "scientific_sources": [
+        {"citation": "Mifflin M.D., St Jeor S.T., Hill L.A., Scott B.J., Daugherty S.A., Koh Y.O. (1990). A new predictive equation for resting energy expenditure in healthy individuals. American Journal of Clinical Nutrition 51(2), 241-247.", "verified": false},
+        {"citation": "Frankenfield D., Roth-Yousey L., Compher C. (2005). Comparison of predictive equations for resting metabolic rate in healthy nonobese and obese adults: a systematic review. Journal of the American Dietetic Association 105(5), 775-789.", "verified": false},
+        {"citation": "Solomon S.J., Kurzer M.S., Calloway D.H. (1982). Menstrual cycle and basal metabolic rate in women. American Journal of Clinical Nutrition 36(4), 611-616.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "TMB base calculada para Lizetd. Déficit moderado aplicado vía C4 → 1650 kcal target."
+        },
+        {
+          "client_anonimized": "elite_001_silvia",
+          "matched": true,
+          "outcome": "TMB base calculada para Silvia. Recomposición isocalorica vía C6 → 1800 kcal target."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "macros", "tmb", "mujer"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    }
+  ],
+  "_next_chunk": {
+    "chunk": "04 of 12",
+    "scope": "Categoría C — C3-C8 (factor actividad + ajustes por objetivo: deficit moderado, deficit agresivo, recomposición, aumento limpio, aumento agresivo). Total: 6 rules.",
+    "blocked_by_daniel_validation": true
+  },
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre de Fase 3 — verificar refs Schoenfeld 2016, Bartolomei 2017, Tabata 1996, Wewege 2017, Mifflin 1990, Frankenfield 2005, Solomon 1982."
+  ]
+}

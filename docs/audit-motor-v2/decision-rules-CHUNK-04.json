@@ -1,0 +1,325 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "04 of 12",
+    "chunk_description": "Categoría C — C3 (factor actividad) + C4-C8 (5 ajustes por objetivo: déficit moderado, déficit agresivo, recomposición, aumento limpio, aumento agresivo).",
+    "category": "C. CÁLCULO DE MACROS (rules C3-C8)",
+    "rule_type": "calculate_macros",
+    "depends_on": {
+      "previous_chunks": [
+        "docs/audit-motor-v2/decision-rules-CHUNK-01.json",
+        "docs/audit-motor-v2/decision-rules-CHUNK-02.json",
+        "docs/audit-motor-v2/decision-rules-CHUNK-03.json"
+      ],
+      "scope_proposal": "docs/audit-motor-v2/decision-rules-SCOPE-PROPUESTA.md"
+    },
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ],
+    "execution_phase_global": "compose",
+    "pipeline_position": "TMB (C1/C2) → GET (C3) → kcal_objetivo (C4-C8) → proteína (C9) → grasa (C10) → carbos (C11) → periodización (C12)",
+    "perplexity_verification_pending": "Refs Helms 2014, Murphy 2014, Garthe 2011, Slater 2019, Aragon 2017, Helms 2019 marcadas verified:false hasta consulta Perplexity Pro Chrome MCP bulk al cierre de Fase 3"
+  },
+  "rules": [
+    {
+      "slug": "factor-actividad-mapeo",
+      "name": "Factor de actividad — multiplicador del TMB según nivel de actividad declarado",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.tmb_kcal", "op": "is_not_null", "value": null},
+          {"field": "client.nivel_actividad", "op": "in", "value": ["sedentario", "ligero", "moderado", "activo", "muy_activo"]}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "get",
+        "step_description": "Gasto Energético Total = TMB × factor_actividad",
+        "formula_machine_readable": "engine.tmb_kcal * factor_actividad",
+        "unit_output": "kcal/dia",
+        "mapping_factor": {
+          "sedentario": 1.2,
+          "ligero": 1.375,
+          "moderado": 1.55,
+          "activo": 1.725,
+          "muy_activo": 1.9
+        },
+        "interpretacion_niveles": {
+          "sedentario": "trabajo de oficina + sin entreno o muy ocasional",
+          "ligero": "entreno 1-3 días/semana o trabajo con movimiento ligero",
+          "moderado": "entreno 3-5 días/semana (la mayoría de clientes WellCore Esencial)",
+          "activo": "entreno 5-6 días/semana + estilo de vida activo",
+          "muy_activo": "entreno 6-7 días/semana intenso + trabajo físico, o atleta competitivo"
+        },
+        "next_step": "ajuste_objetivo"
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.coach_override_factor", "op": "is_not_null", "value": null, "note": "El coach puede override el factor para clientes con desbalance entre actividad declarada y outcomes (ej. cliente declara sedentario pero camina 12k pasos/día)"}
+      ],
+      "scientific_rationale": "Los factores 1.2-1.9 (PAL — Physical Activity Level) son los estándares de la OMS y la FAO basados en estudios de calorimetría indirecta y doubly-labeled water. La precisión de la auto-clasificación del cliente es la mayor fuente de error en el cálculo del GET — por eso el coach puede override en la siguiente sesión de ajuste si el cliente no progresa como predice el cálculo. Para la mayoría de clientes WellCore Esencial (3-5 días/sem entrenamiento), el factor moderado 1.55 es el default razonable.",
+      "scientific_sources": [
+        {"citation": "FAO/WHO/UNU (2004). Human energy requirements: Report of a Joint FAO/WHO/UNU Expert Consultation. Food and Nutrition Technical Report Series 1.", "verified": false},
+        {"citation": "Frankenfield D., Roth-Yousey L., Compher C. (2005). Comparison of predictive equations for resting metabolic rate in healthy nonobese and obese adults. Journal of the American Dietetic Association 105(5), 775-789.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Factor moderado 1.55 aplicado — entreno 5 días + HIIT sábado en activación 6 días totales."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "macros", "get", "factor_actividad"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "ajuste-deficit-perdida-moderada",
+      "name": "Ajuste por objetivo — pérdida de grasa moderada (−400 kcal vs GET, rango −300 a −500)",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.get_kcal", "op": "is_not_null", "value": null},
+          {"field": "client.objective", "op": "equals", "value": "perdida_moderada"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "ajuste_objetivo",
+        "kcal_delta_default": -400,
+        "kcal_delta_range": [-500, -300],
+        "kcal_objetivo_formula": "engine.get_kcal - 400",
+        "ritmo_perdida_esperado_kg_semana": [0.4, 0.7],
+        "duracion_maxima_recomendada_semanas": 16,
+        "next_step": "proteina_por_objetivo",
+        "flag_advertencia": false,
+        "instrucciones_seguimiento": "Pesar cliente semanal. Si pérdida >0.8 kg/semana sostenido 2 semanas, subir kcal +100. Si <0.2 kg/semana sostenido 3 semanas y adherencia OK, bajar kcal otros −100."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Déficit de 300-500 kcal/día equivale a 0.4-0.7 kg/semana de pérdida (asumiendo 1 kg ~7700 kcal). Helms et al. (2014) recomiendan 0.5-1.0% del peso corporal por semana como ritmo seguro para preservar masa magra. Por encima de 1% semanal, la pérdida muscular se acelera. El punto medio −400 kcal es defensivo y permite ajustes en ambas direcciones según outcomes semanales medidos.",
+      "scientific_sources": [
+        {"citation": "Helms E.R., Aragon A.A., Fitschen P.J. (2014). Evidence-based recommendations for natural bodybuilding contest preparation: nutrition and supplementation. Journal of the International Society of Sports Nutrition 11, 20.", "verified": false},
+        {"citation": "Garthe I., Raastad T., Refsnes P.E., Koivisto A., Sundgot-Borgen J. (2011). Effect of two different weight-loss rates on body composition and strength and power-related performance in elite athletes. International Journal of Sport Nutrition and Exercise Metabolism 21(2), 97-104.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "macros", "ajuste_objetivo", "perdida_grasa"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "ajuste-deficit-perdida-agresiva",
+      "name": "Ajuste por objetivo — pérdida de grasa agresiva (−650 kcal vs GET, rango −500 a −800)",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.get_kcal", "op": "is_not_null", "value": null},
+          {"field": "client.objective", "op": "equals", "value": "perdida_agresiva"}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.level", "op": "equals", "value": "principiante", "note": "Déficit agresivo NO se recomienda a principiantes — derivar a pérdida moderada (C4)"}
+        ]
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "ajuste_objetivo",
+        "kcal_delta_default": -650,
+        "kcal_delta_range": [-800, -500],
+        "kcal_objetivo_formula": "engine.get_kcal - 650",
+        "ritmo_perdida_esperado_kg_semana": [0.7, 1.1],
+        "duracion_maxima_recomendada_semanas": 8,
+        "next_step": "proteina_por_objetivo",
+        "flag_advertencia": true,
+        "advertencia_coach_texto": "Déficit agresivo (1% del peso corporal/semana). Solo apto para intermedio/avanzado con composición corporal con margen (>20% grasa hombre, >28% grasa mujer). Duración máxima 8 semanas. Sueño mínimo 7h. Proteína 2.4-2.6 g/kg para preservar masa magra. Reevaluar peso y composición cada 2 semanas. Si fatiga, hambre extrema o pérdida de fuerza sostenida → subir kcal a déficit moderado (C4).",
+        "instrucciones_seguimiento": "Medir adherencia + sueño + estado de ánimo + fuerza. Si fuerza cae >10% en compuestos principales, subir kcal +250 y mover a déficit moderado."
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.body_fat_pct", "op": "less_than", "value": 15, "note": "Hombre con grasa <15% — pérdida agresiva no segura, derivar a recomp o cut moderado"},
+        {"field": "client.body_fat_pct", "op": "less_than", "value": 22, "note": "Mujer con grasa <22% — idem"}
+      ],
+      "scientific_rationale": "Déficit de 500-800 kcal/día equivale a 0.7-1.1 kg/semana. Garthe et al. (2011) compararon déficit rápido (0.7% peso/semana) vs lento (1.4% peso/semana) en atletas elite: los rápidos perdieron significativamente más masa magra y fuerza. Por eso el déficit agresivo está limitado a 8 semanas máximo y a clientes con margen de composición corporal. Proteína sube a 2.4-2.6 g/kg para mitigar pérdida muscular (Murphy et al. 2014).",
+      "scientific_sources": [
+        {"citation": "Garthe I., Raastad T., Refsnes P.E., Koivisto A., Sundgot-Borgen J. (2011). Effect of two different weight-loss rates on body composition and strength and power-related performance in elite athletes. International Journal of Sport Nutrition and Exercise Metabolism 21(2), 97-104.", "verified": false},
+        {"citation": "Murphy C.H., Hector A.J., Phillips S.M. (2015). Considerations for protein intake in managing weight loss in athletes. European Journal of Sport Science 15(1), 21-28.", "verified": false},
+        {"citation": "Helms E.R., Aragon A.A., Fitschen P.J. (2014). Evidence-based recommendations for natural bodybuilding contest preparation: nutrition and supplementation. JISSN 11, 20.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": false,
+          "outcome": "Lizetd 1650 kcal vs TMB ~1330 + factor 1.55 = GET ~2061. Delta = −411 → déficit moderado (C4), no agresivo. C5 NO matchea para Lizetd."
+        }
+      ],
+      "tags": ["macros", "ajuste_objetivo", "perdida_grasa_agresiva", "intermedio_avanzado_only"],
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "validation_note": "Validar con Daniel que el threshold de body_fat para mujer es 22% (no 25%) y para hombre 15% (no 18%). Los thresholds afectan a qué clientes el motor activa esta rule.",
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "ajuste-recomposicion-isocalorico",
+      "name": "Ajuste por objetivo — recomposición (isocalórico vs GET, rango ±100 kcal)",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.get_kcal", "op": "is_not_null", "value": null},
+          {"field": "client.objective", "op": "equals", "value": "recomposicion"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "ajuste_objetivo",
+        "kcal_delta_default": 0,
+        "kcal_delta_range": [-100, 100],
+        "kcal_objetivo_formula": "engine.get_kcal",
+        "ritmo_cambio_esperado_kg_semana": [-0.2, 0.2],
+        "duracion_maxima_recomendada_semanas": 16,
+        "next_step": "proteina_por_objetivo",
+        "flag_advertencia": false,
+        "instrucciones_seguimiento": "Recomp mide composición, no peso. Pliegues + medidas + fotos cada 2 sem. Si peso estable pero pliegues bajan = recomp exitosa. Si peso baja >0.3 kg/sem sostenido, subir kcal +100. Si peso sube >0.3 kg/sem y la composición empeora, bajar kcal −100.",
+        "advertencia_intermedio_avanzado": "Recomposición es más viable en principiantes (overweight no-trained) que en intermedios/avanzados. Para intermedios/avanzados, el progreso será lento (10-16 sem) y requiere alta adherencia."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Barakat et al. (2020) revisaron la evidencia sobre recomposición y concluyen que es más probable en personas con margen de mejora (overweight, returnees post-pausa, principiantes). En atletas avanzados también ocurre pero requiere protocolo estricto: déficit muy ligero o isocalorico, proteína 2.0-2.4 g/kg, entrenamiento de fuerza con volumen preservado, sueño y manejo de estrés. La métrica no es peso — es composición corporal.",
+      "scientific_sources": [
+        {"citation": "Barakat C., Pearson J., Escalante G., Campbell B., De Souza E.O. (2020). Body Recomposition: Can Trained Individuals Build Muscle and Lose Fat at the Same Time? Strength and Conditioning Journal 42(5), 7-21.", "verified": false},
+        {"citation": "Slater G.J., Dieter B.P., Marsh D.J., Helms E.R., Shaw G., Iraki J. (2019). Is an Energy Surplus Required to Maximize Skeletal Muscle Hypertrophy Associated With Resistance Training. Frontiers in Nutrition 6, 131.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_001_silvia",
+          "matched": true,
+          "outcome": "Silvia 1800 kcal isocalorico recomposición — encaja con esta rule."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "macros", "ajuste_objetivo", "recomposicion"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "ajuste-aumento-limpio",
+      "name": "Ajuste por objetivo — aumento muscular limpio (+400 kcal vs GET, rango +300 a +500)",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.get_kcal", "op": "is_not_null", "value": null},
+          {"field": "client.objective", "op": "equals", "value": "aumento_limpio"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "ajuste_objetivo",
+        "kcal_delta_default": 400,
+        "kcal_delta_range": [300, 500],
+        "kcal_objetivo_formula": "engine.get_kcal + 400",
+        "ritmo_aumento_esperado_kg_semana": [0.15, 0.3],
+        "duracion_recomendada_semanas": [12, 24],
+        "next_step": "proteina_por_objetivo",
+        "flag_advertencia": false,
+        "instrucciones_seguimiento": "Subida ideal 0.2-0.3 kg/sem (mitad masa magra mitad grasa). Si subida <0.1 kg/sem sostenido 2 sem, subir kcal +100. Si subida >0.5 kg/sem y la grasa abdominal aumenta visiblemente, bajar kcal −100. Pliegue tricipital + cintura mensual."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Aragon y Schoenfeld (2017) recomiendan ritmo de aumento de peso de 0.25-0.5% del peso corporal por semana para minimizar acumulación de grasa. Para un cliente de 75 kg, eso es 0.19-0.38 kg/semana. El surplus de 300-500 kcal/día sostenido produce ese ritmo en intermedios. En avanzados el ritmo es más lento (0.1-0.2 kg/sem) y requiere paciencia.",
+      "scientific_sources": [
+        {"citation": "Aragon A.A., Schoenfeld B.J. (2017). Magnitude and Composition of the Energy Surplus for Maximizing Muscle Hypertrophy: Implications for Bodybuilding and Physique Athletes. Strength and Conditioning Journal 39(6), 7-15.", "verified": false},
+        {"citation": "Slater G.J., Dieter B.P., Marsh D.J., Helms E.R., Shaw G., Iraki J. (2019). Is an Energy Surplus Required to Maximize Skeletal Muscle Hypertrophy Associated With Resistance Training. Frontiers in Nutrition 6, 131.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "macros", "ajuste_objetivo", "aumento_muscular"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "ajuste-aumento-agresivo",
+      "name": "Ajuste por objetivo — aumento muscular agresivo (+650 kcal vs GET, rango +500 a +800)",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.get_kcal", "op": "is_not_null", "value": null},
+          {"field": "client.objective", "op": "equals", "value": "aumento_agresivo"}
+        ],
+        "any_of": [
+          {"field": "client.level", "op": "in", "value": ["intermedio", "avanzado"]},
+          {"field": "client.preferences", "op": "includes", "value": "ganar_peso_rapido"}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "ajuste_objetivo",
+        "kcal_delta_default": 650,
+        "kcal_delta_range": [500, 800],
+        "kcal_objetivo_formula": "engine.get_kcal + 650",
+        "ritmo_aumento_esperado_kg_semana": [0.4, 0.7],
+        "duracion_recomendada_semanas": [8, 16],
+        "next_step": "proteina_por_objetivo",
+        "flag_advertencia": true,
+        "advertencia_coach_texto": "Aumento agresivo (~0.5 kg/sem). Aceptás que ~50-60% será grasa porque el músculo no se sintetiza más rápido que ~0.25 kg/sem incluso con surplus máximo. Útil solo si necesitás ganar peso (ej. ectomorfo extremo, post-cirugía recuperación) o si la prioridad es performance no estética. Reevaluar a las 8 semanas — si grasa abdominal sube visiblemente, transitar a aumento limpio (C7).",
+        "instrucciones_seguimiento": "Cintura mensual obligatoria. Si cintura sube >3 cm en 8 sem, bajar kcal −250."
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.body_fat_pct", "op": "greater_than", "value": 18, "note": "Hombre con grasa >18% — aumento agresivo aumenta el riesgo de comprometer salud metabólica, derivar a aumento limpio (C7)"},
+        {"field": "client.body_fat_pct", "op": "greater_than", "value": 28, "note": "Mujer con grasa >28% — idem"}
+      ],
+      "scientific_rationale": "La síntesis muscular tiene un techo biológico: incluso con surplus máximo, los intermedios sintetizan ~0.25 kg/semana de masa magra y los avanzados ~0.1-0.15 kg/sem (Helms 2019, McDonald). Surplus mayor que el necesario para esa síntesis se almacena como grasa. El aumento agresivo es útil cuando ganar peso total importa más que la calidad de ese peso (ej. ectomorfo competidor de strongman, atleta de fuerza absoluta) o cuando se necesita ganar peso rápido por razones médicas. La advertencia limita su uso casual.",
+      "scientific_sources": [
+        {"citation": "Helms E.R. (2019). The Muscle and Strength Pyramid: Nutrition, 2nd ed.", "verified": false},
+        {"citation": "Aragon A.A., Schoenfeld B.J. (2017). Magnitude and Composition of the Energy Surplus for Maximizing Muscle Hypertrophy. Strength and Conditioning Journal 39(6), 7-15.", "verified": false},
+        {"citation": "Garthe I., Raastad T., Sundgot-Borgen J. (2011). Long-term effect of nutritional counselling on desired gain in body mass and lean body mass in elite athletes. Applied Physiology, Nutrition, and Metabolism 36(4), 547-554.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_002_daniel",
+          "matched": true,
+          "outcome": "Daniel 3700 kcal — TMB ~1842 × factor activo 1.725 = GET ~3177. Delta ~+523 → encaja en C7 (aumento limpio) más que en C8 (agresivo). Daniel está cerca del límite entre ambas rules."
+        }
+      ],
+      "tags": ["macros", "ajuste_objetivo", "aumento_muscular_agresivo"],
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "validation_note": "Validar caso Daniel (cerca del threshold C7/C8). Si Daniel quiere quedarse en C8, mantener; si lo ve mejor en C7, ajustar threshold body_fat o agregar exception_when sobre level=avanzado.",
+      "version": 1,
+      "active": true
+    }
+  ],
+  "_next_chunk": {
+    "chunk": "05 of 12",
+    "scope": "Categoría C — C9-C12 (proteína por objetivo, grasa por contexto, carbos = resto, periodización entreno/descanso) + arranque Categoría D (D1-D2: estructura día + selección pecho). Total: 6 rules.",
+    "blocked_by_daniel_validation": true
+  },
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre de Fase 3 — verificar refs Helms 2014/2019, Garthe 2011 (dos papers), Murphy 2014, Aragon-Schoenfeld 2017, Slater 2019, Barakat 2020, FAO/WHO/UNU 2004, Frankenfield 2005."
+  ]
+}

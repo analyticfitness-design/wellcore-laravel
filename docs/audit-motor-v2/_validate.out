@@ -1,0 +1,105 @@
+JSON OK · foods count: 100
+--------------------------------------------------------------------------------------------------------------
+  pechuga-pollo                | kcal calc  156.4 vs  165.0 (diff  8.6) PASS | 🍗 | proteinas    | conf:high
+  lomo-cerdo-magro             | kcal calc  134.6 vs  143.0 (diff  8.4) PASS | 🥩 | proteinas    | conf:high
+  carne-res-lomo               | kcal calc  139.3 vs  141.0 (diff  1.7) PASS | 🥩 | proteinas    | conf:high
+  carne-res-sobrebarriga       | kcal calc  169.0 vs  169.0 (diff  0.0) PASS | 🥩 | proteinas    | conf:moderate [NEEDS_VAL]
+  tilapia                      | kcal calc   95.3 vs   96.0 (diff  0.7) PASS | 🐟 | proteinas    | conf:high
+  basa-pescado                 | kcal calc   87.0 vs   90.0 (diff  3.0) PASS | 🐟 | proteinas    | conf:moderate [NEEDS_VAL]
+  atun-agua-lata               | kcal calc  111.2 vs  116.0 (diff  4.8) PASS | 🐟 | proteinas    | conf:high
+  huevo-entero                 | kcal calc  138.7 vs  143.0 (diff  4.3) PASS | 🥚 | proteinas    | conf:high
+  clara-huevo                  | kcal calc   48.2 vs   52.0 (diff  3.8) PASS | 🥚 | proteinas    | conf:high
+  pollo-muslo-sin-piel         | kcal calc  113.9 vs  119.0 (diff  5.1) PASS | 🍗 | proteinas    | conf:high
+  carne-res-molida-magra       | kcal calc  130.6 vs  137.0 (diff  6.4) PASS | 🥩 | proteinas    | conf:high
+  salmon-fresco                | kcal calc  202.2 vs  208.0 (diff  5.8) PASS | 🐟 | proteinas    | conf:high
+  pavo-pechuga                 | kcal calc  103.8 vs  111.0 (diff  7.2) PASS | 🦃 | proteinas    | conf:high
+  sardinas-agua-lata           | kcal calc  201.9 vs  208.0 (diff  6.1) PASS | 🐟 | proteinas    | conf:high
+  yogur-griego-natural         | kcal calc   94.6 vs   97.0 (diff  2.4) PASS | 🥛 | proteinas    | conf:moderate [NEEDS_VAL]
+  queso-campesino              | kcal calc  144.0 vs  144.0 (diff  0.0) PASS | 🧀 | proteinas    | conf:moderate [NEEDS_VAL]
+  queso-cottage                | kcal calc   78.3 vs   84.0 (diff  5.7) PASS | 🧀 | proteinas    | conf:high
+  leche-descremada             | kcal calc   35.4 vs   34.0 (diff  1.4) PASS | 🥛 | proteinas    | conf:high
+  kumis-natural                | kcal calc   39.8 vs   42.0 (diff  2.2) PASS | 🥛 | proteinas    | conf:moderate [NEEDS_VAL]
+  leche-deslactosada           | kcal calc   59.0 vs   55.0 (diff  4.0) PASS | 🥛 | proteinas    | conf:high
+  whey-concentrada             | kcal calc  365.0 vs  365.0 (diff  0.0) PASS | 🧪 | proteinas    | conf:high
+  whey-isolada                 | kcal calc  373.0 vs  376.0 (diff  3.0) PASS | 🧪 | proteinas    | conf:high
+  proteina-vegetal             | kcal calc  355.0 vs  355.0 (diff  0.0) PASS | 🧪 | proteinas    | conf:moderate [NEEDS_VAL]
+  arroz-blanco                 | kcal calc  354.3 vs  365.0 (diff 10.7) PASS | 🍚 | carbohidratos | conf:high
+  arroz-integral               | kcal calc  362.3 vs  370.0 (diff  7.7) PASS | 🍚 | carbohidratos | conf:high
+  avena-hojuelas               | kcal calc  383.0 vs  389.0 (diff  6.0) PASS | 🥣 | carbohidratos | conf:high
+  pasta-integral               | kcal calc  358.5 vs  357.0 (diff  1.5) PASS | 🍝 | carbohidratos | conf:high
+  pan-integral                 | kcal calc  260.0 vs  252.0 (diff  8.0) PASS | 🍞 | carbohidratos | conf:moderate [NEEDS_VAL]
+  tostada-integral             | kcal calc  397.0 vs  388.0 (diff  9.0) PASS | 🍞 | carbohidratos | conf:high
+  galletas-arroz               | kcal calc  387.0 vs  387.0 (diff  0.0) PASS | 🍚 | carbohidratos | conf:high
+  quinoa                       | kcal calc  119.9 vs  120.0 (diff  0.1) PASS | 🍚 | carbohidratos | conf:high
+  papa-comun                   | kcal calc   76.9 vs   77.0 (diff  0.1) PASS | 🥔 | carbohidratos | conf:high
+  batata-camote                | kcal calc   87.7 vs   86.0 (diff  1.7) PASS | 🍠 | carbohidratos | conf:high
+  yuca                         | kcal calc  160.7 vs  160.0 (diff  0.7) PASS | 🍠 | carbohidratos | conf:high
+  platano-maduro               | kcal calc  136.4 vs  122.0 (diff 14.4) PASS | 🍌 | carbohidratos | conf:high
+  platano-verde                | kcal calc  136.8 vs  122.0 (diff 14.8) PASS | 🍌 | carbohidratos | conf:high
+  arepa-maiz-blanco            | kcal calc  169.0 vs  175.0 (diff  6.0) PASS | 🫓 | carbohidratos | conf:moderate [NEEDS_VAL]
+  tortilla-maiz-mexicana       | kcal calc  227.0 vs  218.0 (diff  9.0) PASS | 🫓 | carbohidratos | conf:high
+  aguacate                     | kcal calc  174.3 vs  160.0 (diff 14.3) PASS | 🥑 | grasas       | conf:high
+  aceite-oliva-extra-virgen    | kcal calc  882.0 vs  884.0 (diff  2.0) PASS | 🫒 | grasas       | conf:high
+  almendras                    | kcal calc  622.0 vs  579.0 (diff 43.0) PASS | 🥜 | grasas       | conf:high
+  nueces                       | kcal calc  701.0 vs  654.0 (diff 47.0) PASS | 🥜 | grasas       | conf:high
+  mani                         | kcal calc  609.0 vs  567.0 (diff 42.0) PASS | 🥜 | grasas       | conf:high
+  mantequilla-mani-natural     | kcal calc  630.0 vs  588.0 (diff 42.0) PASS | 🥜 | grasas       | conf:high
+  chia                         | kcal calc  515.0 vs  486.0 (diff 29.0) PASS | 🌱 | grasas       | conf:high
+  linaza                       | kcal calc  566.0 vs  534.0 (diff 32.0) PASS | 🌱 | grasas       | conf:high
+  aceite-coco                  | kcal calc  891.0 vs  892.0 (diff  1.0) PASS | 🥥 | grasas       | conf:high
+  ghee                         | kcal calc  900.0 vs  900.0 (diff  0.0) PASS | 🧈 | grasas       | conf:high
+  espinaca                     | kcal calc   29.6 vs   23.0 (diff  6.6) PASS | 🥬 | verduras     | conf:high
+  lechuga                      | kcal calc   19.0 vs   15.0 (diff  4.0) PASS | 🥬 | verduras     | conf:high
+  rugula                       | kcal calc   31.5 vs   25.0 (diff  6.5) PASS | 🥬 | verduras     | conf:high
+  kale                         | kcal calc   61.3 vs   49.0 (diff 12.3) PASS | 🥬 | verduras     | conf:moderate [NEEDS_VAL]
+  brocoli                      | kcal calc   42.8 vs   34.0 (diff  8.8) PASS | 🥦 | verduras     | conf:high
+  coliflor                     | kcal calc   30.3 vs   25.0 (diff  5.3) PASS | 🥦 | verduras     | conf:high
+  tomate                       | kcal calc   21.0 vs   18.0 (diff  3.0) PASS | 🍅 | verduras     | conf:high
+  pepino                       | kcal calc   18.1 vs   15.0 (diff  3.1) PASS | 🥒 | verduras     | conf:high
+  zanahoria                    | kcal calc   43.8 vs   41.0 (diff  2.8) PASS | 🥕 | verduras     | conf:high
+  calabacin                    | kcal calc   19.9 vs   17.0 (diff  2.9) PASS | 🥒 | verduras     | conf:high
+  esparragos                   | kcal calc   25.3 vs   20.0 (diff  5.3) PASS | 🥬 | verduras     | conf:high
+  pimenton                     | kcal calc   30.7 vs   31.0 (diff  0.3) PASS | 🫑 | verduras     | conf:high
+  cebolla                      | kcal calc   42.5 vs   40.0 (diff  2.5) PASS | 🧅 | verduras     | conf:high
+  champinones                  | kcal calc   28.3 vs   22.0 (diff  6.3) PASS | 🍄 | verduras     | conf:high
+  banano                       | kcal calc   99.1 vs   89.0 (diff 10.1) PASS | 🍌 | verduras     | conf:high
+  manzana                      | kcal calc   59.0 vs   52.0 (diff  7.0) PASS | 🍎 | verduras     | conf:high
+  pera                         | kcal calc   63.3 vs   57.0 (diff  6.3) PASS | 🍐 | verduras     | conf:high
+  naranja                      | kcal calc   51.7 vs   47.0 (diff  4.7) PASS | 🍊 | verduras     | conf:high
+  fresas                       | kcal calc   36.3 vs   32.0 (diff  4.3) PASS | 🍓 | verduras     | conf:high
+  pina                         | kcal calc   55.3 vs   50.0 (diff  5.3) PASS | 🍍 | verduras     | conf:high
+  papaya                       | kcal calc   48.7 vs   43.0 (diff  5.7) PASS | 🍈 | verduras     | conf:high
+  mora                         | kcal calc   48.5 vs   43.0 (diff  5.5) PASS | 🫐 | verduras     | conf:high
+  maracuya                     | kcal calc  107.1 vs   97.0 (diff 10.1) PASS | 🥭 | verduras     | conf:high
+  cafe-negro                   | kcal calc    0.4 vs    1.0 (diff  0.6) PASS | ☕ | otros        | conf:high
+  limon                        | kcal calc   31.0 vs   22.0 (diff  9.0) PASS | 🍋 | verduras     | conf:high
+  sal-mineral                  | kcal calc    0.0 vs    0.0 (diff  0.0) PASS | 🧂 | otros        | conf:high
+  miel-natural                 | kcal calc  329.2 vs  304.0 (diff 25.2) PASS | 🍯 | otros        | conf:high
+  mermelada-sin-azucar         | kcal calc  102.0 vs   90.0 (diff 12.0) PASS | 🍓 | otros        | conf:moderate [NEEDS_VAL]
+  stevia                       | kcal calc    0.0 vs    0.0 (diff  0.0) PASS | 🌿 | otros        | conf:high
+  eritritol                    | kcal calc  400.0 vs   24.0 (diff 376.0) PASS | 🌿 | otros        | conf:moderate [NEEDS_VAL]
+  canela                       | kcal calc  348.0 vs  247.0 (diff 101.0) PASS | 🟤 | otros        | conf:high
+  te-verde                     | kcal calc    0.0 vs    1.0 (diff  1.0) PASS | 🍵 | otros        | conf:high
+  vinagre-manzana              | kcal calc    3.7 vs   21.0 (diff 17.3) PASS | 🍎 | otros        | conf:high
+  oregano-seco                 | kcal calc  350.7 vs  265.0 (diff 85.7) PASS | 🌿 | otros        | conf:high
+  curcuma                      | kcal calc  336.5 vs  354.0 (diff 17.5) PASS | 🟡 | otros        | conf:high
+  jengibre                     | kcal calc   86.4 vs   80.0 (diff  6.4) PASS | 🫚 | otros        | conf:high
+  ajo                          | kcal calc  162.1 vs  149.0 (diff 13.1) PASS | 🧄 | otros        | conf:high
+  lentejas-cocidas             | kcal calc  119.6 vs  116.0 (diff  3.6) PASS | 🫘 | proteinas    | conf:high
+  frijol-negro-cocido          | kcal calc  136.1 vs  132.0 (diff  4.1) PASS | 🫘 | proteinas    | conf:high
+  garbanzo-cocido              | kcal calc  168.6 vs  164.0 (diff  4.6) PASS | 🫘 | proteinas    | conf:high
+  camarones                    | kcal calc   99.5 vs   99.0 (diff  0.5) PASS | 🦐 | proteinas    | conf:high
+  agua-coco                    | kcal calc   19.4 vs   19.0 (diff  0.4) PASS | 🥥 | otros        | conf:high
+  aceite-aguacate              | kcal calc  882.0 vs  884.0 (diff  2.0) PASS | 🥑 | grasas       | conf:high
+  kefir-natural                | kcal calc   39.3 vs   41.0 (diff  1.7) PASS | 🥛 | proteinas    | conf:moderate [NEEDS_VAL]
+  chocolate-negro-85           | kcal calc  602.2 vs  598.0 (diff  4.2) PASS | 🍫 | grasas       | conf:high
+  tofu-firme                   | kcal calc   82.8 vs   76.0 (diff  6.8) PASS | 🟦 | proteinas    | conf:high
+  tempeh                       | kcal calc  212.6 vs  192.0 (diff 20.6) PASS | 🟫 | proteinas    | conf:moderate [NEEDS_VAL]
+  granada                      | kcal calc   92.4 vs   83.0 (diff  9.4) PASS | 🟥 | verduras     | conf:high
+  arandanos                    | kcal calc   63.5 vs   57.0 (diff  6.5) PASS | 🫐 | verduras     | conf:high
+  frijol-rojo-cocido           | kcal calc  130.5 vs  127.0 (diff  3.5) PASS | 🫘 | proteinas    | conf:high
+  frijol-blanco-cocido         | kcal calc  141.5 vs  139.0 (diff  2.5) PASS | 🫘 | proteinas    | conf:high
+  edamame                      | kcal calc  131.2 vs  122.0 (diff  9.2) PASS | 🟢 | proteinas    | conf:high
+--------------------------------------------------------------------------------------------------------------
+TODOS LOS macros_sanity_check PASAN ✓needs_daniel_validation:true count = 13
+confidence breakdown: high=87 moderate=13 low=0 

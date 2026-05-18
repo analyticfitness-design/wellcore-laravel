@@ -1,0 +1,518 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "06 of 12",
+    "chunk_description": "Categoría D — D3-D8 (selección espalda, pierna_quad, pierna_fem, gluteo_focal, hombro_tri, filtro principiante).",
+    "category": "D. SELECCIÓN DE EJERCICIOS (rules D3-D8)",
+    "rule_type": "select_exercises",
+    "depends_on": {
+      "previous_chunks": [
+        "docs/audit-motor-v2/decision-rules-CHUNK-01.json",
+        "docs/audit-motor-v2/decision-rules-CHUNK-02.json",
+        "docs/audit-motor-v2/decision-rules-CHUNK-03.json",
+        "docs/audit-motor-v2/decision-rules-CHUNK-04.json",
+        "docs/audit-motor-v2/decision-rules-CHUNK-05.json"
+      ],
+      "exercise_patterns_proposal": "docs/audit-motor-v2/exercise-patterns-agrupacion-PROPUESTA.md"
+    },
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ],
+    "exercise_patterns_confidence_global": "moderate (slugs referencian propuesta Pieza 2, no seed final aún)",
+    "perplexity_verification_pending": "Refs Contreras 2015, Andersen 2014, Krzysztofik 2019, Schoenfeld 2016/2018 marcadas verified:false hasta Perplexity bulk al cierre de Fase 3"
+  },
+  "rules": [
+    {
+      "slug": "seleccion-espalda-gym-completo",
+      "name": "Selección ejercicios día espalda — gym completo con dominada/jalón + remo + face-pull",
+      "rule_type": "select_exercises",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.day_group_primary", "op": "in", "value": ["espalda", "dorsal_ancho", "espalda_alta", "pull"]},
+          {"field": "client.location", "op": "in", "value": ["gym", "gym_completo"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_codo"},
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_hombro_aguda"}
+        ]
+      },
+      "output": {
+        "type": "exercise_selection",
+        "group": "espalda",
+        "slots_filled": [
+          {
+            "posicion": 1,
+            "rol": "compuesto_principal",
+            "exercise_pattern_slug_preferido": "dominada",
+            "exercise_pattern_slug_alternativo": "jalon-vertical",
+            "variations_preferidas_dominada": ["dominadas"],
+            "variations_preferidas_jalon": ["jalon-al-pecho-en-maquina", "jalon-agarre-neutro-en-polea", "jalon-en-polea"],
+            "decision_dominada_vs_jalon": "Si el cliente hace ≥6 dominadas estrictas, usar dominada como compuesto. Si <6, usar jalon-vertical y progresar dominadas con asistencia en otro día.",
+            "rationale": "Vertical pull con peso libre o polea es el patrón compuesto rey de espalda. Activa dorsal ancho, redondo mayor, romboides, y bíceps como secundario."
+          },
+          {
+            "posicion": 2,
+            "rol": "compuesto_secundario",
+            "exercise_pattern_slug": "remo-horizontal",
+            "variations_preferidas": ["remo-con-barra", "remo-con-mancuernas", "remo-con-barra-en-banco-inclinado", "remo-con-mancuerna-a-una-mano"],
+            "rationale": "Horizontal pull complementa vertical pull. Remo con barra/mancuernas trabaja grosor (espalda alta, romboides, trapecio medio). Variante chest-supported (banco inclinado) reduce demanda lumbar."
+          },
+          {
+            "posicion": 3,
+            "rol": "compuesto_secundario_maquina",
+            "exercise_pattern_slug": "remo-sentado",
+            "variations_preferidas": ["remo-en-polea-sentado", "remo-sentado-en-maquina", "remo-en-maquina-agarre-supino"],
+            "rationale": "Remo sentado en máquina/polea permite enfocar contracción sin demanda postural. Útil después del compuesto principal cuando la fatiga lumbar empieza a acumularse."
+          },
+          {
+            "posicion": 4,
+            "rol": "aislamiento_dorsal",
+            "exercise_pattern_slug": "straight-arm-pulldown",
+            "variations_preferidas": ["jalon-lateral-en-polea-con-cuerda", "jalon-entre-piernas-en-polea"],
+            "rationale": "Aísla dorsal ancho con codos extendidos (shoulder-extension puro). Excelente para 'finalizar' la espalda sin involucrar bíceps."
+          },
+          {
+            "posicion": 5,
+            "rol": "aislamiento_posterior",
+            "exercise_pattern_slug": "face-pull",
+            "variations_preferidas": ["facepull-en-polea", "polea-posterior-drive", "remo-polea-para-deltoides"],
+            "rationale": "Face pull trabaja deltoides posterior + rotadores externos + trapecio medio. Crítico para salud del hombro a largo plazo. Recomendado en TODO día de espalda."
+          },
+          {
+            "posicion": 6,
+            "rol": "extension_lumbar_opcional",
+            "exercise_pattern_slug": "extension-espalda",
+            "variations_preferidas": ["hiperextension", "extension-de-espalda-en-maquina"],
+            "rationale": "Extension lumbar opcional como warm-up o cool-down si lumbar está saludable. Skip si cliente reporta historia de lumbalgia.",
+            "opcional": true
+          }
+        ],
+        "techniques_aplicables_ultima_posicion": ["drop-set"],
+        "duracion_estimada_min": [55, 70],
+        "rango_series_totales_grupo": [14, 20],
+        "rango_series_totales_grupo_rationale": "Espalda tolera más volumen que pecho por la diversidad de patrones (vertical+horizontal pull, dorsal vs trapecio). 14-20 series/sesión en frecuencia 1× semana."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.equipment_excluido", "op": "includes", "value": "barra_dominadas", "note": "Si NO hay barra de dominadas, posición 1 fuerza jalon-vertical en polea"}
+      ],
+      "scientific_rationale": "Andersen et al. (2014) compararon activación EMG entre dominada y jalón al pecho: la dominada produce mayor activación de dorsal ancho y bíceps, pero el jalón permite manejar volumen consistente cuando el peso corporal supera la fuerza de pull. La combinación vertical pull + horizontal pull + aislamiento dorsal cubre todos los vectores de la cadena posterior superior.",
+      "scientific_sources": [
+        {"citation": "Andersen V., Fimland M.S., Wiik E., Skoglund A., Saeterbakken A.H. (2014). Effects of grip width on muscle strength and activation in the lat pull-down. Journal of Strength and Conditioning Research 28(4), 1135-1142.", "verified": false},
+        {"citation": "Lehman G.J. (2004). The influence of grip width and forearm pronation/supination on upper-body myoelectric activity during the flat bench press. Journal of Strength and Conditioning Research 19(3), 587-591.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["selector_ejercicios", "grupo_espalda", "gym_completo"],
+      "confidence": "moderate",
+      "confidence_rationale": "Slugs referencian propuesta Pieza 2. Reconciliar cuando exercise-patterns-seed.json esté final.",
+      "needs_daniel_validation": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "seleccion-pierna-quad-dominante",
+      "name": "Selección ejercicios día pierna cuádriceps-dominante",
+      "rule_type": "select_exercises",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.day_group_primary", "op": "in", "value": ["cuadriceps", "pierna_quad", "legs_quad_focus"]},
+          {"field": "client.location", "op": "in", "value": ["gym", "gym_completo"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_rodilla"},
+          {"field": "client.active_injuries", "op": "includes", "value": "lcr"},
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_menisco"}
+        ]
+      },
+      "output": {
+        "type": "exercise_selection",
+        "group": "cuadriceps_pierna",
+        "slots_filled": [
+          {
+            "posicion": 1,
+            "rol": "compuesto_principal",
+            "exercise_pattern_slug": "sentadilla",
+            "variations_preferidas": ["sentadilla-con-barra", "sentadilla-hacka", "sentadilla-frontal-en-landmine"],
+            "rationale": "Sentadilla con barra es el compuesto rey de cuádriceps + glúteo + sinérgicos. Hacka es alternativa más amigable lumbar para clientes con problemas posteriores. Frontal landmine es opción intermedia."
+          },
+          {
+            "posicion": 2,
+            "rol": "compuesto_secundario",
+            "exercise_pattern_slug": "prensa-piernas",
+            "variations_preferidas": ["presa-de-piernas-abierto", "prensa-de-piernas-cerrado"],
+            "rationale": "Prensa permite manejar mucha carga sin la demanda postural de la sentadilla. Variación stance: pies arriba+anchos = glúteo/femoral foco; pies bajos+cerrados = cuádriceps foco."
+          },
+          {
+            "posicion": 3,
+            "rol": "compuesto_secundario_unilateral",
+            "exercise_pattern_slug": "sentadilla-unilateral",
+            "variations_preferidas": ["sentadilla-bulgara-mancuerna", "sentadilla-a-una-pierna-con-barra"],
+            "rationale": "Trabajo unilateral corrige asimetrías y reduce carga lumbar. Búlgara con mancuernas es el más práctico; sentadilla a una pierna con barra requiere técnica avanzada."
+          },
+          {
+            "posicion": 4,
+            "rol": "aislamiento_cuadriceps",
+            "exercise_pattern_slug": "extension-cuadriceps",
+            "variations_preferidas": ["extension-de-piernas-en-maquina"],
+            "rationale": "Aislamiento puro de cuádriceps. Recomendado al final del día para 'rematar' después de compuestos. Útil para vasto medial (rangos cortos finales) y vasto lateral (rangos completos)."
+          },
+          {
+            "posicion": 5,
+            "rol": "aislamiento_gemelo",
+            "exercise_pattern_slug": "elevacion-talones",
+            "variations_preferidas": ["elevacion-de-talones-en-maquina", "elevacion-de-talones-con-mancuerna", "pantorrillas-en-prensa-de-pierna"],
+            "rationale": "Día de pierna es buen momento para incluir gemelo. De pie = gastrocnemio foco; sentado = soleo foco."
+          }
+        ],
+        "techniques_aplicables_ultima_posicion": ["drop-set", "rest-pause"],
+        "duracion_estimada_min": [70, 85],
+        "rango_series_totales_grupo": [14, 22],
+        "rango_series_totales_grupo_rationale": "Cuádriceps tolera volumen alto (es el grupo más grande). 14-22 series/sesión incluyendo gemelo."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.active_injuries", "op": "includes", "value": "condromalacia", "note": "Condromalacia: limitar rango sentadilla a 90° y evitar extension-cuadriceps con peso alto"}
+      ],
+      "scientific_rationale": "La combinación sentadilla + prensa + unilateral + extension cubre todos los vectores: bilateral pesado (sentadilla), volumen sin demanda postural (prensa), corrección asimétrica (unilateral), aislamiento (extension). Krzysztofik et al. (2019) en revisión sobre volumen máximo de entrenamiento concluyen que el cuádriceps tolera más volumen que otros grupos por su tamaño y capacidad de recuperación.",
+      "scientific_sources": [
+        {"citation": "Krzysztofik M., Wilk M., Wojdała G., Gołaś A. (2019). Maximizing Muscle Hypertrophy: A Systematic Review of Advanced Resistance Training Techniques and Methods. International Journal of Environmental Research and Public Health 16(24), 4897.", "verified": false},
+        {"citation": "Escamilla R.F. (2001). Knee biomechanics of the dynamic squat exercise. Medicine and Science in Sports and Exercise 33(1), 127-141.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["selector_ejercicios", "grupo_pierna_quad", "gym_completo"],
+      "confidence": "moderate",
+      "needs_daniel_validation": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "seleccion-pierna-fem-dominante",
+      "name": "Selección ejercicios día pierna femoral-dominante (cadena posterior)",
+      "rule_type": "select_exercises",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.day_group_primary", "op": "in", "value": ["femoral", "pierna_fem", "legs_posterior_focus", "cadena_posterior"]},
+          {"field": "client.location", "op": "in", "value": ["gym", "gym_completo"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lumbalgia_aguda"},
+          {"field": "client.active_injuries", "op": "includes", "value": "hernia_lumbar"}
+        ]
+      },
+      "output": {
+        "type": "exercise_selection",
+        "group": "femoral_gluteo",
+        "slots_filled": [
+          {
+            "posicion": 1,
+            "rol": "compuesto_principal",
+            "exercise_pattern_slug": "peso-muerto-rumano",
+            "variations_preferidas": ["peso-muerto-rumano-con-barra", "peso-muerto-rumano-con-mancuerna", "peso-muerto-rumano-en-landmine"],
+            "rationale": "RDL es el rey de la cadena posterior — femoral + glúteo + erector espinal. Menos demanda CNS que peso muerto convencional, mejor para volumen sostenido."
+          },
+          {
+            "posicion": 2,
+            "rol": "compuesto_secundario",
+            "exercise_pattern_slug": "hip-thrust",
+            "variations_preferidas": ["hipthrust-con-barra", "puente-de-gluteo-con-barra", "puente-de-gluteo-con-mancuerna"],
+            "rationale": "Hip-thrust agrega volumen de glúteo mayor con extensión de cadera horizontal. Complementa al RDL (extensión de cadera vertical desde flexión)."
+          },
+          {
+            "posicion": 3,
+            "rol": "compuesto_unilateral",
+            "exercise_pattern_slug": "peso-muerto-unilateral",
+            "variations_preferidas": ["peso-muerto-a-una-pierna-con-mancuernas"],
+            "rationale": "RDL a una pierna trabaja estabilizadores, corrige asimetrías femorales y agrega componente anti-rotacional core. Útil como trabajo de calidad."
+          },
+          {
+            "posicion": 4,
+            "rol": "aislamiento_femoral",
+            "exercise_pattern_slug": "curl-femoral",
+            "variations_preferidas": ["curl-femoral-acostado-en-maquina", "curl-femoral-sentado", "curl-femoral-arrodillado-en-maquina"],
+            "rationale": "Aislamiento puro de isquios (flexión de rodilla pura). Acostado vs sentado activa cabezas musculares ligeramente distintas — alternar entre semanas."
+          },
+          {
+            "posicion": 5,
+            "rol": "aislamiento_gluteo_lateral",
+            "exercise_pattern_slug": "abduccion-cadera",
+            "variations_preferidas": ["abduccion-de-cadera-de-pie-en-maquina", "abduccion-de-cadera-sentado-en-maquina"],
+            "rationale": "Abducción aísla glúteo medio (estabilizador pélvico). Importante para mujeres que quieren forma 'redondeada' del glúteo y para hombres que descuidan estabilidad."
+          },
+          {
+            "posicion": 6,
+            "rol": "extension_lumbar_opcional",
+            "exercise_pattern_slug": "extension-espalda",
+            "variations_preferidas": ["hiperextension"],
+            "rationale": "Hiperextensión trabaja erector espinal + glúteo + femoral en cadena. Cool-down ideal del día femoral si lumbar está saludable.",
+            "opcional": true
+          }
+        ],
+        "techniques_aplicables_ultima_posicion": ["drop-set"],
+        "duracion_estimada_min": [65, 80],
+        "rango_series_totales_grupo": [12, 18]
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "La cadena posterior tiene 3 funciones: extensión de cadera con flexión (RDL), extensión de cadera neutra (hip-thrust), flexión de rodilla (curl femoral). Cubrir las 3 maximiza desarrollo de glúteo + femoral. Schoenfeld et al. (2018) en EMG comparativo: RDL activa más femoral, hip-thrust activa más glúteo. Por eso ambos en el día femoral.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Contreras B., Vigotsky A.D., Peterson M. (2018). Differential Effects of Heavy Versus Moderate Loads on Measures of Strength and Hypertrophy in Resistance-Trained Men. Journal of Sports Science & Medicine 17(1), 137-146.", "verified": false},
+        {"citation": "McAllister M.J., Hammond K.G., Schilling B.K., Ferreria L.C., Reed J.P., Weiss L.W. (2014). Muscle activation during various hamstring exercises. Journal of Strength and Conditioning Research 28(6), 1573-1580.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["selector_ejercicios", "grupo_pierna_fem", "cadena_posterior"],
+      "confidence": "moderate",
+      "needs_daniel_validation": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "seleccion-gluteo-focal-femenino",
+      "name": "Selección ejercicios día glúteo focal — hip-thrust desplaza a sentadilla como compuesto principal",
+      "rule_type": "select_exercises",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.day_group_primary", "op": "in", "value": ["gluteo", "gluteo_focal"]}
+        ],
+        "any_of": [
+          {"field": "client.preferences", "op": "includes", "value": "priorizar_gluteo"},
+          {"field": "client.focus_muscle_group", "op": "equals", "value": "gluteo"}
+        ],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lumbalgia_aguda"}
+        ]
+      },
+      "output": {
+        "type": "exercise_selection",
+        "group": "gluteo_focal",
+        "slots_filled": [
+          {
+            "posicion": 1,
+            "rol": "compuesto_principal",
+            "exercise_pattern_slug": "hip-thrust",
+            "variations_preferidas": ["hipthrust-con-barra", "hipthrust-a-una-pierna-con-barra"],
+            "rationale": "Hip-thrust DESPLAZA a sentadilla como compuesto principal del día glúteo. Contreras et al. (2015) mostraron activación EMG significativamente mayor de glúteo mayor en hip-thrust vs sentadilla."
+          },
+          {
+            "posicion": 2,
+            "rol": "compuesto_secundario_unilateral",
+            "exercise_pattern_slug": "sentadilla-unilateral",
+            "variations_preferidas": ["sentadilla-bulgara-mancuerna", "sentadilla-stepdown"],
+            "rationale": "Búlgara con mancuernas trabaja glúteo + cuádriceps unilateral con foco anti-pélvico. Setup técnico: torso ligeramente inclinado al frente para enfatizar glúteo (vs vertical para enfatizar cuádriceps)."
+          },
+          {
+            "posicion": 3,
+            "rol": "compuesto_secundario_cadena_posterior",
+            "exercise_pattern_slug": "peso-muerto-rumano",
+            "variations_preferidas": ["peso-muerto-rumano-con-mancuerna", "peso-muerto-rumano-con-barra"],
+            "rationale": "RDL agrega trabajo de extensión de cadera con flexión. Femoral hace asistencia, glúteo es protagonista cuando torso baja paralelo al piso."
+          },
+          {
+            "posicion": 4,
+            "rol": "aislamiento_gluteo_medio",
+            "exercise_pattern_slug": "abduccion-cadera",
+            "variations_preferidas": ["abduccion-de-cadera-de-pie-en-maquina", "abduccion-de-cadera-sentado-en-maquina"],
+            "rationale": "Abducción aísla glúteo medio. Crítico para forma 'redondeada' lateral del glúteo y estabilidad pélvica."
+          },
+          {
+            "posicion": 5,
+            "rol": "aislamiento_extension_unilateral",
+            "exercise_pattern_slug": "kickback-gluteo",
+            "variations_preferidas": ["patada-trasera-en-polea", "patada-trasera-en-maquina"],
+            "rationale": "Kickback en polea aísla glúteo mayor con extensión de cadera unilateral. Permite enfocar contracción peak y volumen alto sin demanda lumbar."
+          },
+          {
+            "posicion": 6,
+            "rol": "puente_glúteo_finisher",
+            "exercise_pattern_slug": "hip-thrust",
+            "variations_preferidas": ["puente-de-gluteo-con-mancuerna"],
+            "rationale": "Puente con mancuerna como finisher al fallo o con drop-set. Bombeo final para vaciar el músculo.",
+            "opcional": true
+          }
+        ],
+        "techniques_aplicables_ultima_posicion": ["drop-set", "rest-pause", "myo-reps"],
+        "duracion_estimada_min": [60, 75],
+        "rango_series_totales_grupo": [16, 24],
+        "rango_series_totales_grupo_rationale": "Glúteo tolera volumen MUY alto por su tamaño + capacidad de recuperación. En split B2 (focus glúteo 2× semana), 16-24 sets/sesión × 2 = 32-48 sets/semana — extremo pero sostenible en avanzados."
+      },
+      "priority": 130,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.active_injuries", "op": "includes", "value": "lumbalgia_cronica", "note": "Lumbalgia crónica: reemplazar peso-muerto-rumano con barra por variantes con mancuerna y subir abduccion-cadera + puente con banda como compuestos alternativos"}
+      ],
+      "scientific_rationale": "Contreras et al. (2015) compararon EMG de glúteo mayor en sentadilla vs hip-thrust con cargas equivalentes. Hip-thrust produjo 70%+ MVIC vs ~50% MVIC de sentadilla. Esto justifica desplazar el compuesto principal del día glúteo focal hacia hip-thrust. El glúteo medio (abducción de cadera) requiere ejercicios específicos — los compuestos lo activan solo como estabilizador, no como motor primario.",
+      "scientific_sources": [
+        {"citation": "Contreras B., Vigotsky A.D., Schoenfeld B.J., Beardsley C., Cronin J. (2015). A Comparison of Gluteus Maximus, Biceps Femoris, and Vastus Lateralis Electromyographic Activity in the Back Squat and Barbell Hip Thrust Exercises. Journal of Applied Biomechanics 31(6), 452-458.", "verified": false},
+        {"citation": "Neto W.K., Soares E.G., Vieira T.L., et al. (2020). Gluteus Maximus Activation during Common Strength and Hypertrophy Exercises: A Systematic Review. Journal of Sports Science & Medicine 19(1), 195-203.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Día glúteo de Lizetd usa hip-thrust como compuesto principal. Encaja con esta rule."
+        }
+      ],
+      "tags": ["selector_ejercicios", "grupo_gluteo", "focus_femenino", "caso_lizetd"],
+      "confidence": "high",
+      "confidence_rationale": "Schoenfeld/Contreras 2015 es la cita más sólida del proyecto. Esta rule es de las mejor justificadas científicamente.",
+      "needs_daniel_validation": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "seleccion-hombro-tri-superset",
+      "name": "Selección ejercicios día hombro + tríceps — con supersets compatibles",
+      "rule_type": "select_exercises",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.day_group_primary", "op": "in", "value": ["hombro_triceps", "hombros_brazos", "hombro_lateral"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_hombro_aguda"},
+          {"field": "client.active_injuries", "op": "includes", "value": "luxacion_hombro_reciente"}
+        ]
+      },
+      "output": {
+        "type": "exercise_selection",
+        "group": "hombro_triceps",
+        "slots_filled": [
+          {
+            "posicion": 1,
+            "rol": "compuesto_principal",
+            "exercise_pattern_slug": "press-militar",
+            "variations_preferidas": ["press-militar-con-barra-de-pie", "press-de-hombro-con-mancuerna", "press-de-hombro-en-maquina"],
+            "rationale": "Press militar compuesto rey de vertical-push. De pie con barra demanda más estabilización (core anti-extensión); sentado con mancuernas o máquina permite manejar más volumen."
+          },
+          {
+            "posicion": 2,
+            "rol": "aislamiento_hombro_lateral",
+            "exercise_pattern_slug": "elevacion-lateral",
+            "variations_preferidas": ["elevacion-lateral-con-mancuerna", "elevacion-lateral-en-polea", "elevaciones-laterales-en-maquina"],
+            "rationale": "Deltoides medio NO se desarrolla bien con compuestos (el press activa principalmente delto anterior). Lateral aislada es OBLIGATORIA para anchura visual de hombro."
+          },
+          {
+            "posicion": 3,
+            "rol": "aislamiento_hombro_posterior",
+            "exercise_pattern_slug": "elevacion-posterior-fly",
+            "variations_preferidas": ["apertura-posteriores-con-mancuerna-sentado", "elevaciones-posteriores-sobre-banco-inclinado", "apertura-posteriores-sentado-en-maquina"],
+            "rationale": "Posterior delto es el grupo MÁS descuidado en frecuencia. Día de hombros debe incluirlo. Posterior fly tumbado en banco inclinado es la posición que más aísla (vs face-pull que también trabaja trapecio)."
+          },
+          {
+            "posicion": 4,
+            "rol": "compuesto_secundario_triceps",
+            "exercise_pattern_slug": "pushdown-triceps",
+            "variations_preferidas": ["extension-de-triceps-en-polea-con-cuerda", "extension-de-triceps-en-maquina", "extension-de-triceps-en-polea-agarre-inverso"],
+            "rationale": "Pushdown en polea con cuerda permite alta repetición y peak contraction. Inicio del bloque tríceps."
+          },
+          {
+            "posicion": 5,
+            "rol": "aislamiento_triceps_cabeza_larga",
+            "exercise_pattern_slug": "triceps-overhead",
+            "variations_preferidas": ["extension-de-triceps-sobre-cabeza-con-cuerda", "extension-de-triceps-con-mancuerna", "extension-de-triceps-sobre-cabeza-en-polea-con-cuerda"],
+            "rationale": "Overhead estira cabeza larga del tríceps (única posición que la activa al máximo por su origen en escápula)."
+          },
+          {
+            "posicion": 6,
+            "rol": "aislamiento_triceps_compuesto_intensificador",
+            "exercise_pattern_slug": "fondos-triceps",
+            "variations_preferidas": ["fondos-en-banco", "fondos-de-triceps-en-maquina"],
+            "rationale": "Fondos como finisher al fallo. Compuesto suave que permite drop-set o rest-pause sin demanda CNS alta.",
+            "opcional": true
+          }
+        ],
+        "supersets_recomendados": [
+          {"posiciones": [2, 3], "tipo": "antagonista_funcional", "descanso_total_seg": 90, "rationale": "Lateral + posterior: mismo músculo (deltoides), distintas cabezas, sin solapamiento de patrón motor. Superset clásico para volumen-eficiencia."},
+          {"posiciones": [4, 5], "tipo": "agonista_complementario", "descanso_total_seg": 75, "rationale": "Pushdown + overhead: ambos tríceps pero distintas cabezas (corta+medial vs larga). Superset para vaciar el músculo."}
+        ],
+        "techniques_aplicables_ultima_posicion": ["drop-set", "rest-pause"],
+        "duracion_estimada_min": [55, 70],
+        "rango_series_totales_grupo": [12, 18]
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "El deltoides tiene 3 cabezas (anterior, medial, posterior) con activación selectiva según ángulo. Compuestos (press) activan principalmente anterior. Aislamientos son necesarios para medial (lateral raises) y posterior (rear delt fly). Combinar hombro + tríceps en un día funciona porque comparten patrones empuje compatibles y permiten supersets antagonistas dentro del mismo grupo (lateral + posterior, pushdown + overhead).",
+      "scientific_sources": [
+        {"citation": "Coratella G., Tornatore G., Caccavale F., Longo S., Esposito F., Cè E. (2020). The Activation of Gluteal, Thigh, and Lower Back Muscles in Different Squat Variations Performed by Competitive Bodybuilders: Implications for Resistance Training. International Journal of Environmental Research and Public Health 17(3), 772.", "verified": false},
+        {"citation": "Schoenfeld B.J., Contreras B., Tiryaki-Sonmez G., Wilson J.M., Kolber M.J., Peterson M.D. (2016). Regional Differences in Muscle Activation During Hamstrings Exercise. Journal of Strength and Conditioning Research 29(1), 159-164.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["selector_ejercicios", "grupo_hombro_triceps", "supersets"],
+      "confidence": "moderate",
+      "needs_daniel_validation": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "seleccion-principiante-filtro-level-min",
+      "name": "Filtro principiante — solo exercise_patterns con level_min == principiante",
+      "rule_type": "select_exercises_filter",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.level", "op": "equals", "value": "principiante"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "exercise_filter_predicate",
+        "step_description": "Esta rule NO selecciona ejercicios — modifica el comportamiento de D2-D7 limitando el pool de variations disponibles.",
+        "filter_predicate": {
+          "field_to_filter": "exercise_pattern.variations.level_min",
+          "op": "equals",
+          "value": "principiante",
+          "scope": "todas_las_variations_de_todos_los_patterns"
+        },
+        "exclusiones_explicitas_aliases": [
+          "elevacion-de-piernas-dragon-flag",
+          "press-banca-declinado-con-barra-abierto",
+          "jalon-atras-del-cuello-en-polea",
+          "sentadilla-a-una-pierna-con-barra",
+          "peso-muerto-sumo-con-barra"
+        ],
+        "preferencias_extra_principiante": {
+          "preferir_maquinas_sobre_peso_libre_en_aislamientos": true,
+          "preferir_bilateral_sobre_unilateral_en_compuestos": true,
+          "evitar_intensificadores": true,
+          "max_ejercicios_por_dia": 7,
+          "rir_minimo": 3,
+          "preferir_rangos_reps_8_12": true
+        }
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.preferences", "op": "includes", "value": "tengo_experiencia_previa", "note": "Cliente declara experiencia previa de gym (>6 meses regular) — re-evaluar nivel, posiblemente subir a 'intermedio'"}
+      ],
+      "scientific_rationale": "Principiantes responden bien a estímulos simples y consistentes (Fleck & Kraemer 2014). La complejidad técnica de variations avanzadas (peso muerto sumo, dragon flag, jalón atrás del cuello) introduce riesgo de lesión sin agregar adaptaciones que el principiante no pueda obtener con ejercicios más simples. La restricción a level_min='principiante' es una salvaguarda automática que el motor v2 aplica antes de componer el plan.",
+      "scientific_sources": [
+        {"citation": "Fleck S.J., Kraemer W.J. (2014). Designing Resistance Training Programs, 4th ed. Human Kinetics.", "verified": false},
+        {"citation": "Ratamess N.A., Alvar B.A., Evetoch T.K., et al. (2009). Progression models in resistance training for healthy adults. Medicine and Science in Sports and Exercise 41(3), 687-708.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["filtro_meta_nivel", "principiante", "anti_lesion"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    }
+  ],
+  "_next_chunk": {
+    "chunk": "07 of 12",
+    "scope": "Categoría D — D9-D14 (filtros casa-mancuernas, casa-sin-pesas, intensificador-final, cardio-LISS-post, cardio-HIIT-dedicado, abs). Total: 6 rules.",
+    "blocked_by_daniel_validation": true
+  },
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre de Fase 3 — verificar refs Contreras 2015, Andersen 2014, Krzysztofik 2019, Escamilla 2001, Schoenfeld 2016/2018, McAllister 2014, Neto 2020, Coratella 2020, Fleck-Kraemer 2014, Ratamess 2009."
+  ]
+}

@@ -1,0 +1,1555 @@
+{
+  "version": "1.0-draft",
+  "generated_at": "2026-05-16",
+  "generated_by": "Claude Code Opus 4.7 + Daniel Esparza",
+  "scope": "MVP catálogo inicial — sprint 0 motor v2 WellCore",
+  "status": "COMPLETED — Tier 1 (4/4) + Tier 2 (4/4) + Tier 3 (4/4) + Tier 4 (1/1) + Tier 5 (2/2) → 15/15",
+  "total_entries_target": 15,
+  "total_entries_current": 15,
+  "perplexity_research_log": [
+    {
+      "date": "2026-05-16",
+      "query_summary": "Top evidence-based hypertrophy methodologies 2024-2025 beyond classic splits",
+      "key_findings": [
+        "Bayesian meta-analysis 192 trials: cuando volumen+esfuerzo se equiparan, NO hay configuración claramente superior para hipertrofia. Higher-load multiset 2×/sem por músculo ligeramente favorecido.",
+        "2022 Sports Medicine meta-análisis 35 estudios: periodización mejora 1RM pero NO hipertrofia (volume-equated). DUP ligeramente mejor para strength en trained, no en hipertrofia.",
+        "2023+2026 meta-análisis: técnicas avanzadas (drop sets, rest-pause, cluster, tempo) NO superan straight sets para hipertrofia (volume-equated). Pequeña ventaja en strength.",
+        "2025 Sports Medicine meta-análisis 19 estudios: agonist-antagonist supersets reducen tiempo sesión ~33% manteniendo volumen y hipertrofia.",
+        "Volume Landmarks RP (Israetel MEV/MAV/MRV) consistente con evidencia: ≥10 sets/musculo/sem produce más hipertrofia que volumen bajo."
+      ],
+      "additional_methodologies_identified": ["Volume Landmarks RP", "RIR-Autoregulated (Helms/Zourdos)", "Mountain Dog (Meadows)", "Reverse Pyramid (Berkhan)", "Specialization Phase", "Antagonist Superset System", "Cluster Set System", "Rest-Pause/Myo-Reps System", "Flexible Non-linear Autoregulated"]
+    },
+    {
+      "date": "2026-05-16",
+      "query_summary": "Female resistance training periodization menstrual cycle evidence-based 2023-2025",
+      "key_findings": [
+        "McNulty 2020 meta-análisis: efectos de ciclo menstrual sobre performance son TRIVIALES. Calidad de evidencia BAJA.",
+        "Colenso-Semple 2023 umbrella review: premature decir que fluctuaciones de ciclo alteran adaptaciones de fuerza/hipertrofia a largo plazo.",
+        "2025 estudio humano: NO effect of menstrual cycle phase on muscle protein synthesis ni myofibrillar proteolysis post-resistencia.",
+        "Stacy Sims ROAR model: NO bien soportado por evidencia. Es coaching heuristic, no framework universal.",
+        "Recomendación científica: NO periodizar por fase calendaria. Train consistently + autoregulate by symptoms.",
+        "Contraceptivos orales: aún MENOS evidencia para phase-based. Misma autoregulación."
+      ],
+      "conclusion_critica": "REFUTA propuesta original de Tier 4 ('Hipertrofia con ondas por ciclo menstrual basado en Sims'). El motor v2 debe usar AUTOREGULACIÓN por síntomas individuales, no fase calendaria."
+    }
+  ],
+  "tier_distribution_target": {
+    "tier_1_esenciales": 4,
+    "tier_2_periodizadas": 4,
+    "tier_3_especificas": 4,
+    "tier_4_femeninas": 1,
+    "tier_5_recomp_cardio": 2
+  },
+  "fases_oficiales_referencia": [
+    "Adaptación",
+    "Hipertrofia",
+    "Fuerza",
+    "Fuerza Máxima",
+    "Peak",
+    "Deload",
+    "Recuperación",
+    "Preparación",
+    "Mantenimiento"
+  ],
+  "schema_notes": {
+    "phases_by_duration_key": "Las claves son strings de semanas. Cada array de fases suma exactamente a las semanas de la clave.",
+    "rir_target_by_level": "Objeto con RIR por nivel. La matriz aplica el offset Daniel (+1 principiante / -1 avanzado) sobre el RIR de MD 08, respetando la regla 'principiante no baja de RIR 3 después de Adaptación'. Si una metodología no aplica para un nivel (ver applicable_levels), ese nivel se omite del objeto.",
+    "intensity_pct_1rm": "Rango string como '72-80'. Aproximado para clientes que no testean 1RM real (mayoría WellCore).",
+    "evidence_level": "alta = meta-análisis o consenso ≥3 estudios primarios. moderada = 1-2 estudios primarios + práctica. baja = práctica + 1 estudio. anecdotica = solo práctica.",
+    "no_default_for_tier": "Decisión 2026-05-16 con Daniel: los planes son 100% personalizados por días disponibles. El motor v2 NO usa 'default por tier' sino MATCH EXACTO entre applicable_days_range y los días del cliente. 3d→Full Body, 4d→UL, 5d→Body Part Split, 6d→PPL o Body Part Split+HIIT.",
+    "rir_matrix_global": {
+      "Adaptación":    { "principiante": 4, "intermedio": 3, "avanzado": 2 },
+      "Hipertrofia":   { "principiante": 3, "intermedio": 2, "avanzado": 1 },
+      "Fuerza":        { "principiante": 3, "intermedio": 1, "avanzado": 1 },
+      "Fuerza Máxima": { "principiante": 3, "intermedio": 1, "avanzado": 0 },
+      "Peak":          { "principiante": 3, "intermedio": 0, "avanzado": 0 },
+      "Deload":        { "principiante": 4, "intermedio": 4, "avanzado": 3 },
+      "Mantenimiento": { "principiante": 3, "intermedio": 2, "avanzado": 2 }
+    }
+  },
+  "methodologies": [
+    {
+      "slug": "body-part-split-5d",
+      "name": "Body Part Split 5 días",
+      "type": "entrenamiento",
+      "source": "literatura_clasica",
+      "evidence_level": "moderada",
+      "short_description": "Split clásico donde cada grupo muscular grande tiene su día. Volumen alto por grupo, frecuencia 1× por semana. 5 sesiones de pesas, opcional cardio HIIT día 6.",
+      "long_description": "El 'bro split' tradicional, popularizado en los años 70-80 dentro del bodybuilding y aún vigente. Cada sesión se dedica a un grupo muscular grande con sus ayudantes (pecho+tríceps, espalda+bíceps, etc.). En WellCore es la opción cuando el cliente tiene 5 días disponibles, nivel intermedio en adelante, con objetivo hipertrofia. Permite acumular alto volumen por grupo en una sola sesión pero la frecuencia 1× por semana es subóptima en términos de síntesis proteica continua (Damas et al. 2016, Schoenfeld 2016). Es funcional para hipertrofia pero no es el split más eficiente — si el cliente reporta estancamiento después de 2 bloques, considerar migrar a Upper/Lower (frecuencia 2×) o PPL 6d (frecuencia 2× con más volumen).",
+      "periodization_pattern": {
+        "type": "lineal",
+        "options": ["lineal", "lineal_inversa", "por_bloques"],
+        "default_weeks": 4,
+        "supported_weeks": [4, 6, 8, 12],
+        "phases_by_duration": {
+          "4": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia", "weeks": 2, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "80-87" }
+          ],
+          "6": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia", "weeks": 3, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "78-85" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92" }
+          ],
+          "8": [
+            { "name": "Adaptación",  "weeks": 2, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia", "weeks": 3, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Fuerza",      "weeks": 2, "rir_target_by_level": { "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "78-85" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92" }
+          ],
+          "12": [
+            { "name": "Adaptación",    "weeks": 3, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia",   "weeks": 3, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Fuerza Máxima", "weeks": 3, "rir_target_by_level": { "intermedio": 1, "avanzado": 0 }, "intensity_pct_1rm": "80-87" },
+            { "name": "Peak",          "weeks": 3, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92" }
+          ]
+        }
+      },
+      "applicable_tiers": ["esencial", "metodo", "entreno_solo", "presencial"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_objectives": ["hipertrofia", "recomposicion", "mantenimiento"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [5, 6],
+      "applicable_locations": ["gym", "hibrido"],
+      "default_volume_label": "Vol. alto",
+      "default_series_per_week_range": [120, 160],
+      "default_session_duration_min": [60, 90],
+      "split_template": {
+        "5_dias": {
+          "Lunes": "Pecho + Tríceps",
+          "Martes": "Espalda + Bíceps",
+          "Miércoles": "Pierna (cuádriceps foco)",
+          "Jueves": "Hombro + Brazo",
+          "Viernes": "Pierna (femoral + glúteo foco)"
+        },
+        "6_dias": {
+          "Lunes": "Pecho + Tríceps",
+          "Martes": "Espalda + Bíceps",
+          "Miércoles": "Pierna (cuádriceps foco)",
+          "Jueves": "Hombro + Brazo",
+          "Viernes": "Pierna (femoral + glúteo foco)",
+          "Sábado": "Cardio HIIT + Core (opcional)"
+        }
+      },
+      "split_template_alternativo_mujer": {
+        "comment": "Para clientas femeninas con foco glúteo, sesgar día 5 hacia femoral+glúteo y agregar volumen extra de glúteo accesorio el día de cuádriceps. Patrón observado en Lizetd Tatiana y validado por Daniel 2026-05-16.",
+        "5_dias": {
+          "Lunes": "Pecho + Tríceps + (3-4 series glúteo aislado)",
+          "Martes": "Espalda + Bíceps",
+          "Miércoles": "Pierna (cuádriceps foco con glúteo accesorio)",
+          "Jueves": "Hombro + Core",
+          "Viernes": "Pierna (femoral + glúteo foco — 5-6 ejercicios, hip thrust compuesto principal)"
+        }
+      },
+      "contraindications": [
+        "Principiante sin 6 meses de práctica técnica → preferir Full Body 3d",
+        "Cliente con <5 días disponibles → preferir Upper/Lower 4d",
+        "Cliente con problemas de recuperación recurrentes → preferir frecuencia 2× (UL o PPL)",
+        "Cliente con lesión activa en alguno de los días — evaluar individualizar"
+      ],
+      "typical_progression": {
+        "4_semanas_esencial": {
+          "semana_1": "3-4 series × 12-15 reps, RIR según nivel (intermedio 3 / avanzado 2), técnica primero, registrar pesos baseline",
+          "semana_2": "4 series × 10-12 reps, RIR según nivel (intermedio 2 / avanzado 1), subir carga 5-7% si la técnica se mantuvo",
+          "semana_3": "4-5 series × 8-10 reps, RIR según nivel (intermedio 2 / avanzado 1), subir carga 5% — agregar 1 técnica avanzada al final del grupo",
+          "semana_4": "5 series × 6-8 reps, RIR 0, peak del bloque — preparar deload o siguiente bloque"
+        },
+        "12_semanas_metodo": {
+          "fase_adaptacion_sem_1_3": "3-4 series × 12-15 reps, RIR 3 (intermedio) / 2 (avanzado), ejercicios principales con barra/mancuernas básicas",
+          "fase_hipertrofia_sem_4_6": "4 series × 8-12 reps, RIR 2 (intermedio) / 1 (avanzado), intensidad sube 5-8% — agregar superset y pirámide",
+          "fase_fuerza_maxima_sem_7_9": "5 series × 4-6 reps, RIR 1 (intermedio) / 0 (avanzado), descansos 2-3 min, 5×5 en compuestos",
+          "fase_peak_sem_10_12": "5-6 series × 3-5 reps, RIR 0, test de máximos en semana 12"
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas", "Pirámide ascendente", "Drop set", "Superset", "Rest-pause"],
+      "scientific_references": [
+        "Schoenfeld, B.J. et al. (2016). Effects of Resistance Training Frequency on Measures of Muscle Hypertrophy: A Systematic Review and Meta-Analysis. Sports Medicine 46(11): 1689-1697.",
+        "Helms, E.R., Morgan, A., Valdez, A. (2019). The Muscle and Strength Pyramid: Training, 2nd Edition.",
+        "Israetel, M., Hoffmann, J., Smith, C.W. (2017). Scientific Principles of Hypertrophy Training. Renaissance Periodization.",
+        "Damas, F. et al. (2016). A review of resistance training-induced changes in skeletal muscle protein synthesis. Sports Medicine 45(6): 801-807."
+      ],
+      "notes_for_coach": "Esta metodología es la opción cuando el cliente tiene 5+ días disponibles y nivel intermedio en adelante. Permite alto volumen por grupo muscular pero la frecuencia 1× por semana es la principal limitación. Si el cliente reporta poco progreso después de 2 bloques (8 semanas), considerar cambiar a Upper/Lower (frecuencia 2×) o PPL 6d. Para mujeres con foco glúteo se aplica el split_template_alternativo_mujer (glúteo accesorio en día cuádriceps + día 5 con hip thrust como compuesto principal). El HIIT del sábado es opcional: si el cliente tiene problemas de recuperación o duerme mal, mejor descansar. El RIR objetivo de Adaptación se modula por nivel: intermedio 3, avanzado 2 (validado por Daniel 2026-05-16).",
+      "observed_in_real_clients": [
+        {
+          "client_alias": "Lizetd Tatiana",
+          "tier": "esencial",
+          "duracion_semanas": 4,
+          "frecuencia_dias": 6,
+          "series_progresion": "141 → 147 → 151 → 159",
+          "split_observado": "Body Part Split 5 días + HIIT sábado, periodización lineal Adaptación → Hipertrofia → Fuerza → Peak",
+          "rir_objetivo": 3,
+          "fecha_audit": "2026-05-16"
+        }
+      ],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "upper-lower-4d",
+      "name": "Upper/Lower 4 días",
+      "type": "entrenamiento",
+      "source": "literatura_clasica",
+      "evidence_level": "alta",
+      "short_description": "Cuatro días alternos: 2 sesiones de tren superior + 2 sesiones de tren inferior. Frecuencia 2× por grupo, balance volumen-recuperación. Para clientes con 4 días disponibles.",
+      "long_description": "El Upper/Lower (UL) divide la semana en 4 sesiones alternando tren superior y tren inferior, con 1 día de descanso entre upper y lower del mismo lado de la semana. La gran ventaja sobre el Body Part Split es la frecuencia 2× por grupo muscular, que la literatura (Schoenfeld 2016 meta-análisis) muestra superior para hipertrofia en clientes intermedios. Es la opción cuando el cliente tiene 4 días disponibles. Combina bien con DUP (Daily Undulating Periodization) en clientes intermedio+ (Esencial / Método / Elite): primera sesión de la semana con rep ranges altos (hipertrofia 8-12) y segunda con reps bajas (fuerza 4-6) — el cliente entrena los mismos músculos con estímulos distintos cada vez, maximizando adaptaciones.",
+      "periodization_pattern": {
+        "type": "lineal",
+        "options": ["lineal", "ondulante_dup", "por_bloques"],
+        "dup_requires_level": "intermedio",
+        "dup_available_in_tiers": ["esencial", "metodo", "elite"],
+        "default_weeks": 8,
+        "supported_weeks": [4, 6, 8, 12],
+        "phases_by_duration": {
+          "4": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "principiante": 4, "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia", "weeks": 2, "rir_target_by_level": { "principiante": 3, "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "80-87" }
+          ],
+          "8": [
+            { "name": "Adaptación",  "weeks": 2, "rir_target_by_level": { "principiante": 4, "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "principiante": 3, "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "78-85" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92" }
+          ],
+          "12": [
+            { "name": "Adaptación",    "weeks": 3, "rir_target_by_level": { "principiante": 4, "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia",   "weeks": 3, "rir_target_by_level": { "principiante": 3, "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Fuerza Máxima", "weeks": 3, "rir_target_by_level": { "principiante": 3, "intermedio": 1, "avanzado": 0 }, "intensity_pct_1rm": "80-87" },
+            { "name": "Peak",          "weeks": 3, "rir_target_by_level": { "principiante": 3, "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92" }
+          ]
+        }
+      },
+      "applicable_tiers": ["esencial", "metodo", "elite", "entreno_solo", "presencial"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_objectives": ["hipertrofia", "fuerza", "recomposicion", "perdida_grasa", "mantenimiento"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [4],
+      "applicable_locations": ["gym", "casa", "hibrido"],
+      "default_volume_label": "Vol. moderado-alto",
+      "default_series_per_week_range": [80, 120],
+      "default_session_duration_min": [60, 80],
+      "split_template": {
+        "4_dias_clasico": {
+          "Lunes": "Upper A (foco pecho + espalda horizontal)",
+          "Martes": "Lower A (foco cuádriceps)",
+          "Miércoles": "Descanso",
+          "Jueves": "Upper B (foco hombro + espalda vertical)",
+          "Viernes": "Lower B (foco femoral + glúteo)",
+          "Sábado": "Descanso o LISS 30 min opcional",
+          "Domingo": "Descanso"
+        },
+        "4_dias_dup": {
+          "Lunes": "Upper Hipertrofia (8-12 reps, vol. alto)",
+          "Martes": "Lower Hipertrofia (8-12 reps, vol. alto)",
+          "Jueves": "Upper Fuerza (4-6 reps, intensidad alta)",
+          "Viernes": "Lower Fuerza (4-6 reps, intensidad alta)"
+        }
+      },
+      "split_template_alternativo_mujer": {
+        "comment": "Para clientas con foco glúteo: Lower A con cuádriceps foco + glúteo accesorio, Lower B 100% glúteo+femoral con hip thrust como compuesto principal. Validado por Daniel 2026-05-16.",
+        "4_dias": {
+          "Lunes": "Upper A (pecho + espalda horizontal + tríceps)",
+          "Martes": "Lower A (cuádriceps foco + 2-3 ejercicios glúteo accesorio)",
+          "Jueves": "Upper B (hombro + espalda vertical + bíceps + core)",
+          "Viernes": "Lower B (glúteo + femoral foco, 5-6 ejercicios, hip thrust como compuesto principal)"
+        }
+      },
+      "contraindications": [
+        "Cliente con <4 días disponibles → preferir Full Body 3d",
+        "Cliente con problemas serios de recuperación → considerar Full Body 3d",
+        "Principiante en su primera semana sin haber hecho nada de gym → arrancar Full Body 1-2 sem y luego UL"
+      ],
+      "typical_progression": {
+        "8_semanas_esencial_extendida": {
+          "sem_1_2_adaptacion": "3 series × 12 reps, RIR según nivel (princip 4 / interm 3 / avanz 2), calibrar pesos en ambos rangos",
+          "sem_3_6_hipertrofia": "4 series × 8-10 reps, RIR (princip 3 / interm 2 / avanz 1), subir 5% por semana si técnica OK",
+          "sem_7_fuerza": "4-5 series × 5-6 reps, RIR (princip 3 / interm 1 / avanz 1), descansos 2 min en compuestos",
+          "sem_8_peak": "5 series × 3-5 reps, RIR (princip 3 / interm 0 / avanz 0), test de máximos en compuesto principal"
+        },
+        "12_semanas_metodo": {
+          "sem_1_3_adaptacion": "3-4 series × 10-12 reps",
+          "sem_4_6_hipertrofia": "4 series × 8-10 reps",
+          "sem_7_9_fuerza_maxima": "5×5 en compuestos, accesorios 3×8",
+          "sem_10_12_peak": "Pirámide ascendente 6/4/3/1, test semana 12"
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas", "Pirámide ascendente", "5×5", "DUP (intra-semana)", "Superset (intra-sesión bíceps+tríceps)"],
+      "scientific_references": [
+        "Schoenfeld, B.J. et al. (2016). Effects of Resistance Training Frequency on Measures of Muscle Hypertrophy: A Systematic Review and Meta-Analysis. Sports Medicine 46(11): 1689-1697.",
+        "Damas, F. et al. (2016). A review of resistance training-induced changes in skeletal muscle protein synthesis. Sports Medicine 45(6): 801-807.",
+        "Helms, E.R., Morgan, A., Valdez, A. (2019). The Muscle and Strength Pyramid: Training, 2nd Edition.",
+        "Zourdos, M.C. et al. (2016). Modified Daily Undulating Periodization Model Produces Greater Performance Than a Traditional Configuration. Journal of Strength and Conditioning Research 30(3): 784-791."
+      ],
+      "notes_for_coach": "Esta es la metodología para clientes con 4 días disponibles. Tiene mejor frecuencia que el Body Part Split (2× vs 1× por grupo) y casi la misma carga semanal. Si el cliente viene de Body Part Split y migra a UL, advertir que las primeras 2 semanas se va a sentir 'menos exigido por día' porque la frecuencia es mayor y el daño muscular por sesión se reduce — eso es normal y deseable. Para mujeres que priorizan glúteo, aplicar split_template_alternativo_mujer. **DUP habilitado en Esencial+ si nivel intermedio o superior** (validado por Daniel 2026-05-16) — para principiantes mantener siempre lineal. Para combinación con DUP avisar que NO se cambia la rutina entre Upper A y Upper B, sino los rep ranges — mismos ejercicios, distinto estímulo.",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "full-body-3d",
+      "name": "Full Body 3 días",
+      "type": "entrenamiento",
+      "source": "literatura_clasica",
+      "evidence_level": "alta",
+      "short_description": "Tres sesiones por semana, cada una toca todos los grupos musculares grandes. Frecuencia 3× por grupo. Para clientes con 3 días disponibles y para Trial 1 sem.",
+      "long_description": "El Full Body es el split de mayor eficiencia para principiantes. Cada sesión toca todos los grupos musculares grandes con 1-2 ejercicios por grupo, totalizando 6-9 ejercicios por sesión. La frecuencia 3× por semana maximiza dos cosas críticas en principiantes: práctica técnica (que es la limitante real de su progreso) y activación frecuente de síntesis proteica (Damas 2016). Es el split de elección para WellCore Trial (1 semana de demo) y para clientes con 3 días disponibles. La principal limitación aparece cuando el cliente intermedio quiere volumen alto por grupo — con 60 minutos disponibles y 6-7 ejercicios, no se puede acumular más de 8-10 series por grupo por sesión. Si el cliente progresa rápido en Full Body, la transición típica WellCore es: Full Body 3d (mes 1-2) → Upper/Lower 4d (mes 3-6) → Body Part Split o PPL (mes 6+).",
+      "periodization_pattern": {
+        "type": "lineal",
+        "options": ["lineal", "lineal_inversa"],
+        "default_weeks": 4,
+        "supported_weeks": [1, 4, 6, 8],
+        "phases_by_duration": {
+          "1": [
+            { "name": "Adaptación", "weeks": 1, "rir_target_by_level": { "principiante": 4, "intermedio": 4 }, "intensity_pct_1rm": "60-70" }
+          ],
+          "4": [
+            { "name": "Adaptación",  "weeks": 2, "rir_target_by_level": { "principiante": 4, "intermedio": 3 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia", "weeks": 2, "rir_target_by_level": { "principiante": 3, "intermedio": 2 }, "intensity_pct_1rm": "72-80" }
+          ],
+          "6": [
+            { "name": "Adaptación",  "weeks": 2, "rir_target_by_level": { "principiante": 4, "intermedio": 3 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia", "weeks": 3, "rir_target_by_level": { "principiante": 3, "intermedio": 2 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 1 }, "intensity_pct_1rm": "80-85" }
+          ],
+          "8": [
+            { "name": "Adaptación",  "weeks": 2, "rir_target_by_level": { "principiante": 4, "intermedio": 3 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "principiante": 3, "intermedio": 2 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 1 }, "intensity_pct_1rm": "78-85" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 0 }, "intensity_pct_1rm": "85-90" }
+          ]
+        }
+      },
+      "applicable_tiers": ["trial", "esencial", "entreno_solo", "presencial"],
+      "applicable_levels": ["principiante", "intermedio"],
+      "applicable_objectives": ["hipertrofia", "fuerza", "recomposicion", "mantenimiento", "perdida_grasa"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [3],
+      "applicable_locations": ["gym", "casa", "hibrido"],
+      "default_volume_label": "Vol. bajo-moderado",
+      "default_series_per_week_range": [60, 90],
+      "default_session_duration_min": [45, 75],
+      "split_template": {
+        "3_dias_principiante": {
+          "Lunes": "Full Body A — Sentadilla, Press banca, Remo barra, Curl bíceps, Plancha",
+          "Miércoles": "Full Body B — Peso muerto rumano, Press hombro mancuernas, Jalón polea, Press tríceps polea, Crunch",
+          "Viernes": "Full Body C — Hack squat o prensa, Press inclinado mancuernas, Remo polea, Bíceps martillo + Tríceps fondos, Russian twist"
+        },
+        "3_dias_intermedio": {
+          "Lunes": "Full Body A — Sentadilla 4×8, Press banca 4×8, Remo barra 4×10, Curl 3×12, Plancha 3×45s",
+          "Miércoles": "Full Body B — Peso muerto rumano 4×8, Press hombro 4×10, Dominadas 4×AMRAP, Tríceps polea 3×12, Crunch 3×15",
+          "Viernes": "Full Body C — Hack squat 4×10, Press inclinado 4×8, Remo polea 4×12, Bíceps + Tríceps superset 3×12, Core 3×15"
+        }
+      },
+      "split_template_alternativo_mujer": {
+        "comment": "Para clientas femeninas, agregar 1-2 ejercicios extra de glúteo en cada sesión (hip thrust en una, abducción cable en otra, peso muerto rumano destacado). Validado por Daniel 2026-05-16.",
+        "3_dias": {
+          "Lunes": "Full Body A — Sentadilla, Hip thrust, Press banca, Remo, Plancha",
+          "Miércoles": "Full Body B — Peso muerto rumano, Press hombro, Patada glúteo polea, Jalón, Tríceps, Crunch",
+          "Viernes": "Full Body C — Sentadilla búlgara, Press inclinado, Remo polea, Abducción cable, Curl, Core"
+        }
+      },
+      "contraindications": [
+        "Cliente avanzado con >12 meses de entreno consistente buscando hipertrofia máxima — el volumen por grupo se queda corto",
+        "Cliente con >5 días disponibles y nivel intermedio+ → más eficiente Upper/Lower o Body Part Split",
+        "Cliente con tiempo limitado por sesión (<45 min) — no entran 6 ejercicios bien hechos"
+      ],
+      "typical_progression": {
+        "1_semana_trial": {
+          "comment": "Solo Adaptación — calibrar pesos, enseñar técnica, generar adherencia",
+          "todas_sesiones": "2-3 series × 10-12 reps, RIR 4 (independiente nivel), peso moderado, foco 100% en técnica"
+        },
+        "4_semanas_esencial_principiante": {
+          "semana_1": "2-3 series × 10-12 reps, RIR 4 (principiante) / 3 (intermedio), peso conservador, técnica primero",
+          "semana_2": "3 series × 10-12 reps, RIR 4 / 3, subir 5% si la técnica se mantuvo",
+          "semana_3": "3 series × 8-10 reps, RIR 3 / 2, intensidad moderada-alta",
+          "semana_4": "3-4 series × 6-8 reps, RIR 3 / 2, peak del bloque — preparar transición a UL o repetir bloque"
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas", "Tempo controlado (excéntrica 3 seg para enseñar técnica)", "Superset (eficiencia tiempo si falta tiempo)"],
+      "scientific_references": [
+        "Schoenfeld, B.J. et al. (2016). Effects of Resistance Training Frequency on Measures of Muscle Hypertrophy. Sports Medicine 46(11): 1689-1697.",
+        "Damas, F. et al. (2016). A review of resistance training-induced changes in skeletal muscle protein synthesis. Sports Medicine 45(6): 801-807.",
+        "Rhea, M.R. et al. (2003). A meta-analysis to determine the dose response for strength development. Medicine & Science in Sports and Exercise 35(3): 456-464.",
+        "Rippetoe, M., Baker, A. (2014). Starting Strength: Basic Barbell Training, 3rd Edition (referencia clásica Full Body fuerza principiante)."
+      ],
+      "notes_for_coach": "Es el split obligado para principiantes en sus primeros 2-3 meses. Frecuencia 3× perdona muchos errores: si el cliente falla técnica el lunes, tiene miércoles y viernes para corregir antes de que cause lesión. Para clientes con expectativas altas que insisten en '5 días desde el día 1', explicar que más volumen sin técnica = más lesión = menos progreso real. La transición típica WellCore es: Full Body 3d (mes 1-2) → Upper/Lower 4d (mes 3-6) → Body Part Split o PPL 6d (mes 6+). En 1 semana Trial: usar solo Adaptación, RIR 4 para todos, foco 100% en demostrar movimientos y generar adherencia — no en progresar carga.",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "ppl-6d",
+      "name": "Push/Pull/Legs 6 días",
+      "type": "entrenamiento",
+      "source": "literatura_clasica",
+      "evidence_level": "alta",
+      "short_description": "Seis sesiones por semana agrupando músculos por función mecánica (Push, Pull, Legs × 2). Frecuencia 2× por grupo, volumen muy alto. Para clientes intermedios+ con 6 días disponibles.",
+      "long_description": "El PPL agrupa los grupos musculares por su función mecánica: Push (pecho/hombro/tríceps) son los músculos que empujan, Pull (espalda/bíceps) son los que jalan, y Legs es pierna completa. Con 6 sesiones se hace el ciclo dos veces (Push-Pull-Legs-Push-Pull-Legs), logrando frecuencia 2× por grupo similar a Upper/Lower pero con volumen más alto por sesión porque cada sesión cubre 3 grupos en vez de 5-6. Es óptimo para hipertrofia en intermedios/avanzados con 6 días disponibles y buena capacidad de recuperación. La principal limitación es la carga de tiempo (6 sesiones/semana) y el riesgo de sobreentrenamiento si la recuperación falla — por eso requiere nivel intermedio+ y excelente adherencia al sueño/nutrición.",
+      "periodization_pattern": {
+        "type": "lineal",
+        "options": ["lineal", "ondulante_dup", "por_bloques"],
+        "dup_requires_level": "intermedio",
+        "dup_available_in_tiers": ["metodo", "elite"],
+        "default_weeks": 8,
+        "supported_weeks": [4, 6, 8, 12],
+        "phases_by_duration": {
+          "4": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia", "weeks": 2, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "80-87" }
+          ],
+          "6": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia", "weeks": 3, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "78-85" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92" }
+          ],
+          "8": [
+            { "name": "Adaptación",  "weeks": 2, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "78-85" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92" }
+          ],
+          "12": [
+            { "name": "Adaptación",    "weeks": 3, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72" },
+            { "name": "Hipertrofia",   "weeks": 3, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80" },
+            { "name": "Fuerza Máxima", "weeks": 3, "rir_target_by_level": { "intermedio": 1, "avanzado": 0 }, "intensity_pct_1rm": "80-87" },
+            { "name": "Peak",          "weeks": 3, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92" }
+          ]
+        }
+      },
+      "applicable_tiers": ["metodo", "elite", "entreno_solo"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_objectives": ["hipertrofia", "fuerza", "recomposicion"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [6],
+      "applicable_locations": ["gym", "hibrido"],
+      "default_volume_label": "Vol. muy alto",
+      "default_series_per_week_range": [120, 180],
+      "default_session_duration_min": [60, 90],
+      "split_template": {
+        "6_dias": {
+          "Lunes": "Push A (Pecho/Hombro/Tríceps — foco pecho)",
+          "Martes": "Pull A (Espalda/Bíceps — foco espalda horizontal)",
+          "Miércoles": "Legs A (Pierna — foco cuádriceps)",
+          "Jueves": "Push B (Pecho/Hombro/Tríceps — foco hombro)",
+          "Viernes": "Pull B (Espalda/Bíceps — foco espalda vertical)",
+          "Sábado": "Legs B (Pierna — foco femoral/glúteo)"
+        },
+        "6_dias_dup": {
+          "Lunes": "Push Hipertrofia (8-12 reps, vol. alto)",
+          "Martes": "Pull Hipertrofia (8-12 reps, vol. alto)",
+          "Miércoles": "Legs Hipertrofia (8-12 reps, vol. alto)",
+          "Jueves": "Push Fuerza (4-6 reps, intensidad alta)",
+          "Viernes": "Pull Fuerza (4-6 reps, intensidad alta)",
+          "Sábado": "Legs Fuerza (4-6 reps, intensidad alta)"
+        }
+      },
+      "split_template_alternativo_mujer": {
+        "comment": "Para clientas con foco glúteo: Legs B 100% al glúteo+femoral con hip thrust como compuesto principal, y agregar glúteo accesorio en Pull A (entre series de remo) y Pull B. Validado patrón por Daniel 2026-05-16.",
+        "6_dias": {
+          "Lunes": "Push A (pecho + hombro + tríceps)",
+          "Martes": "Pull A (espalda + bíceps + 2 ejercicios glúteo accesorio)",
+          "Miércoles": "Legs A (cuádriceps foco + glúteo accesorio)",
+          "Jueves": "Push B (hombro + tríceps + core)",
+          "Viernes": "Pull B (espalda + bíceps + glúteo accesorio)",
+          "Sábado": "Legs B (glúteo + femoral foco — 5-6 ejercicios, hip thrust compuesto principal)"
+        }
+      },
+      "contraindications": [
+        "Principiantes (sobre-volumen, sin base técnica) → preferir Full Body 3d o Upper/Lower 4d",
+        "Cliente con 5 o menos días disponibles → preferir Body Part Split 5d o Upper/Lower 4d",
+        "Cliente con muy baja capacidad de recuperación → reducir a Upper/Lower 4d con frecuencia 2×",
+        "Cliente con mal sueño consistente (<6h) o estrés crónico alto → no PPL hasta resolver"
+      ],
+      "typical_progression": {
+        "8_semanas_metodo": {
+          "sem_1_2_adaptacion": "3 series × 12 reps en compuestos, RIR (interm 3 / avanz 2), calibrar pesos en cada movimiento",
+          "sem_3_6_hipertrofia": "4 series × 8-10 reps, RIR (interm 2 / avanz 1), subir 5% por semana — agregar pirámide en compuesto principal y drop set en último ejercicio del grupo",
+          "sem_7_fuerza": "5 series × 5-6 reps en compuestos, accesorios 3×10, RIR 1, descansos 2 min",
+          "sem_8_peak": "Pirámide 6/4/3/1 en compuesto principal, RIR 0, test de máximos"
+        },
+        "12_semanas_metodo_extendida": {
+          "sem_1_3_adaptacion": "3 series × 12 reps, RIR (interm 3 / avanz 2)",
+          "sem_4_6_hipertrofia": "4 series × 8-10 reps, RIR (interm 2 / avanz 1)",
+          "sem_7_9_fuerza_maxima": "5 series × 4-6 reps, RIR (interm 1 / avanz 0)",
+          "sem_10_12_peak": "5-6 series × 3-5 reps, RIR 0, test semana 12"
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas", "Pirámide ascendente", "Drop set", "Superset (bíceps+tríceps eficiencia)", "DUP (intra-semana)", "Rest-pause (último ejercicio)"],
+      "scientific_references": [
+        "Schoenfeld, B.J. et al. (2016). Effects of Resistance Training Frequency on Measures of Muscle Hypertrophy: A Systematic Review and Meta-Analysis. Sports Medicine 46(11): 1689-1697.",
+        "Helms, E.R., Morgan, A., Valdez, A. (2019). The Muscle and Strength Pyramid: Training, 2nd Edition.",
+        "Israetel, M., Hoffmann, J., Smith, C.W. (2017). Scientific Principles of Hypertrophy Training. Renaissance Periodization.",
+        "Zourdos, M.C. et al. (2016). Modified Daily Undulating Periodization Model Produces Greater Performance Than a Traditional Configuration. Journal of Strength and Conditioning Research 30(3): 784-791."
+      ],
+      "notes_for_coach": "Esta es la metodología para clientes con 6 días disponibles y nivel intermedio+ con foco hipertrofia. Frecuencia 2× por grupo es óptima (Schoenfeld 2016) y permite acumular más volumen por sesión que Upper/Lower porque cada sesión cubre solo 3 grupos. Para mujeres con foco glúteo, aplicar split_template_alternativo_mujer (Legs B 100% glúteo+femoral, glúteo accesorio en Pull A/B). DUP habilitado para Método/Elite (no Esencial, porque PPL no aplica a Esencial). Si el cliente reporta fatiga acumulada o sueño deteriorado en semana 2-3, bajar a Upper/Lower 4d temporalmente. Vigilar sobreentrenamiento: 6 sesiones requieren 7-9 h de sueño consistentes y nutrición sólida — sin eso, el plan no funciona y el cliente se quema.",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "periodizacion-dup",
+      "name": "Periodización DUP (Daily Undulating Periodization)",
+      "type": "entrenamiento",
+      "source": "literatura_cientifica",
+      "evidence_level": "alta",
+      "is_split_agnostic": true,
+      "short_description": "Periodización donde los rep ranges cambian ENTRE sesiones de la misma semana (no entre semanas). Permite trabajar hipertrofia y fuerza en paralelo. Split-agnostic: se monta sobre UL 4d, Body Part Split 5d o PPL 6d.",
+      "long_description": "DUP (Daily Undulating Periodization) es la periodización donde el rep range cambia entre sesiones de la misma semana, no entre semanas como en la lineal tradicional. Aplicada sobre cualquier split, significa que en una sesión se hacen 8-12 reps con volumen alto (Hipertrofia) y en otra sesión los mismos ejercicios con 4-6 reps e intensidad alta (Fuerza). La meta-análisis de Zourdos 2016 muestra que DUP produce ganancias de fuerza superiores a la periodización lineal en intermedios y avanzados, con resultados similares o levemente superiores en hipertrofia. Es split-agnostic: el motor v2 elige primero el split por los días disponibles del cliente (UL 4d, Body Part Split 5d, PPL 6d) y luego monta DUP encima. La diferencia con la lineal clásica es que DUP entrena AMBOS rangos cada semana, lo cual es ideal para clientes que ya tienen base y quieren combinar fuerza + hipertrofia simultáneamente. Es más exigente cognitivamente para el cliente (debe alternar dos rutinas).",
+      "periodization_pattern": {
+        "type": "ondulante_dup",
+        "options": ["ondulante_dup"],
+        "default_weeks": 8,
+        "supported_weeks": [6, 8, 12],
+        "phases_by_duration": {
+          "6": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "rep_range_hipertrofia": "12-15", "rep_range_fuerza": "6-8" },
+            { "name": "Hipertrofia", "weeks": 3, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-82", "rep_range_hipertrofia": "8-12", "rep_range_fuerza": "5-6" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "80-87", "rep_range_hipertrofia": "8-10", "rep_range_fuerza": "4-5" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92", "rep_range_hipertrofia": "6-8",  "rep_range_fuerza": "3-5" }
+          ],
+          "8": [
+            { "name": "Adaptación",  "weeks": 2, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "rep_range_hipertrofia": "12-15", "rep_range_fuerza": "6-8" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-82", "rep_range_hipertrofia": "8-12",  "rep_range_fuerza": "5-6" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "80-87", "rep_range_hipertrofia": "8-10",  "rep_range_fuerza": "4-5" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92", "rep_range_hipertrofia": "6-8",   "rep_range_fuerza": "3-5" }
+          ],
+          "12": [
+            { "name": "Adaptación",    "weeks": 2, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "rep_range_hipertrofia": "12-15", "rep_range_fuerza": "6-8" },
+            { "name": "Hipertrofia",   "weeks": 4, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-82", "rep_range_hipertrofia": "8-12",  "rep_range_fuerza": "5-6" },
+            { "name": "Fuerza Máxima", "weeks": 4, "rir_target_by_level": { "intermedio": 1, "avanzado": 0 }, "intensity_pct_1rm": "80-90", "rep_range_hipertrofia": "8-10",  "rep_range_fuerza": "3-5" },
+            { "name": "Peak",          "weeks": 2, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92", "rep_range_hipertrofia": "6-8",   "rep_range_fuerza": "2-3" }
+          ]
+        }
+      },
+      "applicable_tiers": ["esencial", "metodo", "elite", "entreno_solo"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_objectives": ["hipertrofia", "fuerza", "recomposicion"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [4, 5, 6],
+      "applicable_locations": ["gym", "hibrido"],
+      "default_volume_label": "Vol. moderado-alto (varía por split base)",
+      "default_series_per_week_range": [80, 160],
+      "default_session_duration_min": [60, 90],
+      "combines_with_split": ["upper-lower-4d", "body-part-split-5d", "ppl-6d"],
+      "preferred_split_by_context": {
+        "comment": "DUP funciona mejor con splits de frecuencia 2× porque permite que ambos rangos (Hipert y Fuerza) toquen al mismo grupo cada semana. Body Part Split 5d (frecuencia 1×) puede usarse pero pierde parte de la ventaja DUP. Daniel observó 2026-05-16 que la mayoría de clientes WellCore va 5 días.",
+        "mujer_foco_gluteo": "body-part-split-5d (con día 5 100% glúteo+femoral aplicando DUP entre sesiones)",
+        "mujer_foco_general": "upper-lower-4d (frecuencia 2× ideal para DUP)",
+        "hombre_foco_hipertrofia": "ppl-6d (frecuencia 2× con más volumen) o body-part-split-5d",
+        "hombre_foco_fuerza_recomposicion": "upper-lower-4d con énfasis en sesiones Fuerza",
+        "fallback_general": "body-part-split-5d (es lo más usado en WellCore por preferencia de clientes)"
+      },
+      "split_template": {
+        "comment": "DUP NO tiene split propio. Se aplica encima del split base. Ver combines_with_split. La diferencia clave: cada grupo recibe 2 sesiones por semana con rep ranges contrastantes (Hipertrofia 8-12 reps + Fuerza 4-6 reps)."
+      },
+      "contraindications": [
+        "Principiante (no tiene base técnica para manejar reps bajas con intensidad alta) → preferir periodización lineal",
+        "Cliente con mala adherencia consistente → DUP requiere recordar 2 rutinas distintas por grupo muscular",
+        "Cliente con menos de 4 días disponibles → DUP requiere al menos 2 sesiones del mismo grupo por semana"
+      ],
+      "typical_progression": {
+        "8_semanas_metodo_aplicado_a_UL_o_PPL": {
+          "sem_1_2_adaptacion": "Hipert: 3×12 RIR 3 / Fuerza: 3×6 RIR 3, calibrar carga en ambos rangos",
+          "sem_3_6_hipertrofia": "Hipert: 4×10 RIR 2 / Fuerza: 4×5 RIR 2, subir 5% por semana",
+          "sem_7_fuerza": "Hipert: 4×8 RIR 1 / Fuerza: 5×4 RIR 1, descansos 2-3 min en Fuerza",
+          "sem_8_peak": "Hipert: 4×8 RIR 0 / Fuerza: 5×3 RIR 0, test máximo en compuesto principal"
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas (sesiones Hipert y Fuerza)", "Pirámide ascendente (sesiones Fuerza)", "Drop set (último ejercicio sesión Hipertrofia)", "5×5 (sesiones Fuerza)"],
+      "scientific_references": [
+        "Zourdos, M.C. et al. (2016). Modified Daily Undulating Periodization Model Produces Greater Performance Than a Traditional Configuration. Journal of Strength and Conditioning Research 30(3): 784-791.",
+        "Rhea, M.R. et al. (2002). A comparison of linear and daily undulating periodized programs with equated volume and intensity for strength. Journal of Strength and Conditioning Research 16(2): 250-255.",
+        "Schoenfeld, B.J. et al. (2016). Effects of Resistance Training Frequency on Measures of Muscle Hypertrophy. Sports Medicine 46(11): 1689-1697.",
+        "Helms, E.R., Morgan, A., Valdez, A. (2019). The Muscle and Strength Pyramid: Training, 2nd Edition."
+      ],
+      "notes_for_coach": "Periodización split-agnostic. El motor v2 elige primero el split por días disponibles del cliente (UL 4d / Body Part 5d / PPL 6d) y luego monta DUP encima. Para mujeres con foco glúteo, DUP funciona bien sobre Body Part Split 5d (lo más común en WellCore según Daniel 2026-05-16): día 5 con compuestos principales en rep range Hipertrofia y accesorios en rep range Fuerza. El cliente DEBE registrar pesos por separado para Hipertrofia vs Fuerza — no son intercambiables. Si el cliente reporta no recordar qué sesión es cuál, simplificar nombrando explícitamente la sesión en su app/PDF (Sesión Hipertrofia / Sesión Fuerza).",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "bloques-12sem-metodo",
+      "name": "Periodización por bloques 12 semanas (estándar Método)",
+      "type": "entrenamiento",
+      "source": "wellcore_adaptado",
+      "evidence_level": "alta",
+      "is_split_agnostic": true,
+      "short_description": "Periodización en 4 bloques de 3 semanas cada uno. Adaptación → Hipertrofia → Fuerza Máxima → Peak. Es el estándar del tier Método WellCore.",
+      "long_description": "Patrón de periodización por bloques que divide 12 semanas en 4 fases de 3 semanas cada una. Es el estándar del tier Método WellCore (validado en MD 04). La progresión es: Adaptación (sem 1-3, calibrar pesos, técnica), Hipertrofia (sem 4-6, volumen alto, reps 8-12), Fuerza Máxima (sem 7-9, intensidad alta, reps 4-6), Peak (sem 10-12, máximos y test). Es split-agnostic — se aplica encima de cualquier split base (Upper/Lower 4d, Body Part Split 5d, PPL 6d). La estructura 3-3-3-3 da tiempo suficiente para que cada bloque genere adaptación específica antes de cambiar de estímulo.",
+      "periodization_pattern": {
+        "type": "por_bloques",
+        "options": ["por_bloques"],
+        "default_weeks": 12,
+        "supported_weeks": [12],
+        "phases_by_duration": {
+          "12": [
+            { "name": "Adaptación",    "weeks": 3, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "volumen_label": "Moderado" },
+            { "name": "Hipertrofia",   "weeks": 3, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80", "volumen_label": "Alto" },
+            { "name": "Fuerza Máxima", "weeks": 3, "rir_target_by_level": { "intermedio": 1, "avanzado": 0 }, "intensity_pct_1rm": "80-90", "volumen_label": "Moderado" },
+            { "name": "Peak",          "weeks": 3, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-95", "volumen_label": "Bajo-Moderado" }
+          ]
+        }
+      },
+      "applicable_tiers": ["metodo", "elite"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_objectives": ["hipertrofia", "fuerza", "recomposicion", "performance_deportivo"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [3, 4, 5, 6],
+      "applicable_locations": ["gym", "hibrido"],
+      "default_volume_label": "Vol. progresivo (moderado→alto→moderado→bajo)",
+      "default_series_per_week_range": [80, 160],
+      "default_session_duration_min": [60, 90],
+      "combines_with_split": ["upper-lower-4d", "body-part-split-5d", "ppl-6d", "full-body-3d"],
+      "preferred_split_by_context": {
+        "comment": "Regla validada por Daniel 2026-05-16. El motor v2 prioriza split según contexto del cliente, no hay una sola respuesta.",
+        "mujer_foco_gluteo": "body-part-split-5d (con split_template_alternativo_mujer)",
+        "mujer_foco_general": "upper-lower-4d (con split_template_alternativo_mujer si hay foco glúteo moderado)",
+        "hombre_foco_hipertrofia_volumen_alto": "ppl-6d (6 días disponibles) o body-part-split-5d (5 días)",
+        "hombre_foco_fuerza_y_recomposicion": "upper-lower-4d",
+        "cliente_con_3_dias_unicamente": "full-body-3d",
+        "fallback_general": "upper-lower-4d (frecuencia 2× balance volumen-recuperación)"
+      },
+      "split_template": {
+        "comment": "Esta metodología NO tiene split propio — se monta encima de un split base. Ver combines_with_split y preferred_split_by_context. El motor v2 elige el split por días disponibles + género/objetivo y aplica esta periodización encima."
+      },
+      "contraindications": [
+        "Cliente Esencial (la duración estándar Esencial es 4-8 sem, no 12 → preferir lineal 4-8 sem)",
+        "Principiante (no aplica — la periodización por bloques requiere base previa)",
+        "Cliente con ciclos de vida irregulares (viajes frecuentes, horarios cambiantes) → 12 sem continuas son difíciles"
+      ],
+      "typical_progression": {
+        "12_semanas_completo": {
+          "bloque_1_adaptacion_sem_1_3": "3-4 series × 10-12 reps, RIR (interm 3 / avanz 2), peso conservador, calibrar pesos en compuestos principales",
+          "bloque_2_hipertrofia_sem_4_6": "4 series × 8-10 reps, RIR (interm 2 / avanz 1), subir 5-8% por sesión — agregar pirámide y drop set",
+          "bloque_3_fuerza_maxima_sem_7_9": "5 series × 4-6 reps en compuestos, accesorios 3×8, RIR (interm 1 / avanz 0), descansos 2-3 min",
+          "bloque_4_peak_sem_10_12": "Pirámide 6/4/3/1, RIR 0, test de máximos en semana 12 — preparar siguiente ciclo"
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas (todas las fases)", "Pirámide ascendente (Hipertrofia y Peak)", "5×5 (Fuerza Máxima)", "Drop set (último ejercicio Hipertrofia)", "Cluster sets (Peak)"],
+      "scientific_references": [
+        "Bompa, T.O., Buzzichelli, C. (2018). Periodization: Theory and Methodology of Training, 6th Edition. Human Kinetics.",
+        "Helms, E.R., Morgan, A., Valdez, A. (2019). The Muscle and Strength Pyramid: Training, 2nd Edition.",
+        "Israetel, M. et al. (2015). Scientific Principles of Strength Training. Renaissance Periodization.",
+        "Williams, T.D. et al. (2017). Comparison of Periodized and Non-Periodized Resistance Training on Maximal Strength: A Meta-Analysis. Sports Medicine 47(10): 2083-2100."
+      ],
+      "notes_for_coach": "Es el estándar del tier Método. La progresión es relativamente conservadora en las primeras 3 semanas (Adaptación) y agresiva en las últimas 3 (Peak). Si el cliente reporta fatiga acumulada en semana 7-9, considerar agregar deload de 1 semana entre Fuerza Máxima y Peak. Esto añade 1 sem al ciclo (13 sem total) pero permite mejor recuperación. Importante: esta metodología NO tiene split propio — debe combinarse con UL/Body Part Split/PPL según los días disponibles del cliente. El motor v2 hace match doble: split por días + periodización por tier+nivel.",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "bloques-4sem-elite-agresiva",
+      "name": "Periodización por bloques 4 semanas (variante Elite agresiva)",
+      "type": "entrenamiento",
+      "source": "wellcore_adaptado",
+      "evidence_level": "moderada",
+      "is_split_agnostic": true,
+      "short_description": "Periodización agresiva comprimiendo 4 fases en 4 semanas (1 semana cada una). Variante observada en Silvia Elite. Volumen y técnicas avanzadas altas. Solo Elite.",
+      "long_description": "Variante agresiva de la periodización por bloques que comprime el ciclo Adaptación → Hipertrofia → Fuerza → Peak a 4 semanas (1 semana cada fase). Es la metodología observada en Silvia Gomez Roa (Elite, auditada 2026-05-16) con 4 técnicas avanzadas activas (Pirámide Ascendente, Drop Set, Rest Pause, Drop Set Triple). El audit registró la nomenclatura cliente-facing 'Adaptación → Progresión → Progresión → Pico' pero el motor v2 usa SIEMPRE las fases oficiales (Adaptación → Hipertrofia → Fuerza → Peak) en el JSON canónico schema 16a. Es exigente: requiere nivel intermedio+ con muy buena adherencia o avanzado. Volumen alto (120-155 series/semana) y RIR objetivo 1-0 en peak. La compresión a 4 semanas la hace menos óptima en términos científicos que la versión 12 sem pero útil cuando el cliente Elite necesita ciclos cortos para variar estímulos frecuentemente.",
+      "periodization_pattern": {
+        "type": "por_bloques",
+        "options": ["por_bloques"],
+        "default_weeks": 4,
+        "supported_weeks": [4],
+        "phases_by_duration": {
+          "4": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "volumen_label": "Moderado",  "alias_cliente_facing": "Adaptación", "tecnica_avanzada_intro": "Pirámide Ascendente" },
+            { "name": "Hipertrofia", "weeks": 1, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80", "volumen_label": "Alto",       "alias_cliente_facing": "Progresión", "tecnica_avanzada_intro": "Drop Set (1 ejercicio/sesión)" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "78-85", "volumen_label": "Alto",       "alias_cliente_facing": "Progresión", "tecnica_avanzada_intro": "Rest Pause" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92", "volumen_label": "Muy alto",   "alias_cliente_facing": "Pico",       "tecnica_avanzada_intro": "Drop Set Triple (último ejercicio)" }
+          ]
+        }
+      },
+      "alias_cliente_facing_map": {
+        "comment": "Mapeo nomenclatura cliente-facing → fases oficiales. Solo usar 'Adaptación/Progresión/Pico' en lo que ve el cliente final (UI). En JSON canónico y código motor v2 SIEMPRE fases oficiales.",
+        "Adaptación": "Adaptación",
+        "Progresión (sem 2)": "Hipertrofia",
+        "Progresión (sem 3)": "Fuerza",
+        "Pico": "Peak"
+      },
+      "applicable_tiers": ["elite"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_objectives": ["hipertrofia", "recomposicion", "performance_deportivo"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [4, 5, 6],
+      "applicable_locations": ["gym", "hibrido"],
+      "default_volume_label": "Vol. progresivo agresivo (120 → 155 series/sem)",
+      "default_series_per_week_range": [120, 160],
+      "default_session_duration_min": [60, 90],
+      "combines_with_split": ["upper-lower-4d", "body-part-split-5d", "ppl-6d"],
+      "split_template": {
+        "comment": "Split-agnostic. Se monta sobre split base. Ver combines_with_split. En la práctica WellCore Silvia usa Body Part Split 5d."
+      },
+      "tecnicas_avanzadas_disponibles": {
+        "comment": "Validado por Daniel 2026-05-16: el patrón de introducción de técnicas avanzadas CAMBIA por cliente. El motor v2 NO impone un orden temporal — solo lista las técnicas disponibles. El coach las introduce según cómo va el cliente.",
+        "tecnicas_observadas_silvia": ["Pirámide Ascendente", "Drop Set", "Rest Pause", "Drop Set Triple"],
+        "criterio_de_aplicacion": "Coach decide por sesión qué técnica aplicar según la tolerancia del cliente. Como referencia: en clientes que se adaptan rápido, agregar 1 técnica nueva por semana. En clientes más conservadores, mantener Series rectas + 1-2 técnicas máximo."
+      },
+      "contraindications": [
+        "Cliente Esencial o Método (la compresión 4 sem no aplica para esos tiers — usar bloques-12sem-metodo o lineal Esencial)",
+        "Principiante (volumen y técnicas avanzadas requieren base sólida)",
+        "Cliente con problemas de recuperación (4 sem agresivas sin deload integrado → riesgo sobreentrenamiento)",
+        "Cliente avanzado en bloque de cutting/déficit agresivo (volumen+intensidad+déficit calórico = quemadura)"
+      ],
+      "typical_progression": {
+        "4_semanas_silvia_real": {
+          "semana_1_adaptacion": "120 series semana total, RIR 2 (avanzado), Pirámide Ascendente intro en compuesto principal",
+          "semana_2_hipertrofia": "~135 series, RIR 1, agregar Drop Set (1 ejercicio/sesión)",
+          "semana_3_fuerza": "~145 series, RIR 1, agregar Rest Pause en último ejercicio del grupo",
+          "semana_4_peak": "155 series, RIR 0, Drop Set Triple en último ejercicio del último grupo (cierre brutal)"
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas", "Pirámide Ascendente", "Drop Set", "Rest Pause", "Drop Set Triple"],
+      "scientific_references": [
+        "Helms, E.R., Morgan, A., Valdez, A. (2019). The Muscle and Strength Pyramid: Training, 2nd Edition.",
+        "Israetel, M. et al. (2017). Scientific Principles of Hypertrophy Training. Renaissance Periodization.",
+        "Bompa, T.O., Buzzichelli, C. (2018). Periodization: Theory and Methodology of Training, 6th Edition.",
+        "Schoenfeld, B.J. et al. (2017). Strength and Hypertrophy Adaptations Between Low- vs. High-Load Resistance Training: A Systematic Review and Meta-Analysis. Journal of Strength and Conditioning Research 31(12): 3508-3523."
+      ],
+      "notes_for_coach": "Variante observada en producción (Silvia Elite). NO es la opción por defecto — usar solo cuando el cliente Elite quiere ciclos cortos para variar estímulos frecuentemente o cuando coordina con un evento (ej. sesión de fotos, competencia). Comprimir 4 fases en 4 semanas requiere progresión muy rápida de carga e intensidad. **Importante para cliente-facing**: en la UI del cliente se puede usar nomenclatura simplificada 'Adaptación/Progresión/Pico' (validado por uso en Silvia), pero el JSON canónico schema 16a debe usar fases oficiales SIEMPRE. **El patrón de técnicas avanzadas lo decide el coach por sesión** — el motor v2 NO impone una progresión fija de técnicas. Las 4 técnicas observadas en Silvia (Pirámide, Drop Set, Rest Pause, Drop Set Triple) son referencia, no protocolo. Validar con coach antes de aplicar a una clienta menstruando en fase lútea tardía (puede combinarse mal — ver Tier 4 metodología ciclo menstrual).",
+      "observed_in_real_clients": [
+        {
+          "client_alias": "Silvia Gomez Roa",
+          "tier": "elite",
+          "duracion_semanas": 4,
+          "frecuencia_dias": 5,
+          "series_progresion": "120 → 135 → 145 → 155 (+29% volumen)",
+          "tecnicas_avanzadas": 4,
+          "rir_objetivo": 1,
+          "nomenclatura_cliente_facing": "Adaptación → Progresión → Progresión → Pico",
+          "fecha_audit": "2026-05-16"
+        }
+      ],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "periodizacion-lineal-4sem-esencial",
+      "name": "Periodización Lineal Clásica 4 semanas (Esencial)",
+      "type": "entrenamiento",
+      "source": "wellcore_adaptado",
+      "evidence_level": "alta",
+      "is_split_agnostic": true,
+      "short_description": "Periodización lineal de 4 semanas con 1 Adaptación + 2 Hipertrofia + 1 Peak. Es la duración default del tier Esencial WellCore. Split-agnostic: combina con Full Body 3d, UL 4d, Body Part Split 5d o PPL 6d según días del cliente.",
+      "long_description": "La periodización lineal clásica de 4 semanas es el patrón base del tier Esencial WellCore (validado en MD 04). La estructura es 1 Adaptación + 2 Hipertrofia + 1 Peak: la primera semana el cliente calibra pesos y técnica con RIR alto, las dos semanas centrales acumulan volumen con RIR moderado, y la última semana cierra con intensidad máxima (RIR 0-1). Es la elección por defecto cuando el cliente Esencial tiene 4 semanas asignadas (que es la duración estándar del tier según MD 04). Es split-agnostic: el motor v2 elige el split por días disponibles del cliente (3d/4d/5d/6d) y monta esta periodización encima. La progresión lineal de carga es: sem 1 (peso moderado, técnica primero), sem 2 (subir 5-7% si técnica OK), sem 3 (subir 5%, agregar 1 técnica avanzada al final de cada grupo), sem 4 (intensidad pico). Es ideal para principiantes/intermedios que no toleran la complejidad cognitiva de DUP.",
+      "periodization_pattern": {
+        "type": "lineal",
+        "options": ["lineal"],
+        "default_weeks": 4,
+        "supported_weeks": [4, 6, 8],
+        "phases_by_duration": {
+          "4": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "principiante": 4, "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "volumen_label": "Moderado" },
+            { "name": "Hipertrofia", "weeks": 2, "rir_target_by_level": { "principiante": 3, "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80", "volumen_label": "Alto" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "80-87", "volumen_label": "Moderado" }
+          ],
+          "6": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "principiante": 4, "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "volumen_label": "Moderado" },
+            { "name": "Hipertrofia", "weeks": 3, "rir_target_by_level": { "principiante": 3, "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80", "volumen_label": "Alto" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "78-85", "volumen_label": "Moderado" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92", "volumen_label": "Bajo-Moderado" }
+          ],
+          "8": [
+            { "name": "Adaptación",  "weeks": 2, "rir_target_by_level": { "principiante": 4, "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "volumen_label": "Moderado" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "principiante": 3, "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80", "volumen_label": "Alto" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "78-85", "volumen_label": "Moderado" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92", "volumen_label": "Bajo-Moderado" }
+          ]
+        }
+      },
+      "applicable_tiers": ["esencial", "entreno_solo", "presencial", "trial"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_objectives": ["hipertrofia", "fuerza", "recomposicion", "perdida_grasa", "mantenimiento"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [3, 4, 5, 6],
+      "applicable_locations": ["gym", "casa", "hibrido"],
+      "default_volume_label": "Vol. progresivo (moderado → alto → moderado)",
+      "default_series_per_week_range": [60, 160],
+      "default_session_duration_min": [45, 90],
+      "combines_with_split": ["full-body-3d", "upper-lower-4d", "body-part-split-5d", "ppl-6d"],
+      "preferred_split_by_context": {
+        "comment": "Esta periodización es split-agnostic — el split lo decide el cliente por días disponibles. Daniel observó 2026-05-16 que los planes son 100% personalizados por días, no hay default por tier.",
+        "cliente_con_3_dias": "full-body-3d",
+        "cliente_con_4_dias": "upper-lower-4d",
+        "cliente_con_5_dias": "body-part-split-5d (lo más usado en WellCore)",
+        "cliente_con_6_dias": "ppl-6d o body-part-split-5d con HIIT",
+        "trial_1_sem": "full-body-3d (solo Adaptación, RIR 4 todos los niveles)"
+      },
+      "split_template": {
+        "comment": "Esta metodología NO tiene split propio. Es split-agnostic. Ver combines_with_split y preferred_split_by_context. El motor v2 elige split por días disponibles."
+      },
+      "contraindications": [
+        "Cliente Método o Elite con 12 semanas asignadas → preferir bloques-12sem-metodo (más fases, progresión más fina)",
+        "Cliente avanzado buscando combinar fuerza+hipertrofia simultáneamente → preferir periodizacion-dup",
+        "Cliente Elite que necesita ciclos cortos agresivos → preferir bloques-4sem-elite-agresiva"
+      ],
+      "typical_progression": {
+        "4_semanas_esencial_default": {
+          "semana_1_adaptacion": "3-4 series × 12-15 reps, RIR según nivel (princip 4 / interm 3 / avanz 2), peso conservador, técnica primero",
+          "semana_2_hipertrofia": "4 series × 10-12 reps, RIR (princip 3 / interm 2 / avanz 1), subir carga 5-7% si la técnica se mantuvo",
+          "semana_3_hipertrofia": "4-5 series × 8-10 reps, RIR (princip 3 / interm 2 / avanz 1), subir carga 5% — agregar 1 técnica avanzada al final del grupo (drop set o pirámide)",
+          "semana_4_peak": "5 series × 6-8 reps, RIR (princip 3 / interm 0 / avanz 0), peak del bloque — test del compuesto principal en compuestos"
+        },
+        "1_semana_trial": {
+          "comment": "Solo Adaptación — calibrar pesos, enseñar técnica, generar adherencia",
+          "todas_sesiones": "2-3 series × 10-12 reps, RIR 4 (independiente nivel), peso moderado"
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas", "Pirámide ascendente (sem 3-4)", "Drop set (último ejercicio sem 3-4)", "Superset (eficiencia tiempo)"],
+      "scientific_references": [
+        "Helms, E.R., Morgan, A., Valdez, A. (2019). The Muscle and Strength Pyramid: Training, 2nd Edition.",
+        "Schoenfeld, B.J. et al. (2016). Effects of Resistance Training Frequency on Measures of Muscle Hypertrophy. Sports Medicine 46(11): 1689-1697.",
+        "Bompa, T.O., Buzzichelli, C. (2018). Periodization: Theory and Methodology of Training, 6th Edition. Human Kinetics.",
+        "Rhea, M.R. et al. (2002). A comparison of linear and daily undulating periodized programs with equated volume and intensity for strength. Journal of Strength and Conditioning Research 16(2): 250-255."
+      ],
+      "notes_for_coach": "Esta es la metodología por defecto del tier Esencial WellCore (validado en MD 04). Aplica también para Entreno Solo, Presencial y Trial. La progresión es predecible y fácil de seguir — ideal para clientes que no toleran complejidad cognitiva. **Decisión 2026-05-16 (Daniel)**: el split lo decide el cliente por días disponibles, no hay 'default por tier'. El motor v2 combina esta periodización con el split que matchea los días del cliente. Si el cliente reporta no haber progresado en 4 semanas, considerar migrar a bloques-12sem-metodo (más fases) o periodizacion-dup (más estímulo variable). Importante: la 'Adaptación' de 1 semana asume que el cliente ya tiene cierta base — si es totalmente nuevo, extender Adaptación a 2 semanas (usar supported_weeks=6 o 8 con 2 sem Adaptación).",
+      "observed_in_real_clients": [
+        {
+          "client_alias": "Lizetd Tatiana (referencia secundaria)",
+          "tier": "esencial",
+          "duracion_semanas": 4,
+          "frecuencia_dias": 6,
+          "comentario": "Combinada con Body Part Split 5d + HIIT sábado. Series 141→159 demuestran la progresión típica lineal 4 sem.",
+          "fecha_audit": "2026-05-16"
+        }
+      ],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "gvt-10x10",
+      "name": "German Volume Training (10×10)",
+      "type": "entrenamiento",
+      "source": "literatura_clasica",
+      "evidence_level": "moderada",
+      "is_split_agnostic": true,
+      "short_description": "10 series de 10 repeticiones con mismo peso (~60% 1RM) en 1 ejercicio compuesto principal por grupo + accesorios. Bloque corto (4-6 sem) de hipertrofia extrema. Para clientes avanzados que ya estancaron.",
+      "long_description": "El German Volume Training (GVT, también llamado '10×10') fue popularizado por Charles Poliquin en los años 90 y atribuye su origen a entrenadores de levantamiento de pesas alemanes. El protocolo es: 10 series de 10 repeticiones con el mismo peso (~60% del 1RM), descanso 60-90 segundos entre series, en 1 ejercicio compuesto principal por grupo muscular, complementado con 3-4 ejercicios accesorios de 3×10-12. Es un bloque CORTO (4-6 sem máximo) de hipertrofia extrema — la idea es someter al músculo a un volumen brutal en un período acotado. NO es sostenible más de 6 semanas: la recuperación se compromete. Algunos estudios (Amirthalingam et al. 2017) sugieren que GVT 5×10 produce resultados similares con menor fatiga, cuestionando la 'magia' del 10×10. En WellCore se usa como bloque de choque entre 2 bloques estándar para clientes estancados.",
+      "periodization_pattern": {
+        "type": "por_bloques",
+        "options": ["por_bloques"],
+        "default_weeks": 4,
+        "supported_weeks": [4, 6],
+        "phases_by_duration": {
+          "4": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "avanzado": 3 }, "intensity_pct_1rm": "55-60", "volumen_label": "Alto (calibrar 10×10)" },
+            { "name": "Hipertrofia", "weeks": 3, "rir_target_by_level": { "avanzado": 1 }, "intensity_pct_1rm": "60-65", "volumen_label": "Muy alto (100 reps por ejercicio principal)" }
+          ],
+          "6": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "avanzado": 3 }, "intensity_pct_1rm": "55-60", "volumen_label": "Alto (calibrar)" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "avanzado": 1 }, "intensity_pct_1rm": "60-65", "volumen_label": "Muy alto" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "avanzado": 0 }, "intensity_pct_1rm": "65-70", "volumen_label": "Muy alto, último esfuerzo" }
+          ]
+        }
+      },
+      "applicable_tiers": ["elite", "entreno_solo", "metodo"],
+      "applicable_levels": ["avanzado"],
+      "applicable_objectives": ["hipertrofia"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [4, 5],
+      "applicable_locations": ["gym"],
+      "default_volume_label": "Vol. extremo (100 reps por ejercicio principal)",
+      "default_series_per_week_range": [80, 120],
+      "default_session_duration_min": [70, 90],
+      "combines_with_split": ["body-part-split-5d", "upper-lower-4d"],
+      "preferred_split_by_context": {
+        "comment": "GVT funciona mejor con Body Part Split 5d porque permite que cada grupo tenga su día completo para los 10×10 sin saturar otros grupos.",
+        "fallback_general": "body-part-split-5d"
+      },
+      "split_template": {
+        "comment": "GVT NO tiene split propio. Estructura por sesión: 1 ejercicio compuesto principal 10×10 + 2-3 accesorios 3×10-12."
+      },
+      "contraindications": [
+        "Principiante o intermedio (no tolera el volumen — riesgo lesión)",
+        "Cliente con poca capacidad de recuperación (sueño <7h, estrés alto, déficit calórico agresivo)",
+        "Más de 6 semanas continuas (overtraining seguro)",
+        "Tier Esencial (no apto para volúmenes extremos)"
+      ],
+      "typical_progression": {
+        "4_semanas_bloque_de_choque": {
+          "semana_1_adaptacion": "10×10 al 55-60% del 1RM, RIR 3. Si lográs las 100 reps con técnica perfecta, subí el peso en semana 2.",
+          "semana_2_hipertrofia_1": "10×10 al 60% del 1RM, RIR 2. Las últimas 2-3 series probablemente no llegues a 10 — aceptable, mantener peso.",
+          "semana_3_hipertrofia_2": "10×10 al 60% (mismo peso). Si recuperaste reps en las últimas series, subir 2.5kg. Si no, mantener.",
+          "semana_4_hipertrofia_3": "10×10 al 62-65% si llegaste a las 100 reps en sem 3. Último esfuerzo. Después: 1 sem deload obligatorio."
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas (10×10 es series rectas extremas)", "Rest-pause si fallás en series 8-10"],
+      "scientific_references": [
+        "Amirthalingam, T. et al. (2017). Effects of a Modified German Volume Training Program on Muscular Hypertrophy and Strength. Journal of Strength and Conditioning Research 31(11): 3109-3119.",
+        "Poliquin, C. (1996). Modern Trends in Strength Training, Vol 1.",
+        "Schoenfeld, B.J. et al. (2019). Resistance Training Volume Enhances Muscle Hypertrophy but Not Strength in Trained Men. Medicine & Science in Sports and Exercise 51(1): 94-103.",
+        "Israetel, M. et al. (2017). Scientific Principles of Hypertrophy Training. Renaissance Periodization."
+      ],
+      "notes_for_coach": "Es un bloque de choque, NO una metodología permanente. Usar máximo 4-6 sem entre bloques estándar para sacar de estancamiento. El peso del 10×10 debe ser un peso que en condiciones normales harías ~20 reps al fallo — la fatiga acumulada lo convierte en RIR 1 al final. Si el cliente completa las 100 reps cómodamente sem 1, el peso está bajo — subir 2.5-5kg. Si NO completa las 100 reps sem 1, el peso está alto — bajar 2.5kg. DESPUÉS del bloque GVT: 1 sem de deload obligatoria + volver a bloque estándar. NO encadenar dos bloques GVT seguidos.",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "hst-hypertrophy-specific-training",
+      "name": "HST (Hypertrophy-Specific Training)",
+      "type": "entrenamiento",
+      "source": "literatura_cientifica",
+      "evidence_level": "moderada",
+      "is_split_agnostic": false,
+      "short_description": "Programa científico de Bryan Haycock basado en 4 principios: tensión mecánica progresiva, frecuencia 3× por grupo, reps decrecientes (15→10→5), y SD (Strategic Deconditioning) obligatorio. Atado a Full Body 3d.",
+      "long_description": "HST fue desarrollado por Bryan Haycock como aplicación rigurosa de los principios científicos de hipertrofia muscular. Los 4 principios fundamentales son: (1) Tensión mecánica progresiva — la carga sube cada sesión a partir de tests iniciales de 15RM/10RM/5RM; (2) Frecuencia 3× por grupo — todo el cuerpo se entrena 3 veces por semana (Full Body 3d obligatorio); (3) Cargas progresivas con reps decrecientes — sem 1-2 con 15 reps, sem 3-4 con 10 reps, sem 5-6 con 5 reps, manteniendo carga progresiva; (4) Strategic Deconditioning (SD) obligatorio — 1-2 semanas off cada 6-8 sem para resensibilizar al músculo a la tensión. Es muy estructurado: las cargas se planifican desde el día 1 (calculadas desde los tests RM). Apto solo para clientes avanzados con disciplina alta.",
+      "periodization_pattern": {
+        "type": "lineal",
+        "options": ["lineal"],
+        "default_weeks": 8,
+        "supported_weeks": [8],
+        "phases_by_duration": {
+          "8": [
+            { "name": "Recuperación", "weeks": 1, "rir_target_by_level": { "avanzado": 4 }, "intensity_pct_1rm": "0",     "rep_range": "N/A",  "volumen_label": "Casi nulo (SD inicial)" },
+            { "name": "Adaptación",   "weeks": 2, "rir_target_by_level": { "avanzado": 3 }, "intensity_pct_1rm": "65-75", "rep_range": "15",   "volumen_label": "Moderado" },
+            { "name": "Hipertrofia",  "weeks": 2, "rir_target_by_level": { "avanzado": 2 }, "intensity_pct_1rm": "75-82", "rep_range": "10",   "volumen_label": "Moderado-Alto" },
+            { "name": "Fuerza",       "weeks": 2, "rir_target_by_level": { "avanzado": 1 }, "intensity_pct_1rm": "82-90", "rep_range": "5",    "volumen_label": "Moderado" },
+            { "name": "Recuperación", "weeks": 1, "rir_target_by_level": { "avanzado": 4 }, "intensity_pct_1rm": "0",     "rep_range": "N/A",  "volumen_label": "Casi nulo (SD final)" }
+          ]
+        }
+      },
+      "alias_cliente_facing_map": {
+        "comment": "Mapeo nomenclatura HST → fases oficiales WellCore. El cliente HST entiende SD/15s/10s/5s; el motor v2 usa fases oficiales en JSON canónico.",
+        "SD_inicial": "Recuperación (semana 1)",
+        "Reps_15_RM": "Adaptación (semanas 2-3)",
+        "Reps_10_RM": "Hipertrofia (semanas 4-5)",
+        "Reps_5_RM": "Fuerza (semanas 6-7)",
+        "SD_final": "Recuperación (semana 8)"
+      },
+      "applicable_tiers": ["metodo", "elite"],
+      "applicable_levels": ["avanzado"],
+      "applicable_objectives": ["hipertrofia"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [3],
+      "applicable_locations": ["gym"],
+      "default_volume_label": "Vol. moderado distribuido en 3 sesiones",
+      "default_series_per_week_range": [60, 90],
+      "default_session_duration_min": [60, 80],
+      "split_template": {
+        "comment": "HST exige Full Body 3 días. Estructura por sesión: 1 ejercicio por grupo muscular grande (8 ejercicios totales), 2 sets por ejercicio.",
+        "3_dias_full_body": {
+          "Lunes":    "Full Body — Sentadilla, Peso muerto rumano, Press banca, Remo barra, Press hombro, Dominadas, Curl bíceps, Tríceps polea",
+          "Miércoles":"Full Body — Hack squat, Peso muerto, Press inclinado, Remo polea, Press militar mancuernas, Jalón, Curl martillo, Fondos",
+          "Viernes":  "Full Body — Sentadilla búlgara, Peso muerto sumo, Press declinado, Remo T, Elevaciones laterales, Pullover, Curl polea, Tríceps mancuerna"
+        }
+      },
+      "contraindications": [
+        "Principiante o intermedio (la carga planificada requiere tests RM precisos en compuestos)",
+        "Cliente que no tolera Full Body 3d (frecuencia alta exige recuperación buena)",
+        "Cliente con foco fuerza pura (HST es hipertrofia, no powerlifting)",
+        "Tier Esencial (no soporta complejidad del HST)"
+      ],
+      "typical_progression": {
+        "8_semanas_hst_completo": {
+          "semana_1_SD_inicial": "Strategic Deconditioning previo — descanso o cardio ligero, NO pesas. Test de RMs antes del bloque: 15RM, 10RM, 5RM en compuestos.",
+          "semana_2_3_reps_15": "Full Body 3×: 2 series × 15 reps con peso progresivo (sem 2 al 65% del 15RM, sem 3 al 100% del 15RM), RIR 3",
+          "semana_4_5_reps_10": "Full Body 3×: 2 series × 10 reps con peso progresivo (sem 4 al 65% del 10RM, sem 5 al 100% del 10RM), RIR 2",
+          "semana_6_7_reps_5": "Full Body 3×: 2 series × 5 reps con peso progresivo (sem 6 al 65% del 5RM, sem 7 al 100% del 5RM), RIR 1",
+          "semana_8_SD_final": "Strategic Deconditioning final — 1 sem off pesas. Reset al músculo."
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas (única técnica de HST clásico)", "Tempo controlado en sem de 5 reps"],
+      "scientific_references": [
+        "Haycock, B. (2000). Hypertrophy-Specific Training (HST). hypertrophy-specific.com.",
+        "Schoenfeld, B.J. (2010). The Mechanisms of Muscle Hypertrophy and Their Application to Resistance Training. Journal of Strength and Conditioning Research 24(10): 2857-2872.",
+        "Damas, F. et al. (2016). A review of resistance training-induced changes in skeletal muscle protein synthesis. Sports Medicine 45(6): 801-807.",
+        "Krieger, J.W. (2010). Single vs. multiple sets of resistance exercise for muscle hypertrophy: a meta-analysis. Journal of Strength and Conditioning Research 24(4): 1150-1159."
+      ],
+      "notes_for_coach": "HST es muy estructurado — requiere tests RM precisos antes del bloque (semana 1 SD). Si no tienes 1RM real del cliente, usa fórmulas (Brzycki, Epley) sobre cargas conocidas como aproximación. El SD inicial es CRÍTICO: el cliente debe entrar al bloque 'desensibilizado' (1-2 sem off pesas) para que la curva de progresión funcione. NO modifiques la estructura — agregar series rompe el principio HST. Si el cliente no progresa, primero valida adherencia al SD inicial. Apto solo para clientes con disciplina alta. El término 'Recuperación' en este contexto = Strategic Deconditioning (descanso voluntario, no post-lesión).",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "phat-power-hypertrophy",
+      "name": "PHAT (Power Hypertrophy Adaptive Training)",
+      "type": "entrenamiento",
+      "source": "literatura_clasica",
+      "evidence_level": "moderada",
+      "is_split_agnostic": false,
+      "short_description": "Diseñado por Layne Norton (powerlifter + IFBB Pro). Combina 2 días de fuerza (Power, reps 3-5) + 3 días de hipertrofia (reps 8-12). 5 días totales. Para intermedios+ buscando fuerza Y hipertrofia.",
+      "long_description": "PHAT fue diseñado por Layne Norton (powerlifter + IFBB Pro + PhD Nutritional Sciences) para combinar las ganancias de fuerza y de hipertrofia simultáneamente. La estructura es 5 días específicos: Lunes (Upper Power, 3-5 reps en bench y accesorios), Martes (Lower Power, 3-5 reps en squat y deadlift), Miércoles descanso, Jueves (Back/Shoulders Hipertrofia, 8-12 reps), Viernes (Lower Hipertrofia, 8-12 reps), Sábado (Chest/Arms Hipertrofia, 8-12 reps). Es una forma híbrida entre DUP, Body Part Split y Powerlifting. Funciona para intermedios+ con foco mixto fuerza/hipertrofia. La principal limitación es que requiere 5 días específicos y familiaridad con powerlifts. En WellCore aplica para clientes Método/Elite que ya pasaron por bloques de hipertrofia pura y quieren agregar componente fuerza sin abandonar volumen.",
+      "periodization_pattern": {
+        "type": "ondulante_dup",
+        "options": ["ondulante_dup"],
+        "default_weeks": 8,
+        "supported_weeks": [6, 8, 12],
+        "phases_by_duration": {
+          "8": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "volumen_label": "Moderado" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-85 (varía por día Power vs Hipert)", "volumen_label": "Alto" },
+            { "name": "Fuerza",      "weeks": 2, "rir_target_by_level": { "intermedio": 1, "avanzado": 0 }, "intensity_pct_1rm": "82-90", "volumen_label": "Moderado" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92", "volumen_label": "Bajo-Moderado" }
+          ]
+        }
+      },
+      "applicable_tiers": ["metodo", "elite", "entreno_solo"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_objectives": ["hipertrofia", "fuerza", "recomposicion"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [5],
+      "applicable_locations": ["gym"],
+      "default_volume_label": "Vol. alto con varianza por día (Power=bajo / Hipert=alto)",
+      "default_series_per_week_range": [100, 140],
+      "default_session_duration_min": [70, 90],
+      "split_template": {
+        "comment": "PHAT exige split específico de 5 días. NO es split-agnostic.",
+        "5_dias_phat": {
+          "Lunes":   "Upper Power — Press banca 3×3-5, Remo barra 3×3-5, accesorios 3×6-8 (pecho/espalda secundario)",
+          "Martes":  "Lower Power — Sentadilla 3×3-5, Peso muerto 3×3-5, accesorios 3×6-10",
+          "Miércoles":"Descanso",
+          "Jueves":  "Back/Shoulders Hipertrofia — 5-6 ejercicios × 8-12 reps (espalda completa + hombros)",
+          "Viernes": "Lower Hipertrofia — 5-6 ejercicios × 8-12 reps (vol. moderado, post Lower Power)",
+          "Sábado":  "Chest/Arms Hipertrofia — 5-6 ejercicios × 8-12 reps (pecho + bíceps + tríceps)"
+        }
+      },
+      "split_template_alternativo_mujer": {
+        "comment": "Para clientas con foco glúteo, sesgar Viernes (Lower Hipert) hacia 5-6 ejercicios glúteo+femoral con hip thrust como compuesto principal. Martes (Lower Power) mantener squat y peso muerto como compuestos principales pero agregar 1 accesorio glúteo pesado al final.",
+        "5_dias": {
+          "Lunes":   "Upper Power (pecho/espalda 3-5 reps)",
+          "Martes":  "Lower Power (squat + deadlift 3-5 reps + hip thrust pesado 3×6-8)",
+          "Jueves":  "Back/Shoulders Hipertrofia",
+          "Viernes": "Lower Hipertrofia foco glúteo (hip thrust compuesto + femoral + abducción cable)",
+          "Sábado":  "Chest/Arms Hipertrofia"
+        }
+      },
+      "contraindications": [
+        "Principiante (no domina los powerlifts: squat, bench, deadlift)",
+        "Cliente con foco hipertrofia pura sin interés en fuerza → preferir Body Part Split 5d",
+        "Cliente con foco fuerza pura sin interés en hipertrofia → preferir programa de powerlifting (5/3/1, Sheiko)",
+        "Cliente con 4 o menos días disponibles (PHAT exige 5)"
+      ],
+      "typical_progression": {
+        "8_semanas_phat": {
+          "semana_1_adaptacion": "Power: 3×5 con peso conservador, RIR 3. Hipert: 4×10 RIR 2. Calibrar pesos en todos los rangos.",
+          "semana_2_5_hipertrofia": "Power: 3×4-5 con +5% semanal en compuestos. Hipert: 4×8-10 RIR 2, subir 5% sem 3 y 5.",
+          "semana_6_7_fuerza": "Power: 3×3 al 85% del 1RM training max, RIR 1. Hipert: 4×6-8 con peso alto, RIR 1.",
+          "semana_8_peak": "Power: 3×1-3 al 90-95%, RIR 0. Hipert: 4×6 RIR 0. Test de máximos en compuestos."
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas (Power)", "Pirámide ascendente (Power)", "Drop set (último ejercicio Hipertrofia)", "Superset (Brazos en Sábado)"],
+      "scientific_references": [
+        "Norton, L. (2010). The PHAT Routine. Published initially Bodybuilding.com, expanded in 'Carbohydrate Manipulation for Body Composition' (Norton, L. 2012).",
+        "Schoenfeld, B.J. et al. (2014). Effects of low- versus high-load resistance training on muscle strength and hypertrophy. Journal of Strength and Conditioning Research 28(10): 2909-2918.",
+        "Zourdos, M.C. et al. (2016). Modified Daily Undulating Periodization Model Produces Greater Performance Than a Traditional Configuration. Journal of Strength and Conditioning Research 30(3): 784-791.",
+        "Helms, E.R., Morgan, A., Valdez, A. (2019). The Muscle and Strength Pyramid: Training, 2nd Edition."
+      ],
+      "notes_for_coach": "PHAT requiere que el cliente sepa hacer los 3 powerlifts (squat, bench, deadlift) con buena técnica. NO recomendar a quien nunca hizo peso muerto. Si el cliente quiere híbrido pero no domina powerlifts, considerar primero 4-8 sem de UL 4d para construir base técnica. Para mujeres PHAT funciona igual; el peso muerto puede ser convencional o sumo según movilidad lumbar. En sesiones Power la prioridad es CARGA — no rep volumen. En sesiones Hipert la prioridad es VOLUMEN — no carga. Cliente debe registrar pesos por sesión para entender el balance.",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "volume-landmarks-rp",
+      "name": "Volume Landmarks Renaissance Periodization (MEV/MAV/MRV)",
+      "type": "entrenamiento",
+      "source": "literatura_cientifica",
+      "evidence_level": "alta",
+      "is_split_agnostic": true,
+      "short_description": "Sistema de periodización por landmarks de volumen de Mike Israetel (Renaissance Periodization). Define 4 umbrales por músculo: MV (mantenimiento), MEV (volumen mínimo efectivo), MAV (volumen máximo adaptativo), MRV (volumen máximo recuperable). Ramping de volumen 4-6 sem + deload. Aplicable a hipertrofia con evidencia robusta de dose-response.",
+      "long_description": "Renaissance Periodization (Mike Israetel, James Hoffmann, Chad Wesley Smith) propone organizar el volumen semanal por grupo muscular dentro de 4 landmarks: Maintenance Volume (MV, mínimo para sostener tamaño), Minimum Effective Volume (MEV, mínimo para crecer), Maximum Adaptive Volume (MAV, óptimo para crecer rápido), Maximum Recoverable Volume (MRV, tope antes de overtraining). El protocolo: arrancar el mesociclo cerca del MEV y agregar sets semana a semana hasta acercarse al MRV individual, después 1 sem deload para restaurar fatiga. Validado por evidencia dose-response: meta-análisis 2023 muestran que ≥10 sets/músculo/semana produce más hipertrofia que volumen bajo, con ceiling individual donde returns diminish (Schoenfeld et al. 2019, Baz-Valle et al. 2022). El sistema es split-agnostic — se aplica encima de Body Part Split 5d, UL 4d, PPL 6d. Es el sistema más usado en coaching de hipertrofia avanzada 2024-2025.",
+      "periodization_pattern": {
+        "type": "por_bloques",
+        "options": ["por_bloques"],
+        "default_weeks": 5,
+        "supported_weeks": [4, 5, 6, 8],
+        "phases_by_duration": {
+          "5": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-75", "volumen_label": "MEV (10-12 sets/músculo/sem)" },
+            { "name": "Hipertrofia", "weeks": 3, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "70-82", "volumen_label": "MAV ramping (14 → 18 sets/músculo/sem)" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "75-85", "volumen_label": "MRV (≥20 sets/músculo/sem, último esfuerzo)" }
+          ],
+          "6": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-75", "volumen_label": "MEV (10-12 sets)" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "70-82", "volumen_label": "MAV ramping (14 → 20 sets)" },
+            { "name": "Deload",      "weeks": 1, "rir_target_by_level": { "intermedio": 4, "avanzado": 3 }, "intensity_pct_1rm": "55-65", "volumen_label": "MV (8 sets, descarga)" }
+          ],
+          "8": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-75", "volumen_label": "MEV (10-12 sets)" },
+            { "name": "Hipertrofia", "weeks": 5, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "70-82", "volumen_label": "MAV ramping (14 → 22 sets)" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "75-85", "volumen_label": "MRV (≥24 sets)" },
+            { "name": "Deload",      "weeks": 1, "rir_target_by_level": { "intermedio": 4, "avanzado": 3 }, "intensity_pct_1rm": "55-65", "volumen_label": "MV (8 sets)" }
+          ]
+        }
+      },
+      "volume_landmarks_per_muscle": {
+        "comment": "Landmarks aproximados por grupo muscular según RP (Israetel et al. 2017+). Sets semanales hard sets (RIR 0-3). Individualidad: el cliente puede tener MRV mayor o menor — calibrar con sesiones de prueba.",
+        "pecho":   { "MV": 6,  "MEV": 10, "MAV": "12-20", "MRV": 22 },
+        "espalda": { "MV": 8,  "MEV": 10, "MAV": "14-22", "MRV": 25 },
+        "hombros_lateral": { "MV": 8,  "MEV": 8,  "MAV": "16-22", "MRV": 26 },
+        "biceps":  { "MV": 5,  "MEV": 8,  "MAV": "14-20", "MRV": 22 },
+        "triceps": { "MV": 4,  "MEV": 6,  "MAV": "10-14", "MRV": 18 },
+        "cuadriceps": { "MV": 6, "MEV": 8,  "MAV": "12-18", "MRV": 20 },
+        "femoral":  { "MV": 3,  "MEV": 6,  "MAV": "10-16", "MRV": 18 },
+        "gluteo":   { "MV": 0,  "MEV": 4,  "MAV": "8-12",  "MRV": 16 },
+        "pantorrilla": { "MV": 6, "MEV": 8, "MAV": "12-20", "MRV": 25 }
+      },
+      "applicable_tiers": ["metodo", "elite", "entreno_solo"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_objectives": ["hipertrofia", "recomposicion"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [4, 5, 6],
+      "applicable_locations": ["gym"],
+      "default_volume_label": "Vol. progresivo (MEV → MAV → MRV → deload)",
+      "default_series_per_week_range": [80, 220],
+      "default_session_duration_min": [60, 90],
+      "combines_with_split": ["upper-lower-4d", "body-part-split-5d", "ppl-6d"],
+      "preferred_split_by_context": {
+        "comment": "RP funciona mejor con splits que permiten frecuencia 2× por grupo (UL 4d o PPL 6d) porque acumular MAV (14-20 sets/sem) es más fácil distribuido en 2 sesiones que en 1.",
+        "mujer_foco_gluteo": "body-part-split-5d con día 5 100% glúteo+femoral (alcanza MRV glúteo más fácil)",
+        "hombre_foco_hipertrofia": "ppl-6d (frecuencia 2× con más volumen por sesión)",
+        "fallback_general": "upper-lower-4d"
+      },
+      "split_template": {
+        "comment": "RP NO tiene split propio. Es framework de volumen que se aplica sobre split base. Ver combines_with_split y volume_landmarks_per_muscle."
+      },
+      "contraindications": [
+        "Principiante (no tiene capacidad de tolerar MAV alto ni de calibrar MRV con precisión)",
+        "Cliente con poca capacidad de recuperación (sueño <7h, déficit calórico agresivo) — el ramping a MRV no funciona",
+        "Tier Esencial (la complejidad del sistema MEV/MAV/MRV no aporta valor al nivel principiante-intermedio)"
+      ],
+      "typical_progression": {
+        "5_semanas_mesociclo_estandar": {
+          "semana_1_MEV": "10-12 sets/músculo, RIR 3, calibrar pesos. Es el 'arranque suave' del mesociclo.",
+          "semana_2_MAV_low": "14 sets/músculo, RIR 2, subir 5% carga. Volumen sube ~30% vs sem 1.",
+          "semana_3_MAV_mid": "16 sets/músculo, RIR 2, subir 5% carga. Aquí se obtiene la máxima ganancia.",
+          "semana_4_MAV_high": "18 sets/músculo, RIR 1, mantener carga. Volumen al límite individual.",
+          "semana_5_MRV_peak": "20+ sets/músculo (si tolera), RIR 0-1, último esfuerzo. Después: 1 sem deload obligatorio."
+        }
+      },
+      "tipical_techniques_serie": ["Series rectas (mayoría)", "Drop set (último ejercicio sem 4-5)", "Pirámide ascendente", "Myo-reps (eficiencia volumen alto)", "Superset agonista-antagonista (eficiencia tiempo)"],
+      "scientific_references": [
+        "Israetel, M., Hoffmann, J., Smith, C.W. (2017). Scientific Principles of Hypertrophy Training. Renaissance Periodization.",
+        "Schoenfeld, B.J. et al. (2019). Resistance Training Volume Enhances Muscle Hypertrophy but Not Strength in Trained Men. Medicine & Science in Sports and Exercise 51(1): 94-103.",
+        "Baz-Valle, E. et al. (2022). A Systematic Review of The Effects of Different Resistance Training Volumes on Muscle Hypertrophy. Journal of Human Kinetics 81: 199-210.",
+        "Refalo, M.C. et al. (2023). Towards an improved understanding of proximity-to-failure in resistance training and its application to research. British Journal of Sports Medicine 57(20): 1289-1296.",
+        "Bayesian network meta-analysis 192 trials (2022-2023). Sports Medicine: cuando volumen y esfuerzo se equiparan, no hay configuración superior universal para hipertrofia."
+      ],
+      "notes_for_coach": "El sistema RP es referencia moderna 2024-2025 para hipertrofia avanzada. La clave es CALIBRAR los landmarks individuales — los valores en volume_landmarks_per_muscle son aproximaciones. Cliente real puede tener MRV de pecho en 18 sets, no 22. Calibrar primero con 1-2 mesociclos de prueba: si el cliente progresa cargas y reps de sem 1 a sem 5 sin estancarse, su MAV está más alto. Si se estanca en sem 3, el MAV está cerca de lo prescrito. Para mujeres el MEV de glúteo es más bajo (4 sets) y el MRV más alto (16 sets) porque el grupo responde bien al volumen alto. Validado 2023+: ≥10 sets/músculo/sem es threshold para hipertrofia significativa, ≥20 sets puede ser overkill individual.",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "entrenamiento-femenino-autoregulado",
+      "name": "Entrenamiento femenino consistente con autoregulación por síntomas",
+      "type": "entrenamiento",
+      "source": "literatura_cientifica",
+      "evidence_level": "alta",
+      "is_split_agnostic": true,
+      "short_description": "Metodología basada en evidencia 2023-2025 que REFUTA el cycle-syncing. Train consistently + autoregulate por síntomas individuales (no por fase calendaria). Aplica a clientas menstruantes y usuarias de contraceptivos orales.",
+      "long_description": "La evidencia 2023-2025 NO soporta la periodización rígida por ciclo menstrual para hipertrofia o fuerza en la mayoría de mujeres menstruantes. McNulty et al. 2020 (meta-análisis) encontró que cualquier efecto de fase menstrual sobre performance es TRIVIAL y la calidad de evidencia BAJA. Colenso-Semple, D'Souza, Elliott-Sale, Phillips 2023 (umbrella review) concluyó que es 'premature' decir que fluctuaciones del ciclo alteran adaptaciones de hipertrofia/fuerza a largo plazo. Estudio humano 2025 confirmó NO effect of menstrual cycle phase sobre muscle protein synthesis ni myofibrillar proteolysis post-resistencia. El modelo ROAR de Stacy Sims (entrenar duro en folicular, recuperarse en lútea) NO está bien soportado por evidencia rigurosa — es heurística de coaching, no framework universal. La metodología correcta es: mantener el programa CONSISTENTE a través del ciclo (mismas semanas, mismos rangos, misma progresión) y AUTOREGULAR carga/effort/volumen por SÍNTOMAS individuales del día (energía, sueño, dolor, mood). Si la clienta reliably se siente mejor en folicular, scheduling individualizado es razonable — pero NO como regla universal. Para usuarias de contraceptivos orales aplica lo mismo (aún menos evidencia para phase-based porque las hormonas exógenas aplanan el ciclo natural).",
+      "periodization_pattern": {
+        "type": "lineal",
+        "options": ["lineal", "ondulante_dup", "por_bloques"],
+        "comment": "La periodización del programa NO cambia por fase menstrual. Se elige según tier+objetivo como cualquier cliente. La autoregulación es SEPARADA: se aplica al volumen/intensidad del día según síntomas, no por fase.",
+        "default_weeks": 8,
+        "supported_weeks": [4, 6, 8, 12],
+        "phases_by_duration": {
+          "8": [
+            { "name": "Adaptación",  "weeks": 2, "rir_target_by_level": { "principiante": 4, "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "volumen_label": "Moderado" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "principiante": 3, "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-82", "volumen_label": "Alto" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "80-87", "volumen_label": "Moderado" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "principiante": 3, "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "85-92", "volumen_label": "Bajo-Moderado" }
+          ]
+        }
+      },
+      "autoregulation_rules": {
+        "comment": "Reglas de autoregulación basadas en síntomas individuales (no en fase menstrual calendaria). Aplicables a CUALQUIER día del ciclo.",
+        "energia_baja_o_dolor_alto": "Reducir carga 5-10% en compuestos + sacar 1 ejercicio accesorio. Mantener técnica.",
+        "sueno_pobre_3_noches_seguidas": "Sacar 1 set por ejercicio + reducir intensidad 1 RIR.",
+        "calambres_o_inflamacion": "Foco técnica + reducir carga 5%. Magnesio glicinato 200-400mg pre-noche.",
+        "energia_alta_y_recuperacion_buena": "Mantener programa o ligeramente subir carga 2.5% si toca progresión.",
+        "primer_dia_menstruacion_si_dolor_severo": "Descanso o sustituir por sesión ligera (movilidad + cardio bajo). Reanudar día 2."
+      },
+      "rejected_models": {
+        "stacy_sims_roar_2016": {
+          "claim": "Entrenar duro en folicular, recuperar en lútea",
+          "evidence_status": "NO bien soportado por evidencia rigurosa 2020-2025",
+          "criticism": "Basado en estudios con problemas metodológicos: muestras pequeñas, ovulación NO verificada, asunción de ciclos de 28 días, exposición desigual entre fases"
+        },
+        "rigid_cycle_syncing": {
+          "claim": "Periodizar volumen/intensidad por fase calendaria",
+          "evidence_status": "REFUTADO por Colenso-Semple 2023 umbrella review + 2025 RCTs"
+        }
+      },
+      "applicable_tiers": ["esencial", "metodo", "elite", "entreno_solo", "presencial", "trial"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_objectives": ["hipertrofia", "fuerza", "recomposicion", "perdida_grasa", "mantenimiento"],
+      "applicable_gender": ["femenino"],
+      "applicable_days_range": [3, 4, 5, 6],
+      "applicable_locations": ["gym", "casa", "hibrido"],
+      "default_volume_label": "Vol. consistente con autoregulación diaria",
+      "default_series_per_week_range": [60, 180],
+      "default_session_duration_min": [45, 90],
+      "combines_with_split": ["full-body-3d", "upper-lower-4d", "body-part-split-5d", "ppl-6d"],
+      "preferred_split_by_context": {
+        "comment": "Aplica los mismos splits que cualquier cliente. La diferencia es la capa de autoregulación, no el split.",
+        "mujer_foco_gluteo": "body-part-split-5d (con split_template_alternativo_mujer)",
+        "mujer_foco_general": "upper-lower-4d",
+        "cliente_con_3_dias": "full-body-3d",
+        "fallback_general": "body-part-split-5d (lo más usado en WellCore)"
+      },
+      "split_template": {
+        "comment": "Esta metodología es una CAPA encima del split base. NO cambia el split por fase. Ver autoregulation_rules para qué se modula día a día."
+      },
+      "contraindications": [
+        "Clientes masculinos (no aplica — diseñada para femenino)",
+        "Clientas con condiciones médicas que requieran adaptación específica (endometriosis severa, SOP descompensado) — derivar a coach especializado + ginecólogo"
+      ],
+      "typical_progression": {
+        "8_semanas_estandar": {
+          "comment": "Misma progresión que cualquier cliente del tier. La autoregulación NO altera la curva mesociclo, solo el día específico cuando los síntomas lo requieren.",
+          "sem_1_2_adaptacion": "Programa normal + autoregulación si síntomas: día con dolor → bajar 5-10% carga.",
+          "sem_3_6_hipertrofia": "Programa normal + autoregulación: sueño <6h 3 noches → sacar 1 set/ejercicio ese día.",
+          "sem_7_fuerza": "Programa normal + autoregulación: si menstruación día 1 con dolor severo → mover sesión 1 día.",
+          "sem_8_peak": "Programa normal — peak no se mueve por ciclo. Si coincide con menstruación día 1 dolorosa, autoregular peso 5%."
+        }
+      },
+      "tipical_techniques_serie": ["Igual que el split base aplicado (Series rectas, Pirámide, Drop set, etc.)"],
+      "scientific_references": [
+        "McNulty, K.L. et al. (2020). The Effects of Menstrual Cycle Phase on Exercise Performance in Eumenorrheic Women: A Systematic Review and Meta-Analysis. Sports Medicine 50(10): 1813-1827.",
+        "Colenso-Semple, L.M., D'Souza, A.C., Elliott-Sale, K.J., Phillips, S.M. (2023). Current evidence shows no influence of women's menstrual cycle phase on acute strength performance or adaptations to resistance exercise training. Frontiers in Sports and Active Living 5: 1054542.",
+        "Thompson, B. et al. (2020). The Effect of the Menstrual Cycle and Oral Contraceptives on Acute Responses and Chronic Adaptations to Resistance Training: A Systematic Review of the Literature. Sports Medicine 50(1): 171-185.",
+        "D'Souza, A.C. et al. (2025). The menstrual cycle and oral contraceptives do not influence acute muscle protein synthesis or breakdown after resistance exercise in trained women. Journal of Physiology [study published 2025]."
+      ],
+      "notes_for_coach": "Esta es la metodología EVIDENCE-BASED para entrenamiento femenino — refuta el cycle-syncing popular en redes (Stacy Sims ROAR). La instrucción al coach: NO cambies el programa por fase calendaria. Mantén el mesociclo consistente y autoregula día a día por SÍNTOMAS individuales (energía, sueño, dolor, mood). Si la clienta INSISTE en seguir un modelo cycle-syncing (porque lo leyó en Instagram), explicar con datos: McNulty 2020 trivial effect + Colenso-Semple 2023 evidencia baja + 2025 estudio no effect protein synthesis. Para clientas con dolor severo durante menstruación o síntomas premenstruales fuertes, autoregulación funciona: si tiene sesión heavy programada y se siente terrible, reducir 10% carga o sacar 1 ejercicio. Para usuarias de anticonceptivos orales: misma metodología. Caso especial: si la clienta tiene endometriosis severa, SOP descompensado u otra condición médica, derivar a coach especializado + ginecólogo.",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "recomposicion-8sem-2bloques",
+      "name": "Recomposición Corporal 8 semanas (2 bloques)",
+      "type": "entrenamiento",
+      "source": "wellcore_adaptado",
+      "evidence_level": "moderada",
+      "is_split_agnostic": true,
+      "short_description": "Programa de 8 semanas con 2 bloques de 4 sem cada uno, foco perder grasa preservando músculo. Combina déficit calórico moderado (-300 kcal), proteína alta (2.2-2.4 g/kg), entrenamiento con volumen MODERADO mantenido (no bajado por estar en déficit) y proximidad al fallo controlada.",
+      "long_description": "La recomposición corporal (perder grasa + mantener o ganar músculo simultáneamente) es posible especialmente en clientes nuevos o intermedios con buen estímulo de entrenamiento + proteína alta + déficit calórico MODERADO (Helms 2014, Barakat et al. 2020). El protocolo WellCore: 2 bloques de 4 semanas. Bloque 1 (sem 1-4): adaptación + hipertrofia con volumen moderado-alto, déficit -300 kcal/día, proteína 2.2-2.4 g/kg. Bloque 2 (sem 5-8): mantener volumen + hipertrofia + 1 sem peak, mismo déficit y proteína. CRÍTICO: no bajar volumen de entrenamiento por estar en déficit — el volumen es el estímulo anti-catabólico. Si el cliente reporta fatiga acumulada en sem 5-6, reducir déficit a -200 kcal/día por 1 sem (NO reducir entrenamiento). Cardio LISS 30 min post-pesas + 1 HIIT separado/sem. Es split-agnostic — se aplica encima del split base que matchea los días disponibles.",
+      "periodization_pattern": {
+        "type": "lineal",
+        "options": ["lineal"],
+        "default_weeks": 8,
+        "supported_weeks": [4, 8, 12],
+        "phases_by_duration": {
+          "8": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "volumen_label": "Moderado",       "deficit_kcal": -300, "proteina_g_kg": "2.2-2.4" },
+            { "name": "Hipertrofia", "weeks": 3, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80", "volumen_label": "Moderado-Alto",  "deficit_kcal": -300, "proteina_g_kg": "2.2-2.4" },
+            { "name": "Hipertrofia", "weeks": 3, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80", "volumen_label": "Moderado-Alto",  "deficit_kcal": -300, "proteina_g_kg": "2.2-2.4" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 1, "avanzado": 0 }, "intensity_pct_1rm": "80-87", "volumen_label": "Moderado",       "deficit_kcal": -200, "proteina_g_kg": "2.4" }
+          ],
+          "12": [
+            { "name": "Adaptación",  "weeks": 2, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "65-72", "volumen_label": "Moderado",       "deficit_kcal": -300, "proteina_g_kg": "2.2-2.4" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80", "volumen_label": "Moderado-Alto",  "deficit_kcal": -300, "proteina_g_kg": "2.2-2.4" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "72-80", "volumen_label": "Moderado-Alto",  "deficit_kcal": -250, "proteina_g_kg": "2.2-2.4" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 1, "avanzado": 0 }, "intensity_pct_1rm": "80-87", "volumen_label": "Moderado",       "deficit_kcal": -200, "proteina_g_kg": "2.4" },
+            { "name": "Deload",      "weeks": 1, "rir_target_by_level": { "intermedio": 4, "avanzado": 3 }, "intensity_pct_1rm": "55-65", "volumen_label": "Bajo",           "deficit_kcal":    0, "proteina_g_kg": "2.0" }
+          ]
+        }
+      },
+      "applicable_tiers": ["esencial", "metodo", "elite", "entreno_solo"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_objectives": ["recomposicion", "perdida_grasa"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [3, 4, 5, 6],
+      "applicable_locations": ["gym", "casa", "hibrido"],
+      "default_volume_label": "Moderado mantenido (no reducir por déficit)",
+      "default_series_per_week_range": [60, 140],
+      "default_session_duration_min": [45, 80],
+      "combines_with_split": ["full-body-3d", "upper-lower-4d", "body-part-split-5d", "ppl-6d"],
+      "preferred_split_by_context": {
+        "comment": "Recomp funciona con cualquier split. Lo importante es mantener volumen, no el split específico.",
+        "mujer_foco_gluteo": "body-part-split-5d con foco glúteo",
+        "mujer_foco_general": "upper-lower-4d",
+        "hombre_foco_general": "upper-lower-4d o body-part-split-5d",
+        "cliente_con_3_dias": "full-body-3d",
+        "fallback_general": "upper-lower-4d (frecuencia 2× ideal para mantener músculo en déficit)"
+      },
+      "split_template": {
+        "comment": "Split-agnostic. Aplica el split que matchea los días del cliente. Lo distintivo es el manejo nutricional + autoregulación si fatiga aparece."
+      },
+      "contraindications": [
+        "Cliente con TMB muy baja (<1400 mujer / <1600 hombre) — déficit -300 sería demasiado",
+        "Cliente con desorden alimenticio activo o historia de DAE — derivar a profesional de salud mental",
+        "Atleta cerca de competencia (fuerza/powerlifting) — recomp baja performance, no compatible con peaking",
+        "Cliente con muy poca grasa corporal (<10% hombre / <16% mujer) — recomp no es óptima, mejor maintenance o lean bulk"
+      ],
+      "typical_progression": {
+        "8_semanas_recomp": {
+          "semana_1_adaptacion": "Calibrar pesos, déficit -300 kcal, proteína 2.2 g/kg, técnica primero. Pesarse cada 7 días.",
+          "semana_2_4_hipertrofia_bloque_1": "Subir 5% carga si técnica OK, mantener déficit, monitorear peso semanal (-0.3 a -0.5 kg/sem es ideal).",
+          "semana_5_7_hipertrofia_bloque_2": "Continuar progresión. Si fatiga aparece en sem 6, reducir déficit a -200 kcal por 1 sem (NO reducir entrenamiento).",
+          "semana_8_peak": "Carga máxima del ciclo. Déficit a -200. Después: 1 sem maintenance + nuevo bloque o reverse diet."
+        }
+      },
+      "nutrition_overlay": {
+        "comment": "Recomp NO es solo entrenamiento. La nutrición es CRÍTICA. Estos parámetros van a la metodología de nutrición que el motor v2 monta encima.",
+        "deficit_kcal_default": -300,
+        "proteina_g_kg_default": 2.2,
+        "carbos_timing": "Mayoría en peri-entreno (pre + post)",
+        "grasas_minimo_g_kg": 0.8,
+        "cardio": "LISS 30 min post-pesas + 1 HIIT 15 min separado/sem",
+        "deload_nutricional": "1 sem mantenimiento (0 déficit) cada 8 sem si el cliente lo necesita"
+      },
+      "tipical_techniques_serie": ["Series rectas", "Pirámide ascendente (sem 4-7)", "Drop set (último ejercicio, sin abusar)", "Superset (eficiencia tiempo en sesiones largas)"],
+      "scientific_references": [
+        "Helms, E.R. et al. (2014). Evidence-based recommendations for natural bodybuilding contest preparation: nutrition and supplementation. Journal of the International Society of Sports Nutrition 11: 20.",
+        "Barakat, C. et al. (2020). Body Recomposition: Can Trained Individuals Build Muscle and Lose Fat at the Same Time? Strength and Conditioning Journal 42(5): 7-21.",
+        "Murphy, C.H., Hector, A.J., Phillips, S.M. (2015). Considerations for protein intake in managing weight loss in athletes. European Journal of Sport Science 15(1): 21-28.",
+        "Longland, T.M. et al. (2016). Higher compared with lower dietary protein during an energy deficit combined with intense exercise promotes greater lean mass gain and fat mass loss. American Journal of Clinical Nutrition 103(3): 738-746."
+      ],
+      "notes_for_coach": "La recomp es POSIBLE en principiantes/intermedios y en avanzados con condiciones específicas (vuelven de pausa, mucha grasa para perder, proteína alta). NO prometer recomp agresiva: -0.3 a -0.5 kg/sem es realista. CRÍTICO: NO reducir volumen de entrenamiento por estar en déficit. El volumen es el estímulo anti-catabólico. Si el cliente se queja de fatiga, reducir DÉFICIT (a -200 kcal), no entrenamiento. Para mujeres en perimenopausia o con SOP, recomp es más lenta — ajustar expectativas. Para clientes muy delgados (<10% hombre / <16% mujer), recomp NO es óptima — mejor maintenance o lean bulk. Combinable con entrenamiento-femenino-autoregulado para clientas (mismo enfoque, agregar autoregulación por síntomas).",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "hiit-estructurado",
+      "name": "HIIT Estructurado (Tabata + Intervalos)",
+      "type": "entrenamiento",
+      "source": "literatura_clasica",
+      "evidence_level": "alta",
+      "is_split_agnostic": true,
+      "short_description": "Protocolo de HIIT (High-Intensity Interval Training) con 3 formatos: Tabata (8×20s on / 10s off), intervalos clásicos (4×4 min on / 3 min off), intervalos cortos (10×60s on / 60s off). Para pérdida de grasa, mejora cardiovascular, mantenimiento durante recomp. Standalone o complemento al programa de pesas.",
+      "long_description": "El HIIT (High-Intensity Interval Training) alterna períodos cortos de esfuerzo máximo o casi-máximo con descansos activos o pasivos. Los protocolos más respaldados por evidencia son: (1) Tabata original (Tabata et al. 1996): 8 rondas de 20s al ~170% VO2max + 10s descanso, total 4 min — muy demandante, solo 2-3×/sem; (2) Intervalos largos Norwegian (Helgerud et al. 2007, Buchheit et al. 2013): 4×4 min al 85-95% FCmax + 3 min al 70%, total 28-32 min — el más respaldado para mejora VO2max y composición corporal; (3) Intervalos cortos: 10×60s al 90% FCmax + 60s descanso activo, total 20 min — más accesible para intermedios. En WellCore se usa para: complemento al programa de pesas (2-3 sesiones/sem para perder grasa), standalone para clientes que NO quieren pesas (combinable con cardio LISS), o como bloque corto pre-evento. NO recomendar a principiantes en sus primeros 2 meses (necesitan base aeróbica primero con LISS).",
+      "periodization_pattern": {
+        "type": "lineal",
+        "options": ["lineal"],
+        "default_weeks": 4,
+        "supported_weeks": [4, 6, 8, 12],
+        "phases_by_duration": {
+          "4": [
+            { "name": "Adaptación",  "weeks": 1, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "N/A (FC 70-85% FCmax)",  "formato_recomendado": "Intervalos cortos 10×60s/60s, 2 sesiones/sem" },
+            { "name": "Hipertrofia", "weeks": 2, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "N/A (FC 80-90% FCmax)",  "formato_recomendado": "Intervalos largos 4×4 min/3 min, 2-3 sesiones/sem" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "N/A (FC 90-95% FCmax + máximo Tabata)", "formato_recomendado": "Tabata 8×20s/10s, 2 sesiones/sem (no más, demanda muy alta)" }
+          ],
+          "8": [
+            { "name": "Adaptación",  "weeks": 2, "rir_target_by_level": { "intermedio": 3, "avanzado": 2 }, "intensity_pct_1rm": "N/A (FC 70-85%)", "formato_recomendado": "Intervalos cortos 10×60s/60s" },
+            { "name": "Hipertrofia", "weeks": 4, "rir_target_by_level": { "intermedio": 2, "avanzado": 1 }, "intensity_pct_1rm": "N/A (FC 80-90%)", "formato_recomendado": "Intervalos largos 4×4 min/3 min" },
+            { "name": "Fuerza",      "weeks": 1, "rir_target_by_level": { "intermedio": 1, "avanzado": 1 }, "intensity_pct_1rm": "N/A (FC 85-92%)", "formato_recomendado": "Mix intervalos largos + 1 Tabata/sem" },
+            { "name": "Peak",        "weeks": 1, "rir_target_by_level": { "intermedio": 0, "avanzado": 0 }, "intensity_pct_1rm": "N/A (FC 90-95%)", "formato_recomendado": "Tabata 2 sesiones/sem" }
+          ]
+        }
+      },
+      "protocolos_disponibles": {
+        "tabata_original": {
+          "descripcion": "8 rondas de 20s esfuerzo máximo + 10s descanso. Total 4 min trabajo.",
+          "calentamiento": "5-7 min cardio bajo + 2 min movilidad",
+          "frecuencia_max_semanal": 2,
+          "evidence_basis": "Tabata et al. 1996 (skating speed skaters)",
+          "FC_objetivo": "Cerca de FCmax al final de cada ronda",
+          "ejercicios_recomendados": ["Burpees", "Mountain climbers", "Sprint en bicicleta estática", "Squat jumps", "Battle ropes"]
+        },
+        "intervalos_largos_norwegian": {
+          "descripcion": "4 rondas de 4 min al 85-95% FCmax + 3 min recuperación al 70% FCmax. Total 28-32 min.",
+          "calentamiento": "10 min cardio progresivo",
+          "frecuencia_max_semanal": 3,
+          "evidence_basis": "Helgerud et al. 2007, Buchheit et al. 2013, mejor respaldado para VO2max",
+          "FC_objetivo": "85-95% FCmax en intervalos, 70% FCmax en recuperación",
+          "ejercicios_recomendados": ["Caminadora inclinada rápida", "Bicicleta estática", "Elíptica", "Remo"]
+        },
+        "intervalos_cortos": {
+          "descripcion": "10 rondas de 60s al 90% FCmax + 60s descanso activo. Total 20 min.",
+          "calentamiento": "5 min cardio bajo",
+          "frecuencia_max_semanal": 3,
+          "evidence_basis": "Gibala et al. 2014, accesible para intermedios",
+          "FC_objetivo": "85-92% FCmax en intervalos, descanso activo 60-65% FCmax",
+          "ejercicios_recomendados": ["Caminadora", "Bicicleta", "Salto de cuerda", "Burpees modificados"]
+        }
+      },
+      "applicable_tiers": ["esencial", "metodo", "elite", "entreno_solo", "presencial", "trial"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_objectives": ["perdida_grasa", "recomposicion", "performance_deportivo", "mantenimiento"],
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_days_range": [2, 3],
+      "applicable_locations": ["gym", "casa", "hibrido"],
+      "default_volume_label": "Vol. cardio alto en tiempo corto",
+      "default_series_per_week_range": [0, 0],
+      "default_session_duration_min": [20, 35],
+      "combines_with_split": ["full-body-3d", "upper-lower-4d", "body-part-split-5d", "ppl-6d", "standalone (sin pesas)"],
+      "preferred_split_by_context": {
+        "comment": "HIIT NO se monta sobre split base — es PARALELO al programa de pesas. Frecuencia recomendada: 2-3 sesiones/sem adicionales al programa de pesas, o standalone si el cliente NO quiere pesas.",
+        "cliente_con_pesas_4_5_dias": "Agregar 1-2 HIIT cortos en días sin pesas o post-pesas (LISS post + HIIT separado)",
+        "cliente_standalone_cardio": "3 HIIT/sem + 2 LISS/sem = 5 sesiones cardio variadas",
+        "cliente_recomposicion": "1 HIIT/sem como complemento al programa de pesas con déficit"
+      },
+      "split_template": {
+        "comment": "HIIT es protocolo de cardio, no split de pesas. Se agenda en días sin pesas o post-pesas según los protocolos_disponibles.",
+        "ejemplo_3_sesiones_sem": {
+          "Lunes":     "Día pesas + LISS 20 min post-pesas",
+          "Martes":    "HIIT Intervalos cortos 20 min standalone",
+          "Miércoles": "Día pesas",
+          "Jueves":    "HIIT Intervalos largos 30 min standalone",
+          "Viernes":   "Día pesas",
+          "Sábado":    "HIIT Tabata 4 min + core 15 min",
+          "Domingo":   "Descanso o LISS 30 min opcional"
+        }
+      },
+      "contraindications": [
+        "Principiante (sin base aeróbica) → primero 4-8 sem LISS",
+        "Cliente con problemas cardiovasculares (sin chequeo médico) → derivar a cardiólogo primero",
+        "Cliente con lesiones articulares activas en miembros inferiores (HIIT alto impacto) — usar elíptica o remo en vez de saltos",
+        "Cliente en bloque Peak de pesas (fuerza máxima) — el HIIT alto interfiere con peaking, mover HIIT al bloque Hipertrofia",
+        "Cliente con sueño consistentemente <6h → el HIIT tiene cost de recuperación alto, mejor LISS"
+      ],
+      "typical_progression": {
+        "4_semanas_intro_HIIT": {
+          "semana_1_adaptacion": "Intervalos cortos 10×60s/60s al 80% FCmax, 2 sesiones/sem. Foco técnica respiración + recuperación.",
+          "semana_2_hipertrofia": "Intervalos largos 4×4 min/3 min al 85% FCmax, 2 sesiones/sem.",
+          "semana_3_hipertrofia": "Intervalos largos al 90% FCmax + agregar 1 Tabata corta (1 ronda 8×20s/10s + recuperar 5 min + repetir).",
+          "semana_4_peak": "Tabata 8×20s/10s al 95% FCmax + 1 sesión intervalos largos. Después: 1 sem deload obligatoria (solo LISS)."
+        }
+      },
+      "tipical_techniques_serie": ["No aplica (es cardio, no resistencia)"],
+      "scientific_references": [
+        "Tabata, I. et al. (1996). Effects of moderate-intensity endurance and high-intensity intermittent training on anaerobic capacity and VO2max. Medicine & Science in Sports and Exercise 28(10): 1327-1330.",
+        "Helgerud, J. et al. (2007). Aerobic high-intensity intervals improve VO2max more than moderate training. Medicine & Science in Sports and Exercise 39(4): 665-671.",
+        "Gibala, M.J. et al. (2014). Brief intense interval exercise activates AMPK and p38 MAPK signaling and increases the expression of PGC-1α in human skeletal muscle. Journal of Applied Physiology.",
+        "Buchheit, M., Laursen, P.B. (2013). High-Intensity Interval Training, Solutions to the Programming Puzzle: Part I: Cardiopulmonary Emphasis. Sports Medicine 43(5): 313-338."
+      ],
+      "notes_for_coach": "HIIT es eficiente en tiempo (20-35 min vs 60 min LISS) pero alto costo de recuperación. Para clientes con pesas + déficit calórico (recomp), 1-2 HIIT/sem es ideal — no más, porque el déficit reduce capacidad de recuperación. Para clientes standalone cardio (sin pesas), 3 HIIT + 2 LISS/sem es buen balance. La progresión clave es FC objetivo, no carga: arrancar al 80% FCmax y subir 3-5% por semana. Si el cliente no tiene pulsómetro, usar RPE (1-10): 7-8 en intervalos cortos, 8-9 en intervalos largos, 10 (todo lo que tengas) en Tabata. NO recomendar HIIT a quien no tiene base aeróbica — provoca odio al cardio + alto riesgo lesión.",
+      "observed_in_real_clients": [],
+      "version": 1,
+      "active": true
+    }
+  ],
+  "pending_review": [],
+  "decisions_log": [
+    {
+      "date": "2026-05-16",
+      "decision": "No hay 'default por tier' — planes son 100% personalizados por días disponibles del cliente. Motor v2 matchea applicable_days_range exacto.",
+      "decided_by": "Daniel"
+    },
+    {
+      "date": "2026-05-16",
+      "decision": "DUP habilitado en Esencial cuando nivel es intermedio o superior. Para principiantes mantener siempre lineal.",
+      "decided_by": "Daniel"
+    },
+    {
+      "date": "2026-05-16",
+      "decision": "split_template_alternativo_mujer es patrón válido — replicar en todas las metodologías que apliquen a género femenino.",
+      "decided_by": "Daniel"
+    },
+    {
+      "date": "2026-05-16",
+      "decision": "RIR objetivo se modula por nivel del cliente: principiante +1, intermedio base (MD 08), avanzado -1. Principiante respeta regla MD 08 de no bajar de RIR 3 después de Adaptación.",
+      "decided_by": "Daniel"
+    }
+  ],
+  "todo_next_session_v1_1": {
+    "comment": "Catálogo MVP v1.0 cerrado con 15/15. Estas metodologías quedan identificadas en investigación Perplexity 2026-05-16 como candidatas para v1.1 si el motor v2 muestra demanda.",
+    "candidates_high_priority": [
+      {
+        "name": "RIR/RPE-Autoregulated (Helms/Zourdos/3DMJ)",
+        "rationale": "Sistema autoregulado validado por Zourdos 2016 + Helms 2018. Permite al cliente ajustar carga por readiness diaria. Aplicable a Esencial+, intermedio+. Habilitaría capa extra de autoregulación que el motor v2 puede ofrecer."
+      },
+      {
+        "name": "Reverse Pyramid Training (Berkhan)",
+        "rationale": "Top set heavy + 1-3 back-off lighter. Útil para clientes intermedios que prefieren pocas series con alto effort. 3-4 días, frecuencia 2× por grupo."
+      },
+      {
+        "name": "Mountain Dog Training (John Meadows)",
+        "rationale": "Hipertrofia avanzada con heavy compound + pump work + stretch sets. Muy usado en bodybuilding. 4-5 días por grupo. Bueno para clientes Elite con foco físico."
+      },
+      {
+        "name": "Specialization Phase Programming",
+        "rationale": "Bloque temporal de 4-6 sem con volumen elevado para 1-3 grupos lagging mientras se mantiene resto en MV/MEV. Útil para clientes con asimetrías visibles."
+      }
+    ],
+    "candidates_medium_priority": [
+      {
+        "name": "Cluster Set System (split-agnostic)",
+        "rationale": "Permite mantener bar speed con cargas altas. Útil para fuerza-hipertrofia híbrido. Evidencia 2024 sólida."
+      },
+      {
+        "name": "Antagonist Superset System (split-agnostic)",
+        "rationale": "Reduce tiempo de sesión 33% manteniendo hipertrofia. Validado por meta-análisis 2025 Sports Medicine. Útil para clientes con tiempo limitado."
+      },
+      {
+        "name": "Rest-Pause / Myo-Reps System (split-agnostic)",
+        "rationale": "Activation set + mini-sets. Tiempo-eficiente. Validado para hipertrofia equivalente a straight sets con menos tiempo."
+      },
+      {
+        "name": "Flexible Non-linear Autoregulated Templates",
+        "rationale": "Cliente elige sesión del día según readiness (heavy/moderate/light). Útil para clientes con horario variable. Validado 2023+."
+      }
+    ],
+    "candidates_low_priority": [
+      {
+        "name": "Lyle McDonald Generic Bulking Routine",
+        "rationale": "Similar a Upper/Lower 4d ya incluido. Redundante con catálogo actual."
+      },
+      {
+        "name": "nSuns 5/3/1",
+        "rationale": "Variante de 5/3/1 que NO incluimos. Nicho de powerlifting hibrido. Baja prioridad para coaching hipertrofia/fitness."
+      },
+      {
+        "name": "Conjugate Method (Westside Barbell)",
+        "rationale": "Excluído del MVP — es powerlifting puro. Solo agregar si WellCore atiende powerlifters."
+      },
+      {
+        "name": "Lineal Inversa (volumen alto → intensidad alta)",
+        "rationale": "Útil para clientes que vienen quemados de un peak. Puede agregarse como variante de periodización-lineal-4sem-esencial."
+      }
+    ],
+    "validation_pendiente": [
+      "Validar las referencias científicas con research-validator skill en sesión separada (todas las DOI/papers son verificables pero no han sido cross-checked)",
+      "Revisar el documento de Perplexity 'Modern Evidence-Based Hypertrophy Programming Systems (2024–2025)' que Daniel puede descargar de la sesión actual de Perplexity Pro para auditoría profunda",
+      "Validar volume_landmarks_per_muscle de Volume Landmarks RP con coach especializada en mujeres para foco glúteo (los valores actuales son aproximaciones RP estándar)",
+      "Para entrenamiento-femenino-autoregulado: si Daniel tiene coach mujer disponible, validar autoregulation_rules con su práctica clínica"
+    ],
+    "tablas_relacionadas_motor_v2": [
+      "Para completar el sprint 0 del motor v2, faltan curar (en orden de prioridad): exercise_metadata con top 100 ejercicios, nutrition_foods top 60 Colombia, supplement_catalog 30 entradas, supplement_stacks 8 stacks, plan_templates con 8 templates desde clientes reales",
+      "Sprint 1: hábitos sugeridos (20), tips nutricionales reusables (50-80), tips entrenamiento (30-50)",
+      "Sprint 2-3 (verticales nuevas): ciclo menstrual aplicado, protocolos TRT/PCT masculinos, bloodwork panels con interpretación",
+      "Sprint 5+: RISE 28 días templates, Recomposición específica avanzada"
+    ]
+  },
+  "decisions_log_addendum_tier3_to_tier5": [
+    {
+      "date": "2026-05-16",
+      "decision": "Tier 3 incluye Volume Landmarks RP (Israetel) como 4ta metodología — sistema más usado en coaching de hipertrofia avanzada 2024-2025 según meta-análisis 2023.",
+      "decided_by": "Claude + investigación Perplexity Pro (Cristian Esparza account)",
+      "evidence": "Bayesian meta-analysis 192 trials + Baz-Valle 2022 + Schoenfeld 2019"
+    },
+    {
+      "date": "2026-05-16",
+      "decision": "Tier 4 REEMPLAZA 'Hipertrofia con ondas ciclo menstrual (Stacy Sims)' por 'Entrenamiento femenino consistente con autoregulación por síntomas'. Razón: evidencia 2023-2025 REFUTA el cycle-syncing rígido (McNulty 2020, Colenso-Semple 2023, estudios 2025).",
+      "decided_by": "Claude + investigación Perplexity Pro",
+      "evidence": "McNulty 2020 Sports Medicine, Colenso-Semple 2023 Frontiers in Sports, D'Souza 2025 J. Physiology",
+      "implication_for_engine": "El motor v2 NUNCA debe periodizar entrenamiento femenino por fase calendaria. Siempre autoregular por síntomas."
+    },
+    {
+      "date": "2026-05-16",
+      "decision": "Tier 5 #1: Recomposición 8 sem 2 bloques — split-agnostic con overlay nutricional. NO reducir volumen de entrenamiento por déficit.",
+      "decided_by": "Claude + literatura curada (Helms 2014, Barakat 2020, Longland 2016)",
+      "evidence": "Helms 2014 JISSN, Barakat 2020 SCJ, Longland 2016 AJCN"
+    },
+    {
+      "date": "2026-05-16",
+      "decision": "Tier 5 #2: HIIT Estructurado con 3 protocolos validados (Tabata, Norwegian intervals, intervalos cortos). Frecuencia max 2-3 sesiones/sem para evitar overtraining.",
+      "decided_by": "Claude + literatura curada (Tabata 1996, Helgerud 2007, Gibala 2014, Buchheit 2013)",
+      "evidence": "Tabata 1996 MSSE, Helgerud 2007 MSSE, Gibala 2014 J Appl Physiol"
+    }
+  ]
+}

@@ -131,10 +131,17 @@ final class PlanTemplatesLocalSeeder extends Seeder
             ],
         ];
 
+        // upsert por `name` (UNIQUE constraint agregada en 2026_05_17_000302).
+        // Idempotente: re-corridas no duplican.
         DB::connection('kb')
             ->table('plan_templates_local')
-            ->insert($rows);
+            ->upsert(
+                $rows,
+                ['name'],
+                ['vertical', 'target_profile_json', 'structure_json', 'source',
+                 'quality_score', 'created_by', 'version', 'status', 'updated_at']
+            );
 
-        $this->command?->info('Seeded ' . count($rows) . ' plan templates (placeholders — capture real plans with /kb-capture-template).');
+        $this->command?->info('Upserted ' . count($rows) . ' plan templates (placeholders — capture real plans with /kb-capture-template).');
     }
 }

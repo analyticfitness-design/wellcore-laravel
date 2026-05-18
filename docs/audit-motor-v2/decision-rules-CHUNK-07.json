@@ -1,0 +1,345 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "07 of 12",
+    "chunk_description": "Cierre Categoría D — D9-D14 (filtros casa-mancuernas + casa-sin-pesas, intensificador final, cardio LISS post, cardio HIIT dedicado, abs).",
+    "category": "D. SELECCIÓN DE EJERCICIOS (rules D9-D14)",
+    "depends_on": {
+      "previous_chunks": ["docs/audit-motor-v2/decision-rules-CHUNK-01..06.json"]
+    },
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ]
+  },
+  "rules": [
+    {
+      "slug": "seleccion-casa-solo-mancuernas",
+      "name": "Filtro casa con mancuernas — variations con mancuerna y NO barra olímpica",
+      "rule_type": "select_exercises_filter",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.location", "op": "equals", "value": "casa"},
+          {"field": "client.equipment_disponible", "op": "includes", "value": "mancuerna"}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.equipment_disponible", "op": "includes", "value": "barra_olimpica"}
+        ]
+      },
+      "output": {
+        "type": "exercise_filter_predicate",
+        "filter_predicate": {
+          "scope": "variations_de_exercise_patterns",
+          "include_if": {"field": "variation.equipment", "op": "includes", "value": "mancuerna"},
+          "exclude_if": {"field": "variation.equipment", "op": "includes", "value": "barra_olimpica"}
+        },
+        "sustituciones_default_compuestos": {
+          "press-banca-barra": "press-de-banca-con-mancuernas",
+          "sentadilla-con-barra": "sentadilla-goblet o sentadilla-con-mancuernas",
+          "peso-muerto-con-barra": "peso-muerto-con-mancuernas",
+          "remo-con-barra": "remo-con-mancuernas o remo-con-mancuerna-a-una-mano",
+          "press-militar-con-barra-de-pie": "press-de-hombro-con-mancuerna",
+          "peso-muerto-rumano-con-barra": "peso-muerto-rumano-con-mancuerna"
+        },
+        "compromisos_aceptados": "Carga máxima disponible típicamente 30-50 kg por mano (vs 100+ kg en barra). Sentadilla goblet limita carga absoluta; compensar con más volumen o tempo lento."
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Las variations con mancuernas son biomecánicamente equivalentes a las de barra en la mayoría de patrones, con la salvedad de la carga máxima disponible. Saeterbakken & Fimland (2013) mostraron activación EMG similar entre press de banca con mancuernas vs barra. La limitación es operativa (carga disponible), no fisiológica.",
+      "scientific_sources": [
+        {"citation": "Saeterbakken A.H., Fimland M.S. (2013). Electromyographic activity and 6RM strength in bench press on stable and unstable surfaces. Journal of Strength and Conditioning Research 27(4), 1101-1107.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["filtro_meta_nivel", "casa_con_mancuernas", "equipment"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "seleccion-casa-sin-pesas",
+      "name": "Filtro casa sin pesas — variations con peso corporal o banda elástica solamente",
+      "rule_type": "select_exercises_filter",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.location", "op": "equals", "value": "casa"}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.equipment_disponible", "op": "includes", "value": "mancuerna"},
+          {"field": "client.equipment_disponible", "op": "includes", "value": "barra_olimpica"}
+        ]
+      },
+      "output": {
+        "type": "exercise_filter_predicate",
+        "filter_predicate": {
+          "scope": "variations_de_exercise_patterns",
+          "include_if_any": [
+            {"field": "variation.equipment", "op": "includes", "value": "peso_corporal"},
+            {"field": "variation.equipment", "op": "includes", "value": "banda_elastica"}
+          ]
+        },
+        "patterns_prioritarios": [
+          "flexion-pecho", "dominada", "remo-invertido",
+          "sentadilla-isometrica", "zancada", "puente-de-gluteo-bodyweight",
+          "crunch", "elevacion-piernas", "hollow-hold", "abdominal-rueda",
+          "escaladores"
+        ],
+        "patterns_excluidos_por_dificultad": [
+          "peso-muerto-con-barra", "press-militar-con-barra-de-pie", "remo-con-barra"
+        ],
+        "compromisos_aceptados": "Plan limitado en estímulo de fuerza máxima. Compensar con volumen alto, técnicas avanzadas (drop set bodyweight via aumento de rango, tempo lento, isométricos). Para hipertrofia mantener efectivo si volumen y proximidad al fallo son adecuados (Plotkin et al. 2022)."
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Plotkin et al. (2022) compararon entrenamiento con cargas bajas hasta el fallo vs cargas altas: hipertrofia equivalente cuando volumen total y proximidad al fallo se igualan. Esto valida que el entrenamiento sin pesas en casa puede generar hipertrofia comparable si el volumen y la intensidad relativa (RIR bajo) están bien calibrados. La limitación real es la progresión a largo plazo (un cliente fuerte se queda sin estímulo en bodyweight puro tras 3-6 meses).",
+      "scientific_sources": [
+        {"citation": "Plotkin D., Coleman M., Van Every D., et al. (2022). Progressive overload without progressing load? The effects of load or repetition progression on muscular adaptations. PeerJ 10, e14142.", "verified": false},
+        {"citation": "Schoenfeld B.J., Grgic J., Ogborn D., Krieger J.W. (2017). Strength and Hypertrophy Adaptations Between Low- vs. High-Load Resistance Training: A Systematic Review and Meta-Analysis. Journal of Strength and Conditioning Research 31(12), 3508-3523.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["filtro_meta_nivel", "casa_sin_pesas", "bodyweight"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "seleccion-ultimo-ejercicio-grupo-intensificador",
+      "name": "Último ejercicio del grupo — aplicar técnica intensificadora si nivel ≥ intermedio y fase ≥ Hipertrofia",
+      "rule_type": "select_exercises_technique",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.exercise_position_in_group", "op": "equals", "value": "last"},
+          {"field": "client.level", "op": "in", "value": ["intermedio", "avanzado"]},
+          {"field": "engine.fase_actual_semana", "op": "in", "value": ["Hipertrofia", "Fuerza", "Fuerza Máxima", "Peak"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "is_not_null", "value": null, "note": "Cualquier lesión cancela intensificadores en el grupo afectado"}
+        ]
+      },
+      "output": {
+        "type": "technique_application",
+        "techniques_disponibles": [
+          {"name": "drop-set", "ejecucion": "Serie al fallo + bajar peso 20-30% + continuar al fallo. 1 vez al final.", "fatiga_relativa": "alta", "preferido_para": ["aislamientos", "compuestos en máquina"]},
+          {"name": "rest-pause", "ejecucion": "Serie al fallo + descanso 10-15 seg + más reps al fallo, 2-3 mini-sets.", "fatiga_relativa": "muy alta", "preferido_para": ["aislamientos", "compuestos seguros"]},
+          {"name": "myo-reps", "ejecucion": "Set activación 12-15 reps al fallo + descanso 3-5 respiraciones + mini-set 3-5 reps, repetir 3-4 mini-sets.", "fatiga_relativa": "alta", "preferido_para": ["aislamientos puros (laterales, curls)"]}
+        ],
+        "regla_seleccion_tecnica": "Default drop-set. Si el ejercicio es aislamiento puro (laterales, curls): myo-reps. Si el ejercicio permite descanso corto seguro (pushdown, extension cuadriceps): rest-pause.",
+        "frecuencia_maxima": {
+          "por_sesion": 1,
+          "por_semana_por_grupo": 1,
+          "rationale": "Una técnica intensificadora por sesión y por grupo. Más es contraproducente (fatiga sistémica > beneficio adaptativo)."
+        }
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "engine.fase_actual_semana", "op": "equals", "value": "Adaptación", "note": "Adaptación es fase de calibración técnica — NO usar intensificadores"},
+        {"field": "engine.fase_actual_semana", "op": "equals", "value": "Deload", "note": "Deload es recuperación — NO usar intensificadores"}
+      ],
+      "scientific_rationale": "Las técnicas intensificadoras (drop set, rest-pause, myo-reps) aumentan reps efectivas (cercanas al fallo) en menos tiempo. Krzysztofik et al. (2019) revisaron 17 estudios y concluyeron que en intermedios/avanzados estas técnicas aceleran hipertrofia cuando se aplican selectivamente (1 ejercicio por sesión). En principiantes no aportan beneficio adicional vs series rectas y aumentan riesgo de mala forma técnica.",
+      "scientific_sources": [
+        {"citation": "Krzysztofik M., Wilk M., Wojdała G., Gołaś A. (2019). Maximizing Muscle Hypertrophy: A Systematic Review of Advanced Resistance Training Techniques and Methods. International Journal of Environmental Research and Public Health 16(24), 4897.", "verified": false},
+        {"citation": "Schoenfeld B.J., Grgic J. (2018). Can Drop Set Training Enhance Muscle Growth? Strength and Conditioning Journal 40(6), 95-98.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_001_silvia",
+          "matched": true,
+          "outcome": "Silvia Elite avanzada usa drop set + rest pause en último ejercicio de cada grupo. Coincide con rule."
+        }
+      ],
+      "tags": ["selector_tecnica", "intensificador", "intermedio_avanzado"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "seleccion-cardio-liss-post-pesas-default",
+      "name": "Cardio LISS post-pesas — caminadora inclinada 30 min como default",
+      "rule_type": "select_cardio",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.day_type", "op": "equals", "value": "pesas"},
+          {"field": "client.cardio_required", "op": "equals", "value": true}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "engine.day_addon", "op": "equals", "value": "hiit_dedicado"}
+        ]
+      },
+      "output": {
+        "type": "cardio_assignment",
+        "cardio_type": "LISS",
+        "modo_preferido": "caminadora-inclinada",
+        "modos_alternativos": ["bicicleta-estatica", "escaladora", "eliptica"],
+        "duracion_default_min": 30,
+        "duracion_range_min": [20, 45],
+        "intensidad_zona_fc": "60-70% FC máxima",
+        "intensidad_rpe": "4-5/10",
+        "inclinacion_caminadora_default_pct": 8,
+        "velocidad_caminadora_default_kmh": 5.5,
+        "timing_intra_sesion": "post_pesas",
+        "rationale_timing": "Cardio LISS post-pesas: glucógeno parcialmente depletado por pesas → mayor oxidación de grasa. NO al revés (cardio antes de pesas reduce fuerza disponible para compuestos)."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.active_injuries", "op": "includes", "value": "lesion_rodilla", "note": "Lesión de rodilla: cambiar caminadora a bicicleta-estatica o eliptica (no impacto)"},
+        {"field": "client.duracion_sesion_max_min", "op": "less_than", "value": 75, "note": "Si el cliente no puede pasar de 75 min total, recortar cardio a 15-20 min o moverlo a día separado"}
+      ],
+      "scientific_rationale": "LISS (Low Intensity Steady State) post-entreno de fuerza maximiza oxidación de grasa porque las reservas de glucógeno están parcialmente depletadas. Helms (2019) recomienda mantener cardio por debajo del 70% FC máxima para no interferir con recuperación y síntesis muscular (concurrent training effect). 30 min es la dosis que aporta gasto calórico sustancial sin comprometer entrenamiento del día siguiente.",
+      "scientific_sources": [
+        {"citation": "Wilson J.M., Marin P.J., Rhea M.R., Wilson S.M., Loenneke J.P., Anderson J.C. (2012). Concurrent training: a meta-analysis examining interference of aerobic and resistance exercises. Journal of Strength and Conditioning Research 26(8), 2293-2307.", "verified": false},
+        {"citation": "Helms E.R. (2019). The Muscle and Strength Pyramid: Nutrition, 2nd ed.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Lizetd tiene cardio LISS post-pesas en su plan (caminadora inclinada). Coincide."
+        }
+      ],
+      "tags": ["selector_cardio", "LISS", "post_pesas", "default"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "seleccion-cardio-hiit-dia-dedicado",
+      "name": "Cardio HIIT día dedicado — intervalos alta intensidad sin pesas",
+      "rule_type": "select_cardio",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.day_addon", "op": "equals", "value": "hiit_dedicado"}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_rodilla"},
+          {"field": "client.active_injuries", "op": "includes", "value": "hipertension_no_controlada"}
+        ]
+      },
+      "output": {
+        "type": "cardio_assignment",
+        "cardio_type": "HIIT",
+        "estructura": [
+          {"bloque": "calentamiento", "duracion_min": 5, "intensidad": "baja", "modos": ["caminadora_inclinada_lento", "bicicleta_estatica_suave"]},
+          {"bloque": "intervals_principales", "duracion_min": 20, "estructura": "8 rondas × (60s alto / 90s recovery)", "intensidad_alta_zona_fc": "85-90% FC máx", "intensidad_recovery_zona_fc": "60-65% FC máx", "modos_sugeridos": ["bicicleta-estatica", "escaladora", "remo-concept2", "escaladores-bodyweight"]},
+          {"bloque": "cooldown", "duracion_min": 5, "intensidad": "baja", "modos": ["caminadora_horizontal_lento"]}
+        ],
+        "duracion_total_min": 30,
+        "exercise_pattern_slug_bodyweight": "escaladores",
+        "frecuencia_recomendada_semana": "1-2 días",
+        "no_combinar_con_pesas_mismo_dia": true
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.cardio_tolerance", "op": "less_than", "value": 5, "note": "Tolerancia cardio <5/10: empezar con LISS y escalar a HIIT después de 4-6 semanas"}
+      ],
+      "scientific_rationale": "HIIT produce EPOC (exceso consumo oxígeno post-ejercicio) que puede sumar 6-15% al gasto energético del día. Tabata (1996) y revisiones posteriores (Wewege 2017) muestran mejoras en VO2max y composición corporal con protocolos breves de HIIT. La estructura 60s/90s (1:1.5) es defensiva — permite recovery activo sin que la FC vuelva a baseline. Para clientes avanzados se puede progresar a 1:1 (60s/60s) o 1:0.5 (Tabata 20s/10s).",
+      "scientific_sources": [
+        {"citation": "Tabata I., Nishimura K., Kouzaki M., et al. (1996). Effects of moderate-intensity endurance and high-intensity intermittent training on anaerobic capacity and VO2max. Medicine and Science in Sports and Exercise 28(10), 1327-1330.", "verified": false},
+        {"citation": "Wewege M., van den Berg R., Ward R.E., Keech A. (2017). The effects of high-intensity interval training vs. moderate-intensity continuous training on body composition in overweight and obese adults: a systematic review and meta-analysis. Obesity Reviews 18(6), 635-646.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Lizetd tiene día HIIT sábado vía B7 add-on. Esta rule define el contenido del día."
+        }
+      ],
+      "tags": ["selector_cardio", "HIIT", "dia_dedicado"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "seleccion-abs-todos-los-dias-max-2-ejercicios",
+      "name": "Abdominales — 1-2 ejercicios al final de cada día de pesas (max 2)",
+      "rule_type": "select_exercises",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.day_type", "op": "equals", "value": "pesas"}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "engine.day_group_primary", "op": "in", "value": ["cardio_only", "hiit_dedicado", "descanso"]}
+        ]
+      },
+      "output": {
+        "type": "exercise_selection",
+        "group": "core",
+        "slots_filled": [
+          {
+            "posicion": 1,
+            "rol": "abs_dinamico",
+            "exercise_pattern_slug": "crunch",
+            "variations_preferidas": ["crunches-abdominales", "crunch-en-polea-arrodillado", "crunch-abdominal-en-maquina-total", "bicicleta-crunch"],
+            "rationale": "Movimiento dinámico de flexión espinal. Variación con polea o máquina permite sobrecarga progresiva. Bicycle crunch agrega rotación (oblicuos).",
+            "rango_reps": [12, 20]
+          },
+          {
+            "posicion": 2,
+            "rol": "abs_dinamico_alternativo",
+            "exercise_pattern_slug": "elevacion-piernas",
+            "variations_preferidas": ["elevacion-de-piernas-acostado", "elevacion-de-piernas-captain-chair", "elevacion-cadera-acostado-flexionado"],
+            "rationale": "Movimiento de flexión de cadera con anti-extensión lumbar. Cubre abs inferiores (recto inferior + transverso). Captain chair más demandante que acostado.",
+            "rango_reps": [10, 15],
+            "opcional": true
+          },
+          {
+            "posicion": 3,
+            "rol": "abs_isometrico_finisher",
+            "exercise_pattern_slug": "hollow-hold",
+            "variations_preferidas": ["hollow-mantenimiento"],
+            "rationale": "Isométrico anti-extensión. Hold 20-40 seg al final del día. Excelente cool-down core.",
+            "rango_segundos": [20, 40],
+            "opcional": true
+          }
+        ],
+        "max_ejercicios_por_dia": 2,
+        "rotacion_recomendada_semana": "Lunes: crunch + elevación piernas · Miércoles: bicycle crunch + hollow hold · Viernes: crunch en polea + crunch oblicuo. Variar para evitar adaptación.",
+        "frecuencia_semanal_recomendada": "3-5 días/semana",
+        "rango_series_totales_grupo_dia": [5, 8]
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.active_injuries", "op": "includes", "value": "lumbalgia_aguda", "note": "Lumbalgia aguda: excluir flexión espinal (crunch, bicycle), preferir isométricos (hollow-hold, plancha) y abs anti-rotacionales (pallof press)"},
+        {"field": "client.active_injuries", "op": "includes", "value": "diastasis_recto", "note": "Diastasis: derivar a fisioterapeuta — excluir crunch tradicional y elevación piernas"}
+      ],
+      "scientific_rationale": "El core se entrena con 3 funciones: flexión (crunch), anti-extensión (hollow hold, plancha), anti-rotación (pallof press). En cliente sano, 1-2 ejercicios por día con rotación semanal cubre las 3 funciones. Mayor volumen no agrega beneficio adicional y puede comprometer recuperación del lumbar. McGill (2007) advierte que el abuso de crunch puede irritar discos lumbares — alternar con isométricos.",
+      "scientific_sources": [
+        {"citation": "McGill S.M. (2007). Low Back Disorders: Evidence-Based Prevention and Rehabilitation, 2nd ed. Human Kinetics.", "verified": false},
+        {"citation": "Vera-Garcia F.J., Moreside J.M., McGill S.M. (2010). MVC techniques to normalize trunk muscle EMG in healthy women. Journal of Electromyography and Kinesiology 20(1), 10-16.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Lizetd tiene abs al final de la mayoría de días con rotación de ejercicios. Coincide."
+        }
+      ],
+      "tags": ["selector_ejercicios", "grupo_core", "abs"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    }
+  ],
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre — refs Saeterbakken 2013, Plotkin 2022, Schoenfeld 2017 (low vs high load), Krzysztofik 2019, Schoenfeld-Grgic 2018 (drop set), Wilson 2012, Tabata 1996, Wewege 2017, McGill 2007, Vera-Garcia 2010."
+  ]
+}

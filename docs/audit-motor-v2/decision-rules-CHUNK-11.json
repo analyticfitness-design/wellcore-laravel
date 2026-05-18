@@ -1,0 +1,367 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "11 of 12",
+    "chunk_description": "Categoría H — AJUSTES POR LESIONES / CONTRAINDICACIONES. 7 rules. Priority 150-200 (alta — afecta seguridad).",
+    "category": "H. AJUSTES POR LESIONES (rules H1-H7)",
+    "rule_type_global": "adjust_for_injury",
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ],
+    "trigger_global_categoria_H": "client.active_injuries[] includes valor"
+  },
+  "rules": [
+    {
+      "slug": "injury-lumbalgia-aguda-excluir-hinge",
+      "name": "Lumbalgia aguda — excluir patrón hinge + sustituciones seguras",
+      "rule_type": "adjust_for_injury",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lumbalgia_aguda"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "injury_adjustment",
+        "lesion": "lumbalgia_aguda",
+        "excluded_movement_patterns": ["hinge"],
+        "excluded_exercise_patterns": [
+          "peso-muerto", "peso-muerto-rumano", "peso-muerto-unilateral", "remo-con-barra"
+        ],
+        "substitutions": [
+          {"from": "peso-muerto", "to": "puente-de-gluteo-con-banda", "rationale": "Extensión de cadera sin flexión lumbar"},
+          {"from": "peso-muerto-rumano", "to": "curl-femoral-acostado-en-maquina", "rationale": "Aislamiento femoral sin demanda lumbar"},
+          {"from": "hip-thrust", "to": "puente-de-gluteo-con-banda", "rationale": "Mantener trabajo de glúteo con menor carga axial. Hip-thrust solo si NO duele"},
+          {"from": "sentadilla-con-barra", "to": "sentadilla-goblet o prensa-de-piernas", "rationale": "Reducir compresión lumbar — goblet o prensa"},
+          {"from": "remo-con-barra", "to": "remo-sentado-en-maquina", "rationale": "Eliminar flexión torso para remo"}
+        ],
+        "ajustes_globales": {
+          "intensidad_factor_delta_pct": -15,
+          "volumen_factor_delta_pct": -10,
+          "nota_coach": "Lumbalgia aguda = derivar a fisioterapeuta SIEMPRE. El motor v2 da plan suave de mantenimiento mientras tratamiento médico avanza."
+        },
+        "siguiente_paso_obligatorio_coach": "Derivar a fisioterapia. El plan v2 NO reemplaza tratamiento médico."
+      },
+      "priority": 180,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "McGill (2007) en 'Low Back Disorders' establece que durante fase aguda de lumbalgia se deben evitar flexión lumbar con carga (hinge) y rotaciones bajo carga. Las sustituciones priorizan extensión de cadera sin flexión torso (puente, abducciones, sentadilla goblet con torso vertical). Derivación a fisioterapia es obligatoria — el motor no diagnostica ni trata patología.",
+      "scientific_sources": [
+        {"citation": "McGill S.M. (2007). Low Back Disorders: Evidence-Based Prevention and Rehabilitation, 2nd ed. Human Kinetics.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "lesion", "lumbalgia", "anti_lesion"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "injury-lumbalgia-cronica-modificar-hinge",
+      "name": "Lumbalgia crónica — permitir hinge ligero, excluir peso muerto convencional pesado",
+      "rule_type": "adjust_for_injury",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lumbalgia_cronica"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "injury_adjustment",
+        "lesion": "lumbalgia_cronica",
+        "excluded_exercise_patterns": ["peso-muerto-con-barra-pesado-rir-bajo"],
+        "permitidas_con_modificacion": [
+          {"slug": "peso-muerto-rumano", "modificacion": "Solo variantes con mancuernas, rango parcial, RIR≥2 mantenida"},
+          {"slug": "hip-thrust", "modificacion": "OK pero monitorear lumbar, parar si dolor durante o post"},
+          {"slug": "sentadilla", "modificacion": "Preferir sentadilla goblet, frontal landmine o hacka — torso más vertical"}
+        ],
+        "substitutions": [
+          {"from": "peso-muerto-con-barra", "to": "peso-muerto-rumano-con-mancuerna", "rationale": "Menos demanda lumbar pesada"},
+          {"from": "remo-con-barra", "to": "remo-con-mancuerna-a-una-mano o remo-sentado-en-polea", "rationale": "Soporte de torso"}
+        ],
+        "ajustes_globales": {
+          "intensidad_factor_delta_pct": -5,
+          "rir_target_minimo": 2,
+          "nota_coach": "Lumbalgia crónica controlada: el cliente puede entrenar pero NO al fallo en hinge. Mantener RIR 2+ siempre en patrones de cadera."
+        }
+      },
+      "priority": 170,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.flags", "op": "includes", "value": "lumbar_brote_aguda", "note": "Si la lumbalgia crónica brota en aguda, escalar a H1 inmediatamente"}
+      ],
+      "scientific_rationale": "En lumbalgia crónica sin brote agudo, el entrenamiento de fuerza controlado mejora outcomes funcionales (Hayden 2005). La clave es evitar fatiga muscular extrema en patrones de hinge (RIR≥2) y preferir variantes con menor compresión axial. McGill (2007) recomienda fortalecimiento de core estabilizador (carries, planks) más que hinges pesados.",
+      "scientific_sources": [
+        {"citation": "Hayden J.A., van Tulder M.W., Tomlinson G. (2005). Systematic review: strategies for using exercise therapy to improve outcomes in chronic low back pain. Annals of Internal Medicine 142(9), 776-785.", "verified": false},
+        {"citation": "McGill S.M. (2007). Low Back Disorders: Evidence-Based Prevention and Rehabilitation, 2nd ed. Human Kinetics.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "lesion", "lumbalgia_cronica"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "injury-lesion-hombro-modificar-press",
+      "name": "Lesión hombro — modificar pressing, excluir overhead detrás del cuello",
+      "rule_type": "adjust_for_injury",
+      "input_conditions": {
+        "all_of": [],
+        "any_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_hombro_aguda"},
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_hombro_cronica"},
+          {"field": "client.active_injuries", "op": "includes", "value": "luxacion_hombro_reciente"}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "injury_adjustment",
+        "lesion": "lesion_hombro_aguda_o_cronica",
+        "excluded_exercise_patterns_aguda": [
+          "press-banca", "press-militar", "fondos-pecho", "fondos-triceps", "pullover", "elevacion-lateral", "remo-al-menton"
+        ],
+        "excluded_variations_universalmente": [
+          "press-banca-declinado-con-barra-abierto",
+          "jalon-atras-del-cuello-en-polea",
+          "press-de-hombro-detras-del-cuello"
+        ],
+        "permitidas_con_modificacion_cronica": [
+          {"slug": "press-banca", "modificacion": "Solo press-pecho-maquina con ángulo inclinado 30° y rango parcial", "rationale": "Reducir estrés en supraespinoso"},
+          {"slug": "press-militar", "modificacion": "Press de hombro con mancuerna agarre neutro o press-arnold; NUNCA barra detrás del cuello", "rationale": "Posición neutra protege el manguito rotador"},
+          {"slug": "remo-al-menton", "modificacion": "Variante con cuerda en polea baja, agarre amplio, no pasar codos por encima de hombros", "rationale": "Reducir pinzamiento subacromial"}
+        ],
+        "ajustes_globales": {
+          "intensidad_factor_delta_pct": -10,
+          "warning_face_pull_obligatorio": true,
+          "nota_coach": "Lesión hombro: SIEMPRE incluir face-pull al final de cada día de pesas (rotadores externos + posterior). Si aguda, derivar a fisioterapia."
+        }
+      },
+      "priority": 180,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Las lesiones del manguito rotador y pinzamientos subacromiales son las más comunes en levantadores (Kolber 2010). Variantes de press con agarre cerrado o ángulo inclinado leve, y remos altos con cuerda en lugar de barra, reducen significativamente el estrés en la articulación. El face-pull fortalece rotadores externos y posterior deltoides — protectores del hombro a largo plazo.",
+      "scientific_sources": [
+        {"citation": "Kolber M.J., Beekhuizen K.S., Cheng M.S., Hellman M.A. (2010). Shoulder injuries attributed to resistance training: a brief review. Journal of Strength and Conditioning Research 24(6), 1696-1704.", "verified": false},
+        {"citation": "Kuhn J.E. (2009). Exercise in the treatment of rotator cuff impingement: a systematic review and a synthesized evidence-based rehabilitation protocol. Journal of Shoulder and Elbow Surgery 18(1), 138-160.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "lesion", "hombro"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "injury-lesion-rodilla-modificar-squat",
+      "name": "Lesión rodilla — modificar sentadilla, excluir saltos e impacto",
+      "rule_type": "adjust_for_injury",
+      "input_conditions": {
+        "all_of": [],
+        "any_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_rodilla"},
+          {"field": "client.active_injuries", "op": "includes", "value": "condromalacia"},
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_menisco"},
+          {"field": "client.active_injuries", "op": "includes", "value": "lcr"}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "injury_adjustment",
+        "lesion": "lesion_rodilla",
+        "excluded_exercise_patterns": ["zancada-dinamica-con-impacto"],
+        "excluded_movement_patterns_global": ["plyometricos", "saltos", "cardio_alto_impacto"],
+        "permitidas_con_modificacion": [
+          {"slug": "sentadilla", "modificacion": "Rango parcial hasta 90° (no full squat); preferir sentadilla-en-banco para limitar profundidad", "rationale": "Reducir compresión patelofemoral"},
+          {"slug": "prensa-piernas", "modificacion": "Permitido — sin demanda articular dinámica", "rationale": "Carga axial controlada"},
+          {"slug": "extension-cuadriceps", "modificacion": "Solo rango medio (no extender completamente con peso alto), peso moderado RIR≥2", "rationale": "Extensión completa con peso alto estresa rótula"},
+          {"slug": "curl-femoral", "modificacion": "OK — fortalecer femoral mejora estabilidad rodilla", "rationale": "Balance cuad/fem ratio importante"}
+        ],
+        "substituciones_cardio": {
+          "from": "caminadora-inclinada",
+          "to": "bicicleta-estatica o eliptica",
+          "rationale": "Sin impacto — bicicleta es el cardio terapéutico estándar para rodilla"
+        },
+        "ajustes_globales": {
+          "intensidad_factor_delta_pct": -10,
+          "nota_coach": "Lesión de rodilla activa: derivar a fisioterapia. El motor v2 da plan compatible mientras tratamiento avanza."
+        }
+      },
+      "priority": 180,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "En condromalacia y lesiones de menisco, la flexión profunda bajo carga (>90°) aumenta el estrés patelofemoral (Escamilla 2001). La sentadilla parcial (rango ≤90°) más prensa más extensiones controladas mantiene el estímulo de cuádriceps con menor riesgo. El balance cuádriceps-femoral mejora la estabilidad articular — por eso curl femoral se prioriza.",
+      "scientific_sources": [
+        {"citation": "Escamilla R.F. (2001). Knee biomechanics of the dynamic squat exercise. Medicine and Science in Sports and Exercise 33(1), 127-141.", "verified": false},
+        {"citation": "Lorenzetti S., Ostermann M., Zoller F., et al. (2018). How to squat? Effects of various stance widths, foot placement angles and level of experience on knee, hip and trunk motion and loading. BMC Sports Science, Medicine and Rehabilitation 10, 14.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "lesion", "rodilla"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "injury-lesion-codo-preferir-polea",
+      "name": "Lesión codo — preferir variations en polea, excluir press francés con barra recta",
+      "rule_type": "adjust_for_injury",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_codo"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "injury_adjustment",
+        "lesion": "lesion_codo",
+        "excluded_variations": [
+          "curl-biceps-con-barra-recta",
+          "press-frances-barra-acostado",
+          "press-frances-con-barra"
+        ],
+        "preferidas_polea_o_ez": [
+          {"original": "curl-biceps-con-barra-recta", "preferida": "curl-biceps-en-polea o curl-biceps-barra-ez", "rationale": "Barra recta fuerza supinación completa, EZ permite agarre neutro intermedio"},
+          {"original": "press-frances-con-barra", "preferida": "extension-de-triceps-en-polea-con-cuerda", "rationale": "Polea reduce estrés en epicondylitis"},
+          {"original": "curl-martillo-con-mancuerna", "preferida": "curl-martillo-en-polea-con-cuerda", "rationale": "Cuerda permite ligero giro en muñeca según necesite"}
+        ],
+        "permitidas_con_atencion": [
+          {"slug": "curl-predicador", "modificacion": "Con EZ o mancuernas, RIR≥2, no al fallo absoluto", "rationale": "Estrés en codo en flexión profunda"}
+        ],
+        "ajustes_globales": {
+          "intensidad_factor_delta_pct": -5,
+          "calentamiento_codo_obligatorio": "5 min de mobilidad de muñeca/codo antes de cualquier ejercicio de brazo"
+        }
+      },
+      "priority": 160,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "La epicondylitis (codo de tenista / golfista) y otras lesiones de codo se irritan con ejercicios que combinan agarre fuerte + flexión/extensión repetida. La polea permite ajustar el ángulo de muñeca y reduce el estrés. La barra EZ es el compromiso clásico entre supinación completa (barra recta) y neutro (mancuernas).",
+      "scientific_sources": [
+        {"citation": "Coombes B.K., Bisset L., Vicenzino B. (2015). Management of lateral elbow tendinopathy: one size does not fit all. Journal of Orthopaedic & Sports Physical Therapy 45(11), 938-949.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["lesion", "codo"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "injury-embarazo-2do-trimestre",
+      "name": "Embarazo segundo trimestre — protocolo específico (sin decúbito supino, sin Valsalva, sin saltos)",
+      "rule_type": "adjust_for_injury",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.gender", "op": "equals", "value": "femenino"},
+          {"field": "client.active_injuries", "op": "includes", "value": "embarazo_2do_trimestre"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "injury_adjustment",
+        "lesion": "embarazo_2do_trimestre",
+        "excluded_movement_patterns": ["hinge_pesado", "abdominales_decubito_supino", "saltos", "maniobras_valsalva"],
+        "excluded_exercise_patterns": [
+          "peso-muerto-con-barra-pesado",
+          "crunch", "elevacion-piernas-acostado", "abdominal-rueda",
+          "escaladores",
+          "press-banca-pesado-rir-0",
+          "sentadilla-pesada-rir-0"
+        ],
+        "permitidas": [
+          {"slug": "sentadilla-goblet", "rationale": "Carga moderada, torso vertical, sin Valsalva"},
+          {"slug": "press-pecho-maquina", "rationale": "Inclinado, controla respiración"},
+          {"slug": "remo-sentado", "rationale": "Soportado, sin demanda axial alta"},
+          {"slug": "caminadora-inclinada", "rationale": "Cardio LISS seguro"},
+          {"slug": "hollow-hold", "rationale": "Core isométrico anti-extensión OK", "modificacion": "Hold corto 10-15 seg, no acostada (semi-sentada)"}
+        ],
+        "ajustes_globales": {
+          "intensidad_factor_delta_pct": -25,
+          "volumen_factor_delta_pct": -15,
+          "rir_target_minimo": 3,
+          "fc_max_objetivo": "140 bpm",
+          "warning_signos_alarma": "Sangrado, dolor abdominal, contracciones, mareo, falta de aire → parar y consultar obstetra inmediatamente.",
+          "nota_coach": "SIEMPRE consultar con obstetra antes de iniciar/continuar entrenamiento. El motor v2 da plan seguro de mantenimiento; NO reemplaza supervisión médica.",
+          "requiere_certificado_medico": true
+        }
+      },
+      "priority": 200,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.flags", "op": "includes", "value": "embarazo_riesgo_alto", "note": "Embarazo de alto riesgo: cancelar plan completo, derivar a reposo según obstetra"}
+      ],
+      "scientific_rationale": "ACOG (2020) recomienda 150 min/sem de actividad moderada en embarazo no complicado. Excluir decúbito supino después del 1er trimestre (compresión vena cava). Excluir Valsalva (aumenta presión intraabdominal). FC objetivo <140 bpm. El entrenamiento de fuerza moderado se asocia con mejores outcomes maternos y fetales.",
+      "scientific_sources": [
+        {"citation": "ACOG Committee Opinion No. 804 (2020). Physical Activity and Exercise During Pregnancy and the Postpartum Period. Obstetrics & Gynecology 135(4), e178-e188.", "verified": false},
+        {"citation": "Mottola M.F., Davenport M.H., Ruchat S.M., et al. (2018). 2019 Canadian guideline for physical activity throughout pregnancy. British Journal of Sports Medicine 52(21), 1339-1346.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["caso_especial", "embarazo", "alta_prioridad", "validacion_medica_obligatoria"],
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "validation_note": "Daniel: confirmar si WellCore acepta clientas embarazadas en plataforma o las refiere a obstetra. Si las acepta, esta rule activa. Si no, marcar active:false y derivar siempre.",
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "injury-hipertension-no-controlada-evitar-valsalva",
+      "name": "Hipertensión no controlada — excluir Valsalva, series moderadas RIR 2-3",
+      "rule_type": "adjust_for_injury",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "hipertension_no_controlada"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "injury_adjustment",
+        "lesion": "hipertension_no_controlada",
+        "excluded_exercise_patterns": [
+          "peso-muerto-con-barra-pesado",
+          "sentadilla-con-barra-pesada",
+          "press-banca-pesado"
+        ],
+        "excluded_techniques": ["maniobras_valsalva", "isometricos_largos_pesados", "drop-set_compuestos_pesados"],
+        "permitidas_con_modificacion": [
+          {"slug": "sentadilla", "modificacion": "Solo goblet o variantes con peso moderado RIR 2-3, NO Valsalva", "rationale": "Reducir picos de presión"},
+          {"slug": "press-banca", "modificacion": "Variantes con mancuernas o máquina, peso moderado, RIR 2-3", "rationale": "Idem"},
+          {"slug": "remo-horizontal", "modificacion": "Soportado (banco inclinado o sentado), peso moderado", "rationale": "Reducir Valsalva involuntario"}
+        ],
+        "ajustes_globales": {
+          "intensidad_factor_delta_pct": -20,
+          "rir_target_minimo": 2,
+          "cardio_obligatorio_pct_max_fc": 60,
+          "warning_obligatorio": "Cliente con hipertensión NO controlada DEBE estar bajo seguimiento médico. Si la presión se controla con medicación, el riesgo baja significativamente — re-evaluar con cardiólogo si pasar a plan estándar.",
+          "requiere_certificado_medico": true
+        }
+      },
+      "priority": 200,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Pescatello et al. (2004, ACSM position stand) muestra que entrenamiento de fuerza con cargas moderadas (40-60% 1RM, RIR 2-3) es seguro en hipertensos. Las cargas máximas con Valsalva producen picos de presión >300/200 mmHg en algunos individuos — riesgo cardiovascular agudo. La rule limita intensidad y excluye técnicas que fuerzan Valsalva involuntario.",
+      "scientific_sources": [
+        {"citation": "Pescatello L.S., Franklin B.A., Fagard R., et al. (2004). American College of Sports Medicine position stand. Exercise and hypertension. Medicine and Science in Sports and Exercise 36(3), 533-553.", "verified": false},
+        {"citation": "Cornelissen V.A., Smart N.A. (2013). Exercise training for blood pressure: a systematic review and meta-analysis. Journal of the American Heart Association 2(1), e004473.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["caso_especial", "hipertension", "alta_prioridad", "validacion_medica_obligatoria"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    }
+  ],
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre — refs McGill 2007, Hayden 2005, Kolber 2010, Kuhn 2009, Escamilla 2001, Lorenzetti 2018, Coombes 2015, ACOG 2020, Mottola 2018, Pescatello 2004, Cornelissen 2013."
+  ]
+}

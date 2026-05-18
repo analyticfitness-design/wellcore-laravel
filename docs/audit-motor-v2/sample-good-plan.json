@@ -1,0 +1,130 @@
+{
+  "plan_type": "entrenamiento",
+  "titulo": "Plan Esencial Entrenamiento — Sample bueno",
+  "objetivo": "Pérdida de grasa con preservación de masa muscular y foco en glúteo + pierna.",
+  "metodologia": "Body Part Split 5 días + HIIT sábado · Periodización lineal",
+  "frecuencia": "6 dias/semana",
+  "frecuencia_dias": 6,
+  "duracion_semanas": 4,
+  "fecha_inicio": "2026-05-20",
+  "split": {
+    "Lunes": "Glúteo + Cardio",
+    "Martes": "Hombro + Tríceps + Abs + HIIT",
+    "Miércoles": "Cuádriceps + Aductor + Gemelos",
+    "Jueves": "Espalda + Bíceps + Abs + HIIT",
+    "Viernes": "Glúteo + Femoral + Gemelos",
+    "Sábado": "Cardio HIIT puro"
+  },
+  "notas_coach": "Este plan está diseñado para vos. Te recomiendo seguirlo de lunes a viernes. Anotá los pesos en cada sesión para medir progreso.",
+  "tips": [
+    "Hidratate bien durante el entreno",
+    "Duerme al menos 7 horas",
+    "Si un día llegas cansada al sábado, lo saltas"
+  ],
+  "semanas": [
+    {
+      "numero": 1,
+      "fase": "Adaptación · RIR 3",
+      "dias": [
+        {
+          "dia_semana": "Lunes",
+          "grupo_muscular": "Glúteo",
+          "ejercicios": [
+            {
+              "nombre": "Hip Thrust con barra",
+              "series": 3,
+              "repeticiones": "12",
+              "descanso": "90s",
+              "rir": 3,
+              "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs-v2/main/hipthrust-con-barra.gif"
+            },
+            {
+              "nombre": "Sentadilla con barra",
+              "series": 4,
+              "repeticiones": "10",
+              "descanso": "120s",
+              "rir": 2,
+              "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs-v2/main/sentadilla-con-barra.gif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "fase": "Hipertrofia · RIR 2",
+      "dias": [
+        {
+          "dia_semana": "Lunes",
+          "grupo_muscular": "Glúteo",
+          "ejercicios": [
+            {
+              "nombre": "Hip Thrust con barra",
+              "series": 4,
+              "repeticiones": "10",
+              "descanso": "90s",
+              "rir": 2,
+              "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs-v2/main/hipthrust-con-barra.gif"
+            },
+            {
+              "nombre": "Sentadilla búlgara con mancuernas",
+              "series": 4,
+              "repeticiones": "10 c/lado",
+              "descanso": "75s",
+              "rir": 2,
+              "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs-v2/main/sentadilla-bulgara-mancuerna.gif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "fase": "Fuerza · RIR 1",
+      "dias": [
+        {
+          "dia_semana": "Lunes",
+          "grupo_muscular": "Glúteo",
+          "ejercicios": [
+            {
+              "nombre": "Hip Thrust con barra",
+              "series": 5,
+              "repeticiones": "6",
+              "descanso": "180s",
+              "rir": 1,
+              "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs-v2/main/hipthrust-con-barra.gif"
+            },
+            {
+              "nombre": "Sentadilla con barra",
+              "series": 5,
+              "repeticiones": "5",
+              "descanso": "180s",
+              "rir": 1,
+              "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs-v2/main/sentadilla-con-barra.gif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "fase": "Peak · RIR 0",
+      "dias": [
+        {
+          "dia_semana": "Lunes",
+          "grupo_muscular": "Glúteo",
+          "ejercicios": [
+            {
+              "nombre": "Hip Thrust con barra",
+              "series": 5,
+              "repeticiones": "3",
+              "descanso": "240s",
+              "rir": 0,
+              "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs-v2/main/hipthrust-con-barra.gif"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

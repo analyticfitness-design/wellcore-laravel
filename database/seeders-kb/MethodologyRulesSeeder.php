@@ -130,11 +130,17 @@ final class MethodologyRulesSeeder extends Seeder
             'No descarta, pero penaliza score — principiantes deben consolidar hábitos básicos antes de adaptación por fase.'
         );
 
+        // No hay key natural simple (applies_when_json es JSON, no soporta UNIQUE).
+        // Las methodology_rules son 100% seed-controlled (no las edita un humano):
+        // truncate-and-reinsert es idempotente y seguro acá.
+        // FK methodology_id es cascadeOnDelete → no rompe nada.
+        DB::connection('kb')->table('methodology_rules')->delete();
+
         DB::connection('kb')
             ->table('methodology_rules')
             ->insert($rows);
 
-        $this->command?->info('Seeded ' . count($rows) . ' methodology rules.');
+        $this->command?->info('Reseeded ' . count($rows) . ' methodology rules (truncate-and-reinsert).');
     }
 
     /**

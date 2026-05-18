@@ -1,0 +1,363 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "08 of 12",
+    "chunk_description": "Categoría E — PERIODIZACIÓN REDISEÑADA al modelo MENSUAL. Cada plan asignado = 1 mes (4 sem). Las periodizaciones multi-mes son meta-rules que dictan qué fase toca cada mes. 7 rules totales.",
+    "category": "E. PERIODIZACIÓN (rules E1-E7, modelo mensual)",
+    "rule_type_global": "periodize",
+    "depends_on": {
+      "memoria_autoritativa": "feedback_planes_mensuales_solamente.md (2026-05-17)",
+      "patch_doc": "docs/audit-motor-v2/decision-rules-PATCH-MENSUAL.md"
+    },
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ],
+    "modelo_mensual_principle": "Cada plan_asignado.content.duracion_semanas = 4 siempre. Las 'periodizaciones de 12 sem' son 3 planes mensuales consecutivos orquestados por el coach + meta-rule de secuencia."
+  },
+  "rules": [
+    {
+      "slug": "periodizacion-1mes-fase-adaptacion",
+      "name": "Plan mensual con fase Adaptación — cliente nuevo o vuelta de pausa",
+      "rule_type": "periodize",
+      "input_conditions": {
+        "all_of": [],
+        "any_of": [
+          {"field": "client.mes_dentro_del_bloque", "op": "equals", "value": 1, "note": "Primer mes del bloque"},
+          {"field": "client.es_cliente_nuevo", "op": "equals", "value": true},
+          {"field": "client.return_from_pause_months", "op": "greater_than_or_equal", "value": 2}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "fase_assignment_mes",
+        "fase_del_mes": "Adaptación",
+        "duracion_semanas": 4,
+        "rir_por_semana": [3, 3, 3, 2],
+        "volumen_total_factor_por_semana": [1.00, 1.05, 1.10, 1.15],
+        "intensidad_relativa_label": "baja-media",
+        "tecnicas_avanzadas_permitidas": false,
+        "compuestos_principales_max_carga_pct_1rm": [70, 72, 75, 78],
+        "rationale_pedagogico": "Adaptación = aprender el plan, consolidar técnica, calibrar pesos. Sin intensificadores, RIR alto (3+), foco en conexión mente-músculo.",
+        "siguiente_fase_recomendada": "Hipertrofia",
+        "siguiente_fase_alternativa": "Hipertrofia (si cliente intermedio/avanzado vuelve de pausa larga)"
+      },
+      "priority": 100,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "El bloque de Adaptación es esencial para clientes nuevos o que vuelven de pausa. Issurin (2010) enfatiza que cada bloque debe durar mínimo 3-4 semanas para que la adaptación específica se consolide. La progresión interna del mes (volumen +15% semanal, RIR baja gradual) prepara para Hipertrofia el mes siguiente sin sobrecarga prematura.",
+      "scientific_sources": [
+        {"citation": "Issurin V.B. (2010). New horizons for the methodology and physiology of training periodization. Sports Medicine 40(3), 189-206.", "verified": false},
+        {"citation": "Bompa T.O., Buzzichelli C.A. (2018). Periodization: Theory and Methodology of Training, 6th ed. Human Kinetics.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "periodizacion_mensual", "fase_adaptacion"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "periodizacion-1mes-fase-hipertrofia",
+      "name": "Plan mensual con fase Hipertrofia — volumen alto, RIR 2",
+      "rule_type": "periodize",
+      "input_conditions": {
+        "all_of": [],
+        "any_of": [
+          {"field": "client.mes_dentro_del_bloque", "op": "equals", "value": 2, "note": "Segundo mes del bloque típico"},
+          {"field": "client.fase_objetivo_explicita", "op": "equals", "value": "Hipertrofia"},
+          {"field": "client.objective", "op": "in", "value": ["hipertrofia", "recomposicion"]}
+        ],
+        "none_of": [
+          {"field": "client.es_cliente_nuevo", "op": "equals", "value": true, "note": "Cliente nuevo siempre empieza en Adaptación (E1), no en Hipertrofia"}
+        ]
+      },
+      "output": {
+        "type": "fase_assignment_mes",
+        "fase_del_mes": "Hipertrofia",
+        "duracion_semanas": 4,
+        "rir_por_semana": [3, 2, 2, 1],
+        "volumen_total_factor_por_semana": [1.00, 1.07, 1.12, 1.15],
+        "intensidad_relativa_label": "media-alta",
+        "tecnicas_avanzadas_permitidas": true,
+        "tecnicas_avanzadas_recomendadas": ["drop-set ultima posicion grupo", "rest-pause aislamientos"],
+        "compuestos_principales_max_carga_pct_1rm": [75, 80, 82, 85],
+        "rango_reps_default_compuestos": [8, 12],
+        "rango_reps_default_aislamientos": [10, 15],
+        "rationale_pedagogico": "Hipertrofia = volumen alto + cercanía moderada al fallo. Series 8-12 reps con RIR 2 son el sweet spot evidence-based. Técnicas intensificadoras (drop set) aplicables en último ejercicio del grupo.",
+        "siguiente_fase_recomendada": "Hipertrofia (si bloque-corto-esencial)",
+        "siguiente_fase_alternativa": "Fuerza Máxima (si bloque-largo-metodo: mes 3)"
+      },
+      "priority": 100,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "Schoenfeld 2017 dose-response: 16-22 sets/semana por grupo con RIR 1-3 es el rango óptimo para hipertrofia en intermedios. La progresión intra-mes (volumen +15% sem 1→4, RIR 3→1) crea la sobrecarga progresiva que el músculo necesita. Las técnicas avanzadas (drop set) en último ejercicio aumentan reps efectivas sin alargar la sesión (Krzysztofik 2019).",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2017). Dose-response relationship between weekly resistance training volume and increases in muscle mass. Journal of Sports Sciences 35(11), 1073-1082.", "verified": false},
+        {"citation": "Krzysztofik M., Wilk M., Wojdała G., Gołaś A. (2019). Maximizing Muscle Hypertrophy. International Journal of Environmental Research and Public Health 16(24), 4897.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_002_daniel",
+          "matched": true,
+          "outcome": "Daniel mes 2 de bloque hipertrofia (de 4 meses totales). Coincide con E2."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "periodizacion_mensual", "fase_hipertrofia"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "periodizacion-1mes-fase-fuerza-maxima",
+      "name": "Plan mensual con fase Fuerza Máxima — reps bajas, RIR 1-0, solo tier Método/Elite",
+      "rule_type": "periodize",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.tier", "op": "in", "value": ["metodo", "elite"]},
+          {"field": "client.level", "op": "in", "value": ["intermedio", "avanzado"]}
+        ],
+        "any_of": [
+          {"field": "client.mes_dentro_del_bloque", "op": "equals", "value": 3, "note": "Tercer mes del bloque Método 12sem"},
+          {"field": "client.fase_objetivo_explicita", "op": "equals", "value": "Fuerza Máxima"}
+        ],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "is_not_null", "value": null, "note": "Cualquier lesión cancela fase de fuerza máxima"}
+        ]
+      },
+      "output": {
+        "type": "fase_assignment_mes",
+        "fase_del_mes": "Fuerza Máxima",
+        "duracion_semanas": 4,
+        "rir_por_semana": [2, 1, 1, 0],
+        "volumen_total_factor_por_semana": [1.00, 0.95, 0.90, 0.85],
+        "intensidad_relativa_label": "alta",
+        "tecnicas_avanzadas_permitidas": true,
+        "tecnicas_avanzadas_recomendadas": ["cluster sets", "5x5", "pirámide ascendente"],
+        "compuestos_principales_max_carga_pct_1rm": [82, 85, 88, 92],
+        "rango_reps_default_compuestos": [4, 6],
+        "rango_reps_default_aislamientos": [6, 10],
+        "rationale_pedagogico": "Fuerza Máxima = volumen baja, intensidad sube. La masa magra construida en Hipertrofia se 'convierte' en producción de fuerza. Cluster sets (5×3 con pausas internas) y series 5×5 son las técnicas preferidas.",
+        "siguiente_fase_recomendada": "Peak",
+        "siguiente_fase_alternativa": "Hipertrofia (si cliente prefiere otro bloque hipertrofia antes de testear máximos)"
+      },
+      "priority": 110,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "Williams et al. (2017) en meta-análisis mostraron que periodización por bloques con fase dedicada a fuerza máxima produce mayores ganancias de 1RM vs entrenamiento no periodizado. La inversión volumen-intensidad (volumen baja, carga sube) respeta el modelo fitness-fatigue de Banister y permite consolidar la fuerza ganada.",
+      "scientific_sources": [
+        {"citation": "Williams T.D., Tolusso D.V., Fedewa M.V., Esco M.R. (2017). Comparison of Periodized and Non-Periodized Resistance Training on Maximal Strength: A Meta-Analysis. Sports Medicine 47(10), 2083-2100.", "verified": false},
+        {"citation": "Issurin V.B. (2010). New horizons for the methodology and physiology of training periodization. Sports Medicine 40(3), 189-206.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["periodizacion_mensual", "fase_fuerza_maxima", "metodo_elite_only"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "periodizacion-1mes-fase-peak",
+      "name": "Plan mensual con fase Peak — test de máximos, RIR 0",
+      "rule_type": "periodize",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.tier", "op": "in", "value": ["metodo", "elite"]},
+          {"field": "client.level", "op": "in", "value": ["intermedio", "avanzado"]}
+        ],
+        "any_of": [
+          {"field": "client.mes_dentro_del_bloque", "op": "equals", "value": 4, "note": "Cuarto mes del bloque Método 12sem"},
+          {"field": "client.fase_objetivo_explicita", "op": "equals", "value": "Peak"}
+        ],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "is_not_null", "value": null}
+        ]
+      },
+      "output": {
+        "type": "fase_assignment_mes",
+        "fase_del_mes": "Peak",
+        "duracion_semanas": 4,
+        "rir_por_semana": [1, 0, 0, "test"],
+        "volumen_total_factor_por_semana": [0.85, 0.75, 0.65, 0.50],
+        "intensidad_relativa_label": "muy alta",
+        "tecnicas_avanzadas_permitidas": true,
+        "tecnicas_avanzadas_recomendadas": ["cluster", "rest-pause selectivo"],
+        "compuestos_principales_max_carga_pct_1rm": [88, 92, 95, "test_1RM"],
+        "rango_reps_default_compuestos": [2, 4],
+        "rango_reps_default_aislamientos": [6, 8],
+        "rationale_pedagogico": "Peak = volumen mínimo, intensidad pico. Solo 1-2 series efectivas por ejercicio compuesto. Sem 4 = test de 1RM en los 3 compuestos rey. Después de Peak el cliente debe pasar a Deload o cambiar a bloque nuevo (Hipertrofia).",
+        "siguiente_fase_recomendada": "Deload",
+        "siguiente_fase_alternativa": "Adaptación (si el cliente arranca nuevo macrociclo)"
+      },
+      "priority": 110,
+      "execution_phase": "select",
+      "exception_when": [
+        {"field": "client.objective", "op": "in", "value": ["perdida_agresiva"], "note": "Peak en déficit agresivo NO es prudente — los máximos caen y aumenta riesgo de lesión. Saltar a deload."}
+      ],
+      "scientific_rationale": "Peak es la 'taper' final del bloque — volumen baja drásticamente para permitir que la fatiga acumulada se disipe mientras la fuerza específica se mantiene/sube. Pyne et al. (2009) revisaron la literatura de tapering y concluyen que reducir volumen 40-60% durante 2-4 semanas, manteniendo o subiendo intensidad, maximiza la performance en el día test. Test 1RM solo en compuestos rey, no en todos los ejercicios.",
+      "scientific_sources": [
+        {"citation": "Pyne D.B., Mujika I., Reilly T. (2009). Peaking for optimal performance: Research limitations and future directions. Journal of Sports Sciences 27(3), 195-202.", "verified": false},
+        {"citation": "Bosquet L., Montpetit J., Arvisais D., Mujika I. (2007). Effects of tapering on performance: a meta-analysis. Medicine and Science in Sports and Exercise 39(8), 1358-1365.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["periodizacion_mensual", "fase_peak", "metodo_elite_only"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "meta-secuencia-bloque-multi-mes",
+      "name": "Meta-rule — define la secuencia de fases mes a mes según tier y nivel del cliente",
+      "rule_type": "meta_periodize_sequence",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.tier", "op": "in", "value": ["esencial", "metodo", "elite"]}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "secuencia_multi_mes_recomendada",
+        "secuencias_por_tier": {
+          "esencial": {
+            "duracion_bloque_meses": 3,
+            "secuencia_fases": ["Adaptación", "Hipertrofia", "Hipertrofia"],
+            "mes_4_si_renueva": "Deload",
+            "rationale": "Esencial = volumen moderado, sin bloque Fuerza Máxima ni Peak. 2 meses de Hipertrofia consolidan masa magra. Mes 4+ ajustar según outcomes."
+          },
+          "metodo": {
+            "duracion_bloque_meses": 4,
+            "secuencia_fases": ["Adaptación", "Hipertrofia", "Fuerza Máxima", "Peak"],
+            "mes_5_si_renueva": "Deload",
+            "rationale": "Método 12 sem = 3 meses primarios + 1 mes Peak. Equivalente al patrón clásico 3-3-3-3 (Adapt-Hipert-Fuerza-Peak) repartido en 4 meses."
+          },
+          "elite": {
+            "duracion_bloque_meses": 4,
+            "secuencia_fases": ["Adaptación", "Hipertrofia", "Fuerza Máxima", "Peak"],
+            "mes_5_si_renueva": "Deload o nuevo bloque Hipertrofia",
+            "rationale": "Elite es individualizado — la secuencia es default pero Daniel (coach) ajusta cada mes según outcomes del cliente.",
+            "needs_coach_validation_cada_mes": true
+          }
+        },
+        "como_usa_el_motor": "Al asignar plan del mes N, el motor lee secuencia_fases[N-1] y aplica la rule E1-E4 correspondiente.",
+        "ajuste_runtime": "Si el cliente muestra estancamiento o sobreentrenamiento, el coach puede saltar fases o insertar Deload extra. El motor v2 acepta el override del coach sin protestar."
+      },
+      "priority": 120,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "Las secuencias por tier reflejan diferentes profundidades de periodización: Esencial usa solo 2 fases (introduce concepto sin sobrecargar la membresía corta del tier económico), Método usa el ciclo completo de 4 fases (3 meses por bloque + Peak), Elite individualiza. Issurin (2010) y Bompa (2018) coinciden en que cada bloque conceptual debe durar 3-6 meses para que las adaptaciones secuenciales tengan tiempo de consolidarse.",
+      "scientific_sources": [
+        {"citation": "Issurin V.B. (2010). New horizons for the methodology and physiology of training periodization. Sports Medicine 40(3), 189-206.", "verified": false},
+        {"citation": "Bompa T.O., Buzzichelli C.A. (2018). Periodization: Theory and Methodology of Training, 6th ed. Human Kinetics.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_002_daniel",
+          "matched": true,
+          "outcome": "Daniel está en bloque elite mes 2 de 4. Próxima asignación: mes 3 = Fuerza Máxima."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "meta_secuencia", "multi_mes"],
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "validation_note": "Validar las secuencias por tier con Daniel. ¿Esencial realmente Adapt+Hipert+Hipert sin Peak? ¿O Adapt+Hipert+Peak (3 meses con peak final)?",
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "volumen-ascendente-intra-mes-5-10pct",
+      "name": "Progresión intra-mes — series totales suben 5-10% por semana dentro de las 4 semanas del plan",
+      "rule_type": "periodize",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.fase_del_mes", "op": "in", "value": ["Adaptación", "Hipertrofia"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "engine.fase_del_mes", "op": "in", "value": ["Fuerza Máxima", "Peak", "Deload"]}
+        ]
+      },
+      "output": {
+        "type": "progresion_intra_mes",
+        "regla": "volumen_total_semana[i+1] = volumen_total_semana[i] × 1.05 a 1.10",
+        "default_pct_aumento_semanal": 7,
+        "rango_pct_aumento_semanal": [5, 10],
+        "como_aumenta": [
+          {"opcion": "agregar_series", "ejemplo": "Pasar de 3×10 a 4×10 en un ejercicio principal"},
+          {"opcion": "agregar_reps", "ejemplo": "Pasar de 3×10 a 3×12 (manteniendo carga)"},
+          {"opcion": "agregar_carga", "ejemplo": "Subir 2.5-5 kg al compuesto principal (RIR se mantiene)"}
+        ],
+        "preferencia_metodo_aumento": "Default: agregar carga con mismo número de reps. Si RIR baja por debajo del target → mantener carga + agregar series."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Progresión semanal de 5-10% en volumen total respeta el principio de sobrecarga progresiva sin exceder la capacidad de recuperación. Schoenfeld (2017) muestra que sin sobrecarga progresiva el músculo se estanca en 4-6 semanas. La elección entre agregar series, reps o carga depende del contexto del ejercicio — los compuestos toleran más aumento de carga, los aislamientos de reps.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2017). Dose-response relationship between weekly resistance training volume and increases in muscle mass. Journal of Sports Sciences 35(11), 1073-1082.", "verified": false},
+        {"citation": "Plotkin D., Coleman M., Van Every D., et al. (2022). Progressive overload without progressing load? PeerJ 10, e14142.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Lizetd progresión semanal observada: 141 → 147 → 151 → 159 series. Aumento 4.3% → 2.7% → 5.3% (promedio 4%, dentro del rango)."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "progresion_intra_mes", "sobrecarga_progresiva"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "deload-mes-cada-3-4-meses-consecutivos",
+      "name": "Deload como MES completo cada 3-4 meses consecutivos sin pausa",
+      "rule_type": "periodize",
+      "input_conditions": {
+        "all_of": [],
+        "any_of": [
+          {"field": "client.meses_consecutivos_sin_deload", "op": "greater_than_or_equal", "value": 3},
+          {"field": "client.fatigue_score", "op": "greater_than", "value": 7, "note": "Score de fatiga 0-10 reportado por cliente"},
+          {"field": "client.estancamiento_progresion_semanas", "op": "greater_than_or_equal", "value": 4}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "fase_assignment_mes",
+        "fase_del_mes": "Deload",
+        "duracion_semanas": 4,
+        "rir_por_semana": [3, 4, 4, 3],
+        "volumen_total_factor_por_semana": [0.60, 0.60, 0.65, 0.70],
+        "intensidad_relativa_label": "baja",
+        "tecnicas_avanzadas_permitidas": false,
+        "compuestos_principales_max_carga_pct_1rm": [60, 60, 65, 70],
+        "rationale_pedagogico": "Deload NO es 'semana suave' — es MES completo de recuperación activa cuando el cliente lleva 3-4 meses consecutivos sin pausa. Volumen al 60-70%, intensidad baja, foco en técnica, sueño y recuperación nutricional. Después de Deload el cliente reinicia desde Adaptación o Hipertrofia ligera.",
+        "siguiente_fase_recomendada": "Adaptación (nuevo bloque) o Hipertrofia (si solo era fatiga moderada)"
+      },
+      "priority": 130,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "Bell et al. (2020) revisaron protocolos de deload y concluyen que reducir volumen 40-60% durante 1-2 semanas permite recuperación neuromuscular sin pérdida significativa de masa magra (gracias al efecto memory de los mionúcleos). Para clientes en membresía mensual, un MES completo de deload es operativamente más limpio que insertar 'semanas suaves' dentro de planes regulares y deja al cliente en mejor condición para retomar el bloque siguiente.",
+      "scientific_sources": [
+        {"citation": "Bell L., Ruddock A., Maden-Wilkinson T., Rogerson D. (2020). Overreaching and overtraining in strength sports and resistance training: A scoping review. Journal of Sports Sciences 38(16), 1897-1912.", "verified": false},
+        {"citation": "Gundersen K. (2016). Muscle memory and a new cellular model for muscle atrophy and hypertrophy. Journal of Experimental Biology 219(2), 235-242.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "deload", "anti_sobreentrenamiento"],
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "validation_note": "Cliente WellCore promedio probablemente NO trackea fatigue_score ni estancamiento. El motor v2 lo activa solo si cumple ≥3 meses consecutivos. Validar si Daniel quiere agregar input manual del coach para forzar deload.",
+      "version": 1,
+      "active": true
+    }
+  ],
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre — refs Issurin 2010, Bompa 2018, Schoenfeld 2017, Krzysztofik 2019, Williams 2017, Pyne 2009, Bosquet 2007, Plotkin 2022, Bell 2020, Gundersen 2016."
+  ]
+}

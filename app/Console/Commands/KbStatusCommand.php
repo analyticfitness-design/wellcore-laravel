@@ -27,6 +27,7 @@ final class KbStatusCommand extends Command
      * Si alguna está por debajo del mínimo, se considera "necesita seed".
      */
     private const EXPECTED_TABLES = [
+        // Sprint 0 legacy
         'methodologies' => 8,
         'principles' => 15,
         'exercise_metadata' => 30,
@@ -35,6 +36,15 @@ final class KbStatusCommand extends Command
         'lint_rules' => 20,
         'plan_templates_local' => 5,
         'corpus_embeddings' => 0, // opcional Sprint 3+
+
+        // Sprint 0.5 JSON-driven (docs/audit-motor-v2/*.json)
+        'nutrition_foods' => 70,             // target 100, mín aceptable 70
+        'supplement_catalog' => 20,          // target 28, mín aceptable 20
+        'supplement_stacks' => 10,           // target 15, mín aceptable 10
+        'hormonal_compounds' => 0,           // opcional, requiere validación médica
+        'hormonal_protocol_templates' => 0,  // opcional, requiere validación médica
+        'ciclo_menstrual_fases' => 0,        // opcional, requiere validación médica
+        'bloodwork_panels' => 0,             // opcional, requiere validación médica
     ];
 
     public function handle(): int

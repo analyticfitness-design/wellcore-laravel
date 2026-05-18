@@ -1,0 +1,406 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "05 of 12",
+    "chunk_description": "Cierre Categoría C (C9-C12: proteína, grasa, carbos, periodización entreno/descanso) + arranque Categoría D (D1-D2: estructura día + selección pecho).",
+    "categories": [
+      "C. CÁLCULO DE MACROS (rules C9-C12)",
+      "D. SELECCIÓN DE EJERCICIOS (rules D1-D2)"
+    ],
+    "depends_on": {
+      "previous_chunks": [
+        "docs/audit-motor-v2/decision-rules-CHUNK-01.json",
+        "docs/audit-motor-v2/decision-rules-CHUNK-02.json",
+        "docs/audit-motor-v2/decision-rules-CHUNK-03.json",
+        "docs/audit-motor-v2/decision-rules-CHUNK-04.json"
+      ],
+      "exercise_patterns_proposal": "docs/audit-motor-v2/exercise-patterns-agrupacion-PROPUESTA.md"
+    },
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ],
+    "pipeline_position_macros": "C9 → C10 → C11 → C12 (proteína → grasa → carbos resto → periodización entreno/descanso)",
+    "exercise_patterns_confidence_global": "moderate (slugs referencian propuesta Pieza 2, no seed final aún)",
+    "perplexity_verification_pending": "Refs Morton 2018, Helms 2014/2019, Volek 2010, Burke 2018, Schoenfeld 2017 marcadas verified:false hasta Perplexity bulk al cierre de Fase 3"
+  },
+  "rules": [
+    {
+      "slug": "proteina-por-objetivo-y-kg",
+      "name": "Proteína por objetivo y kg corporal — matriz determinista",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.kcal_objetivo", "op": "is_not_null", "value": null},
+          {"field": "client.peso_kg", "op": "is_not_null", "value": null},
+          {"field": "client.objective", "op": "in", "value": ["perdida_agresiva", "perdida_moderada", "recomposicion", "hipertrofia", "aumento_limpio", "aumento_agresivo", "mantenimiento"]}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "proteina",
+        "formula": "proteina_g = peso_kg × matriz[objective]",
+        "formula_machine_readable": "client.peso_kg * matriz_proteina_g_por_kg[client.objective]",
+        "matriz_proteina_g_por_kg": {
+          "perdida_agresiva": 2.6,
+          "perdida_moderada": 2.2,
+          "recomposicion": 2.2,
+          "hipertrofia": 1.8,
+          "aumento_limpio": 1.8,
+          "aumento_agresivo": 1.6,
+          "mantenimiento": 1.6
+        },
+        "unit_output": "gramos/dia",
+        "kcal_por_gramo_proteina": 4,
+        "next_step": "grasa",
+        "ejemplo_calculo": {
+          "input": {"peso_kg": 60, "objective": "perdida_moderada"},
+          "calculo": "60 × 2.2 = 132 g/día (528 kcal de proteína)"
+        }
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.condicion_renal", "op": "equals", "value": true, "note": "Cliente con insuficiencia renal — limitar proteína a 0.8-1.0 g/kg, derivar a control médico. Esta rule NO aplica, escalar a humano."}
+      ],
+      "scientific_rationale": "Morton et al. (2018) en meta-análisis con 49 estudios concluyen que 1.6 g/kg/día es el threshold donde se maximiza la síntesis muscular en entrenamiento de fuerza — más proteína no agrega beneficio adicional para hipertrofia. Para preservar masa magra en déficit (pérdida moderada/agresiva), Helms et al. (2014) recomiendan 2.2-2.6 g/kg porque el déficit estimula la oxidación de aminoácidos. En recomposición, 2.2 g/kg es el sweet spot (Murphy et al. 2015). En aumento agresivo bajamos a 1.6 g/kg porque el surplus ya protege la masa magra y los carbos/grasas son más importantes para sintetizar tejido nuevo.",
+      "scientific_sources": [
+        {"citation": "Morton R.W., Murphy K.T., McKellar S.R., et al. (2018). A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength in healthy adults. British Journal of Sports Medicine 52(6), 376-384.", "verified": false},
+        {"citation": "Helms E.R., Aragon A.A., Fitschen P.J. (2014). Evidence-based recommendations for natural bodybuilding contest preparation: nutrition and supplementation. JISSN 11, 20.", "verified": false},
+        {"citation": "Murphy C.H., Hector A.J., Phillips S.M. (2015). Considerations for protein intake in managing weight loss in athletes. European Journal of Sport Science 15(1), 21-28.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Lizetd 60 kg × 2.2 g/kg = 132 g proteína (plan real: 150 g, 14% más conservador — ratio 2.5 g/kg que cae en perdida_agresiva). Re-verificar si Lizetd se declaró perdida_moderada o agresiva."
+        },
+        {
+          "client_anonimized": "elite_002_daniel",
+          "matched": true,
+          "outcome": "Daniel 83 kg × 1.8 g/kg = 149 g (plan real: 200 g, ratio 2.4 g/kg). Daniel se override manual al 2.4 — patrón válido para Elite avanzado que prioriza preservar masa en surplus."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "macros", "proteina", "matriz_objetivo"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "grasa-por-deficit-vs-mantenimiento",
+      "name": "Grasa por contexto calórico — matriz determinista por objetivo",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.proteina_g", "op": "is_not_null", "value": null},
+          {"field": "client.peso_kg", "op": "is_not_null", "value": null}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "grasa",
+        "formula": "grasa_g = peso_kg × matriz[objective]",
+        "formula_machine_readable": "client.peso_kg * matriz_grasa_g_por_kg[client.objective]",
+        "matriz_grasa_g_por_kg": {
+          "perdida_agresiva": 0.7,
+          "perdida_moderada": 0.8,
+          "recomposicion": 0.9,
+          "hipertrofia": 0.9,
+          "aumento_limpio": 1.0,
+          "aumento_agresivo": 1.0,
+          "mantenimiento": 0.9
+        },
+        "unit_output": "gramos/dia",
+        "kcal_por_gramo_grasa": 9,
+        "next_step": "carbos",
+        "minimo_absoluto_g_por_kg": 0.6,
+        "minimo_absoluto_rationale": "Por debajo de 0.6 g/kg/día las hormonas esteroides (testosterona, estrógenos) se ven afectadas. NUNCA bajar más, incluso si el cliente prefiere keto extremo.",
+        "ejemplo_calculo": {
+          "input": {"peso_kg": 60, "objective": "perdida_moderada"},
+          "calculo": "60 × 0.8 = 48 g/día (432 kcal de grasa)"
+        }
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.preferences", "op": "includes", "value": "dieta_alta_grasa", "note": "Cliente quiere keto/alto en grasa — re-ejecutar pipeline con grasa primero como variable y carbos minimizados. Patrón distinto, requiere rule paralela."}
+      ],
+      "scientific_rationale": "La grasa dietética es fuente de ácidos grasos esenciales (omega-3, omega-6) y precursor de hormonas esteroides. Volek et al. (2010) y otros muestran que dietas <20% de calorías en grasa por períodos prolongados deprimen testosterona en hombres. 0.7-1.0 g/kg cubre tanto las necesidades hormonales como la palatabilidad de la dieta. En déficit bajamos a 0.7-0.8 g/kg porque el déficit moviliza grasa endógena (de adipocitos) que sirve como combustible — bajar grasa dietética en este contexto no es perjudicial.",
+      "scientific_sources": [
+        {"citation": "Volek J.S., Kraemer W.J., Bush J.A., et al. (1997). Testosterone and cortisol in relationship to dietary nutrients and resistance exercise. Journal of Applied Physiology 82(1), 49-54.", "verified": false},
+        {"citation": "Helms E.R. (2019). The Muscle and Strength Pyramid: Nutrition, 2nd ed.", "verified": false},
+        {"citation": "Lambert C.P., Frank L.L., Evans W.J. (2004). Macronutrient considerations for the sport of bodybuilding. Sports Medicine 34(5), 317-327.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Lizetd 60 kg × 0.8 = 48 g (plan real: 60 g, 1.0 g/kg). Outlier ligero, dentro del rango aceptable."
+        },
+        {
+          "client_anonimized": "elite_002_daniel",
+          "matched": true,
+          "outcome": "Daniel 83 kg × 1.0 = 83 g (plan real: 100 g, 1.2 g/kg). Override coach validado para Elite hombre."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "macros", "grasa", "matriz_objetivo"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "carbos-resto-calorias",
+      "name": "Carbohidratos = kcal restantes después de proteína y grasa",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.kcal_objetivo", "op": "is_not_null", "value": null},
+          {"field": "engine.proteina_g", "op": "is_not_null", "value": null},
+          {"field": "engine.grasa_g", "op": "is_not_null", "value": null}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "carbos",
+        "formula": "carbos_g = (kcal_objetivo − proteina_g × 4 − grasa_g × 9) / 4",
+        "formula_machine_readable": "(engine.kcal_objetivo - engine.proteina_g * 4 - engine.grasa_g * 9) / 4",
+        "unit_output": "gramos/dia",
+        "kcal_por_gramo_carbos": 4,
+        "next_step": "periodizacion_entreno_descanso",
+        "minimo_absoluto_g_por_kg": 1.5,
+        "minimo_absoluto_rationale": "Por debajo de 1.5 g/kg/día sostenido, el rendimiento en entrenamiento de fuerza/hipertrofia cae significativamente. Si el cálculo da menos, advertir y subir kcal_objetivo o bajar grasa al mínimo absoluto.",
+        "ejemplo_calculo": {
+          "input": {"kcal_objetivo": 1650, "proteina_g": 132, "grasa_g": 48},
+          "calculo": "(1650 − 132*4 − 48*9) / 4 = (1650 − 528 − 432) / 4 = 690 / 4 = 172.5 g/día"
+        }
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.preferences", "op": "includes", "value": "dieta_alta_grasa", "note": "Si el cliente eligió keto, los carbos van al mínimo absoluto (~20-50 g/día) y la grasa toma el resto"}
+      ],
+      "scientific_rationale": "Los carbohidratos son el combustible primario para entrenamiento de fuerza/hipertrofia (depleción de glucógeno reduce volumen de trabajo tolerado en 10-20%). Burke et al. (2018) revisaron las necesidades de carbos en deportes de fuerza y concluyen que 3-7 g/kg/día cubre la mayoría de objetivos. En déficit, los carbos bajan pero NO al mínimo absoluto si se quiere preservar performance en gym. El método 'carbos = resto' garantiza que las prioridades fisiológicas (proteína, grasa) están cubiertas y que ningún macro se sacrifica arbitrariamente.",
+      "scientific_sources": [
+        {"citation": "Burke L.M., Hawley J.A., Wong S.H., Jeukendrup A.E. (2011). Carbohydrates for training and competition. Journal of Sports Sciences 29 Suppl 1, S17-S27.", "verified": false},
+        {"citation": "Helms E.R. (2019). The Muscle and Strength Pyramid: Nutrition, 2nd ed.", "verified": false},
+        {"citation": "Mata F., Valenzuela P.L., Gimenez J., et al. (2019). Carbohydrate Availability and Physical Performance: Physiological Overview and Practical Recommendations. Nutrients 11(5), 1084.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Lizetd 1650 kcal: (1650 − 600 − 540) / 4 = 127.5 g carbos (plan real: 125 g, dentro del margen)."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "macros", "carbohidratos"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "periodizacion-carbos-dia-entreno-vs-descanso",
+      "name": "Periodización de carbos — días de entreno +25g, días de descanso −25g (mismo kcal semanal)",
+      "rule_type": "calculate_macros",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.carbos_g", "op": "is_not_null", "value": null},
+          {"field": "client.days_per_week", "op": "between", "value": [3, 6]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.preferences", "op": "includes", "value": "macros_planos_todos_los_dias"}
+        ]
+      },
+      "output": {
+        "type": "macros_calculation_step",
+        "step": "periodizacion_entreno_descanso",
+        "step_description": "Distribuye carbohidratos según día (entreno vs descanso) manteniendo el promedio semanal igual",
+        "carbos_dia_entreno_formula": "engine.carbos_g + 25",
+        "carbos_dia_descanso_formula": "engine.carbos_g - 25",
+        "kcal_delta_entreno": 100,
+        "kcal_delta_descanso": -100,
+        "promedio_semanal_se_mantiene": true,
+        "rationale_practica": "El cliente come más carbos los días que entrena (cuando los necesita para fuerza/recuperación) y menos los días de descanso (cuando la sensibilidad insulina baja). Los demás macros se mantienen igual.",
+        "exception_si_pierde_dia": "Si el cliente salta un día de entreno, ese día NO ajustar a 'descanso' — mantener carbos altos porque la glucogenólisis hepática está activa. Tomar como descanso real solo días planeados como descanso."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.objective", "op": "equals", "value": "aumento_agresivo", "note": "En aumento agresivo NO periodizar a la baja — mantener carbos altos todos los días para maximizar surplus"}
+      ],
+      "scientific_rationale": "La periodización de carbos según día de entreno aprovecha la sensibilidad insulina post-ejercicio (Ivy 1991) y la baja necesidad metabólica en días de descanso. Davitt et al. (2014) mostraron que dietas con periodización de carbos (alta en entreno, baja en descanso) preservan masa magra mejor que dietas planas en contexto de déficit moderado. El delta ±25g/día es defensivo — variaciones mayores complican la adherencia sin beneficio adicional medible.",
+      "scientific_sources": [
+        {"citation": "Davitt P.M., Pellegrino J.K., Schanzer J.R., Tjionas H., Arent S.M. (2014). The effects of a combined resistance training and endurance exercise program in inactive college female subjects: does order matter? Journal of Strength and Conditioning Research 28(7), 1937-1945.", "verified": false},
+        {"citation": "Ivy J.L. (1991). Muscle glycogen synthesis before and after exercise. Sports Medicine 11(1), 6-19.", "verified": false},
+        {"citation": "Helms E.R. (2019). The Muscle and Strength Pyramid: Nutrition, 2nd ed.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Lizetd tiene plan_dia_descanso separado con menos kcal y menos carbos. Patrón coincide con esta rule."
+        }
+      ],
+      "tags": ["macros", "periodizacion_carbos", "entreno_vs_descanso"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "estructura-dia-1compuesto-2sec-3aisl",
+      "name": "Estructura estándar día — 1 compuesto + 1-2 secundarios + 2-3 aislamientos + abs",
+      "rule_type": "select_exercises",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.split_assignment", "op": "is_not_null", "value": null},
+          {"field": "engine.day_in_progress", "op": "is_not_null", "value": null}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "exercise_structure_template",
+        "step_description": "Plantilla de slots — D2-D14 llenan estos slots con exercise_pattern_slugs reales",
+        "slots": [
+          {"posicion": 1, "rol": "compuesto_principal", "obligatorio": true, "intensidad": "alta", "series_default": [3, 5], "reps_default": [5, 10], "rir_default": "según fase", "descanso_seg": [90, 180], "compatible_techniques_extras_default": []},
+          {"posicion": 2, "rol": "compuesto_secundario_o_secundario", "obligatorio": true, "intensidad": "alta", "series_default": [3, 4], "reps_default": [8, 12], "rir_default": "según fase", "descanso_seg": [60, 120], "compatible_techniques_extras_default": []},
+          {"posicion": 3, "rol": "secundario_o_aislamiento", "obligatorio": false, "intensidad": "media-alta", "series_default": [3, 4], "reps_default": [10, 15], "rir_default": "1-2", "descanso_seg": [60, 90], "compatible_techniques_extras_default": ["superset"]},
+          {"posicion": 4, "rol": "aislamiento", "obligatorio": true, "intensidad": "media", "series_default": [3, 4], "reps_default": [12, 15], "rir_default": "1", "descanso_seg": [45, 75], "compatible_techniques_extras_default": ["superset", "drop-set_si_ultimo"]},
+          {"posicion": 5, "rol": "aislamiento", "obligatorio": false, "intensidad": "media", "series_default": [3, 4], "reps_default": [12, 20], "rir_default": "1", "descanso_seg": [45, 60], "compatible_techniques_extras_default": ["drop-set_si_ultimo", "rest-pause"]},
+          {"posicion": 6, "rol": "intensificador_final", "obligatorio": false, "intensidad": "media", "series_default": [2, 3], "reps_default": [12, 20], "rir_default": "0-1", "descanso_seg": [30, 60], "compatible_techniques_extras_default": ["drop-set", "rest-pause", "myo-reps"], "nota": "Solo si nivel ≥ intermedio Y fase ≥ Hipertrofia"},
+          {"posicion": 7, "rol": "abs", "obligatorio": false, "intensidad": "media", "series_default": [3, 4], "reps_default": [10, 25], "rir_default": "1", "descanso_seg": [30, 60], "compatible_techniques_extras_default": ["superset_abs"]},
+          {"posicion": 8, "rol": "cardio_post", "obligatorio": false, "tipo": "LISS_o_HIIT_segun_dia", "duracion_min": [20, 35], "intensidad": "baja-media", "compatible_techniques_extras_default": []}
+        ],
+        "rango_ejercicios_pesas_total": [6, 7],
+        "ejercicios_minimo_principiante": 5,
+        "ejercicios_minimo_intermedio_avanzado": 6,
+        "ejercicios_maximo_absoluto": 10,
+        "ejercicios_maximo_rationale": "Más de 10 ejercicios por día con calidad técnica es operativamente difícil en 75-90 min. Recortar antes que estirar."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.level", "op": "equals", "value": "principiante", "note": "Principiante: omitir posición 6 (intensificador final) y posición 5 (segundo aislamiento) en las primeras 2 semanas"}
+      ],
+      "scientific_rationale": "La estructura compuesto → secundarios → aislamientos respeta el orden de eficiencia neuromuscular: los compuestos requieren CNS fresco y técnica precisa, los aislamientos toleran fatiga acumulada. Schoenfeld 2017 muestra que el volumen total importa más que el orden exacto, pero ejecutar compuestos al final (después de aislamientos) compromete fuerza y aumenta riesgo de lesión. El número de ejercicios (6-7) está calibrado para un día de 75-90 min con descansos típicos.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2017). Dose-response relationship between weekly resistance training volume and increases in muscle mass: A systematic review and meta-analysis. Journal of Sports Sciences 35(11), 1073-1082.", "verified": false},
+        {"citation": "Simao R., de Salles B.F., Figueiredo T., Dias I., Willardson J.M. (2012). Exercise order in resistance training. Sports Medicine 42(3), 251-265.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Días de Lizetd tienen ~6-7 ejercicios + abs + cardio. Coincide con plantilla."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "selector_ejercicios", "estructura_dia"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "seleccion-pecho-gym-completo",
+      "name": "Selección ejercicios día pecho — gym completo con barra y mancuernas",
+      "rule_type": "select_exercises",
+      "input_conditions": {
+        "all_of": [
+          {"field": "engine.day_group_primary", "op": "equals", "value": "pecho"},
+          {"field": "client.location", "op": "in", "value": ["gym", "gym_completo"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.active_injuries", "op": "includes", "value": "lesion_hombro_aguda"},
+          {"field": "client.active_injuries", "op": "includes", "value": "post_cirugia_pectoral_3meses"},
+          {"field": "client.active_injuries", "op": "includes", "value": "luxacion_hombro_reciente"}
+        ]
+      },
+      "output": {
+        "type": "exercise_selection",
+        "group": "pecho",
+        "slots_filled": [
+          {
+            "posicion": 1,
+            "rol": "compuesto_principal",
+            "exercise_pattern_slug": "press-banca",
+            "variations_preferidas": ["press-banca-barra", "press-banca-inclinado-con-barra", "press-de-banca-con-mancuernas"],
+            "rationale": "Press de banca con barra es el compuesto rey de horizontal-push. Mancuernas permiten estabilizar mejor cuando hay asimetría o disbalance entre lados."
+          },
+          {
+            "posicion": 2,
+            "rol": "compuesto_secundario",
+            "exercise_pattern_slug": "press-pecho-maquina",
+            "variations_preferidas": ["press-de-pecho-en-maquina", "press-de-pecho-inclinado-en-maquina", "press-de-pecho-hammer-en-maquina"],
+            "rationale": "Press en máquina permite empujar más volumen sin la demanda de estabilización del peso libre. Inclinado 30-45° trabaja pecho superior + delto anterior."
+          },
+          {
+            "posicion": 3,
+            "rol": "aislamiento",
+            "exercise_pattern_slug": "apertura-pecho",
+            "variations_preferidas": ["aperturas-de-pecho-con-mancuerna-en-banco", "aperturas-en-peck-deck", "aperturas-en-maquina"],
+            "rationale": "Aperturas aíslan el pecho con curva de resistencia distinta al press (peak en estiramiento). Peck deck es el más amigable; mancuernas requieren control técnico para no comprometer hombro."
+          },
+          {
+            "posicion": 4,
+            "rol": "aislamiento",
+            "exercise_pattern_slug": "apertura-pecho",
+            "variations_preferidas": ["crossover-de-pecho-polea-alta", "apertura-en-poleas-al-medio", "crossover-en-polea-de-pie"],
+            "rationale": "Crossover en polea agrega tensión constante. Polea alta = pecho inferior, polea baja = pecho superior, polea al medio = pecho medio. Variar según objetivo del día."
+          },
+          {
+            "posicion": 5,
+            "rol": "aislamiento_o_intensificador",
+            "exercise_pattern_slug": "flexion-pecho",
+            "variations_preferidas": ["flexiones-de-pecho-abiertas", "flexiones-de-pecho-declinado"],
+            "rationale": "Flexiones como finisher al fallo o como secundario en cliente con menos equipo. Opcional según volumen requerido.",
+            "opcional": true
+          }
+        ],
+        "techniques_aplicables_ultima_posicion": ["drop-set", "rest-pause"],
+        "techniques_aplicables_intermedias": ["superset_pecho_triceps"],
+        "duracion_estimada_min": [50, 65],
+        "rango_series_totales_grupo": [12, 18],
+        "rango_series_totales_grupo_rationale": "12-18 series/sesión para pecho cubre el volumen recomendado en 1× frecuencia. Si frecuencia 2× semana (PPL/UL), bajar a 8-12 series/sesión."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.equipment_excluido", "op": "includes", "value": "barra_olimpica", "note": "Si NO hay barra, posición 1 cambia a press-de-banca-con-mancuernas"}
+      ],
+      "scientific_rationale": "Selección de ejercicios para pecho cubre 3 funciones: empuje horizontal compuesto (press), empuje horizontal soportado (máquina), y aducción horizontal aislada (aperturas/crossover). Schoenfeld 2018 mostró que variar ángulos de empuje (plano, inclinado, declinado) maximiza activación de distintas porciones del pectoral mayor. El orden compuesto → máquina → aisladores respeta la regla de eficiencia neuromuscular.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Contreras B., Krieger J., et al. (2018). Resistance Training Volume Enhances Muscle Hypertrophy but Not Strength in Trained Men. Medicine and Science in Sports and Exercise 51(1).", "verified": false},
+        {"citation": "Schick E.E., Coburn J.W., Brown L.E., et al. (2010). A comparison of muscle activation between a Smith machine and free weight bench press. Journal of Strength and Conditioning Research 24(3), 779-784.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["selector_ejercicios", "grupo_pecho", "gym_completo"],
+      "confidence": "moderate",
+      "confidence_rationale": "Slugs de exercise_patterns referencian propuesta Pieza 2 (no seed final). Si Daniel ajusta la agrupación (ej. unificar press-banca y press-pecho-maquina), reconciliar.",
+      "needs_daniel_validation": true,
+      "version": 1,
+      "active": true
+    }
+  ],
+  "_next_chunk": {
+    "chunk": "06 of 12",
+    "scope": "Categoría D — D3-D8 (selección espalda + pierna_quad + pierna_fem + gluteo_focal + hombro_tri + principiante). Total: 6 rules.",
+    "blocked_by_daniel_validation": true
+  },
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre de Fase 3 — verificar refs Morton 2018, Helms 2014/2019, Volek 1997, Lambert 2004, Burke 2011, Mata 2019, Davitt 2014, Ivy 1991, Schoenfeld 2017/2018, Simao 2012, Schick 2010."
+  ]
+}

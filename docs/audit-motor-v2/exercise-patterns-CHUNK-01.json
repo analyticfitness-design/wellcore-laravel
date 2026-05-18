@@ -1,0 +1,740 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-16",
+    "chunk": "01 of N",
+    "chunk_description": "5 compuestos críticos (todos needs_daniel_validation: true). Validar con Daniel antes de continuar.",
+    "fuente_gifs": "E:\\WELLCORE FITNESS PLATAFORMA\\Recursos\\GIF EJERCICIOS 220\\",
+    "total_gifs_disponibles": 220,
+    "total_patterns_target": 52,
+    "depends_on": {
+      "methodologies": "docs/audit-motor-v2/methodologies-seed.json",
+      "tecnicas_serie": "E:/WELLCORE FITNESS PLATAFORMA/SISTEMA-CREACION-PLANES/08-METODOLOGIAS.md",
+      "naming_canonico": "E:/WELLCORE FITNESS PLATAFORMA/SISTEMA-CREACION-PLANES/23-NAMING-CANONICO-Y-ALIAS.md"
+    },
+    "vocabulario_controlado": {
+      "movement_patterns_validos": [
+        "horizontal-push", "horizontal-pull",
+        "vertical-push", "vertical-pull",
+        "squat", "hinge", "lunge",
+        "carry", "rotation", "anti-rotation", "anti-extension", "anti-flexion",
+        "elbow-flexion", "elbow-extension", "knee-flexion", "knee-extension",
+        "hip-extension", "hip-flexion", "hip-abduction", "hip-adduction",
+        "shoulder-isolation-lateral", "shoulder-isolation-frontal", "shoulder-isolation-rear",
+        "shoulder-horizontal-adduction", "shoulder-horizontal-abduction", "shoulder-elevation", "shoulder-extension",
+        "calf-raise", "wrist-flexion",
+        "core-stability", "core-dynamic", "core-lateral",
+        "cardio-cyclical", "cardio-explosive"
+      ],
+      "primary_muscle_validos": [
+        "pecho", "espalda_alta", "espalda_baja", "dorsal_ancho", "trapecio",
+        "hombro_anterior", "hombro_lateral", "hombro_posterior",
+        "biceps", "triceps", "antebrazo",
+        "cuadriceps", "femoral", "gluteo_mayor", "gluteo_medio",
+        "aductor", "abductor", "gemelo", "soleo", "tibial",
+        "core_anterior", "core_lateral", "core_posterior",
+        "cardio_metabolico"
+      ],
+      "contraindications_validos": [
+        "lesion_hombro_aguda", "lesion_hombro_cronica", "lesion_codo", "lesion_muneca",
+        "cervicalgia", "dorsalgia", "lumbalgia_aguda", "lumbalgia_cronica", "hernia_lumbar",
+        "ciatica", "hernia_inguinal", "hernia_abdominal", "diastasis_recto", "prolapso",
+        "lesion_rodilla", "condromalacia", "lesion_menisco", "lcr", "lpc", "fascitis_plantar",
+        "lesion_tobillo", "post_cirugia_pectoral_3meses", "post_cirugia_hombro_6meses",
+        "post_cirugia_lumbar_6meses", "post_cirugia_rodilla_6meses", "embarazo_2do_trimestre",
+        "embarazo_3er_trimestre", "hipertension_no_controlada", "glaucoma", "luxacion_hombro_reciente"
+      ]
+    }
+  },
+  "patterns": [
+    {
+      "slug": "press-banca",
+      "name": "Press de banca",
+      "movement_pattern": "horizontal-push",
+      "primary_muscle": "pecho",
+      "secondary_muscles": ["hombro_anterior", "triceps", "core_anterior"],
+      "is_compound": true,
+      "is_unilateral": false,
+      "is_cardio": false,
+      "cardio_type": null,
+      "level_min": "principiante",
+      "default_equipment": "barra_olimpica + banco_plano",
+      "variations": [
+        {
+          "alias": "press-banca-barra",
+          "name": "Press de banca con barra",
+          "equipment": ["barra_olimpica", "banco_plano"],
+          "level_min": "principiante",
+          "stability_demand": "media",
+          "load_potential": "alta",
+          "default_note": "El compuesto rey del pecho. Bajada controlada 2-3s rozando el esternón, empuje explosivo sin bloquear codos.",
+          "common_mistakes": [
+            "Rebotar la barra en el pecho (pierdes estímulo y arriesgas costillas)",
+            "Codos abiertos a 90 grados (riesgo manguito rotador)",
+            "Glúteos despegados del banco (sobrecarga lumbar)"
+          ],
+          "contraindications": ["lesion_hombro_aguda", "post_cirugia_pectoral_3meses", "luxacion_hombro_reciente"]
+        },
+        {
+          "alias": "press-banca-inclinado-con-barra",
+          "name": "Press de banca inclinado con barra",
+          "equipment": ["barra_olimpica", "banco_inclinado"],
+          "level_min": "principiante",
+          "stability_demand": "media",
+          "load_potential": "media",
+          "default_note": "Banco 30-45 grados. Foco pecho superior y hombro anterior. Si sentís solo hombro, bajá la inclinación.",
+          "common_mistakes": [
+            "Banco demasiado vertical (60 grados o más convierte en press de hombro)",
+            "Bajar la barra al cuello en vez de al pecho alto"
+          ],
+          "contraindications": ["lesion_hombro_aguda", "post_cirugia_pectoral_3meses"]
+        },
+        {
+          "alias": "press-banca-declinado-con-barra-abierto",
+          "name": "Press de banca declinado con barra (agarre abierto)",
+          "equipment": ["barra_olimpica", "banco_declinado"],
+          "level_min": "intermedio",
+          "stability_demand": "media",
+          "load_potential": "alta",
+          "default_note": "Banco con declive 15-30 grados. Foco pecho inferior. Asegurá los pies bien al apoyo antes de cargar la barra.",
+          "common_mistakes": [
+            "Pies mal trabados (riesgo de resbalar con peso encima)",
+            "Bajar la barra muy alta hacia el cuello"
+          ],
+          "contraindications": ["lesion_hombro_aguda", "hernia_inguinal", "hipertension_no_controlada"]
+        },
+        {
+          "alias": "press-banca-con-barra-cerrado",
+          "name": "Press de banca con agarre cerrado",
+          "equipment": ["barra_olimpica", "banco_plano"],
+          "level_min": "intermedio",
+          "stability_demand": "media",
+          "load_potential": "media",
+          "default_note": "Manos a anchura de hombros o un poco menos. Pega los codos al torso al bajar. Foco tríceps con asistencia de pecho.",
+          "common_mistakes": [
+            "Manos demasiado juntas (estrés muñeca, no agarre cerrado debajo de 20-25 cm)",
+            "Abrir los codos como press estándar (perdés foco tríceps)"
+          ],
+          "contraindications": ["lesion_codo", "lesion_muneca", "lesion_hombro_aguda"]
+        },
+        {
+          "alias": "press-de-banca-con-mancuernas",
+          "name": "Press de banca con mancuernas",
+          "equipment": ["mancuerna", "banco_plano"],
+          "level_min": "principiante",
+          "stability_demand": "alta",
+          "load_potential": "media",
+          "default_note": "Mayor rango y trabajo unilateral. Bajada controlada hasta sentir estiramiento de pecho. No choques las mancuernas arriba.",
+          "common_mistakes": [
+            "Soltar las mancuernas peligrosamente al final del set (siempre rotalas a las piernas y sentate)",
+            "Bajar las mancuernas en línea recta (debe ser leve arco para alinear con codos)"
+          ],
+          "contraindications": ["lesion_hombro_aguda", "post_cirugia_pectoral_3meses"]
+        },
+        {
+          "alias": "press-banca-con-mancuerna-en-banco-declinado",
+          "name": "Press de banca declinado con mancuernas",
+          "equipment": ["mancuerna", "banco_declinado"],
+          "level_min": "intermedio",
+          "stability_demand": "alta",
+          "load_potential": "media",
+          "default_note": "Énfasis pecho inferior. Mancuernas exigen más control que la barra. Asegurá los pies antes de levantar las mancuernas.",
+          "common_mistakes": [
+            "Empezar la serie sin trabar los pies (peligroso al recibir las mancuernas)",
+            "Movimiento muy corto sin llegar al estiramiento"
+          ],
+          "contraindications": ["lesion_hombro_aguda", "hernia_inguinal", "hipertension_no_controlada"]
+        },
+        {
+          "alias": "hammer-press-acostado-con-mancuerna",
+          "name": "Press de pecho con agarre neutro (Hammer press)",
+          "equipment": ["mancuerna", "banco_plano"],
+          "level_min": "principiante",
+          "stability_demand": "alta",
+          "load_potential": "media",
+          "default_note": "Palmas enfrentadas (agarre neutro). Más amigable con el hombro que el agarre prono. Buena opción si tienes molestia de hombro con press tradicional.",
+          "common_mistakes": [
+            "Codos demasiado abiertos (debería ser 30-45 grados del torso, no 90)",
+            "Bajar sin control hasta el pecho"
+          ],
+          "contraindications": ["lesion_hombro_aguda"]
+        },
+        {
+          "alias": "press-pecho-con-mancuerna-agarre-cerrado-banco-inclinado",
+          "name": "Press de pecho inclinado con mancuernas agarre cerrado",
+          "equipment": ["mancuerna", "banco_inclinado"],
+          "level_min": "intermedio",
+          "stability_demand": "alta",
+          "load_potential": "media",
+          "default_note": "Banco 30 grados, mancuernas pegadas todo el rango. Trabaja pecho interno-superior y tríceps. Apretá las mancuernas una contra otra durante toda la serie.",
+          "common_mistakes": [
+            "Soltar la presión entre mancuernas a media serie (perdés el foco interno)",
+            "Banco demasiado vertical"
+          ],
+          "contraindications": ["lesion_hombro_aguda", "lesion_codo"]
+        }
+      ],
+      "default_progression_pattern": {
+        "principiante": "Sem 1: 3x12 RIR 3 | Sem 2: 4x10 RIR 2 | Sem 3: 4x8 RIR 1 | Sem 4: 5x6 RIR 0",
+        "intermedio": "Bloque hipertrofia 4x8 RIR 2 -> bloque fuerza 5x5 RIR 1 -> peak 5x3 RIR 0 + cluster (3-4 sem cada uno)",
+        "avanzado": "Periodizacion por bloques 12 sem: hipertrofia 4x6-10 -> fuerza 5x3-5 -> peak 3x1-3 con descansos 3-4 min"
+      },
+      "default_tecnica_ejecucion": "1. Acostate en el banco con las escapulas retraidas y plantadas hacia abajo. Pies firmes en el piso.\n2. Toma la barra con agarre levemente mas ancho que los hombros, munecas neutras alineadas con los codos.\n3. Desencaja la barra con ayuda y posicionala sobre el pecho alto, brazos extendidos.\n4. Inhala y baja controlado en 2-3 segundos hasta rozar el pecho (linea de pezones aproximadamente).\n5. Empuja explosivo hacia arriba sin bloquear los codos al final.\n6. Manten gluteos y omoplatos en contacto con el banco durante toda la serie.",
+      "common_mistakes_global": [
+        "No retraer las escapulas antes de empezar (perdes potencia y arriesgas el hombro)",
+        "Agarre demasiado ancho (mas de 1.5x la anchura biacromial estresa el manguito rotador)",
+        "Pies sin apoyo firme (perdes transferencia de fuerza del piso)",
+        "Hacer rebote en el pecho (perdes la fase excentrica que es 50% del estimulo)"
+      ],
+      "contraindications_global": [
+        "lesion_hombro_aguda",
+        "luxacion_hombro_reciente",
+        "post_cirugia_pectoral_3meses",
+        "post_cirugia_hombro_6meses"
+      ],
+      "compatible_techniques": [
+        "series-rectas", "piramide-ascendente", "piramide-inversa", "drop-set",
+        "rest-pause", "cluster-sets", "myo-reps", "tempo-controlado", "5x5", "superset"
+      ],
+      "recommended_in_methodologies": [
+        "body-part-split-5d", "upper-lower-4d", "ppl-6d",
+        "dup-upper-lower-4d", "bloques-12sem-metodo", "bloques-4sem-elite-agresiva", "full-body-3d"
+      ],
+      "frequency_per_week_range": [1, 3],
+      "rest_seconds_default": {
+        "hipertrofia": 90,
+        "fuerza": 180,
+        "fuerza_maxima": 240
+      },
+      "rep_range_default": {
+        "hipertrofia": "8-12",
+        "fuerza": "4-6",
+        "fuerza_maxima": "2-4",
+        "resistencia_muscular": "15-20"
+      },
+      "gif_default_alias": "press-banca-barra",
+      "tags": ["fundamental", "powerlifting", "bench-press", "horizontal-push", "compound-pesado"],
+      "observed_in_real_clients": [],
+      "_observed_pending_audit": "Pendiente auditar JSONs reales de Lizetd (Esencial Lunes Pecho), Silvia (Elite), Daniel (Elite) en Fase 4.",
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "scientific_references": [
+        "Schoenfeld B.J. (2017). Strength and Hypertrophy Adaptations Between Low- vs. High-Load Resistance Training: A Systematic Review and Meta-Analysis. JSCR.",
+        "Saeterbakken A.H. et al. (2017). The Effects of Bench Press Variations in Competitive Athletes on Muscle Activity and Performance. J Hum Kinet.",
+        "Krzysztofik M. et al. (2019). Maximizing Muscle Hypertrophy: A Systematic Review of Advanced Resistance Training Techniques. IJERPH.",
+        "Calatayud J. et al. (2017). Influence of Different Variants of the Bench Press on EMG Activity. JSCR."
+      ],
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "peso-muerto",
+      "name": "Peso muerto convencional",
+      "movement_pattern": "hinge",
+      "primary_muscle": "gluteo_mayor",
+      "secondary_muscles": ["espalda_baja", "femoral", "trapecio", "antebrazo", "core_posterior", "core_anterior", "dorsal_ancho"],
+      "is_compound": true,
+      "is_unilateral": false,
+      "is_cardio": false,
+      "cardio_type": null,
+      "level_min": "principiante",
+      "default_equipment": "barra_olimpica + discos",
+      "variations": [
+        {
+          "alias": "peso-muerto-con-barra",
+          "name": "Peso muerto convencional con barra",
+          "equipment": ["barra_olimpica"],
+          "level_min": "principiante",
+          "stability_demand": "alta",
+          "load_potential": "alta",
+          "default_note": "El rey del entrenamiento de cadena posterior. Tecnica antes que peso siempre. Espalda neutra todo el rango.",
+          "common_mistakes": [
+            "Cadera sube primero (convierte en peso muerto rumano mal hecho con cuadriceps colgando)",
+            "Barra separada del cuerpo (palanca larga sobre lumbar)",
+            "Hiperextender la espalda arriba (estres facetario)"
+          ],
+          "contraindications": ["hernia_lumbar", "lumbalgia_aguda", "ciatica", "post_cirugia_lumbar_6meses"]
+        },
+        {
+          "alias": "peso-muerto-con-mancuernas",
+          "name": "Peso muerto con mancuernas",
+          "equipment": ["mancuerna"],
+          "level_min": "principiante",
+          "stability_demand": "alta",
+          "load_potential": "media",
+          "default_note": "Opcion para quien empieza o no tiene barra olimpica. Mancuernas a los lados del cuerpo, misma mecanica de bisagra que con barra.",
+          "common_mistakes": [
+            "Mancuernas adelante del cuerpo (alejan el peso y sobrecargan lumbar)",
+            "Rango parcial sin llegar a tocar el piso o cerca"
+          ],
+          "contraindications": ["hernia_lumbar", "lumbalgia_aguda"]
+        },
+        {
+          "alias": "peso-muerto-sumo-con-barra",
+          "name": "Peso muerto sumo con barra",
+          "equipment": ["barra_olimpica"],
+          "level_min": "intermedio",
+          "stability_demand": "alta",
+          "load_potential": "alta",
+          "default_note": "Stance ancho con puntas afuera (~45 grados), manos por dentro de las piernas. Menos rango, mas foco aductores y gluteo medio. Mejor para personas de torso largo y femur largo.",
+          "common_mistakes": [
+            "Rodillas colapsan hacia adentro (debes empujarlas activamente hacia afuera)",
+            "Torso muy adelantado (perdes la ventaja de palanca del sumo)"
+          ],
+          "contraindications": ["hernia_lumbar", "lesion_rodilla", "post_cirugia_rodilla_6meses"]
+        },
+        {
+          "alias": "rack-pul-barra",
+          "name": "Rack pull con barra",
+          "equipment": ["barra_olimpica", "rack_smith"],
+          "level_min": "intermedio",
+          "stability_demand": "alta",
+          "load_potential": "alta",
+          "default_note": "Peso muerto parcial desde altura de rodillas. Permite sobrecargar el bloqueo superior. Util para quien tiene movilidad limitada o lumbar sensible al rango completo.",
+          "common_mistakes": [
+            "Tirar con espalda alta encorvada (rack pull es para fortalecer la fase de bloqueo, no para tirar con tecnica fea)",
+            "Altura demasiado alta (mas arriba de la rodilla pierde estimulo)"
+          ],
+          "contraindications": ["hernia_lumbar", "lumbalgia_aguda"]
+        }
+      ],
+      "default_progression_pattern": {
+        "principiante": "Sem 1: 3x8 RIR 3 (tecnica) | Sem 2: 4x6 RIR 2 | Sem 3: 4x5 RIR 1 (descansos 2-3 min, tecnica primero)",
+        "intermedio": "Bloque hipertrofia 4x6-8 RIR 2 -> bloque fuerza 5x5 RIR 1 -> peak 5x3 RIR 0 (descansos 3 min)",
+        "avanzado": "Periodizacion 12 sem: hipertrofia 5x6 -> fuerza 5x3 -> peak 3x1-3 RIR 0 con descansos 3-5 min"
+      },
+      "default_tecnica_ejecucion": "1. Acercate a la barra hasta que toque tu espinilla. Pies a la anchura de la cadera, puntas al frente o ligeramente afuera.\n2. Bisagra de cadera hacia atras y baja a tomar la barra con las manos justo por fuera de las piernas.\n3. Llena el pecho de aire (Valsalva) y aprieta dorsales como si exprimieras una naranja en cada axila.\n4. Empuja el piso con los pies. La barra sube pegada a la espinilla y a los muslos.\n5. Termina parado con cadera y rodillas extendidas en linea. NO hiperextiendas la espalda arriba.\n6. Baja controlado por la misma trayectoria: bisagra primero, rodillas se flexionan despues. Pausa breve en el piso entre reps.",
+      "common_mistakes_global": [
+        "Espalda baja redondeada en el setup o durante la subida (riesgo discal alto)",
+        "Cadera sube antes que el pecho (perdes la mecanica de hinge, sobrecarga lumbar)",
+        "Barra separada del cuerpo (palanca larga sobre la columna)",
+        "Hiperextension arriba (estres facetario lumbar)"
+      ],
+      "contraindications_global": [
+        "hernia_lumbar",
+        "lumbalgia_aguda",
+        "lumbalgia_cronica",
+        "ciatica",
+        "post_cirugia_lumbar_6meses",
+        "embarazo_2do_trimestre",
+        "embarazo_3er_trimestre",
+        "hipertension_no_controlada"
+      ],
+      "compatible_techniques": [
+        "series-rectas", "5x5", "cluster-sets", "piramide-ascendente",
+        "tempo-controlado", "rest-pause"
+      ],
+      "recommended_in_methodologies": [
+        "ppl-6d", "upper-lower-4d", "dup-upper-lower-4d",
+        "bloques-12sem-metodo", "bloques-4sem-elite-agresiva", "body-part-split-5d"
+      ],
+      "frequency_per_week_range": [1, 2],
+      "rest_seconds_default": {
+        "hipertrofia": 120,
+        "fuerza": 180,
+        "fuerza_maxima": 300
+      },
+      "rep_range_default": {
+        "hipertrofia": "6-10",
+        "fuerza": "3-5",
+        "fuerza_maxima": "1-3",
+        "resistencia_muscular": "12-15"
+      },
+      "gif_default_alias": "peso-muerto-con-barra",
+      "tags": ["fundamental", "powerlifting", "hinge", "deadlift", "compound-pesado", "cadena-posterior"],
+      "observed_in_real_clients": [],
+      "_observed_pending_audit": "Pendiente auditar JSONs reales de Daniel Elite (12 sem masculino) en Fase 4.",
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "scientific_references": [
+        "McGill S. (2007). Low Back Disorders: Evidence-Based Prevention and Rehabilitation. Human Kinetics.",
+        "Schoenfeld B.J. (2010). Squatting Kinematics and Kinetics and Their Application to Exercise Performance. JSCR.",
+        "Bird S.P., Barrington-Higgs B. (2010). Exploring the Deadlift. Strength Cond J.",
+        "Helms E. et al. (2018). The Muscle and Strength Pyramid: Training. Independent Publishing."
+      ],
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "sentadilla",
+      "name": "Sentadilla con barra",
+      "movement_pattern": "squat",
+      "primary_muscle": "cuadriceps",
+      "secondary_muscles": ["gluteo_mayor", "femoral", "aductor", "core_anterior", "core_posterior", "espalda_baja"],
+      "is_compound": true,
+      "is_unilateral": false,
+      "is_cardio": false,
+      "cardio_type": null,
+      "level_min": "principiante",
+      "default_equipment": "barra_olimpica + rack",
+      "variations": [
+        {
+          "alias": "sentadilla-con-barra",
+          "name": "Sentadilla trasera con barra",
+          "equipment": ["barra_olimpica", "rack_smith"],
+          "level_min": "principiante",
+          "stability_demand": "alta",
+          "load_potential": "alta",
+          "default_note": "La sentadilla por defecto. Baja al menos a paralelo (femur paralelo al piso). Mas profundo si tu movilidad lo permite, sin perder espalda neutra.",
+          "common_mistakes": [
+            "Rodillas colapsan adentro (valgo dinamico, riesgo LCA)",
+            "Espalda baja redondea en el fondo (butt wink)",
+            "Talones se levantan (movilidad tobillo limitada)"
+          ],
+          "contraindications": ["lesion_rodilla", "condromalacia", "lumbalgia_aguda", "post_cirugia_rodilla_6meses", "post_cirugia_lumbar_6meses"]
+        },
+        {
+          "alias": "sentadilla-con-barra-en-banco",
+          "name": "Sentadilla con barra a banco (Box squat)",
+          "equipment": ["barra_olimpica", "rack_smith", "banco_plano"],
+          "level_min": "principiante",
+          "stability_demand": "alta",
+          "load_potential": "alta",
+          "default_note": "Sentadilla con banco como referencia de profundidad. Excelente para aprender la mecanica o para personas con dudas de profundidad. Sentate, NO rebotes.",
+          "common_mistakes": [
+            "Rebotar en el banco (peligroso para la columna)",
+            "Sentarse demasiado relajado (perdes tension)"
+          ],
+          "contraindications": ["lesion_rodilla", "lumbalgia_aguda"]
+        },
+        {
+          "alias": "sentadilla-con-mancuernas",
+          "name": "Sentadilla con mancuernas",
+          "equipment": ["mancuerna"],
+          "level_min": "principiante",
+          "stability_demand": "media",
+          "load_potential": "media",
+          "default_note": "Mancuernas a los lados del cuerpo. Ideal para principiantes sin acceso a rack o que estan aprendiendo la mecanica. Mantenes torso mas vertical que con barra.",
+          "common_mistakes": [
+            "Mancuernas se balancean al frente (perdes balance)",
+            "Carga demasiado liviana para una vez que tenes la mecanica (cambiate a barra)"
+          ],
+          "contraindications": ["lesion_rodilla", "condromalacia"]
+        },
+        {
+          "alias": "sentadilla-frontal-en-landmine",
+          "name": "Sentadilla frontal en landmine",
+          "equipment": ["barra_olimpica", "maquina_especifica"],
+          "level_min": "intermedio",
+          "stability_demand": "alta",
+          "load_potential": "media",
+          "default_note": "Barra en landmine sostenida en pecho. Foco cuadriceps y core. Torso mas vertical, menos demanda lumbar que sentadilla trasera.",
+          "common_mistakes": [
+            "Soltar el pecho hundido (la barra te tira hacia adelante)",
+            "Rango parcial sin llegar a paralelo"
+          ],
+          "contraindications": ["lesion_rodilla", "lesion_hombro_aguda"]
+        },
+        {
+          "alias": "sentadilla-goblet",
+          "name": "Sentadilla goblet con mancuerna",
+          "equipment": ["mancuerna", "kettlebell"],
+          "level_min": "principiante",
+          "stability_demand": "media",
+          "load_potential": "media",
+          "default_note": "Mancuerna o kettlebell sostenida al pecho. La mejor herramienta de ensenanza de la sentadilla: te obliga a mantener torso vertical y core firme.",
+          "common_mistakes": [
+            "Soltar la mancuerna del pecho a media serie",
+            "Rango parcial"
+          ],
+          "contraindications": ["lesion_rodilla", "lesion_hombro_aguda"]
+        },
+        {
+          "alias": "sentadilla-hacka",
+          "name": "Sentadilla hack en maquina",
+          "equipment": ["maquina_especifica"],
+          "level_min": "principiante",
+          "stability_demand": "baja",
+          "load_potential": "alta",
+          "default_note": "Maquina hack squat. Trayectoria fija, menos demanda de balance. Ideal para hipertrofia de cuadriceps cargando peso sin riesgo lumbar.",
+          "common_mistakes": [
+            "Rodillas colapsan adentro",
+            "Talones levantados (pies bajos en la plataforma)"
+          ],
+          "contraindications": ["lesion_rodilla", "condromalacia", "post_cirugia_rodilla_6meses"]
+        },
+        {
+          "alias": "sentadilla-parcial-con-barra",
+          "name": "Sentadilla parcial con barra (Half squat)",
+          "equipment": ["barra_olimpica", "rack_smith"],
+          "level_min": "intermedio",
+          "stability_demand": "alta",
+          "load_potential": "alta",
+          "default_note": "Bajada solo a 90 grados de rodilla, sin pasar paralelo. Usar SOLO si hay restriccion de movilidad o por necesidad especifica (deportes). NO sustituir la sentadilla completa en plan estandar.",
+          "common_mistakes": [
+            "Usarla como excusa para cargar mas peso (compromete adaptaciones)",
+            "Rebote en el medio rango"
+          ],
+          "contraindications": ["lesion_rodilla"]
+        }
+      ],
+      "default_progression_pattern": {
+        "principiante": "Sem 1: 3x10 RIR 3 | Sem 2: 4x8 RIR 2 | Sem 3: 4x6 RIR 1 | Sem 4: 5x5 RIR 0",
+        "intermedio": "Bloque hipertrofia 4x8 RIR 2 -> bloque fuerza 5x5 RIR 1 -> peak 5x3 RIR 0",
+        "avanzado": "Periodizacion 12 sem: hipertrofia 5x6-8 -> fuerza 5x3-5 -> peak 3x1-3 RIR 0"
+      },
+      "default_tecnica_ejecucion": "1. Coloca la barra sobre el trapecio (high bar) o sobre la cabeza posterior del deltoides (low bar) segun tu escuela.\n2. Pies a la anchura de hombros, puntas ligeramente afuera (10-30 grados segun anatomia).\n3. Llena el pecho de aire, aprieta el core. Mira al frente, no al techo.\n4. Inicia la bajada llevando la cadera atras y abajo al mismo tiempo. Rodillas siguen la linea de los pies.\n5. Baja al menos hasta paralelo (femur paralelo al piso). Si tu movilidad lo permite, mas profundo.\n6. Empuja el piso con los pies (toda la planta) y vuelve arriba sin rebotar abajo.",
+      "common_mistakes_global": [
+        "Rodillas colapsan hacia adentro (valgo dinamico, riesgo LCA y patelofemoral)",
+        "Butt wink (espalda baja redondea en el fondo, depende de movilidad de cadera)",
+        "Talones se levantan (movilidad tobillo limitada, usar zapatos con tacon o calzas)",
+        "Rango parcial sin llegar a paralelo (menos hipertrofia y fuerza)"
+      ],
+      "contraindications_global": [
+        "lesion_rodilla",
+        "condromalacia",
+        "lesion_menisco",
+        "lumbalgia_aguda",
+        "hernia_lumbar",
+        "post_cirugia_rodilla_6meses",
+        "post_cirugia_lumbar_6meses",
+        "hernia_inguinal"
+      ],
+      "compatible_techniques": [
+        "series-rectas", "5x5", "piramide-ascendente", "cluster-sets",
+        "tempo-controlado", "rest-pause", "10x10-gvt", "drop-set"
+      ],
+      "recommended_in_methodologies": [
+        "ppl-6d", "upper-lower-4d", "dup-upper-lower-4d",
+        "bloques-12sem-metodo", "bloques-4sem-elite-agresiva", "body-part-split-5d", "full-body-3d"
+      ],
+      "frequency_per_week_range": [1, 3],
+      "rest_seconds_default": {
+        "hipertrofia": 120,
+        "fuerza": 180,
+        "fuerza_maxima": 300
+      },
+      "rep_range_default": {
+        "hipertrofia": "8-12",
+        "fuerza": "4-6",
+        "fuerza_maxima": "2-4",
+        "resistencia_muscular": "15-20"
+      },
+      "gif_default_alias": "sentadilla-con-barra",
+      "tags": ["fundamental", "powerlifting", "squat", "compound-pesado", "compound-pierna"],
+      "observed_in_real_clients": [],
+      "_observed_pending_audit": "Pendiente auditar JSONs de Daniel Elite (dia pierna) y Silvia Elite (dia pierna).",
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "scientific_references": [
+        "Schoenfeld B.J. (2010). Squatting Kinematics and Kinetics and Their Application to Exercise Performance. JSCR.",
+        "Hartmann H. et al. (2013). Influence of Squatting Depth on Jumping Performance. JSCR.",
+        "Comerford M.J., Mottram S.L. (2012). Kinetic Control: The Management of Uncontrolled Movement. Elsevier.",
+        "McKean M.R. et al. (2010). Knee Behaviour in Squatting. J Sports Sci Med."
+      ],
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "dominada",
+      "name": "Dominada",
+      "movement_pattern": "vertical-pull",
+      "primary_muscle": "dorsal_ancho",
+      "secondary_muscles": ["biceps", "espalda_alta", "trapecio", "core_anterior", "antebrazo"],
+      "is_compound": true,
+      "is_unilateral": false,
+      "is_cardio": false,
+      "cardio_type": null,
+      "level_min": "intermedio",
+      "default_equipment": "barra_dominadas",
+      "variations": [
+        {
+          "alias": "dominadas",
+          "name": "Dominada",
+          "equipment": ["barra_dominadas", "peso_corporal"],
+          "level_min": "intermedio",
+          "stability_demand": "alta",
+          "load_potential": "alta",
+          "default_note": "La medida real de fuerza relativa de tren superior. Si todavia no podes hacer 5 limpias, trabajar primero con negativas, asistencia con banda elastica o jalon vertical en polea.",
+          "common_mistakes": [
+            "Hombros encogidos arriba (sin depresion escapular, perdes dorsal)",
+            "Codos abiertos a 90 grados (estres hombro, perdes foco dorsal)",
+            "Kipping o swing (vale en CrossFit, no en plan hipertrofia)",
+            "Bajada en caida libre (perdes la fase excentrica que es 50% del estimulo)"
+          ],
+          "contraindications": ["lesion_hombro_aguda", "lesion_codo", "post_cirugia_hombro_6meses"]
+        }
+      ],
+      "default_progression_pattern": {
+        "principiante": "Pre-requisito: Negativas 3x3 RIR 0 (bajar en 5 seg) + jalon en polea 4x10. Progresar a dominada con banda elastica de asistencia.",
+        "intermedio": "Sem 1: 3xmax peso corporal | Sem 2: 4xmax-1 | Sem 3: 5x5 con peso corporal o ligera carga (cinturon) | Sem 4: 5x5 con peso adicional",
+        "avanzado": "Lastrada 4x5-8 RIR 1 -> 5x3 con peso significativo (>20kg adicional) -> cluster sets con cargas altas"
+      },
+      "default_tecnica_ejecucion": "1. Cuelga de la barra con agarre prono (palmas hacia adelante), manos a anchura de hombros o un poco mas.\n2. Brazos colgando, escapulas relajadas hacia las orejas (posicion de inicio).\n3. Inicia el movimiento con depresion escapular: baja los hombros lejos de las orejas ANTES de empezar a flexionar los codos.\n4. Jala llevando el pecho hacia la barra, codos hacia abajo y atras (no hacia los lados).\n5. Cuando la barbilla pase la barra, controla la bajada en 2-3 segundos.\n6. Llega abajo con brazos extendidos pero NO cuelgues totalmente relajado: mantene tension en los dorsales.",
+      "common_mistakes_global": [
+        "Sin depresion escapular antes de jalar (perdes dorsal, sobrecargas biceps y hombro)",
+        "Codos abiertos a 90 grados (estres del manguito rotador)",
+        "Kipping o swing (no es dominada estricta)",
+        "Bajada sin control (perdes mitad del estimulo)"
+      ],
+      "contraindications_global": [
+        "lesion_hombro_aguda",
+        "lesion_codo",
+        "cervicalgia",
+        "post_cirugia_hombro_6meses",
+        "hernia_inguinal"
+      ],
+      "compatible_techniques": [
+        "series-rectas", "drop-set", "rest-pause", "cluster-sets",
+        "myo-reps", "tempo-controlado"
+      ],
+      "recommended_in_methodologies": [
+        "ppl-6d", "upper-lower-4d", "dup-upper-lower-4d",
+        "bloques-12sem-metodo", "bloques-4sem-elite-agresiva", "body-part-split-5d"
+      ],
+      "frequency_per_week_range": [1, 3],
+      "rest_seconds_default": {
+        "hipertrofia": 90,
+        "fuerza": 180,
+        "fuerza_maxima": 240
+      },
+      "rep_range_default": {
+        "hipertrofia": "6-12 (con peso) o max (peso corporal)",
+        "fuerza": "3-6 con peso adicional",
+        "fuerza_maxima": "1-3 con peso significativo",
+        "resistencia_muscular": "AMRAP peso corporal"
+      },
+      "gif_default_alias": "dominadas",
+      "tags": ["fundamental", "vertical-pull", "peso-corporal", "compound-pesado", "calistenia"],
+      "observed_in_real_clients": [],
+      "_observed_pending_audit": "Pendiente auditar JSONs reales en Fase 4 — probablemente Daniel Elite incluye.",
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "scientific_references": [
+        "Andersen V. et al. (2014). Electromyographic Comparison of Barbell Deadlift, Hex Bar Deadlift, and Hip Thrust Exercises. JSCR.",
+        "Youdas J.W. et al. (2010). Surface Electromyographic Activation Patterns and Elbow Joint Motion During a Pull-Up, Chin-Up, or Perfect-Pullup Rotational Exercise. JSCR.",
+        "Schoenfeld B.J. (2017). Strength and Hypertrophy Adaptations Between Low- vs. High-Load Resistance Training. JSCR.",
+        "Snarr R.L., Esco M.R. (2013). Electromyographical Comparison of Plank Variations Performed With and Without Instability Devices. JSCR."
+      ],
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "hip-thrust",
+      "name": "Hip thrust",
+      "movement_pattern": "hip-extension",
+      "primary_muscle": "gluteo_mayor",
+      "secondary_muscles": ["femoral", "core_posterior", "aductor", "cuadriceps"],
+      "is_compound": true,
+      "is_unilateral": false,
+      "is_cardio": false,
+      "cardio_type": null,
+      "level_min": "principiante",
+      "default_equipment": "barra_olimpica + banco_plano",
+      "variations": [
+        {
+          "alias": "hipthrust-con-barra",
+          "name": "Hip thrust con barra",
+          "equipment": ["barra_olimpica", "banco_plano"],
+          "level_min": "principiante",
+          "stability_demand": "media",
+          "load_potential": "alta",
+          "default_note": "El ejercicio de gluteo con mas evidencia de activacion EMG. Usar almohadilla o protector sobre la cadera (la barra desnuda incomoda). Apreta gluteos fuerte arriba 1-2 segundos.",
+          "common_mistakes": [
+            "Hiperextender lumbar arriba (no apretas core ni gluteo, sobrecargas lumbar)",
+            "Pies muy lejos (convierte en isquios) o muy cerca (foco cuadriceps)",
+            "Rango parcial sin llegar a linea cadera-rodilla-hombro",
+            "Empujar con punta de pie (perdes gluteo, usar talon)"
+          ],
+          "contraindications": ["lesion_hombro_aguda", "post_cirugia_lumbar_6meses", "embarazo_2do_trimestre", "embarazo_3er_trimestre"]
+        },
+        {
+          "alias": "hipthrust-a-una-pierna-con-barra",
+          "name": "Hip thrust a una pierna con barra",
+          "equipment": ["barra_olimpica", "banco_plano"],
+          "level_min": "intermedio",
+          "stability_demand": "alta",
+          "load_potential": "media",
+          "default_note": "Una pierna en el piso, la otra elevada o cruzada. Mayor activacion gluteo medio + estabilidad. Para corregir asimetrias.",
+          "common_mistakes": [
+            "Pierna que trabaja muy adelante (perdes foco gluteo)",
+            "Cadera rota (un lado sube mas que el otro)"
+          ],
+          "contraindications": ["lesion_rodilla", "lesion_hombro_aguda", "post_cirugia_rodilla_6meses"]
+        },
+        {
+          "alias": "puente-de-gluteo-con-barra",
+          "name": "Puente de gluteo con barra",
+          "equipment": ["barra_olimpica"],
+          "level_min": "principiante",
+          "stability_demand": "media",
+          "load_potential": "media",
+          "default_note": "Acostado en el suelo (no en banco) con barra sobre la cadera. Menor rango que el hip thrust, mas accesible para principiantes. Util sin banco disponible.",
+          "common_mistakes": [
+            "Rango parcial sin llegar a extension completa",
+            "Hiperextender lumbar arriba"
+          ],
+          "contraindications": ["post_cirugia_lumbar_6meses", "embarazo_2do_trimestre", "embarazo_3er_trimestre"]
+        },
+        {
+          "alias": "puente-de-gluteo-con-mancuerna",
+          "name": "Puente de gluteo con mancuerna",
+          "equipment": ["mancuerna"],
+          "level_min": "principiante",
+          "stability_demand": "media",
+          "load_potential": "baja",
+          "default_note": "Variante con mancuerna sobre la cadera. Carga baja pero util para activacion o para sesiones sin barra disponible.",
+          "common_mistakes": [
+            "Mancuerna se desliza al frente (sostene con las manos sobre la cadera)"
+          ],
+          "contraindications": ["post_cirugia_lumbar_6meses", "embarazo_2do_trimestre", "embarazo_3er_trimestre"]
+        }
+      ],
+      "default_progression_pattern": {
+        "principiante": "Sem 1: 3x15 RIR 3 | Sem 2: 4x12 RIR 2 | Sem 3: 4x10 RIR 1 | Sem 4: 5x8 RIR 0 + pausa 2s arriba",
+        "intermedio": "Sem 1: 4x10 RIR 2 | Sem 2: 5x8 RIR 1 | Sem 3: 5x6 RIR 0 + pausa 2s | Sem 4: cluster sets con peso significativo",
+        "avanzado": "Bloque hipertrofia 5x6-10 RIR 1 -> bloque fuerza 5x5 RIR 0 con cluster -> drop-set al final"
+      },
+      "default_tecnica_ejecucion": "1. Sentate en el suelo con la espalda alta apoyada en un banco (omoplatos justo sobre el borde).\n2. Rueda la barra sobre tus caderas (usa almohadilla, la barra desnuda incomoda mucho).\n3. Pies firmes en el suelo, separados a la anchura de la cadera, talones a unos 30-40 cm de los gluteos.\n4. Empuja el piso con los talones y levanta la cadera hasta que tronco y muslos formen una linea recta.\n5. Apreta los gluteos fuerte arriba (pausa 1-2 segundos), barbilla pegada al pecho, costillas hacia adentro.\n6. Baja controlado sin descansar abajo: el gluteo nunca pierde tension durante la serie.",
+      "common_mistakes_global": [
+        "Hiperextender lumbar arriba (no apretas gluteo, sobrecargas la columna lumbar)",
+        "Pies muy lejos del gluteo (convierte en trabajo de isquios)",
+        "Pies muy cerca (foco cuadriceps, no gluteo)",
+        "Rango parcial sin llegar a linea recta cadera-rodilla-hombro",
+        "Empujar con la punta del pie en vez del talon (perdes activacion gluteo)"
+      ],
+      "contraindications_global": [
+        "lesion_hombro_aguda",
+        "post_cirugia_lumbar_6meses",
+        "diastasis_recto",
+        "embarazo_2do_trimestre",
+        "embarazo_3er_trimestre",
+        "hipertension_no_controlada"
+      ],
+      "compatible_techniques": [
+        "series-rectas", "piramide-ascendente", "drop-set", "rest-pause",
+        "cluster-sets", "isometrico", "tempo-controlado", "myo-reps"
+      ],
+      "recommended_in_methodologies": [
+        "ppl-6d", "upper-lower-4d", "dup-upper-lower-4d",
+        "bloques-12sem-metodo", "bloques-4sem-elite-agresiva", "body-part-split-5d", "full-body-3d"
+      ],
+      "frequency_per_week_range": [1, 3],
+      "rest_seconds_default": {
+        "hipertrofia": 90,
+        "fuerza": 150,
+        "fuerza_maxima": 180
+      },
+      "rep_range_default": {
+        "hipertrofia": "8-15",
+        "fuerza": "5-8",
+        "fuerza_maxima": "3-5",
+        "resistencia_muscular": "20-30"
+      },
+      "gif_default_alias": "hipthrust-con-barra",
+      "tags": ["glute", "hip-extension", "compound-glute", "contreras-staple"],
+      "observed_in_real_clients": [],
+      "_observed_pending_audit": "Pendiente auditar JSONs de Silvia (Elite femenino) y Lizetd (Esencial femenino) en Fase 4.",
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "scientific_references": [
+        "Contreras B. et al. (2015). A Comparison of Gluteus Maximus, Biceps Femoris, and Vastus Lateralis EMG in the Back Squat and Barbell Hip Thrust. J Appl Biomech.",
+        "Andersen V. et al. (2018). Electromyographic Comparison of Barbell Deadlift, Hex Bar Deadlift, and Hip Thrust. JSCR.",
+        "Williams M.J. et al. (2021). Activation of the Gluteus Maximus During Performance of the Back Squat, Split Squat, and Barbell Hip Thrust. JSCR.",
+        "Neto W.K. et al. (2020). Gluteus Maximus Activation During Common Strength and Hypertrophy Exercises: A Systematic Review. J Sports Sci Med."
+      ],
+      "version": 1,
+      "active": true
+    }
+  ]
+}

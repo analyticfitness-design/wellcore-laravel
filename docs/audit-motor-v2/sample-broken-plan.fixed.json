@@ -1,0 +1,91 @@
+{
+    "plan_type": "entrenamiento",
+    "titulo": "Plan TEST broken — para probar el linter",
+    "objetivo": "",
+    "duracion_semanas": 4,
+    "fecha_inicio": "2026-05-20",
+    "notas_coach": "Ustedes podéis hacer este plan. Te recomiendo seguirlo todos los días.",
+    "tips": [
+        "Tío, descansa bien",
+        "Vamos a potenciar tus resultados con esta rutina innovadora"
+    ],
+    "semanas": [
+        {
+            "numero": 1,
+            "dias": [
+                {
+                    "dia_semana": "Lunes",
+                    "ejercicios": [
+                        {
+                            "nombre": "Press de banca",
+                            "series": 3,
+                            "repeticiones": "12",
+                            "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master/press-banca.gif",
+                            "notas": "Tú debe bajar controlado"
+                        },
+                        {
+                            "nombre": "Remo",
+                            "series": 3,
+                            "repeticiones": "12",
+                            "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master/remo-con-barra.gif"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "numero": 2,
+            "fase": "adaptacion",
+            "dias": [
+                {
+                    "dia_semana": "Lunes",
+                    "grupo_muscular": "Pecho + Tríceps",
+                    "ejercicios": [
+                        {
+                            "nombre": "Press de banca",
+                            "series": 3,
+                            "repeticiones": "12",
+                            "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master/press-banca-barra.gif"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "numero": 3,
+            "fase": "Hipertrofia",
+            "dias": [
+                {
+                    "dia_semana": "Lunes",
+                    "grupo_muscular": "Pecho",
+                    "ejercicios": [
+                        {
+                            "nombre": "Press de banca",
+                            "series": 3,
+                            "repeticiones": "12",
+                            "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master/press-banca-barra.gif"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "numero": 4,
+            "fase": "Peak",
+            "dias": [
+                {
+                    "dia_semana": "Lunes",
+                    "grupo_muscular": "Pecho",
+                    "ejercicios": [
+                        {
+                            "nombre": "Press de banca",
+                            "series": 3,
+                            "repeticiones": "12",
+                            "gif_url": "https://raw.githubusercontent.com/analyticfitness-design/wellcore-exercise-gifs/master/press-banca-barra.gif"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

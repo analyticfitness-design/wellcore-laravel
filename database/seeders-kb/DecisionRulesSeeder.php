@@ -70,6 +70,50 @@ final class DecisionRulesSeeder extends Seeder
                 'rationale' => 'Upper/Lower con periodización fuerza-orientada (reps bajas, RIR 1-2) sirve a goal fuerza intermedio.',
             ],
 
+            // ── Entrenamiento — perdida_grasa / recomposicion / mantenimiento ──
+            [
+                'name' => 'Pérdida de grasa intermedio 5 días → Body Part Split',
+                'when' => ['vertical' => 'entrenamiento', 'goal' => 'perdida_grasa', 'level' => 'intermedio', 'days' => 5],
+                'methodology' => 'body_part_split_5d',
+                'confidence' => 0.85,
+                'rationale' => 'Body Part Split 5d con SplitBuilder sesga glúteo+pierna para perfil F/perdida_grasa. Volumen preserva masa en déficit.',
+            ],
+            [
+                'name' => 'Pérdida de grasa intermedio 4 días → Upper/Lower',
+                'when' => ['vertical' => 'entrenamiento', 'goal' => 'perdida_grasa', 'level' => 'intermedio', 'days' => 4],
+                'methodology' => 'upper_lower_4d',
+                'confidence' => 0.82,
+                'rationale' => 'Upper/Lower mantiene frecuencia 2× por grupo en déficit moderado.',
+            ],
+            [
+                'name' => 'Pérdida de grasa principiante (cualquier días) → Upper/Lower',
+                'when' => ['vertical' => 'entrenamiento', 'goal' => 'perdida_grasa', 'level' => 'principiante'],
+                'methodology' => 'upper_lower_4d',
+                'confidence' => 0.78,
+                'rationale' => 'Principiantes en perdida_grasa progresan con compuestos básicos. Upper/Lower 4d es el mínimo viable.',
+            ],
+            [
+                'name' => 'Recomposición intermedio 5 días → Body Part Split',
+                'when' => ['vertical' => 'entrenamiento', 'goal' => 'recomposicion', 'level' => 'intermedio', 'days' => 5],
+                'methodology' => 'body_part_split_5d',
+                'confidence' => 0.85,
+                'rationale' => 'Recomposición pide volumen alto + déficit ligero. Body Part Split 5d cubre ambos.',
+            ],
+            [
+                'name' => 'Recomposición avanzado 6 días → PPL',
+                'when' => ['vertical' => 'entrenamiento', 'goal' => 'recomposicion', 'level' => 'avanzado', 'days' => 6],
+                'methodology' => 'ppl_6d',
+                'confidence' => 0.85,
+                'rationale' => 'Avanzados toleran PPL 6d en iso/leve déficit. Frecuencia 2× sostiene masa.',
+            ],
+            [
+                'name' => 'Mantenimiento cualquier nivel → Upper/Lower',
+                'when' => ['vertical' => 'entrenamiento', 'goal' => 'mantenimiento'],
+                'methodology' => 'upper_lower_4d',
+                'confidence' => 0.72,
+                'rationale' => 'Mantenimiento no requiere volumen alto. Upper/Lower 4d es eficiente.',
+            ],
+
             // ── Nutrición — match por goal ──
             [
                 'name' => 'Pérdida de grasa → IIFYM con déficit',
@@ -91,6 +135,29 @@ final class DecisionRulesSeeder extends Seeder
                 'methodology' => 'mediterranea_recomp',
                 'confidence' => 0.78,
                 'rationale' => 'Mantenimiento es el target natural de la dieta Mediterránea — alimentos enteros, sostenible largo plazo.',
+            ],
+            [
+                'name' => 'Hipertrofia → IIFYM con superávit',
+                'when' => ['vertical' => 'nutricion', 'goal' => 'hipertrofia'],
+                'methodology' => 'iifym_deficit',
+                'confidence' => 0.80,
+                'rationale' => 'IIFYM (con MacroCalculator en superávit +250 kcal) ofrece la flexibilidad necesaria para sostener volumen calórico alto. Mediterránea es alternativa si el cliente prefiere alimentos enteros.',
+            ],
+            [
+                'name' => 'Fuerza → IIFYM',
+                'when' => ['vertical' => 'nutricion', 'goal' => 'fuerza'],
+                'methodology' => 'iifym_deficit',
+                'confidence' => 0.75,
+                'rationale' => 'Entrenamiento de fuerza pide proteína alta (2.0-2.2 g/kg) y calorías iso/leve superávit. IIFYM cumple con flexibilidad alta.',
+            ],
+
+            // ── Ciclo — Elite femenino con tracking ──
+            [
+                'name' => 'Cualquier vertical ciclo → Ciclo hormonal básico',
+                'when' => ['vertical' => 'ciclo'],
+                'methodology' => 'ciclo_hormonal_basico',
+                'confidence' => 0.90,
+                'rationale' => 'Único methodology para vertical=ciclo. Aplica solo a clientas femeninas Elite con tracking activo.',
             ],
 
             // ── Suplementación — default stack ──
@@ -131,10 +198,16 @@ final class DecisionRulesSeeder extends Seeder
             ];
         }, $rules);
 
+        // upsert por `name` (UNIQUE constraint en la tabla) → idempotente.
+        // En cada kb:seed actualiza si existe, inserta si no. Evita duplicados.
         DB::connection('kb')
             ->table('decision_rules')
-            ->insert($rows);
+            ->upsert(
+                $rows,
+                ['name'],
+                ['when_json', 'then_methodology_id', 'confidence', 'rationale', 'status', 'updated_at']
+            );
 
-        $this->command?->info('Seeded ' . count($rows) . ' decision rules.');
+        $this->command?->info('Upserted ' . count($rows) . ' decision rules.');
     }
 }

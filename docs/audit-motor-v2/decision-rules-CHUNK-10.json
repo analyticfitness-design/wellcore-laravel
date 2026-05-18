@@ -1,0 +1,281 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "10 of 12",
+    "chunk_description": "Categoría G — AJUSTES POR CICLO MENSTRUAL. 5 rules todas confidence: moderate + needs_daniel_validation: true. Dependientes de Pieza 6 (hormonal_protocols) no curada todavía. Daniel decide si entran al MVP o quedan active: false.",
+    "category": "G. AJUSTES POR CICLO MENSTRUAL (rules G1-G5)",
+    "rule_type_global": "adjust_for_cycle_phase",
+    "depends_on": {
+      "pieza_6_no_curada": "Pieza 6 (hormonal_protocols-seed.json) — schema completo todavía no diseñado. Estas rules son draft basado en literatura general."
+    },
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ],
+    "trigger_global_categoria_G": "client.gender=femenino + client.cycle_tracking_active=true + client.current_cycle_phase=valor",
+    "fases_canonicas_ciclo": ["folicular_temprana", "folicular_tardia", "ovulacion", "lutea_temprana", "lutea_tardia", "menstrual"]
+  },
+  "rules": [
+    {
+      "slug": "ciclo-folicular-temprana-peak-fuerza",
+      "name": "Fase folicular temprana — ventana óptima para fuerza, volumen +5%",
+      "rule_type": "adjust_for_cycle_phase",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.gender", "op": "equals", "value": "femenino"},
+          {"field": "client.cycle_tracking_active", "op": "equals", "value": true},
+          {"field": "client.current_cycle_phase", "op": "equals", "value": "folicular_temprana"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "cycle_phase_adjustment",
+        "fase": "folicular_temprana",
+        "duracion_aproximada_dias": "1-7 post menstrual",
+        "ajustes_entrenamiento": {
+          "volumen_factor_delta_pct": 5,
+          "intensidad_factor_delta_pct": 5,
+          "rir_target_ajuste": 0,
+          "nota": "Ventana óptima para fuerza máxima — testosterona y estrógenos crean ambiente anabólico. Aprovechá días de pierna pesados y compuestos rey."
+        },
+        "ajustes_nutricion": {
+          "carbos_factor_delta_pct": 5,
+          "nota_sensibilidad_insulina": "Sensibilidad a insulina alta — los carbos se aprovechan bien para recuperación y performance."
+        },
+        "ajustes_suplementos": {
+          "agregar": [],
+          "rationale": "Sin cambios — fase ya en condiciones óptimas."
+        }
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Sims y Yeager (2018) y Colenso-Semple et al. (2023) revisaron evidencia de variaciones de performance por fase. Folicular temprana muestra mejor sensibilidad a insulina, capacidad de fuerza, y recuperación. La evidencia es heterogénea (n bajo en muchos estudios) pero el patrón se sostiene en revisiones recientes.",
+      "scientific_sources": [
+        {"citation": "Sims S.T., Yeager S. (2016). ROAR: How to Match Your Food and Fitness to Your Unique Female Physiology. Rodale Books.", "verified": false, "note": "Libro de divulgación; no peer-reviewed pero síntesis defendible de la literatura."},
+        {"citation": "Colenso-Semple L.M., D'Souza A.C., Elliott-Sale K.J., Phillips S.M. (2023). Current evidence shows no influence of women's menstrual cycle phase on acute strength performance or adaptations to resistance exercise training. Frontiers in Sports and Active Living 5, 1054542.", "verified": false, "note": "Contradice algunas partes de Sims — Colenso-Semple es más conservadora. Daniel decidir qué postura adopta WellCore."}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["ciclo_menstrual", "fase_folicular", "draft_validacion"],
+      "confidence": "moderate",
+      "confidence_rationale": "Literatura mixta: Sims dice ajustes por fase importan, Colenso-Semple 2023 dice no hay diferencia significativa de performance. WellCore debe elegir postura.",
+      "needs_daniel_validation": true,
+      "version": 1,
+      "active": false
+    },
+    {
+      "slug": "ciclo-ovulacion-cuidado-laxitud",
+      "name": "Fase ovulación — atención laxitud ligamentaria, reducir cardio explosivo",
+      "rule_type": "adjust_for_cycle_phase",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.gender", "op": "equals", "value": "femenino"},
+          {"field": "client.cycle_tracking_active", "op": "equals", "value": true},
+          {"field": "client.current_cycle_phase", "op": "equals", "value": "ovulacion"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "cycle_phase_adjustment",
+        "fase": "ovulacion",
+        "duracion_aproximada_dias": "1-3 alrededor del día 14",
+        "ajustes_entrenamiento": {
+          "volumen_factor_delta_pct": 0,
+          "intensidad_factor_delta_pct": 0,
+          "rir_target_ajuste": 0,
+          "warning_laxitud_ligamentaria": true,
+          "ajustes_especificos": [
+            {"area": "saltos / plyometricos", "ajuste": "reducir o evitar — pico estrógenos aumenta laxitud, riesgo LCR/tobillo"},
+            {"area": "compuestos pesados unilaterales", "ajuste": "doble check técnica antes de cargas máximas (sentadilla búlgara, peso muerto a una pierna)"}
+          ],
+          "nota": "Performance alta pero atención a estabilidad articular. Si síntomas (cólicos ovulatorios), descanso activo ok."
+        },
+        "ajustes_nutricion": {
+          "carbos_factor_delta_pct": 0,
+          "nota": "Sin cambios — atención a hidratación (puede haber retención de líquidos leve)."
+        },
+        "ajustes_suplementos": {
+          "agregar": [
+            {"slug": "colageno-vit-c", "rationale": "Soporte tendinoso adicional si la cliente entrena duro en esta fase y tiene historia de problemas articulares"}
+          ]
+        }
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Wojtys et al. (2002) y Hewett (2007) documentaron mayor incidencia de lesiones de LCR en mujeres durante fase periovulatoria por aumento de laxitud ligamentaria mediada por estrógenos. La evidencia es robusta para deportes con saltos/cambios de dirección (basket, soccer), menos clara para entrenamiento de fuerza controlado.",
+      "scientific_sources": [
+        {"citation": "Wojtys E.M., Huston L.J., Boynton M.D., Spindler K.P., Lindenfeld T.N. (2002). The effect of the menstrual cycle on anterior cruciate ligament injuries in women as determined by hormone levels. American Journal of Sports Medicine 30(2), 182-188.", "verified": false},
+        {"citation": "Hewett T.E., Zazulak B.T., Myer G.D. (2007). Effects of the menstrual cycle on anterior cruciate ligament injury risk: a systematic review. American Journal of Sports Medicine 35(4), 659-668.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["ciclo_menstrual", "fase_ovulacion", "anti_lesion", "draft_validacion"],
+      "confidence": "moderate",
+      "needs_daniel_validation": true,
+      "version": 1,
+      "active": false
+    },
+    {
+      "slug": "ciclo-lutea-temprana-mantener-recuperacion",
+      "name": "Fase lútea temprana — mantener volumen, foco recuperación",
+      "rule_type": "adjust_for_cycle_phase",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.gender", "op": "equals", "value": "femenino"},
+          {"field": "client.cycle_tracking_active", "op": "equals", "value": true},
+          {"field": "client.current_cycle_phase", "op": "equals", "value": "lutea_temprana"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "cycle_phase_adjustment",
+        "fase": "lutea_temprana",
+        "duracion_aproximada_dias": "15-21 (post ovulación)",
+        "ajustes_entrenamiento": {
+          "volumen_factor_delta_pct": 0,
+          "intensidad_factor_delta_pct": 0,
+          "rir_target_ajuste": 0,
+          "nota": "Performance estable, mantener volumen y intensidad. Priorizar técnica e calidad sobre records."
+        },
+        "ajustes_nutricion": {
+          "carbos_factor_delta_pct": 0,
+          "proteina_factor_delta_pct": 0,
+          "nota": "Sin cambios — fase neutra."
+        },
+        "ajustes_suplementos": {
+          "agregar": [],
+          "rationale": "Sin cambios."
+        }
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Lútea temprana es la fase más estable en mujeres tras ovulación. Progesterona empieza a subir pero todavía no domina. Performance comparable a folicular temprana en muchos estudios. La rule existe principalmente para etiquetar la fase (transparencia con el cliente) más que para aplicar ajustes drásticos.",
+      "scientific_sources": [
+        {"citation": "Colenso-Semple L.M., D'Souza A.C., Elliott-Sale K.J., Phillips S.M. (2023). Current evidence shows no influence of women's menstrual cycle phase on acute strength performance or adaptations to resistance exercise training. Frontiers in Sports and Active Living 5, 1054542.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["ciclo_menstrual", "fase_lutea_temprana", "draft_validacion"],
+      "confidence": "moderate",
+      "needs_daniel_validation": true,
+      "version": 1,
+      "active": false
+    },
+    {
+      "slug": "ciclo-lutea-tardia-bajar-intensidad",
+      "name": "Fase lútea tardía (PMS) — bajar intensidad 10%, +150 kcal, magnesio extra",
+      "rule_type": "adjust_for_cycle_phase",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.gender", "op": "equals", "value": "femenino"},
+          {"field": "client.cycle_tracking_active", "op": "equals", "value": true},
+          {"field": "client.current_cycle_phase", "op": "equals", "value": "lutea_tardia"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "cycle_phase_adjustment",
+        "fase": "lutea_tardia",
+        "duracion_aproximada_dias": "22-28 (pre-menstrual, PMS)",
+        "ajustes_entrenamiento": {
+          "volumen_factor_delta_pct": -5,
+          "intensidad_factor_delta_pct": -10,
+          "rir_target_ajuste": 1,
+          "nota": "Performance puede caer hasta 10%. Aceptar fatiga sin forzar. Foco técnica y calidad. Si la cliente se siente bien, mantener — no forzar baja si no hay síntomas."
+        },
+        "ajustes_nutricion": {
+          "kcal_delta": 150,
+          "carbos_factor_delta_pct": 5,
+          "nota_temperatura_basal": "TMB sube 50-150 kcal/día por temperatura basal elevada — el aumento de kcal es para compensar, no para 'comer más'."
+        },
+        "ajustes_suplementos": {
+          "agregar": [
+            {"slug": "magnesio-bisglicinato", "dosis_default": "300 mg pre-cama", "rationale": "Magnesio mejora síntomas PMS — cólicos, ánimo, sueño. Si ya está en stack, mantener; si no, agregar esta fase."},
+            {"slug": "vitamina-b6-p5p", "dosis_default": "50 mg", "rationale": "B6 P5P (forma activa) reduce síntomas PMS en estudios (Wyatt 1999). Cofactor de neurotransmisores (serotonina, GABA)."}
+          ]
+        }
+      },
+      "priority": 120,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.flags", "op": "includes", "value": "pms_severo", "note": "PMS severo: derivar a ginecóloga. El motor v2 no resuelve síntomas patológicos."}
+      ],
+      "scientific_rationale": "Solomon et al. (1982) mostraron que la TMB aumenta 50-150 kcal/día en fase lútea por elevación de temperatura basal. Sims y Yeager (2018) recomiendan aumentar carbos y proteína ligeramente. Wyatt et al. (1999) en meta-análisis mostraron beneficio de B6 (50 mg/día) para síntomas PMS. La reducción de intensidad −10% acepta la realidad de que muchas mujeres reportan caída de performance pre-menstrual.",
+      "scientific_sources": [
+        {"citation": "Solomon S.J., Kurzer M.S., Calloway D.H. (1982). Menstrual cycle and basal metabolic rate in women. American Journal of Clinical Nutrition 36(4), 611-616.", "verified": false},
+        {"citation": "Wyatt K.M., Dimmock P.W., Jones P.W., O'Brien P.M. (1999). Efficacy of vitamin B-6 in the treatment of premenstrual syndrome: systematic review. BMJ 318(7195), 1375-1381.", "verified": false},
+        {"citation": "Sims S.T., Yeager S. (2016). ROAR: How to Match Your Food and Fitness to Your Unique Female Physiology. Rodale Books.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["ciclo_menstrual", "fase_lutea_tardia", "pms", "draft_validacion"],
+      "confidence": "moderate",
+      "needs_daniel_validation": true,
+      "version": 1,
+      "active": false
+    },
+    {
+      "slug": "ciclo-menstrual-volumen-bajo-opcional-descanso",
+      "name": "Fase menstrual — volumen bajo, opcional descanso activo, hierro extra",
+      "rule_type": "adjust_for_cycle_phase",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.gender", "op": "equals", "value": "femenino"},
+          {"field": "client.cycle_tracking_active", "op": "equals", "value": true},
+          {"field": "client.current_cycle_phase", "op": "equals", "value": "menstrual"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "cycle_phase_adjustment",
+        "fase": "menstrual",
+        "duracion_aproximada_dias": "1-5 (día 1 = primer día del sangrado)",
+        "ajustes_entrenamiento": {
+          "volumen_factor_delta_pct": -30,
+          "intensidad_factor_delta_pct": -15,
+          "rir_target_ajuste": 1,
+          "opcion_descanso_activo_dias_1_3": true,
+          "nota_individualizada": "Variación enorme entre mujeres. Algunas se sienten energizadas día 2-3 y entrenan normal. Otras necesitan descanso día 1-2. Escuchá al cuerpo."
+        },
+        "ajustes_nutricion": {
+          "kcal_delta": 0,
+          "proteina_factor_delta_pct": 0,
+          "hierro_atencion": true,
+          "nota_hierro": "Si flujo abundante, sumar hierro (ver F7) con labs previos."
+        },
+        "ajustes_suplementos": {
+          "agregar_condicional_si_flujo_abundante": [
+            {"slug": "hierro-bisglicinato", "dosis_default": "25-50 mg con vit C", "rationale": "Compensar pérdida hemática. Requiere labs si no se ha hecho recientemente."}
+          ]
+        }
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.preferences", "op": "includes", "value": "entrenar_normal_en_menstrual", "note": "Cliente prefiere entrenar normal — respetar. Bajar solo si reporta síntomas."}
+      ],
+      "scientific_rationale": "El día 1-3 del ciclo (sangrado) tiene los niveles más bajos de estrógenos y progesterona — algunas mujeres reportan mayor fatiga y dolor, otras reportan claridad mental e incluso peak de performance. McNulty et al. (2020) en revisión sistemática encontraron que el efecto promedio del ciclo en performance es pequeño (~10%) pero la variabilidad individual es enorme. El default es defensivo (−30% volumen) con override explícito para clientes que prefieren entrenar normal.",
+      "scientific_sources": [
+        {"citation": "McNulty K.L., Elliott-Sale K.J., Dolan E., et al. (2020). The Effects of Menstrual Cycle Phase on Exercise Performance in Eumenorrheic Women: A Systematic Review and Meta-Analysis. Sports Medicine 50(10), 1813-1827.", "verified": false},
+        {"citation": "Sims S.T., Yeager S. (2016). ROAR: How to Match Your Food and Fitness to Your Unique Female Physiology. Rodale Books.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["ciclo_menstrual", "fase_menstrual", "draft_validacion"],
+      "confidence": "moderate",
+      "needs_daniel_validation": true,
+      "version": 1,
+      "active": false
+    }
+  ],
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre — refs Sims-Yeager 2016, Colenso-Semple 2023, Wojtys 2002, Hewett 2007, Solomon 1982, Wyatt 1999, McNulty 2020."
+  ],
+  "_decision_pendiente_daniel": "Si Pieza 6 (hormonal_protocols) NO entra al MVP, todas las G1-G5 quedan active:false. Si SÍ entra, activar y completar input campo client.current_cycle_phase en intake del cliente."
+}

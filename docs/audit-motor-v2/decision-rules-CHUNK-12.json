@@ -1,0 +1,250 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "12 of 12",
+    "chunk_description": "Categoría I — OVERRIDES POR PREFERENCIA EXPLÍCITA DEL CLIENTE. 5 rules con priority 200+ — sobreescriben defaults. Mecanismo 'el cliente sabe lo que quiere'.",
+    "category": "I. OVERRIDES POR PREFERENCIA (rules I1-I5)",
+    "rule_type_global": "override_preference",
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ],
+    "rationale_priority_alta": "Priority 200+ porque sobrescriben defaults. La decisión del cliente respetada es UX core — sin esto el motor v2 ignoraría preferencias explícitas y rompería confianza."
+  },
+  "rules": [
+    {
+      "slug": "override-priorizar-gluteo-2-dias",
+      "name": "Override — cliente pide priorizar glúteo, forzar split B2 con 2× frecuencia",
+      "rule_type": "override_preference",
+      "input_conditions": {
+        "all_of": [],
+        "any_of": [
+          {"field": "client.preferences", "op": "includes", "value": "priorizar_gluteo"},
+          {"field": "client.focus_muscle_group", "op": "equals", "value": "gluteo"}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "override_decision",
+        "rules_afectadas": [
+          {"rule_slug": "split-body-part-5d-default", "accion": "DESACTIVAR para este cliente"},
+          {"rule_slug": "split-body-part-5d-focus-gluteo", "accion": "FORZAR (priority 220 gana sobre default 100)"},
+          {"rule_slug": "seleccion-gluteo-focal-femenino", "accion": "ACTIVAR en cada día tag=gluteo del split"}
+        ],
+        "ajustes_volumen_glúteo_semanal": {
+          "objetivo_series_semana_grupo_gluteo": "16-24 series totales (vs 8-12 del split default)",
+          "frecuencia_semanal": 2,
+          "distribucion": "Día 1: hip-thrust + búlgara + abducción · Día 5: peso-muerto-rumano + sentadilla búlgara + kickback"
+        },
+        "comunicacion_al_cliente_en_plan": "Tu plan está optimizado para foco glúteo: 2 días dedicados con hip-thrust como compuesto principal y 4 ejercicios complementarios por día."
+      },
+      "priority": 220,
+      "execution_phase": "select",
+      "exception_when": [
+        {"field": "client.active_injuries", "op": "includes", "value": "lumbalgia_aguda", "note": "Lesión activa sobrescribe override — H1 mata las variantes con carga axial alta"}
+      ],
+      "scientific_rationale": "Respetar la preferencia explícita del cliente es UX crítico. Cuando el cliente declara 'priorizar glúteo', activar el split B2 con base científica (Contreras 2015 hip-thrust como compuesto principal del día glúteo) es la respuesta correcta. La rule respeta la decisión del cliente sin sacrificar evidencia.",
+      "scientific_sources": [
+        {"citation": "Contreras B., Vigotsky A.D., Schoenfeld B.J., et al. (2015). A Comparison of Gluteus Maximus, Biceps Femoris, and Vastus Lateralis Electromyographic Activity. Journal of Applied Biomechanics 31(6), 452-458.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Plan Lizetd activado por override I1 — split focus-glúteo + hip-thrust compuesto. Sin override, el motor habría producido split body-part default sin foco glúteo."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "override", "focus_gluteo", "caso_lizetd"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "override-tiempo-minimo-full-body",
+      "name": "Override — cliente pide tiempo mínimo, forzar full-body-3d incluso con 5+ días disponibles",
+      "rule_type": "override_preference",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.preferences", "op": "includes", "value": "tiempo_minimo"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "override_decision",
+        "rules_afectadas": [
+          {"rule_slug": "select-metodologia-5d-intermedio-hipertrofia", "accion": "DESACTIVAR"},
+          {"rule_slug": "select-metodologia-6d-intermedio-avanzado", "accion": "DESACTIVAR"},
+          {"rule_slug": "select-metodologia-3d-principiante", "accion": "FORZAR independiente del nivel"},
+          {"rule_slug": "split-full-body-3d-compuestos-rotatorios", "accion": "ACTIVAR"}
+        ],
+        "duracion_estimada_sesion_min": 45,
+        "frecuencia_semanal_forzada": 3,
+        "comunicacion_al_cliente_en_plan": "Tu plan está optimizado para tiempo mínimo: 3 días/semana × 45 min. Cada día cubre todo el cuerpo con un compuesto principal rotando entre sentadilla, peso muerto y press."
+      },
+      "priority": 200,
+      "execution_phase": "select",
+      "exception_when": [],
+      "scientific_rationale": "Schoenfeld 2016 mostró que frecuencia 2-3× por grupo con volumen total equivalente produce hipertrofia comparable a frecuencia 1× con volumen alto. Para clientes con tiempo limitado, full-body-3d entrega frecuencia 3× con sesiones de 45 min — más eficiente que body-part-split-5d cuando el factor limitante es tiempo total semanal disponible.",
+      "scientific_sources": [
+        {"citation": "Schoenfeld B.J., Ogborn D., Krieger J.W. (2016). Effects of resistance training frequency on measures of muscle hypertrophy: A systematic review and meta-analysis. Sports Medicine 46(11), 1689-1697.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["override", "tiempo_minimo", "full_body"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "override-vegetariano-excluir-carne-animal",
+      "name": "Override — cliente vegetariano, excluir foods con is_vegetarian=false y proteína animal en supplements",
+      "rule_type": "override_preference",
+      "input_conditions": {
+        "all_of": [],
+        "any_of": [
+          {"field": "client.dietary_flags", "op": "includes", "value": "vegetariano"},
+          {"field": "client.dietary_flags", "op": "includes", "value": "vegano"}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "override_decision",
+        "rules_afectadas": [
+          {"rule_slug": "stack-esencial-base", "accion": "MODIFICAR — reemplazar proteina-whey-concentrada por proteina-vegetal-blend"},
+          {"rule_slug": "stack-elite-mujer-salud-femenina", "accion": "MODIFICAR — reemplazar whey-isolada por proteina-vegetal-blend"},
+          {"rule_slug": "stack-elite-hombre-performance", "accion": "MODIFICAR — idem"}
+        ],
+        "filter_predicate_nutrition_foods": {
+          "scope": "todas_las_meal_options_del_plan",
+          "exclude_if": {"field": "nutrition_food.is_vegetarian", "op": "equals", "value": false},
+          "use_alternatives": "Si la rule de macros pide carne, sustituir por alternatives[0] con tag is_vegetarian:true (típicamente: tofu, tempeh, legumbres, seitan)"
+        },
+        "ajuste_proteina_g_kg": {
+          "rationale": "Proteína vegetal tiene menor biodisponibilidad de aminoácidos esenciales (especialmente leucina). Compensar subiendo proteína 10-15% sobre el default de C9.",
+          "delta_g_kg": "+0.2 g/kg (ej. perdida_moderada pasa de 2.2 a 2.4 g/kg)"
+        },
+        "suplementos_extra_si_vegano": [
+          {"slug": "vitamina-b12", "rationale": "OBLIGATORIO en veganos estrictos. Sin B12 sintética = anemia perniciosa en 1-3 años."},
+          {"slug": "omega-3-epa-dha", "rationale": "Preferir versión de algas si el suplemento es de pescado — verificar con cliente."}
+        ],
+        "comunicacion_al_cliente_en_plan": "Tu plan respeta tu dieta vegetariana/vegana. Cada comida tiene alternativas con proteína vegetal (tofu, tempeh, legumbres). Subimos ligeramente la proteína total para compensar biodisponibilidad."
+      },
+      "priority": 210,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "La proteína vegetal tiene menor PDCAAS (Protein Digestibility-Corrected Amino Acid Score) que la animal. Combinar fuentes vegetales (legumbres + cereales) o usar blends comerciales mejora el perfil de aminoácidos. Compensar con +10-15% en proteína total mantiene el aporte de leucina necesario para síntesis muscular (Pinckaers 2021). B12 es obligatorio en veganos.",
+      "scientific_sources": [
+        {"citation": "Pinckaers P.J.M., Trommelen J., Snijders T., van Loon L.J.C. (2021). The Anabolic Response to Plant-Based Protein Ingestion. Sports Medicine 51(Suppl 1), 59-74.", "verified": false},
+        {"citation": "Mariotti F., Gardner C.D. (2019). Dietary Protein and Amino Acids in Vegetarian Diets-A Review. Nutrients 11(11), 2661.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "override", "dieta_vegetariana"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "override-sin-lacteos",
+      "name": "Override — cliente sin lácteos, excluir foods con category=lacteo y whey",
+      "rule_type": "override_preference",
+      "input_conditions": {
+        "all_of": [],
+        "any_of": [
+          {"field": "client.dietary_flags", "op": "includes", "value": "sin_lacteos"},
+          {"field": "client.intolerances", "op": "includes", "value": "lactosa"},
+          {"field": "client.allergies", "op": "includes", "value": "caseina"}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "override_decision",
+        "filter_predicate_nutrition_foods": {
+          "scope": "todas_las_meal_options_del_plan",
+          "exclude_if_any": [
+            {"field": "nutrition_food.category", "op": "equals", "value": "lacteo"},
+            {"field": "nutrition_food.contains_dairy", "op": "equals", "value": true}
+          ],
+          "use_alternatives": "Sustituir lácteos por alternatives sin lactosa (típicamente: leche-deslactosada NO sirve si es alergia caseína, sí sirve si es intolerancia lactosa)"
+        },
+        "supplements_afectados": [
+          {"slug_original": "proteina-whey-concentrada", "reemplazo_intolerancia_lactosa": "proteina-whey-isolada (mínima lactosa)", "reemplazo_alergia_caseina": "proteina-vegetal-blend", "rationale": "Whey isolada tiene <1% lactosa por filtración. Si la alergia es a caseína, ninguna whey funciona — usar vegetal."},
+          {"slug_original": "caseina-micelar", "reemplazo": "proteina-vegetal-blend o eliminar de stack", "rationale": "Caseína es lácteo directo"}
+        ],
+        "comunicacion_al_cliente_en_plan": "Tu plan respeta tu intolerancia/alergia a lácteos. Reemplazamos lácteos por alternativas y ajustamos el suplemento de proteína."
+      },
+      "priority": 210,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Intolerancia a lactosa y alergia a caseína son condiciones distintas: la primera responde a whey isolada (mínima lactosa), la segunda requiere proteína no-láctea. El filtro distingue entre ambas vía `client.intolerances` (lactosa) y `client.allergies` (caseina) con sustituciones específicas.",
+      "scientific_sources": [
+        {"citation": "Misselwitz B., Butter M., Verbeke K., Fox M.R. (2019). Update on lactose malabsorption and intolerance: pathogenesis, diagnosis and clinical management. Gut 68(11), 2080-2091.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["override", "dieta_sin_lacteos", "alergia"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "override-intolerancia-cafeina",
+      "name": "Override — cliente intolerante a cafeína, excluir cafeína y pre-workout con cafeína",
+      "rule_type": "override_preference",
+      "input_conditions": {
+        "all_of": [],
+        "any_of": [
+          {"field": "client.intolerances", "op": "includes", "value": "cafeina"},
+          {"field": "client.preferences", "op": "includes", "value": "sin_estimulantes"},
+          {"field": "client.flags", "op": "includes", "value": "ansiedad_diagnosticada"}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "override_decision",
+        "supplements_excluidos": [
+          {"slug": "cafeina-anhidra", "razon": "Estimulante directo"},
+          {"slug": "neuro-freak-blend-pre-workout", "razon": "Contiene cafeína"}
+        ],
+        "rules_afectadas": [
+          {"rule_slug": "stack-perdida-grasa-agrega-cafeina", "accion": "DESACTIVAR"},
+          {"rule_slug": "stack-elite-hombre-performance", "accion": "MODIFICAR — eliminar neuro-freak, reemplazar por l-tirosina + l-citrulina"}
+        ],
+        "supplements_sustitutos_pre_workout_sin_cafeina": [
+          {"slug": "l-citrulina-malato", "dosis": "6-8 g", "rationale": "Pump + reducción de fatiga sin estimulación SNC"},
+          {"slug": "l-tirosina", "dosis": "1-2 g", "rationale": "Precursor de dopamina/noradrenalina — mejor foco bajo estrés sin cafeína"},
+          {"slug": "beta-alanina", "dosis": "3-5 g/día (no necesariamente pre-entreno)", "rationale": "Buffer ácido sin estimulación"}
+        ],
+        "ajustes_cardio": {
+          "nota": "Sin cafeína, percepción de esfuerzo en cardio puede ser mayor. Aceptar duración 5-10% menor si necesario."
+        },
+        "comunicacion_al_cliente_en_plan": "Tu plan excluye cafeína y pre-workouts estimulantes. Usamos citrulina + tirosina para pump y foco sin afectar tu sistema nervioso."
+      },
+      "priority": 210,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Pacientes con ansiedad, hipertensión sensible, o intolerancia a estimulantes pueden tener efectos adversos significativos con cafeína (palpitaciones, ansiedad exacerbada, insomnio). L-tirosina es precursor de catecolaminas con perfil de efecto mucho más suave (Coull 2014). L-citrulina malato mejora performance sin acción SNC.",
+      "scientific_sources": [
+        {"citation": "Coull N., Watabe M., Charoenwattana S., et al. (2014). Effect of glucose and tyrosine on cognitive performance during prolonged stress. Nutritional Neuroscience 17(1), 9-19.", "verified": false},
+        {"citation": "Pérez-Guisado J., Jakeman P.M. (2010). Citrulline malate enhances athletic anaerobic performance and relieves muscle soreness. Journal of Strength and Conditioning Research 24(5), 1215-1222.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["override", "intolerancia_cafeina", "sin_estimulantes"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    }
+  ],
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre — refs Contreras 2015, Schoenfeld 2016, Pinckaers 2021, Mariotti 2019, Misselwitz 2019, Coull 2014, Pérez-Guisado 2010."
+  ],
+  "_categoria_completa": true,
+  "_fase_3_completa": true,
+  "_siguiente_fase": "Fase 4 — Compilado final + cobertura retroactiva"
+}

@@ -53,16 +53,47 @@ WC_ENGINE_V2_ENABLED=false  # default — motor desactivado, usa flujo manual
 
 Cambiar a `true` cuando el rollout Sprint 4 arranque.
 
-## Estado del Sprint 0 (2026-05-17)
+## Estado actual del motor (2026-05-17, Sprint 100)
 
-- ✅ Migraciones de las 8 tablas creadas
-- ✅ Conexión `kb` configurada en `config/database.php`
-- ✅ Killswitch `WC_ENGINE_V2_ENABLED` agregado a `.env.example`
-- ✅ Estructura de directorios `app/PlanEngine/` creada
-- ✅ `IntakeDto` boilerplate (otros DTOs en Sprint 2)
-- ✅ Slash commands `/plan-create` y `/engine-health` boilerplate
-- ⏳ Seed inicial (7 metodologías + 50 ejercicios + 15 principios + 5 templates) — pendiente
-- ⏳ Linter aislado contra fixtures — Sprint 1
+### Counts
+- **Comandos artisan**: 28 (`plan:*` + `kb:*`)
+- **Validators registrados**: 34
+- **Lint rules**: 45 (schema + heuristic + external_head + sql + llm_review opt-in)
+- **Methodologies**: 8 (5 verticales)
+- **Decision rules**: 19
+- **Principles**: 48 (entrenamiento 11 · nutricion 11 · suplementacion 9 · habitos 10 · ciclo 7)
+- **Exercise metadata**: 267 (45 broken pendientes de reconcile)
+
+### Verificación rápida
+```bash
+php artisan plan:health-check         # estado completo del motor
+php artisan kb:counts                 # cuenta rows por tabla (rápido)
+php artisan kb:audit-orphans          # detecta rows huérfanos
+php artisan plan:assert-deterministic --include-lint   # determinismo 5/5
+```
+
+### Comandos por categoría
+
+**Pipeline E2E**
+- `plan:decide` / `plan:compose` / `plan:lint` / `plan:persist` / `plan:bundle` / `plan:batch`
+
+**Audit + inspección**
+- `plan:show <id>` / `plan:diff <a> <b>` / `plan:explain <id>` / `plan:replay <id>`
+- `plan:audit-summary` / `plan:violations-trend` / `plan:list-pending`
+- `plan:assert-deterministic` (regression CI)
+
+**Operación**
+- `plan:export-prod-script` / `plan:export-bundle-prod-script`
+- `plan:reset-audit-table` (cleanup con DRY-RUN)
+- `plan:gif-recheck` (revalida catálogo)
+- `plan:health-check` (meta-audit)
+
+**KB management**
+- `kb:install` / `kb:seed` / `kb:status` / `kb:counts` / `kb:stats`
+- `kb:export-snapshot` / `kb:restore-snapshot` / `kb:diff-snapshots`
+- `kb:export-principles-md` / `kb:export-methodologies-md`
+- `kb:list-principles` / `kb:audit-orphans`
+- `kb:verify-gifs` / `kb:reconcile-gifs` / `kb:clean-exercise-catalog` / `kb:import-exercise-catalog`
 
 ## Documentación de referencia
 

@@ -1,0 +1,2235 @@
+{
+  "version": "1.0-draft-completo-pre-validacion-medica",
+  "generated_at": "2026-05-17",
+  "generated_by": "Claude Code Opus 4.7 + Daniel Esparza + Perplexity Pro evidence check (Chrome DevTools MCP)",
+  "status": "in_progress",
+  "scope": "Vertical Elite — protocolos hormonales / ciclo menstrual / bloodwork. DOCUMENTACIÓN bajo supervisión médica externa. WellCore NO prescribe.",
+  "language": "tuteo neutro latino (memoria feedback_idioma_latino_neutro 2026-05-17 PM, supersede del voseo previo)",
+  "legal_framing_universal": "WellCore NO prescribe ningún compound ni protocolo hormonal. Este catálogo documenta protocolos comunes en literatura científica para que el cliente Elite pueda estructurar y trackear lo que su endocrinólogo o ginecólogo ya le prescribió externamente. WellCore se limita a adaptar el entrenamiento y la nutrición al contexto hormonal del cliente y a recordar señales de alerta. Sin prescripción médica externa y seguimiento clínico activo, el coach WellCore NO documenta estos protocolos en el plan.",
+  "schema_notes": {
+    "granularidad": "por activo farmacológico (no por marca comercial). NO listamos marcas — facilitación de acceso = riesgo legal.",
+    "dosing_units": "mg/semana para compounds principales, UI/semana para HCG, mg/día para SERM/AI",
+    "evidence_levels": ["muy_alta", "alta", "moderada", "limitada", "anecdotica"],
+    "probability_vocab": "common | uncommon | varies_by_population — NO usamos 'alta/media/baja' porque las probabilidades exactas no están fijadas en la literatura (Perplexity 2026-05-17)",
+    "estradiol_thresholds": "NO son universales — se interpretan con síntomas. Las cifras listadas son guías clínicas comunes, NO cutoffs absolutos.",
+    "hematocrit_threshold": ">54% es el threshold de acción más comúnmente usado (Endocrine Society aligned)"
+  },
+  "evidence_sources_consulted": [
+    "Endocrine Society Clinical Practice Guideline 2018 — Testosterone Therapy in Men with Hypogonadism (Bhasin et al., JCEM)",
+    "ASRM (American Society for Reproductive Medicine) — Fertility preservation Committee Opinion 2026",
+    "Perplexity Pro query 2026-05-17 (chunk 1) — TRT dosing enanthate/cypionate/undecanoate comparison, 2024-2026 evidence review",
+    "Perplexity Pro query 2026-05-17 (chunk 2) — HCG + clomifeno + tamoxifeno en TRT/PCT/fertility en hombres",
+    "Perplexity Pro query 2026-05-17 (chunk 3) — anastrozol + finasterida en hombres en TRT, controversias AI rutina y Post-Finasteride Syndrome",
+    "Perplexity Pro query 2026-05-17 (chunk 5) — ciclo menstrual + entreno/nutricion ajustes, evidencia McNulty 2020 meta-analisis 78 estudios + ROAR Sims + Colenso-Semple",
+    "MD 16d schema base TRT (E:\\WELLCORE FITNESS PLATAFORMA\\SISTEMA-CREACION-PLANES\\16d-JSON-SCHEMA-HABITOS-Y-CICLO.md)",
+    "docs/audit-motor-v2/01-AUDIT-POR-TIER.md — estado real (ciclo_plan vacío, bloodwork=0 en TODOS los clientes)"
+  ],
+  "total_entries_target": 24,
+  "total_entries_current": 24,
+  "status_final": "DRAFT COMPLETO PRE-VALIDACION MEDICA — NO seedear a wellcore_kb sin endocrinologo + ginecologo + abogado",
+  "sub_tables": {
+    "hormonal_compounds_catalog": "complete (8/8)",
+    "hormonal_protocols_templates": "complete (4/4)",
+    "ciclo_menstrual_fases": "complete (7/7)",
+    "bloodwork_panels": "complete (5/5)"
+  },
+
+  "hormonal_compounds_catalog": [
+    {
+      "slug": "testosterona-enantato",
+      "name": "Testosterona enantato",
+      "name_alternatives": ["testo enantato", "test-e", "testosterone enanthate"],
+      "scientific_name": "17β-Hydroxy-4-androsten-3-one 17-enanthate",
+      "category": "androgeno_inyectable_largo",
+      "primary_action": "reemplazo_o_suplementacion_testosterona",
+      "use_case_primary": "trt_hipogonadismo",
+      "use_case_secondary": ["ergogenico_recomposicion", "ergogenico_volumen"],
+      "via_administracion": "intramuscular_profunda",
+      "via_options_clinicas": ["intramuscular_gluteo", "intramuscular_muslo_vasto_lateral", "intramuscular_deltoides_pequeno_volumen"],
+
+      "farmacocinetica": {
+        "tipo_depot": "ester_corto_a_medio",
+        "vida_media_descripcion": "short-to-mid acting. La literatura reporta rangos según diseño de estudio, sitio de depósito y assay — no hay número fijo único. Clínicamente se asume ~4.5-7 días para guiar dosificación 1-2x/semana.",
+        "tiempo_a_estado_estable_descripcion": "Niveles séricos estables se evalúan tras varios intervalos de dosis (clínicamente: labs control a las 6 y 12 semanas tras inicio o ajuste).",
+        "peaks_and_troughs": "Pico tras inyección, decline progresivo hacia el final del intervalo. Splitting (2x/semana) reduce la variabilidad pico-valle y los síntomas asociados."
+      },
+
+      "dosis_rango_clinico_trt": {
+        "endocrine_society_2018": "75-100 mg semanal OR 150-200 mg cada 2 semanas",
+        "patron_clinico_comun": "100 mg/semana dividido en 2 aplicaciones (lunes/jueves, 50 mg c/u) para estabilidad sérica",
+        "rango_minimo_mg_semana": 75,
+        "rango_maximo_mg_semana": 200,
+        "unidad": "mg",
+        "fuente": "Endocrine Society Clinical Practice Guideline 2018 (Bhasin et al.)"
+      },
+
+      "dosis_rango_ergogenico_off_label": {
+        "advertencia": "Uso ergogénico está FUERA de la indicación clínica TRT. No es práctica recomendada por guidelines. Se documenta acá únicamente porque el cliente puede estar usándolo bajo supervisión médica externa y el coach debe entender el contexto para adaptar entrenamiento/nutrición.",
+        "rango_minimo_mg_semana": 250,
+        "rango_maximo_mg_semana": 500,
+        "unidad": "mg",
+        "fuente": "Literatura de ciencias del deporte off-label (no Endocrine Society)"
+      },
+
+      "objetivo_serico_testosterona_total": {
+        "rango_trt_endocrine_society": "mid-normal physiologic range (típicamente 300-1000 ng/dL — meta es restaurar fisiología, NO supraphysiologic)",
+        "rango_performance_practica_no_guideline": "600-900 ng/dL es práctica clínica orientada a performance, NO target de guideline TRT",
+        "interpretacion": "Endocrine Society explícitamente busca mid-normal, no rangos altos. Cualquier objetivo >800 ng/dL como meta primaria es práctica deportiva, no medicina basada en evidencia."
+      },
+
+      "labs_monitoreo_obligatorios": [
+        "testosterona_total",
+        "free_testosterone_si_total_borderline_o_shbg_anormal",
+        "shbg_si_aplica",
+        "estradiol_idealmente_lc_ms_ms_sensible",
+        "hemoglobina",
+        "hematocrito",
+        "psa_si_edad_o_riesgo_prostatico",
+        "lipidos",
+        "alt_ast",
+        "lh_fsh_baseline_diagnostico_suelen_estar_suprimidos_en_trt"
+      ],
+      "lab_frecuencia": "baseline → semana 6 post-inicio → semana 12 → cada 12 semanas hasta estabilización → menor frecuencia una vez estable",
+
+      "estradiol_management": {
+        "alert_threshold_clinico_comun": "E2 elevado clínicamente significativo cuando coincide con síntomas (sensibilidad mamaria, retención hídrica, edema). >50 pg/mL es un umbral comúnmente citado pero NO es cutoff universal.",
+        "low_e2_caveat": "<10 pg/mL puede asociarse a síntomas (dolor articular, libido baja, depresión) en TRT — pero el threshold tampoco es universal.",
+        "principio_clinico": "Estradiol se interpreta EN CONTEXTO (síntomas + total testo + dosis), NO contra un número rígido. Tratar al paciente, no al lab.",
+        "manejo_e2_alto_con_sintomas": "Considerar reducción de dosis testo, redistribución (más aplicaciones por semana), o anastrozol bajo prescripción médica. NO auto-medicar AI."
+      },
+
+      "hematocrit_management": {
+        "alert_threshold": "HCT >54%",
+        "accion_si_threshold_alcanzado": "Reducción de dosis, ajuste de intervalo, hold temporal, o flebotomía (donar sangre) según evaluación médica. Hidratación abundante. Reevaluar apnea de sueño.",
+        "fuente": "Endocrine Society 2018 aligned"
+      },
+
+      "efectos_secundarios_comunes": [
+        {
+          "efecto": "Aromatización a estradiol",
+          "frecuencia": "common",
+          "manejo": "Lab E2 a la semana 6. Si elevación coincide con síntomas, evaluar dosis o anastrozol bajo prescripción. NO tratar número aislado.",
+          "notas_evidencia": "Probabilidad exacta varía por dosis, % grasa corporal, y genética individual — no fijada en literatura."
+        },
+        {
+          "efecto": "Eritrocitosis / policitemia secundaria",
+          "frecuencia": "common",
+          "manejo": "HCT >54% → ver hematocrit_management. Asociado a hipoxia (apnea de sueño) en muchos casos.",
+          "notas_evidencia": "Bien documentado. Riesgo de trombosis si no se maneja."
+        },
+        {
+          "efecto": "Supresión eje HPG (LH/FSH bajos, atrofia testicular, infertilidad)",
+          "frecuencia": "varies_by_population_pero_esperable_en_la_mayoria",
+          "manejo": "Esperado en TRT estándar. Si fertilidad es prioridad, considerar HCG co-administration bajo supervisión.",
+          "notas_evidencia": "Co-administración de HCG (250-500 UI 2x/semana) es patrón off-label común, NO standard universal Endocrine Society."
+        },
+        {
+          "efecto": "Acné facial / torso",
+          "frecuencia": "common",
+          "manejo": "Higiene + dermatólogo. Si severo, evaluar dosis y considerar finasterida (parcial, hay caveats — ver entry finasterida).",
+          "notas_evidencia": "Dependiente de dosis y predisposición individual."
+        },
+        {
+          "efecto": "Aceleración alopecia androgénica",
+          "frecuencia": "varies_by_genetic_predisposition",
+          "manejo": "Finasterida 1 mg/día o dutasterida bajo prescripción (hay caveats sobre DHT, libido — ver entry finasterida). Minoxidil tópico complementario.",
+          "notas_evidencia": "Probabilidad NO fijada — depende mayormente de genética familiar (5α-reductasa, sensibilidad androgénica folicular)."
+        },
+        {
+          "efecto": "Apnea del sueño exacerbada o desenmascarada",
+          "frecuencia": "uncommon_pero_clinicamente_significativo",
+          "manejo": "Si pareja reporta ronquidos nuevos, pausas respiratorias, somnolencia diurna → polisomnografía. Tratar OSA puede ser requisito para continuar TRT.",
+          "notas_evidencia": "Bien documentado en literatura clínica."
+        },
+        {
+          "efecto": "Retención hídrica",
+          "frecuencia": "common_dependiente_de_dosis",
+          "manejo": "Control sodio, hidratación, evaluar E2.",
+          "notas_evidencia": "Especialmente notable post-inyección con dosis altas o intervalos largos."
+        }
+      ],
+
+      "efectos_secundarios_raros_buscar_atencion_medica": [
+        "Trombosis venosa profunda (TVP) — hinchazón unilateral pierna, dolor pantorrilla",
+        "Cambios psicológicos significativos (irritabilidad severa, depresión nueva, ideación)",
+        "Ginecomastia clínica establecida (sensibilidad mamaria persistente + nódulo palpable)"
+      ],
+
+      "contraindications_absolutas": [
+        "cancer_prostata_conocido_o_sospechado",
+        "cancer_mama_masculino",
+        "policitemia_vera_o_eritrocitosis_severa_no_controlada",
+        "fertilidad_activamente_buscada_sin_plan_de_preservacion",
+        "embarazo_pareja_si_contacto_dermico_no_protegido_con_transdermicos_no_aplica_inyectable",
+        "menores_de_18_anos"
+      ],
+
+      "contraindications_relativas": [
+        "hbp_prostatica_sintomatica_severa",
+        "apnea_sueno_no_tratada",
+        "insuficiencia_cardiaca_descompensada",
+        "antecedente_evento_tromboembolico"
+      ],
+
+      "medical_interactions": [
+        {
+          "with": "warfarina",
+          "severity": "moderate",
+          "note": "Testosterona puede potenciar el efecto anticoagulante. Monitoreo INR requerido, posible ajuste de dosis warfarina por el médico tratante."
+        },
+        {
+          "with": "insulina_y_antidiabeticos_orales",
+          "severity": "moderate",
+          "note": "Puede mejorar sensibilidad a insulina. Diabéticos pueden requerir ajuste a la baja de su terapia para evitar hipoglucemia. Reevaluar HbA1c y glicemias."
+        }
+      ],
+
+      "senales_alerta_emergencia_medica": [
+        "Dolor torácico intenso → urgencias inmediato (descartar evento cardiovascular)",
+        "Dificultad respiratoria súbita o dolor torácico pleurítico → urgencias (descartar TEP)",
+        "Hinchazón unilateral pierna con dolor pantorrilla → médico mismo día (TVP)",
+        "Cambios visuales súbitos o cefalea severa nueva → urgencias (descartar ACV)",
+        "Sangre en orina o disuria severa → médico mismo día",
+        "Cambios psicológicos agudos severos → contacto con salud mental"
+      ],
+
+      "applicable_gender": ["masculino"],
+      "applicable_age_range_trt_clinico": [25, 75],
+      "ergogenico_no_recomendado_bajo": 25,
+
+      "evidence_level_terapeutico": "muy_alta",
+      "evidence_level_ergogenico": "alta",
+      "evidence_summary": "La testosterona enantato es uno de los ésteres más usados en TRT a nivel mundial. La indicación clínica de hipogonadismo está respaldada por el Endocrine Society Clinical Practice Guideline 2018 (Bhasin et al.). La dosificación estándar TRT es 75-100 mg semanal o 150-200 mg cada 2 semanas, con monitoreo de labs a las 6 y 12 semanas post-inicio y luego cada 12 semanas. El objetivo terapéutico es restaurar la testosterona al rango mid-normal fisiológico (típicamente 300-1000 ng/dL), no a rangos supraphysiológicos. El uso ergogénico (250-500 mg/semana) está fuera de indicación clínica y NO es práctica recomendada por guidelines — se documenta acá únicamente porque el cliente puede estar usándolo bajo supervisión médica externa.",
+
+      "scientific_sources": [
+        "Bhasin S, Brito JP, Cunningham GR, et al. (2018). Testosterone Therapy in Men With Hypogonadism: An Endocrine Society Clinical Practice Guideline. J Clin Endocrinol Metab. 103(5):1715-1744.",
+        "Endocrine Society — Clinical Practice Guideline summary, eguideline.guidelinecentral.com",
+        "Hackett G. (2016). Testosterone Replacement Therapy in Men with Functional Hypogonadism. Clinical Endocrinology."
+      ],
+
+      "legal_framing": "DOCUMENTACIÓN bajo supervisión médica externa. WellCore NO prescribe testosterona enantato. El cliente debe tener prescripción de un endocrinólogo certificado y seguimiento clínico activo (labs mínimo cada 12 semanas) ANTES de que el coach WellCore documente este protocolo en su plan. El coach WellCore se limita a adaptar entrenamiento y nutrición al contexto del cliente y a recordar señales de alerta médica.",
+
+      "legal_status_colombia": "Medicamento de prescripción (venta requiere fórmula médica). Status INVIMA brand-specific no verificado en este catálogo — Daniel debe confirmar con abogado y registros INVIMA actualizados qué marcas comerciales están registradas en Colombia y bajo qué condiciones.",
+      "legal_status_otros_paises_latam": "México (COFEPRIS): prescripción. Argentina (ANMAT): prescripción. Verificación país-específica recomendada antes de operar.",
+
+      "confidence": "high",
+      "needs_endocrinologist_validation": true,
+      "needs_legal_verification_colombia": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+
+      "tags": ["mvp_obligatorio", "compound_inyectable_corto_medio", "trt_base", "supervision_medica_obligatoria"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "testosterona-cipionato",
+      "name": "Testosterona cipionato",
+      "name_alternatives": ["testo cipionato", "test-c", "testosterone cypionate"],
+      "scientific_name": "17β-Hydroxy-4-androsten-3-one 17-cyclopentylpropionate",
+      "category": "androgeno_inyectable_largo",
+      "primary_action": "reemplazo_o_suplementacion_testosterona",
+      "use_case_primary": "trt_hipogonadismo",
+      "use_case_secondary": ["ergogenico_recomposicion", "ergogenico_volumen"],
+      "via_administracion": "intramuscular_profunda",
+      "via_options_clinicas": ["intramuscular_gluteo", "intramuscular_muslo_vasto_lateral", "intramuscular_deltoides_pequeno_volumen"],
+
+      "farmacocinetica": {
+        "tipo_depot": "ester_corto_a_medio",
+        "vida_media_descripcion": "short-to-mid acting, clínicamente muy similar a enantato. Ranges reportados ~4.5-8 días según estudio.",
+        "tiempo_a_estado_estable_descripcion": "Labs control a las 6 y 12 semanas tras inicio o ajuste, similar a enantato.",
+        "peaks_and_troughs": "Comportamiento clínico equivalente a enantato. Diferencia farmacocinética entre cipionato y enantato es menor y no típicamente relevante para selección clínica."
+      },
+
+      "comparacion_con_enantato": "Clínicamente intercambiables a dosis equivalentes. La elección suele depender de disponibilidad regional (cipionato es estándar US, enantato más común en Europa/LATAM), preferencia del prescriptor y costo. No hay evidencia robusta de superioridad de uno sobre el otro en TRT.",
+
+      "dosis_rango_clinico_trt": {
+        "endocrine_society_2018": "75-100 mg semanal OR 150-200 mg cada 2 semanas",
+        "patron_clinico_comun": "100 mg/semana dividido en 2 aplicaciones para estabilidad sérica",
+        "rango_minimo_mg_semana": 75,
+        "rango_maximo_mg_semana": 200,
+        "unidad": "mg",
+        "fuente": "Endocrine Society Clinical Practice Guideline 2018"
+      },
+
+      "dosis_rango_ergogenico_off_label": {
+        "advertencia": "Uso ergogénico está FUERA de la indicación clínica TRT. No es práctica recomendada por guidelines.",
+        "rango_minimo_mg_semana": 250,
+        "rango_maximo_mg_semana": 500,
+        "unidad": "mg"
+      },
+
+      "objetivo_serico_testosterona_total": {
+        "rango_trt_endocrine_society": "mid-normal physiologic range (300-1000 ng/dL)",
+        "rango_performance_practica_no_guideline": "600-900 ng/dL es práctica performance, NO target de guideline TRT"
+      },
+
+      "labs_monitoreo_obligatorios": [
+        "testosterona_total",
+        "free_testosterone_si_aplica",
+        "shbg_si_aplica",
+        "estradiol_idealmente_lc_ms_ms_sensible",
+        "hemoglobina",
+        "hematocrito",
+        "psa_si_edad_o_riesgo_prostatico",
+        "lipidos",
+        "alt_ast",
+        "lh_fsh_baseline"
+      ],
+      "lab_frecuencia": "baseline → semana 6 → semana 12 → cada 12 semanas",
+
+      "estradiol_management": "Idéntico a enantato — ver entry testosterona-enantato.",
+      "hematocrit_management": "Idéntico a enantato — alert >54%, manejo por reducción de dosis, ajuste de intervalo o flebotomía.",
+
+      "efectos_secundarios_comunes": "Idéntico perfil a enantato (aromatización, eritrocitosis, supresión HPG, acné, alopecia, apnea de sueño exacerbada, retención hídrica). Ver entry testosterona-enantato para detalles completos.",
+
+      "contraindications_absolutas": [
+        "cancer_prostata_conocido_o_sospechado",
+        "cancer_mama_masculino",
+        "policitemia_vera_o_eritrocitosis_severa",
+        "fertilidad_activamente_buscada_sin_plan_de_preservacion",
+        "menores_de_18_anos"
+      ],
+      "contraindications_relativas": [
+        "hbp_prostatica_sintomatica_severa",
+        "apnea_sueno_no_tratada",
+        "insuficiencia_cardiaca_descompensada",
+        "antecedente_evento_tromboembolico"
+      ],
+
+      "medical_interactions": [
+        {"with": "warfarina", "severity": "moderate", "note": "Potencia efecto anticoagulante. Monitoreo INR."},
+        {"with": "insulina_y_antidiabeticos", "severity": "moderate", "note": "Mejora sensibilidad insulina. Posible ajuste a la baja terapia diabetes."}
+      ],
+
+      "senales_alerta_emergencia_medica": "Idéntico a enantato — dolor torácico, dificultad respiratoria, hinchazón unilateral pierna, cambios visuales/cefalea severa nueva, sangre en orina, cambios psicológicos agudos severos.",
+
+      "applicable_gender": ["masculino"],
+      "applicable_age_range_trt_clinico": [25, 75],
+      "ergogenico_no_recomendado_bajo": 25,
+
+      "evidence_level_terapeutico": "muy_alta",
+      "evidence_level_ergogenico": "alta",
+      "evidence_summary": "Testosterona cipionato es el éster estándar en TRT en Estados Unidos. Clínicamente equivalente a enantato (Endocrine Society 2018 los lista juntos con la misma dosificación: 75-100 mg/semana o 150-200 mg cada 2 semanas). La elección entre cipionato y enantato suele depender de disponibilidad regional, costo y preferencia del prescriptor — no de diferencias farmacológicas clínicamente relevantes.",
+
+      "scientific_sources": [
+        "Bhasin S, Brito JP, Cunningham GR, et al. (2018). Testosterone Therapy in Men With Hypogonadism: An Endocrine Society Clinical Practice Guideline. J Clin Endocrinol Metab.",
+        "Endocrine Society Clinical Practice Guideline summary"
+      ],
+
+      "legal_framing": "DOCUMENTACIÓN bajo supervisión médica externa. WellCore NO prescribe testosterona cipionato. El cliente debe tener prescripción de endocrinólogo y seguimiento clínico activo ANTES de que el coach WellCore documente este protocolo. El coach se limita a adaptar entrenamiento y nutrición al contexto.",
+      "legal_status_colombia": "Medicamento de prescripción. Disponibilidad menor que enantato en Colombia/LATAM (cipionato es más común en EE.UU.). Status INVIMA brand-specific no verificado — Daniel debe confirmar.",
+      "legal_status_otros_paises_latam": "México: prescripción. Argentina: prescripción.",
+
+      "confidence": "high",
+      "needs_endocrinologist_validation": true,
+      "needs_legal_verification_colombia": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+
+      "tags": ["mvp_obligatorio", "compound_inyectable_corto_medio", "trt_base", "supervision_medica_obligatoria"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "testosterona-undecanoato-nebido",
+      "name": "Testosterona undecanoato (Nebido / Aveed)",
+      "name_alternatives": ["testo undecanoato", "Nebido", "Aveed", "testosterone undecanoate IM"],
+      "scientific_name": "Testosterone undecanoate (long-chain ester in castor oil)",
+      "category": "androgeno_inyectable_ultra_largo",
+      "primary_action": "reemplazo_testosterona_long_acting",
+      "use_case_primary": "trt_hipogonadismo_comodidad_dosificacion_infrecuente",
+      "use_case_secondary": [],
+      "via_administracion": "intramuscular_profunda_gluteo_volumen_grande",
+      "via_options_clinicas": ["intramuscular_gluteo_4ml_inyeccion_lenta_obligatoria"],
+
+      "farmacocinetica": {
+        "tipo_depot": "ultra_largo_long_acting_depot",
+        "vida_media_descripcion": "long-acting depot — vida media efectiva de semanas. Diseñado para mantener niveles estables con dosificación cada 10-14 semanas.",
+        "tiempo_a_estado_estable_descripcion": "Steady state alcanzado tras la fase de carga (loading). Labs control típicamente al final del intervalo (trough) antes de la siguiente dosis.",
+        "ventaja_clinica": "Mínima frecuencia de inyecciones (~4-5/año). Niveles séricos más estables que ésteres cortos. Ideal para cliente que prioriza comodidad sobre control fino de dosis.",
+        "desventaja_clinica": "Si aparecen efectos adversos, el compound permanece activo varias semanas. Menos flexibilidad para ajustes rápidos. Volumen de inyección grande (3-4 mL en castor oil)."
+      },
+
+      "dosis_rango_clinico_trt": {
+        "regimen_eu_estandar": "1000 mg IM en semana 0, repetir en semana 6, luego cada 10-14 semanas según niveles trough",
+        "regimen_us_aveed_endocrine_society": "750 mg IM en semana 0 y semana 4, luego cada 10 semanas",
+        "rango_intervalo_mantenimiento_semanas": "10-14",
+        "dosis_unica_mantenimiento_mg": "750-1000",
+        "fuente": "Endocrine Society 2018 + ficha técnica Nebido (medicines.org.uk)"
+      },
+
+      "dosis_rango_ergogenico_off_label": {
+        "advertencia": "Uso ergogénico con undecanoato es POCO COMÚN — su farmacocinética hace difícil 'ciclar' o ajustar agresivamente. Rara vez usado fuera de TRT clínico.",
+        "rango_aproximado": "Generalmente no diferenciado del rango TRT — ciclos ergogénicos clásicos prefieren ésteres más cortos."
+      },
+
+      "objetivo_serico_testosterona_total": {
+        "rango_trt_endocrine_society": "mid-normal physiologic range (300-1000 ng/dL) medido en trough (justo antes de siguiente dosis)",
+        "interpretacion": "Si el trough cae <300 ng/dL, acortar intervalo a 10 semanas. Si pico es muy alto, considerar dividir dosis o extender intervalo."
+      },
+
+      "labs_monitoreo_obligatorios": [
+        "testosterona_total_en_trough_antes_de_siguiente_dosis",
+        "estradiol_lc_ms_ms_sensible",
+        "hemoglobina",
+        "hematocrito",
+        "psa_si_edad_o_riesgo_prostatico",
+        "lipidos",
+        "alt_ast"
+      ],
+      "lab_frecuencia": "baseline → trough antes de dosis 3 (post-loading) → cada 6 meses una vez estable. Más frecuente si síntomas o eventos adversos.",
+
+      "estradiol_management": "Misma lógica clínica que ésteres cortos, pero menos margen de maniobra agudo por farmacocinética larga.",
+      "hematocrit_management": "Alert >54%. Manejo más complejo por farmacocinética larga — puede requerir flebotomía si HCT persistentemente elevado, ya que reducir dosis no resuelve inmediatamente.",
+
+      "efectos_secundarios_especificos_undecanoato": [
+        {
+          "efecto": "Reacción pulmonar oleosa (POME — Pulmonary Oil Microembolism)",
+          "frecuencia": "raro_pero_especifico_undecanoato",
+          "manejo": "Inyección IM LENTA obligatoria (1-2 minutos para 4 mL). Cliente debe permanecer en observación 30 minutos post-inyección. Síntomas: tos, disnea, dolor torácico, mareo inmediato post-inyección → urgencias.",
+          "notas_evidencia": "Riesgo específico de Aveed/Nebido por volumen grande de aceite de ricino. FDA exige programa REMS en EE.UU. para este compound."
+        },
+        {
+          "efecto": "Reacción anafiláctica al aceite de ricino (castor oil)",
+          "frecuencia": "raro",
+          "manejo": "Test sensibilidad si antecedente de alergia. Observación post-inyección obligatoria."
+        }
+      ],
+
+      "efectos_secundarios_comunes": "Mismo perfil general que enantato/cipionato (aromatización, eritrocitosis, supresión HPG, etc.) — ver entries respectivas. La gestión de eventos adversos es MÁS COMPLEJA por la imposibilidad de retirar el compound rápidamente.",
+
+      "contraindications_absolutas": [
+        "cancer_prostata_conocido_o_sospechado",
+        "cancer_mama_masculino",
+        "policitemia_vera_o_eritrocitosis_severa",
+        "fertilidad_activamente_buscada_sin_plan_de_preservacion",
+        "alergia_aceite_de_ricino_o_componentes",
+        "menores_de_18_anos"
+      ],
+      "contraindications_relativas": [
+        "hbp_prostatica_sintomatica_severa",
+        "apnea_sueno_no_tratada",
+        "insuficiencia_cardiaca_descompensada",
+        "antecedente_eventos_pulmonares_o_tromboembolicos",
+        "necesidad_de_flexibilidad_dosis_alta_o_ajustes_rapidos"
+      ],
+
+      "medical_interactions": [
+        {"with": "warfarina", "severity": "moderate", "note": "Potencia anticoagulante."},
+        {"with": "insulina_y_antidiabeticos", "severity": "moderate", "note": "Mejora sensibilidad insulina."}
+      ],
+
+      "senales_alerta_emergencia_medica": [
+        "Síntomas POME inmediatos post-inyección (tos, disnea, dolor torácico, mareo) → urgencias",
+        "Reacción anafiláctica post-inyección → urgencias",
+        "Dolor torácico intenso → urgencias",
+        "Hinchazón unilateral pierna con dolor → médico mismo día (TVP)"
+      ],
+
+      "applicable_gender": ["masculino"],
+      "applicable_age_range_trt_clinico": [30, 75],
+
+      "evidence_level_terapeutico": "alta",
+      "evidence_level_ergogenico": "limitada",
+      "evidence_summary": "Testosterona undecanoato (Nebido en EU, Aveed en EE.UU.) es el formato TRT de menor frecuencia de inyección disponible (~4-5 aplicaciones/año tras loading). Endocrine Society 2018 lo cita con régimen US 750 mg en semana 0 y 4, luego cada 10 semanas. Régimen EU más común: 1000 mg semana 0, repetir semana 6, luego cada 10-14 semanas. Su principal ventaja es comodidad y estabilidad sérica; su principal limitación es la dificultad de ajustes rápidos ante eventos adversos. El riesgo específico de POME (Pulmonary Oil Microembolism) requiere inyección IM lenta y observación post-aplicación.",
+
+      "scientific_sources": [
+        "Bhasin S et al. (2018). Endocrine Society Clinical Practice Guideline.",
+        "Nebido SmPC (Summary of Product Characteristics) — medicines.org.uk/emc",
+        "Aveed FDA label — REMS program documentation (Pulmonary Oil Microembolism risk)"
+      ],
+
+      "legal_framing": "DOCUMENTACIÓN bajo supervisión médica externa. WellCore NO prescribe testosterona undecanoato. Este compound requiere administración por personal médico calificado (inyección IM lenta + observación post-aplicación) — el cliente NO debe auto-aplicarse. Coach WellCore solo documenta protocolo si cliente confirma seguimiento con endocrinólogo y aplicación supervisada.",
+      "legal_status_colombia": "Medicamento de prescripción. Status INVIMA brand-specific no verificado — Daniel debe confirmar disponibilidad Nebido en Colombia.",
+      "legal_status_otros_paises_latam": "México: prescripción, disponibilidad variable. Argentina: prescripción.",
+
+      "confidence": "high",
+      "needs_endocrinologist_validation": true,
+      "needs_legal_verification_colombia": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+
+      "tags": ["mvp_obligatorio", "compound_inyectable_ultra_largo", "trt_comodidad", "supervision_medica_obligatoria", "pome_risk", "aplicacion_solo_personal_medico"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "hcg",
+      "name": "HCG — Gonadotropina coriónica humana",
+      "name_alternatives": ["gonadotropina corionica humana", "hcg", "human chorionic gonadotropin", "Pregnyl", "Novarel", "Ovidrel"],
+      "scientific_name": "Human chorionic gonadotropin (placental glycoprotein hormone, structurally similar to LH)",
+      "category": "gonadotropina",
+      "primary_action": "estimulacion_celulas_leydig_via_receptor_lh",
+      "use_case_primary": "preservacion_funcion_testicular_durante_trt",
+      "use_case_secondary": [
+        "preservacion_fertilidad_durante_trt",
+        "recovery_post_ciclo_ergogenico_off_label",
+        "tratamiento_hipogonadismo_secundario_aislado_o_combinado",
+        "estimulacion_descenso_testicular_pediatria_no_aplica_a_wellcore"
+      ],
+      "via_administracion": "subcutanea_abdomen_o_muslo_preferida",
+      "via_options_clinicas": ["subcutanea_abdomen", "subcutanea_muslo", "intramuscular_si_aplica"],
+
+      "mecanismo_descripcion": "HCG es estructuralmente similar a la hormona luteinizante (LH). Se une al receptor de LH en las células de Leydig del testículo y estimula la producción de testosterona intratesticular y la espermatogénesis. Durante TRT exógeno, la supresión del eje HPG reduce la producción endógena de LH y por tanto la testosterona intratesticular — HCG mantiene esta producción local, preservando volumen testicular y fertilidad.",
+
+      "dosis_rango_clinico": {
+        "preservacion_durante_trt": {
+          "rango_minimo_ui_por_aplicacion": 250,
+          "rango_maximo_ui_por_aplicacion": 500,
+          "frecuencia_aplicaciones_por_semana": "2-3",
+          "rango_dosis_total_semanal_ui": "500-1500",
+          "patron_clinico_comun": "500 UI 2x/semana subcutaneo (martes/viernes) = 1000 UI/semana"
+        },
+        "recovery_post_ciclo_off_label": {
+          "rango_dosis_total_semanal_ui": "1500-3000",
+          "frecuencia_aplicaciones": "2-3/semana",
+          "duracion_tipica_semanas": "2-3",
+          "uso": "Restaurar responsividad de las células de Leydig antes de iniciar terapia SERM (clomifeno/tamoxifeno)",
+          "advertencia": "Esta dosificación es PRÁCTICA OFF-LABEL post-ciclo ergogénico, NO está en guidelines Endocrine Society/ASRM"
+        },
+        "tratamiento_hipogonadismo_hipogonadotropico": {
+          "rango_ui_por_aplicacion": "1500-3000",
+          "frecuencia": "2-3/semana",
+          "duracion": "Largo plazo bajo endocrinólogo, frecuentemente combinado con FSH si fertilidad es objetivo"
+        }
+      },
+
+      "labs_monitoreo_obligatorios": [
+        "testosterona_total",
+        "estradiol_lc_ms_ms_sensible",
+        "lh_fsh_baseline_documentar_supresion_si_aplica",
+        "hemoglobina_hematocrito",
+        "alt_ast",
+        "espermograma_si_fertilidad_es_objetivo"
+      ],
+      "lab_frecuencia": "Si preservación durante TRT: junto con labs TRT (semana 6, semana 12, cada 12 sem). Si recovery post-ciclo: hormonas cada 4-6 semanas. Espermograma cada 2-3 meses (espermatogénesis cambia lento).",
+
+      "efectos_secundarios_comunes": [
+        {"efecto": "Acné facial / torso", "frecuencia": "common"},
+        {"efecto": "Cambios de ánimo, irritabilidad", "frecuencia": "common"},
+        {"efecto": "Edema / retención hídrica", "frecuencia": "common"},
+        {"efecto": "Síntomas asociados a aumento de estradiol (sensibilidad mamaria, posible empeoramiento ginecomastia)", "frecuencia": "common"},
+        {"efecto": "Molestia en sitio de inyección", "frecuencia": "common"}
+      ],
+      "efectos_secundarios_raros_buscar_atencion_medica": [
+        "Eventos tromboembólicos (TVP, TEP) — raros pero clínicamente importantes",
+        "Reacción de hipersensibilidad severa — rara",
+        "Ginecomastia clínica establecida — si aumenta E2 sin control"
+      ],
+
+      "contraindications_absolutas": [
+        "cancer_androgeno_sensible_conocido_o_sospechado",
+        "cancer_prostata_activo",
+        "hipersensibilidad_a_hcg_o_excipientes",
+        "pubertad_precoz_no_aplica_a_wellcore"
+      ],
+      "contraindications_relativas": [
+        "ginecomastia_no_controlada",
+        "estradiol_sintomatico_elevado",
+        "antecedente_tromboembolico",
+        "evaluacion_infertilidad_en_curso_sin_plan_coordinado"
+      ],
+
+      "medical_interactions": [
+        {"with": "trt_exogeno", "severity": "low", "note": "Combinación clínica intencional. NO es interacción adversa per se — pero requiere monitoreo conjunto de testo total y E2."}
+      ],
+
+      "senales_alerta_emergencia_medica": [
+        "Reacción alérgica aguda (urticaria generalizada, dificultad respiratoria, edema facial) → urgencias",
+        "Hinchazón unilateral pierna con dolor → médico mismo día (TVP)",
+        "Dolor torácico súbito + disnea → urgencias (TEP)"
+      ],
+
+      "applicable_gender": ["masculino"],
+      "applicable_age_range": [25, 70],
+
+      "evidence_level_terapeutico": "alta",
+      "evidence_level_recovery_off_label": "moderada",
+      "evidence_summary": "HCG es la herramienta mejor soportada para preservar función testicular y fertilidad durante TRT exógeno. Actúa como análogo de LH, manteniendo producción intratesticular de testosterona. Para preservación durante TRT, el patrón clínico común es 250-500 UI 2-3 veces por semana subcutáneo (500-1500 UI/semana total). Para recovery post-ciclo ergogénico, se usa a dosis más altas (1500-3000 UI/semana por 2-3 semanas) ANTES de iniciar SERM — pero este uso es OFF-LABEL y no está estandarizado en guidelines de Endocrine Society ni ASRM. La evidencia para recovery acelerado proviene mayoritariamente de datos retrospectivos/observacionales, no de RCTs de alta calidad.",
+
+      "scientific_sources": [
+        "Endocrine Society Clinical Practice Guideline 2018 — Testosterone Therapy (Bhasin et al.) — menciones a HCG en contexto de fertility-preserving care",
+        "ASRM Committee Opinion on Fertility Preservation in Patients with Medical Indications (2026)",
+        "Ramasamy R, Stahl PJ, Schlegel PN — Medical therapy for spermatogenic failure (revisiones)",
+        "Hsieh TC, Pastuszak AW, Hwang K, Lipshultz LI — Concomitant intramuscular human chorionic gonadotropin preserves spermatogenesis in men undergoing testosterone replacement therapy. J Urol 2013"
+      ],
+
+      "legal_framing": "DOCUMENTACIÓN bajo supervisión médica externa. WellCore NO prescribe HCG. El uso de HCG durante TRT o post-ciclo requiere prescripción y seguimiento de un endocrinólogo o urólogo especializado en medicina reproductiva masculina. El coach WellCore documenta el protocolo en el plan solo si el cliente tiene prescripción activa y labs de control vigentes.",
+
+      "legal_status_colombia": "Medicamento de prescripción. Disponibilidad: marcas comerciales como Pregnyl han tenido problemas de suministro intermitentes en LATAM 2020-2025 — verificar disponibilidad actual con farmacia y prescriptor. Status INVIMA brand-specific no verificado en este catálogo.",
+      "legal_status_otros_paises_latam": "México: prescripción. Argentina: prescripción.",
+
+      "confidence": "high",
+      "needs_endocrinologist_validation": true,
+      "needs_legal_verification_colombia": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+
+      "tags": ["mvp_obligatorio", "gonadotropina", "fertility_preservation", "trt_adjunct", "pct_off_label", "supervision_medica_obligatoria"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "clomifeno",
+      "name": "Clomifeno citrato",
+      "name_alternatives": ["clomifeno", "clomiphene citrate", "Clomid", "Serofene", "Clostilbegyt", "Androxal_enclomifeno_isomero_isolado_no_aplica_aqui"],
+      "scientific_name": "Clomiphene citrate — mezcla racémica de enclomifeno (trans) y zuclomifeno (cis)",
+      "category": "anti_estrogeno_serm",
+      "primary_action": "bloqueo_estrogeno_receptor_hipotalamo_hipofisis",
+      "use_case_primary": "recovery_pct_post_ciclo_off_label",
+      "use_case_secondary": [
+        "trt_alternativa_para_hombre_joven_hipogonadal_buscando_fertilidad",
+        "estimulacion_eje_hpg_en_hipogonadismo_secundario",
+        "uso_indicado_oficial_es_infertilidad_anovulatoria_femenina_no_aplica_a_wellcore"
+      ],
+      "via_administracion": "oral",
+
+      "mecanismo_descripcion": "Clomifeno es un modulador selectivo del receptor de estrógeno (SERM). En el hipotálamo bloquea el feedback negativo del estradiol, lo que aumenta GnRH, y por tanto LH y FSH desde la hipófisis. La consecuencia es un aumento de la producción endógena de testosterona y de la espermatogénesis. A diferencia de la TRT exógena, NO suprime el eje HPG — al contrario, lo estimula.",
+
+      "dosis_rango_clinico": {
+        "uso_pct_post_ciclo_off_label": {
+          "rango_dosis_mg_dia": "25-50",
+          "duracion_semanas": "4-6",
+          "patron_comun": "50 mg/día primeras 2 semanas → 25 mg/día siguientes 2-4 semanas",
+          "advertencia": "Este uso es OFF-LABEL y NO está estandarizado en guidelines"
+        },
+        "trt_alternativa_hombre_joven_fertilidad": {
+          "rango_dosis_mg_dia": "12.5-25",
+          "frecuencia_alternativa": "Algunos protocolos usan 25 mg en días alternos",
+          "duracion": "Largo plazo bajo endocrinólogo (meses a años)",
+          "monitoreo": "Testo total + LH + FSH + E2 + visión + lipídico cada 12 semanas mínimo"
+        }
+      },
+
+      "labs_monitoreo_obligatorios": [
+        "testosterona_total",
+        "lh",
+        "fsh",
+        "estradiol_lc_ms_ms_sensible",
+        "shbg",
+        "perfil_lipidico",
+        "alt_ast",
+        "evaluacion_oftalmologica_si_sintomas_visuales",
+        "espermograma_si_fertilidad_es_objetivo"
+      ],
+      "lab_frecuencia": "PCT corto: baseline + semana 4-6. Uso largo plazo TRT alternativa: cada 12 semanas, oftalmología anual.",
+
+      "efectos_secundarios_comunes": [
+        {"efecto": "Calorones / hot flashes", "frecuencia": "common"},
+        {"efecto": "Cambios de ánimo, labilidad emocional", "frecuencia": "common"},
+        {"efecto": "Síntomas visuales transitorios (visión borrosa, fosfenos, escotomas)", "frecuencia": "common", "alerta": "Si síntomas visuales: SUSPENDER y consultar oftalmología antes de reiniciar"},
+        {"efecto": "Cefalea", "frecuencia": "common"},
+        {"efecto": "Náusea", "frecuencia": "common"},
+        {"efecto": "Síntomas asociados a aumento de estradiol (sensibilidad mamaria, retención)", "frecuencia": "common"},
+        {"efecto": "Acné", "frecuencia": "uncommon"},
+        {"efecto": "Fluctuación de libido (puede aumentar o disminuir paradójicamente)", "frecuencia": "uncommon"},
+        {"efecto": "Trastorno del sueño", "frecuencia": "uncommon"}
+      ],
+      "efectos_secundarios_raros_buscar_atencion_medica": [
+        "Persistencia de alteraciones visuales tras suspender — buscar oftalmología urgente",
+        "Trastorno del ánimo severo / ideación — salud mental",
+        "Eventos tromboembólicos — raros pero reportados"
+      ],
+
+      "contraindications_absolutas": [
+        "enfermedad_hepatica_activa",
+        "sintomas_visuales_no_explicados_o_antecedente_lesion_retiniana_no_evaluada",
+        "antecedente_evento_tromboembolico_significativo",
+        "hipersensibilidad_a_clomifeno",
+        "tumor_pituitario_no_evaluado"
+      ],
+      "contraindications_relativas": [
+        "depresion_mayor_no_controlada",
+        "ginecomastia_severa",
+        "antecedente_alteraciones_visuales_funcionales"
+      ],
+
+      "medical_interactions": [
+        {"with": "anticoagulantes", "severity": "low_to_moderate", "note": "Interacción posible vía metabolismo hepático — monitorear si combinado con warfarina"},
+        {"with": "ospemifeno_otros_serms", "severity": "moderate", "note": "Evitar combinación SERM-SERM"}
+      ],
+
+      "senales_alerta_emergencia_medica": [
+        "Cualquier alteración visual aguda → suspender + oftalmología misma semana",
+        "Cefalea súbita severa nueva → urgencias",
+        "Hinchazón unilateral pierna con dolor → médico mismo día (TVP)",
+        "Cambios psicológicos severos → contacto inmediato salud mental"
+      ],
+
+      "applicable_gender": ["masculino_en_uso_off_label"],
+      "applicable_age_range": [18, 60],
+
+      "evidence_level_terapeutico_pct": "moderada",
+      "evidence_level_trt_alternativa": "moderada",
+      "evidence_summary": "Clomifeno citrato es un SERM con indicación oficial para infertilidad anovulatoria femenina. En hombres, su uso es OFF-LABEL para dos contextos principales: (1) recovery post-ciclo ergogénico (PCT, dosis 25-50 mg/día por 4-6 semanas) y (2) alternativa a TRT en hombres jóvenes hipogonadales que quieren preservar fertilidad (dosis 12.5-25 mg/día largo plazo). En ambos casos, la evidencia es mayoritariamente observacional/retrospectiva, NO RCTs de alta calidad — y la seguridad a largo plazo en hombres sigue siendo controversia abierta (Perplexity 2026-05-17). Es generalmente bien tolerado a corto-medio plazo, pero los síntomas visuales requieren vigilancia activa y suspensión inmediata si aparecen.",
+
+      "scientific_sources": [
+        "Ramasamy R, Scovell JM, Kovac JR, Lipshultz LI — Testosterone supplementation versus clomiphene citrate for hypogonadism: an age-matched comparison of satisfaction and efficacy. J Urol 2014",
+        "Krzastek SC, Smith RP — Non-testosterone management of male hypogonadism: an examination of the existing literature. Translational Andrology and Urology 2020",
+        "Endocrine Society 2018 Guideline — menciona alternativas en hombres que buscan fertilidad sin descartar TRT formalmente"
+      ],
+
+      "legal_framing": "DOCUMENTACIÓN bajo supervisión médica externa. WellCore NO prescribe clomifeno. Su uso en hombres es OFF-LABEL — requiere prescripción de un endocrinólogo o urólogo especializado en medicina reproductiva masculina, con consentimiento informado del cliente sobre el carácter off-label. El coach WellCore documenta el protocolo en el plan solo si el cliente tiene prescripción activa y monitoreo clínico vigente.",
+
+      "legal_status_colombia": "Medicamento de prescripción (indicación oficial: ginecología). Uso off-label en hombres es legal pero requiere prescripción médica.",
+      "legal_status_otros_paises_latam": "México: prescripción. Argentina: prescripción.",
+
+      "confidence": "high",
+      "needs_endocrinologist_validation": true,
+      "needs_legal_verification_colombia": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+
+      "controversy_note": "Seguridad a largo plazo de clomifeno en hombres NO está bien establecida — la mayoría de evidencia es observacional. Daniel debe decidir con endocrinólogo aliado si lo usa como TRT alternativa a largo plazo o solo como PCT corto.",
+
+      "tags": ["mvp_obligatorio", "serm", "pct", "trt_alternativa_off_label", "fertility_preserving", "supervision_medica_obligatoria"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "tamoxifeno",
+      "name": "Tamoxifeno citrato",
+      "name_alternatives": ["tamoxifeno", "tamoxifen citrate", "Nolvadex", "Soltamox"],
+      "scientific_name": "Tamoxifen citrate — SERM no-esteroideo",
+      "category": "anti_estrogeno_serm",
+      "primary_action": "bloqueo_estrogeno_receptor_tejido_mamario_y_eje_hpg",
+      "use_case_primary": "manejo_ginecomastia_temprana_en_hombre",
+      "use_case_secondary": [
+        "recovery_pct_post_ciclo_off_label_alternativa_o_complemento_a_clomifeno",
+        "tratamiento_cancer_mama_uso_oncologico_principal_no_aplica_a_wellcore",
+        "infertilidad_masculina_seleccionada_off_label"
+      ],
+      "via_administracion": "oral",
+
+      "mecanismo_descripcion": "Tamoxifeno es un SERM que bloquea el receptor de estrógeno en el tejido mamario y en otros tejidos. En el hipotálamo/hipófisis actúa similar a clomifeno: bloquea feedback negativo del E2 → ↑GnRH → ↑LH/FSH → ↑testosterona endógena. En el tejido mamario masculino, bloquea directamente la proliferación del tejido glandular inducida por estradiol.",
+
+      "dosis_rango_clinico": {
+        "ginecomastia_temprana_no_fibrotica": {
+          "rango_dosis_mg_dia": "10-20",
+          "duracion_semanas": "4-12",
+          "indicacion": "Tejido nuevo, doloroso, proliferativo — preferiblemente <6 meses de evolución",
+          "limitacion_clinica": "Menos efectivo en ginecomastia fibrótica establecida — cirugía suele ser requerida en esos casos"
+        },
+        "pct_post_ciclo_off_label": {
+          "rango_dosis_mg_dia": "20-40",
+          "duracion_semanas": "4-6",
+          "patron_comun": "20 mg/día por 4-6 semanas, complementando o alternando con clomifeno",
+          "advertencia": "Uso off-label, evidencia observacional. NO usar casualmente para 'control de estrógeno' en bodybuilders sin indicación clínica clara."
+        },
+        "infertilidad_masculina_seleccionada": {
+          "rango_dosis_mg_dia": "10-20 BID (estudios más viejos)",
+          "duracion": "3-6 meses bajo urólogo reproductivo"
+        }
+      },
+
+      "labs_monitoreo_obligatorios": [
+        "testosterona_total",
+        "estradiol_lc_ms_ms_sensible",
+        "lh_fsh",
+        "alt_ast_perfil_hepatico",
+        "perfil_lipidico",
+        "evaluacion_oftalmologica_si_uso_prolongado_o_sintomas",
+        "espermograma_si_aplica"
+      ],
+      "lab_frecuencia": "Ginecomastia: baseline + semana 6 + semana 12. PCT corto: baseline + semana 4-6. Largo plazo: cada 12 semanas + oftalmología anual.",
+
+      "efectos_secundarios_comunes": [
+        {"efecto": "Calorones / hot flashes", "frecuencia": "common"},
+        {"efecto": "Molestia gastrointestinal, náusea", "frecuencia": "common"},
+        {"efecto": "Fatiga", "frecuencia": "common"},
+        {"efecto": "Cefalea", "frecuencia": "common"},
+        {"efecto": "Cambios de libido", "frecuencia": "uncommon"},
+        {"efecto": "Cambios de ánimo", "frecuencia": "uncommon"},
+        {"efecto": "Calambres en piernas", "frecuencia": "uncommon"},
+        {"efecto": "Elevación de transaminasas hepáticas (ALT/AST)", "frecuencia": "uncommon", "alerta": "Si elevación significativa: suspender y revaluar"}
+      ],
+      "efectos_secundarios_raros_buscar_atencion_medica": [
+        "Tromboembolismo venoso (TVP, TEP) — raro pero clínicamente significativo",
+        "ACV / evento cerebrovascular — raro",
+        "Toxicidad ocular / retinopatía — rara con dosis bajas pero documentada con uso prolongado",
+        "Cataratas — riesgo aumentado con uso prolongado"
+      ],
+
+      "contraindications_absolutas": [
+        "antecedente_trombosis_venosa_profunda_o_tep",
+        "antecedente_acv",
+        "alto_riesgo_tromboembolico",
+        "enfermedad_hepatica_significativa",
+        "hipersensibilidad_a_tamoxifeno",
+        "embarazo_pareja_si_se_busca_concepcion_activa_segun_caso"
+      ],
+      "contraindications_relativas": [
+        "antecedente_cataratas_o_retinopatia",
+        "uso_concomitante_anticoagulantes_warfarina",
+        "uso_prolongado_sin_oftalmologia_periodica"
+      ],
+
+      "medical_interactions": [
+        {"with": "warfarina", "severity": "moderate_to_high", "note": "Tamoxifeno PUEDE potenciar efecto anticoagulante de warfarina — monitoreo INR estricto, ajuste de dosis warfarina probable"},
+        {"with": "inhibidores_potentes_cyp2d6_paroxetina_fluoxetina_bupropion", "severity": "moderate", "note": "Reducen conversión de tamoxifeno a su metabolito activo (endoxifeno) — pueden reducir eficacia"},
+        {"with": "anticonceptivos_orales_no_aplica_hombres", "severity": "n/a", "note": "Irrelevante para uso masculino"}
+      ],
+
+      "senales_alerta_emergencia_medica": [
+        "Hinchazón unilateral pierna con dolor → médico mismo día (TVP)",
+        "Dolor torácico súbito + disnea → urgencias (TEP)",
+        "Síntomas de ACV (debilidad facial unilateral, dificultad para hablar, debilidad brazo) → urgencias inmediatas",
+        "Cambios visuales agudos → oftalmología urgente",
+        "Ictericia o dolor abdominal alto persistente → médico (hepático)"
+      ],
+
+      "applicable_gender": ["masculino"],
+      "applicable_age_range": [18, 70],
+
+      "evidence_level_ginecomastia_temprana": "alta_aunque_off_label_en_hombre",
+      "evidence_level_pct": "moderada",
+      "evidence_summary": "Tamoxifeno tiene mayor cuerpo de evidencia clínica que clomifeno debido a su uso oncológico extenso. En el contexto WellCore, su uso primario es manejo de ginecomastia temprana, dolorosa y proliferativa (10-20 mg/día por 4-12 semanas) — más efectivo en tejido nuevo, antes de que se establezca fibrosis. Para PCT post-ciclo, se usa off-label (20-40 mg/día por 4-6 semanas) como alternativa o complemento a clomifeno. El perfil de seguridad es mejor caracterizado que el de clomifeno por la data oncológica, pero conserva precauciones importantes sobre tromboembolismo, toxicidad ocular con uso prolongado, e interacciones (especialmente warfarina). NO debe usarse casualmente como 'control de estrógeno' sin indicación clínica clara (Perplexity 2026-05-17).",
+
+      "scientific_sources": [
+        "Lawrence SE, Faught KA, Vethamuthu J, Lawson ML — Beneficial effects of raloxifene and tamoxifen in the treatment of pubertal gynecomastia. J Pediatr 2004",
+        "Hanavadi S, Banerjee D, Monypenny IJ, Mansel RE — The role of tamoxifen in the management of gynaecomastia. Breast 2006",
+        "Plourde PV, Reiter EO, Jou HC, et al — Safety and efficacy of anastrozole for the treatment of pubertal gynecomastia: a randomized, double-blind, placebo-controlled trial. JCEM 2004",
+        "Krzastek SC, Smith RP (2020) — Non-testosterone management of male hypogonadism"
+      ],
+
+      "legal_framing": "DOCUMENTACIÓN bajo supervisión médica externa. WellCore NO prescribe tamoxifeno. Uso en ginecomastia masculina o PCT es off-label — requiere prescripción de médico (endocrinólogo, urólogo o cirujano de mama) con evaluación de riesgo tromboembólico individual. El coach WellCore documenta el protocolo solo si cliente tiene prescripción activa y monitoreo clínico vigente.",
+
+      "legal_status_colombia": "Medicamento de prescripción (indicación oficial: oncología cáncer de mama). Uso off-label en hombres es legal pero requiere prescripción médica.",
+      "legal_status_otros_paises_latam": "México: prescripción. Argentina: prescripción.",
+
+      "confidence": "high",
+      "needs_endocrinologist_validation": true,
+      "needs_legal_verification_colombia": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+
+      "tags": ["mvp_obligatorio", "serm", "ginecomastia_management", "pct_off_label", "supervision_medica_obligatoria", "warfarina_interaction_alert"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "anastrozol",
+      "name": "Anastrozol",
+      "name_alternatives": ["anastrozole", "Arimidex"],
+      "scientific_name": "Anastrozole — inhibidor no esteroideo selectivo de aromatasa de tercera generación",
+      "category": "anti_estrogeno_inhibidor_aromatasa",
+      "primary_action": "bloqueo_conversion_testosterona_a_estradiol_via_aromatasa",
+      "use_case_primary": "manejo_estradiol_sintomaticamente_elevado_en_hombre_en_trt",
+      "use_case_secondary": [
+        "manejo_e2_alto_post_ciclo_ergogenico_corto_plazo",
+        "tratamiento_cancer_mama_postmenopausico_uso_oncologico_principal_no_aplica_a_wellcore",
+        "ginecomastia_puberal_seleccionada_no_aplica_a_wellcore"
+      ],
+      "via_administracion": "oral",
+
+      "mecanismo_descripcion": "Anastrozol es un inhibidor selectivo no esteroideo de la enzima aromatasa, que cataliza la conversión de andrógenos (testosterona, androstenediona) en estrógenos (estradiol, estrona). Al bloquear la aromatasa periférica, reduce el estradiol circulante. En hombres, esto puede aliviar síntomas de E2 alto (sensibilidad mamaria, retención, ginecomastia incipiente) pero también puede causar E2 demasiado bajo si se sobre-dosifica.",
+
+      "dosis_rango_clinico": {
+        "manejo_e2_alto_durante_trt": {
+          "rango_dosis_mg_por_aplicacion": "0.25-1",
+          "frecuencia_aplicaciones_por_semana": "2-3",
+          "rango_dosis_total_semanal_mg": "0.5-2",
+          "patron_clinico_comun": "0.25-0.5 mg 2x/semana, titulando según E2 sensitivo y síntomas",
+          "principio_clinico": "Comenzar BAJO y titular hacia arriba SOLO si síntomas + lab persisten. Evitar daily dosing en hombres salvo indicación específica."
+        },
+        "uso_post_ciclo_corto": {
+          "rango_dosis": "Similar al rango TRT, idealmente <4 semanas",
+          "advertencia": "Uso post-ciclo sin TRT continuo puede comprometer recovery del eje HPG"
+        }
+      },
+
+      "labs_monitoreo_obligatorios": [
+        "estradiol_lc_ms_ms_sensible_obligatorio_pre_y_post_inicio",
+        "testosterona_total_y_libre",
+        "perfil_lipidico_baseline_y_periodico",
+        "hemograma_cbc",
+        "metabolico_cmp",
+        "densitometria_osea_dexa_si_uso_largo_plazo_o_factores_riesgo",
+        "marcadores_recambio_oseo_si_aplica"
+      ],
+      "lab_frecuencia": "E2 sensitivo + síntomas a las 4-6 semanas tras inicio o ajuste de dosis. Si uso largo plazo: lipídico + DEXA cada 12 meses.",
+
+      "efectos_secundarios_comunes": [
+        {"efecto": "Dolor / aches articulares (artralgia)", "frecuencia": "common"},
+        {"efecto": "Calorones / hot flashes", "frecuencia": "common"},
+        {"efecto": "Cefalea", "frecuencia": "common"},
+        {"efecto": "Fatiga", "frecuencia": "common"},
+        {"efecto": "Cambios de ánimo / reducción de bienestar general", "frecuencia": "common"},
+        {"efecto": "Disfunción sexual / libido baja si E2 cae muy bajo", "frecuencia": "common_si_sobre_dosificado"}
+      ],
+      "efectos_secundarios_uncommon": [
+        {"efecto": "Alteraciones lipídicas desfavorables (↑LDL, ↓HDL)", "frecuencia": "uncommon"},
+        {"efecto": "Reducción significativa del bienestar general / depresión", "frecuencia": "uncommon"}
+      ],
+      "efectos_secundarios_raros_largo_plazo": [
+        {"efecto": "Pérdida de densidad mineral ósea (osteopenia, osteoporosis)", "frecuencia": "rare_pero_clinicamente_importante", "alerta": "Riesgo real con supresión prolongada de E2 en hombres. Considerar DEXA si uso >12 meses."}
+      ],
+
+      "contraindications_absolutas": [
+        "estradiol_basal_muy_bajo_sin_indicacion_clara",
+        "osteoporosis_activa_o_alto_riesgo_fractura",
+        "hipersensibilidad_a_anastrozol",
+        "embarazo_pareja_si_busca_concepcion_anastrozol_no_indicado"
+      ],
+      "contraindications_relativas": [
+        "antecedente_cardiovascular_significativo_por_efecto_lipidos",
+        "depresion_no_controlada",
+        "edad_avanzada_con_riesgo_osteoporotico_no_evaluado"
+      ],
+
+      "medical_interactions": [
+        {"with": "tamoxifeno_otros_serms", "severity": "moderate", "note": "Combinación SERM + AI requiere supervisión específica — no usar simultáneamente sin indicación"},
+        {"with": "drogas_que_afectan_metabolismo_hepatico_cyp", "severity": "low_to_moderate", "note": "Anastrozol se metaboliza vía CYP — monitorear si combinado con inductores/inhibidores fuertes"},
+        {"with": "estrogenos_exogenos", "severity": "moderate", "note": "Combinación contradictoria — anula efecto del anastrozol"}
+      ],
+
+      "senales_alerta_emergencia_medica": [
+        "Dolor torácico nuevo persistente → urgencias",
+        "Disnea súbita → urgencias",
+        "Cambios psicológicos severos (depresión profunda, ideación) → contacto inmediato salud mental",
+        "Dolor articular severo nuevo que limita actividad → médico mismo día (puede requerir suspender)"
+      ],
+
+      "applicable_gender": ["masculino_uso_off_label"],
+      "applicable_age_range": [25, 70],
+
+      "evidence_level_manejo_e2_sintomatico": "moderada",
+      "evidence_level_uso_rutinario_trt": "controversial_no_recomendado",
+      "evidence_summary": "Anastrozol en hombres se usa OFF-LABEL para manejo de estradiol sintomáticamente elevado durante TRT. Su uso rutinario (blanket use) en TODOS los hombres en TRT NO está soportado por evidencia y es controversial activamente en la literatura clínica 2024-2026 (Perplexity 2026-05-17). Los hombres NECESITAN algo de estradiol para libido, salud articular, cognición y densidad ósea — sobre-supresión a E2 muy bajo (<10-15 pg/mL) causa los mismos síntomas que se buscaba evitar (dolor articular, libido baja, fatiga) más riesgos a largo plazo (pérdida de densidad ósea). El principio clínico defensible es uso SYMPTOM-DRIVEN a la menor dosis efectiva, monitoreando E2 sensitivo (LC-MS/MS) + síntomas, no targeting a un número específico de E2.",
+
+      "controversy_note": "Uso rutinario de AI durante TRT es CONTROVERSIA ACTIVA. Muchos clínicos lo evitan completamente excepto en E2 sintomáticamente elevado o ginecomastia rápidamente progresiva. Daniel debe alinear con endocrinólogo aliado la política de cuándo SÍ y cuándo NO usar anastrozol en sus protocolos.",
+
+      "scientific_sources": [
+        "Burnett-Bowie SA, McKay EA, Lee H, Leder BZ — Effects of aromatase inhibition on bone mineral density and bone turnover in older men with low testosterone levels. JCEM 2009",
+        "Tan RB, Guay AT, Hellstrom WJG — Clinical use of aromatase inhibitors in adult males. Sex Med Rev 2014",
+        "Burnett-Bowie SA et al. — Effects of aromatase inhibition in hypogonadal older men: a randomized, double-blind, placebo-controlled trial. JCEM 2009"
+      ],
+
+      "legal_framing": "DOCUMENTACIÓN bajo supervisión médica externa. WellCore NO prescribe anastrozol. Uso en hombres es OFF-LABEL — requiere prescripción de endocrinólogo con monitoreo activo de E2 sensitivo y evaluación de balance riesgo-beneficio individual. El coach WellCore documenta el protocolo solo si el cliente tiene prescripción activa y labs vigentes.",
+
+      "legal_status_colombia": "Medicamento de prescripción (indicación oficial: oncología cáncer de mama postmenopáusico). Uso off-label en hombres es legal pero requiere prescripción médica.",
+      "legal_status_otros_paises_latam": "México: prescripción. Argentina: prescripción.",
+
+      "confidence": "high",
+      "needs_endocrinologist_validation": true,
+      "needs_legal_verification_colombia": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+
+      "tags": ["mvp_obligatorio", "inhibidor_aromatasa", "e2_management", "symptom_driven_only", "trt_adjunct", "supervision_medica_obligatoria", "controversia_rutinaria"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "finasterida",
+      "name": "Finasterida",
+      "name_alternatives": ["finasteride", "Propecia (1mg)", "Proscar (5mg)"],
+      "scientific_name": "Finasteride — inhibidor competitivo de 5-alfa-reductasa tipo II (y parcial tipo I)",
+      "category": "inhibidor_5_alfa_reductasa",
+      "primary_action": "reduccion_conversion_testosterona_a_dihidrotestosterona_dht",
+      "use_case_primary": "alopecia_androgenica_acelerada_durante_trt_en_hombres_geneticamente_susceptibles",
+      "use_case_secondary": [
+        "alopecia_androgenica_masculina_sin_trt_indicacion_oficial_dermatologica",
+        "hbp_hiperplasia_benigna_prostatica_dosis_5mg_indicacion_urologica"
+      ],
+      "via_administracion": "oral",
+
+      "mecanismo_descripcion": "Finasterida inhibe selectivamente la enzima 5-alfa-reductasa (predominantemente tipo II), que convierte testosterona en dihidrotestosterona (DHT). DHT es el andrógeno más potente sobre folículo capilar y próstata. Al reducir DHT (~70% en suero y >60% en cuero cabelludo), reduce la miniaturización folicular y la proliferación prostática. NO afecta la testosterona total (puede incluso aumentarla ligeramente) ni la libido directamente vía testo, pero puede afectarla vía DHT.",
+
+      "dosis_rango_clinico": {
+        "alopecia_androgenica": {
+          "dosis_mg_dia": 1,
+          "frecuencia": "diaria",
+          "duracion": "Largo plazo (efecto se pierde si se suspende — repoblación capilar regresa en 6-12 meses post-suspensión)",
+          "tiempo_a_efecto_visible": "3-6 meses (estabilización), 12 meses (regrowth modesto)"
+        },
+        "hbp_hiperplasia_prostatica": {
+          "dosis_mg_dia": 5,
+          "frecuencia": "diaria",
+          "indicacion": "Urología — manejo síntomas HBP. NO es uso típico WellCore."
+        }
+      },
+
+      "labs_monitoreo_obligatorios": [
+        "para_alopecia_no_se_requiere_lab_rutinario_seguir_sintomas",
+        "psa_si_aplica_screening_prostatico_AJUSTAR_INTERPRETACION_porque_finasterida_baja_psa_aproximadamente_50_por_ciento",
+        "alt_ast_si_sintomas_hepaticos",
+        "evaluacion_animo_y_funcion_sexual_baseline_y_periodica"
+      ],
+      "lab_frecuencia": "Para alopecia: evaluación clínica trimestral primer año, luego anual. PSA si screening: tomar valor y MULTIPLICAR x2 para interpretación real (finasterida suprime ~50%).",
+
+      "efectos_secundarios_comunes": [
+        {"efecto": "Reducción de libido", "frecuencia": "common", "porcentaje_aproximado": "5-10%"},
+        {"efecto": "Disfunción eréctil", "frecuencia": "common", "porcentaje_aproximado": "5-10%"},
+        {"efecto": "Cambios eyaculatorios (volumen reducido, calidad)", "frecuencia": "common"}
+      ],
+      "efectos_secundarios_uncommon": [
+        {"efecto": "Ginecomastia / sensibilidad mamaria", "frecuencia": "uncommon"},
+        {"efecto": "Cambios de ánimo, irritabilidad", "frecuencia": "uncommon"},
+        {"efecto": "Molestia testicular", "frecuencia": "uncommon"},
+        {"efecto": "Reducción de volumen seminal", "frecuencia": "uncommon"}
+      ],
+      "efectos_secundarios_raros_pero_clinicamente_significativos": [
+        {
+          "efecto": "Post-Finasteride Syndrome (PFS) — síntomas sexuales y neuropsiquiátricos persistentes tras discontinuación",
+          "frecuencia": "rare_pero_controversial",
+          "controversia": "PFS es controversia ACTIVA. Causalidad, frecuencia exacta y mecanismos están debatidos. La literatura clínica reporta tanto señal real como incertidumbre sustancial. Daniel debe estar consciente de este riesgo y discutirlo con el cliente ANTES de iniciar.",
+          "sintomas_reportados": [
+            "Disfunción eréctil persistente",
+            "Libido baja persistente",
+            "Depresión / ideación suicida",
+            "Insomnio",
+            "Disfunción cognitiva ('brain fog')",
+            "Cambios anatómicos genitales reportados subjetivamente"
+          ],
+          "regulatorio_2024_2025": "Agencias regulatorias EU y otras han actualizado labeling de finasterida con advertencias sobre cambios de ánimo y disfunción sexual persistente. Verificar fichas técnicas actualizadas."
+        }
+      ],
+
+      "contraindications_absolutas": [
+        "embarazo_o_intencion_de_embarazo_de_la_pareja_riesgo_teratogenico_severo_para_feto_masculino_NO_manipular_tableta_partida_o_polvo_si_pareja_embarazada_o_buscando_embarazo",
+        "hipersensibilidad_a_finasterida",
+        "hepatopatia_significativa_no_evaluada",
+        "depresion_severa_actual_o_antecedente_ideacion_suicida"
+      ],
+      "contraindications_relativas": [
+        "antecedente_disfuncion_sexual_o_libido_baja_no_explicada",
+        "antecedente_depresion_moderada",
+        "necesidad_de_screening_psa_sin_ajuste_interpretativo"
+      ],
+
+      "medical_interactions": [
+        {"with": "manipulaciones_hormonales_que_alteran_dht", "severity": "moderate", "note": "Combinación con testosterona, dutasterida, AI o SERM puede modificar efectos esperados"},
+        {"with": "drogas_cyp3a4", "severity": "low", "note": "Interacciones CYP-based no suelen ser problema principal en práctica"}
+      ],
+
+      "senales_alerta_emergencia_medica": [
+        "Ideación suicida o cambios de ánimo severos agudos → contacto inmediato salud mental + suspender finasterida",
+        "Disfunción sexual nueva severa persistente → considerar suspensión + evaluación",
+        "Ictericia o dolor abdominal alto → médico (hepático)",
+        "Ginecomastia rápidamente progresiva → evaluación endocrinología/cirugía"
+      ],
+
+      "applicable_gender": ["masculino"],
+      "applicable_age_range": [18, 70],
+      "no_recomendado": "Adolescentes en desarrollo puberal. Hombres con depresión severa o antecedente ideación suicida. Hombres con pareja embarazada o buscando embarazo activamente.",
+
+      "evidence_level_alopecia": "alta",
+      "evidence_level_pfs": "controversial_evidencia_mixta",
+      "evidence_summary": "Finasterida 1 mg/día es el estándar de tratamiento farmacológico para alopecia androgénica masculina, con eficacia demostrada en mantener cabello y producir crecimiento modesto en la mayoría de hombres. En contexto TRT, se usa para mitigar la aceleración de alopecia androgénica en hombres genéticamente susceptibles — NO como soporte general TRT. Los efectos adversos sexuales (libido, ED, eyaculación) son comunes (5-10%) y suelen ser reversibles al suspender. Sin embargo, el Post-Finasteride Syndrome (PFS) — síntomas sexuales y neuropsiquiátricos PERSISTENTES tras discontinuación — es controversia activa. La causalidad y frecuencia están debatidas, pero las agencias regulatorias EU y otras han actualizado labeling 2024-2025 con advertencias específicas (Perplexity 2026-05-17). Debe usarse con consentimiento informado explícito sobre estos riesgos. Para screening PSA, la dosis de 5 mg/día reduce PSA aproximadamente 50%, y la dosis 1 mg/día también lo afecta — la interpretación debe ajustarse.",
+
+      "controversy_note": "Post-Finasteride Syndrome (PFS) es CONTROVERSIA ACTIVA. Hay literatura que respalda el síndrome (Traish y otros) y literatura que cuestiona causalidad robusta. El balance de evidencia indica que SÍ hay señal de eventos persistentes en una minoría de hombres, pero la frecuencia exacta y los mecanismos no están establecidos. WellCore debe documentar este riesgo explícitamente en cualquier protocolo que incluya finasterida y obtener consentimiento informado.",
+
+      "scientific_sources": [
+        "Traish AM — Post-finasteride syndrome: a surmountable challenge for clinicians. Fertility and Sterility 2020",
+        "Mella JM, Perret MC, Manzotti M, Catalano HN, Guyatt G — Efficacy and safety of finasteride therapy for androgenetic alopecia: a systematic review. Arch Dermatol 2010",
+        "Maksym RB et al — The role of inhibitors of 5-alpha-reductase in men: an update. International Journal of Molecular Sciences",
+        "EMA / FDA — Updated finasteride safety communications 2024-2025 on mood/suicidal ideation and persistent sexual dysfunction"
+      ],
+
+      "legal_framing": "DOCUMENTACIÓN bajo supervisión médica externa. WellCore NO prescribe finasterida. Su uso requiere prescripción médica (dermatólogo o endocrinólogo) con CONSENTIMIENTO INFORMADO EXPLÍCITO sobre los riesgos potenciales (efectos sexuales comunes, PFS controversial). El coach WellCore documenta el protocolo solo si el cliente confirma prescripción y entiende los riesgos.",
+
+      "legal_status_colombia": "Medicamento de prescripción para HBP (5 mg) y para alopecia (1 mg). Disponibilidad amplia.",
+      "legal_status_otros_paises_latam": "México: prescripción. Argentina: prescripción.",
+
+      "confidence": "moderate",
+      "needs_endocrinologist_validation": true,
+      "needs_dermatologist_validation": true,
+      "needs_legal_verification_colombia": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+      "needs_explicit_client_informed_consent": true,
+
+      "tags": ["mvp_obligatorio", "5_ari", "alopecia_management", "trt_adjunct_capilar", "pfs_controversia", "consentimiento_informado_obligatorio", "supervision_medica_obligatoria", "psa_interpretation_alert"],
+      "version": 1,
+      "active": true
+    }
+  ],
+
+  "hormonal_protocols_templates": [
+    {
+      "slug": "trt-mantenimiento-basico-12sem",
+      "name": "TRT Mantenimiento Básico — 12 semanas (referencia, extendible largo plazo)",
+      "objective": "Restaurar testosterona al rango mid-normal fisiológico (target Endocrine Society 300-1000 ng/dL) en hombre con hipogonadismo diagnosticado clínicamente, preservando función testicular endógena con HCG.",
+      "applicable_use_case": "trt_hipogonadismo_diagnosticado",
+      "duration_weeks_inicial": 12,
+      "extendible_to_long_term": true,
+      "extendible_note": "TRT clínico suele ser tratamiento de por vida una vez establecido. Este template documenta los primeros 12 semanas. Tras esta ventana, se continúa la dosis estable con labs cada 12 semanas.",
+
+      "compounds_combination": [
+        {
+          "compound_slug": "testosterona-enantato",
+          "alternativa_intercambiable": "testosterona-cipionato",
+          "dosis_semanal_total_mg": 100,
+          "frecuencia_aplicacion": "2 inyecciones/semana (50 mg cada lunes y jueves)",
+          "via": "intramuscular_profunda_gluteo_o_muslo",
+          "razon": "Splitting reduce variabilidad pico-valle y los síntomas asociados (irritabilidad, fatiga al final del intervalo)"
+        },
+        {
+          "compound_slug": "hcg",
+          "dosis_semanal_total_ui": 1000,
+          "frecuencia_aplicacion": "2 aplicaciones/semana (500 UI cada martes y viernes)",
+          "via": "subcutanea_abdomen_o_muslo",
+          "razon": "Mantener producción testicular endógena de testosterona intratesticular y prevenir atrofia testicular y preservar fertilidad (relativa)"
+        }
+      ],
+
+      "phases": [
+        {
+          "numero": 1,
+          "nombre": "Estabilización",
+          "semanas": "1-4",
+          "objetivo_clinico": "Alcanzar niveles séricos estables. NO ajustar dosis aún (no hay steady-state real para evaluar).",
+          "objetivo_entrenamiento": "Mantener rutina actual del cliente. NO subir cargas agresivamente — el cuerpo se está adaptando al cambio hormonal.",
+          "objetivo_nutricion": "Mantenimiento calórico. Hidratación 3L/día.",
+          "labs_obligatorios": "Ninguno en esta fase si la baseline ya está hecha.",
+          "monitor_diario_cliente": ["energia_1_10", "libido_1_10", "estado_animo_1_10", "calidad_sueno_1_10"],
+          "senales_de_alerta": ["sensibilidad_mamaria_o_pezones", "edema_significativo", "irritabilidad_marcada", "cefalea_persistente"]
+        },
+        {
+          "numero": 2,
+          "nombre": "Ajuste",
+          "semanas": "5-8",
+          "objetivo_clinico": "Lab en semana 6 para evaluar ajuste de dosis. Endocrinólogo decide si subir/bajar/mantener basado en testo total, E2 sensitivo, HCT y síntomas.",
+          "objetivo_entrenamiento": "Comenzar progresión de carga moderada (+5-10% volumen). Sumar 1 set por grupo muscular principal por semana.",
+          "objetivo_nutricion": "Superávit ligero (+150-200 kcal) si objetivo es recomposición o aumento masa magra. Mantenimiento si objetivo es solo restauración energética.",
+          "lab_obligatorio": "panel_hormonal_masculino_completo + hemograma con HCT/Hb",
+          "monitor_diario_cliente": "continuar"
+        },
+        {
+          "numero": 3,
+          "nombre": "Mantenimiento",
+          "semanas": "9-12",
+          "objetivo_clinico": "Dosis estabilizada según ajuste de semana 6. Continuar monitor de síntomas. Lab final en semana 12.",
+          "objetivo_entrenamiento": "Volumen e intensidad completos según nivel del cliente. Progresión sostenida.",
+          "objetivo_nutricion": "Según objetivo del cliente (recomposición / volumen / déficit moderado controlado).",
+          "lab_obligatorio": "panel_hormonal_masculino_completo (control final 12 semanas)",
+          "monitor_diario_cliente": "continuar"
+        }
+      ],
+
+      "pct_post_protocolo": "Para TRT a largo plazo (>3 meses), PCT clásico NO se hace. Se continúa con dosis de mantenimiento de por vida o se hace cessation supervisada por endocrinólogo (8-12 semanas con HCG + clomifeno + tamoxifeno opcional — ver protocolo pct-clasico-postciclo-6sem).",
+
+      "labs_required_baseline": ["panel_hormonal_masculino_completo", "panel_lipidico_completo", "alt_ast", "creatinina_funcion_renal", "psa_total_si_edad_mayor_40_o_riesgo", "tsh_t4_libre", "glucosa_hba1c"],
+      "labs_schedule": {
+        "semana_0_baseline": "Panel completo arriba",
+        "semana_6": "panel_hormonal_masculino + hemograma + perfil_lipidico",
+        "semana_12": "panel_hormonal_masculino_completo + hemograma + lipidico + alt_ast",
+        "cada_12_semanas_post_estabilizacion": "panel_hormonal_masculino + hemograma + lipidico"
+      },
+
+      "ajustes_adaptacion_entrenamiento_y_nutricion": {
+        "recuperacion_esperada": "Mejora libido/energia/estado de animo en 2-6 semanas. Mejora composicion corporal progresiva en 8-16 semanas. Ganancias maximas plateaean al ano.",
+        "frecuencia_entreno_recomendada": "4-6 sesiones/semana segun tolerancia y experiencia previa",
+        "ajuste_proteico": "1.6-2.2 g/kg/dia (alta para optimizar respuesta anabolica con T en rango)",
+        "carbohidratos": "Mantener o aumentar para soportar volumen entrenamiento — no cortar agresivamente"
+      },
+
+      "applicable_gender": ["masculino"],
+      "applicable_age_range": [25, 75],
+      "applicable_tier_min": "elite",
+
+      "evidence_level": "alta",
+      "scientific_sources": ["Bhasin S et al (2018). Endocrine Society Clinical Practice Guideline", "Hackett G (2016). TRT in Men with Functional Hypogonadism"],
+
+      "legal_framing": "DOCUMENTACION bajo supervision medica externa. WellCore NO prescribe este protocolo TRT. El cliente debe tener: (1) diagnostico clinico de hipogonadismo confirmado (sintomas + 2 mediciones de testo total <300 ng/dL matutinas separadas), (2) labs baseline completos, (3) endocrinologo de cabecera con seguimiento minimo cada 12 semanas. Sin estos 3 requisitos, el coach WellCore NO documenta este protocolo en el plan del cliente.",
+
+      "needs_endocrinologist_validation": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+      "confidence": "high",
+      "tags": ["mvp_obligatorio", "trt_base", "hipogonadismo_diagnosticado", "preservacion_fertilidad_hcg"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "trt-alto-rango-12sem",
+      "name": "TRT Alto Rango — 12 semanas (rango supra-fisiologico bajo controlado)",
+      "objective": "Mantener testosterona en rango performance (700-1000 ng/dL) para hombre Elite con prescripcion especifica de TRT a dosis superior — tipicamente cliente con objetivos esteticos avanzados o atleta competitivo bajo supervision medica estricta.",
+      "applicable_use_case": "trt_objetivos_performance_supervisado",
+      "duration_weeks_inicial": 12,
+      "extendible_to_long_term": true,
+
+      "advertencia_inicial": "Este protocolo opera en el LIMITE SUPERIOR del rango terapeutico. NO esta soportado por Endocrine Society para hipogonadismo estandar — su uso es practica clinica deportiva off-label. WellCore lo documenta porque algunos clientes Elite tienen prescripcion especifica de su endocrinologo, NO porque WellCore lo recomiende.",
+
+      "compounds_combination": [
+        {"compound_slug": "testosterona-cipionato", "alternativa_intercambiable": "testosterona-enantato", "dosis_semanal_total_mg": "150-200", "frecuencia_aplicacion": "2-3 inyecciones/semana", "via": "intramuscular_profunda"},
+        {"compound_slug": "hcg", "dosis_semanal_total_ui": 1000, "frecuencia_aplicacion": "2 aplicaciones/semana", "via": "subcutanea", "razon": "Preservar funcion testicular en supresion mas intensa"},
+        {"compound_slug": "anastrozol", "dosis_semanal_total_mg": "0.5-1", "frecuencia_aplicacion": "2 aplicaciones/semana (0.25-0.5 mg cada una)", "via": "oral", "condicion_uso": "SOLO si E2 sensitivo confirma elevacion con sintomas — NO uso preventivo blanket", "razon": "Manejo selectivo de E2 alto sintomatico"}
+      ],
+
+      "phases": [
+        {"numero": 1, "nombre": "Estabilizacion supervisada", "semanas": "1-4", "objetivo_clinico": "Adaptacion al nivel hormonal supra-fisiologico. Monitoreo activo de sintomas E2 alto, retencion, HCT.", "objetivo_entrenamiento": "Mantener volumen actual. Atender senales de over-arousal/irritabilidad como ajuste necesario.", "objetivo_nutricion": "Superavit moderado +200-300 kcal si volumen es objetivo. Sodio controlado.", "lab_obligatorio": "Ninguno en esta fase salvo sintomas", "monitor_diario": ["sintomas_e2_alto", "presion_arterial", "calidad_sueno"]},
+        {"numero": 2, "nombre": "Ajuste fino", "semanas": "5-8", "objetivo_clinico": "Lab semana 6 con enfasis en E2 sensitivo + HCT. Decidir si iniciar anastrozol (si E2 alto sintomatico) o ajustar dosis testo.", "objetivo_entrenamiento": "Aumento progresivo volumen +10-15%.", "objetivo_nutricion": "Superavit calculado para volumen / mantenimiento para recomposicion.", "lab_obligatorio": "panel_hormonal_masculino_completo + hemograma + perfil_lipidico"},
+        {"numero": 3, "nombre": "Mantenimiento performance", "semanas": "9-12", "objetivo_clinico": "Niveles estables en rango target. Anastrozol titulado a minima dosis efectiva. HCT <54%.", "objetivo_entrenamiento": "Volumen e intensidad maximos. Aprovechar recuperacion acelerada.", "objetivo_nutricion": "Sostener objetivo (volumen/recomposicion).", "lab_obligatorio": "panel_hormonal_masculino_completo + hemograma + lipidico"}
+      ],
+
+      "labs_required_baseline_obligatorios_estrictos": ["panel_hormonal_masculino_completo", "panel_atleta_bodybuilding_completo", "psa_obligatorio_independiente_edad_si_uso_supraphysiologic", "tsh", "glucosa_hba1c", "presion_arterial_24h_si_factores_riesgo"],
+      "labs_schedule": {"semana_0_baseline_extendido": "Panel atleta BB completo", "semana_6": "Hormonal + hemograma + lipidico", "semana_12": "Panel completo", "cada_12_semanas_continuado": "Panel completo"},
+
+      "senales_alerta_especificas_dosis_alta": ["Presion arterial sistemica >140/90 sostenida → medico mismo dia", "HCT >54% en lab → flebotomia + revision dosis", "Cefaleas persistentes → control PA + neurologia si severo", "Cambios psicologicos (agresividad, ansiedad, insomnio severo) → reducir dosis bajo supervision"],
+
+      "applicable_gender": ["masculino"],
+      "applicable_age_range": [28, 60],
+      "applicable_tier_min": "elite",
+
+      "evidence_level": "moderada",
+      "controversy_note": "Operar TRT en rango supra-fisiologico bajo es practica orientada a performance estetica/deportiva, NO indicacion clinica clasica. Endocrine Society no la respalda. Daniel debe asegurar que el endocrinologo aliado avala este protocolo individual y que el cliente entiende los riesgos (cardiovascular, hematologico, eje HPG).",
+
+      "scientific_sources": ["Bhasin S et al (2018) — guideline base TRT, NO respalda supra-fisiologico de rutina", "Literatura off-label de medicina deportiva en androgenoterapia"],
+
+      "legal_framing": "DOCUMENTACION bajo supervision medica externa especializada. Riesgo legal mayor que TRT estandar por operar fuera de guideline. WellCore NO recomienda este protocolo — solo lo documenta para clientes que YA estan bajo este regimen prescrito por endocrinologo especializado en medicina deportiva.",
+
+      "needs_endocrinologist_validation": true,
+      "needs_cardiology_clearance_recomendado": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+      "needs_explicit_client_informed_consent": true,
+      "confidence": "moderate",
+      "tags": ["mvp_obligatorio", "trt_alto_rango", "performance_oriented", "supervision_especializada_obligatoria", "consentimiento_informado"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "pct-clasico-postciclo-6sem",
+      "name": "PCT Clasico Post-Ciclo Ergogenico — 6 semanas",
+      "objective": "Restaurar funcion endogena del eje HPG (LH, FSH, testosterona endogena) tras ciclo de androgenicos exogenos, minimizando perdida de ganancias y sintomas de hipogonadismo de rebote.",
+      "applicable_use_case": "pct_post_ciclo_ergogenico_off_label",
+      "duration_weeks": 6,
+      "extendible_to_long_term": false,
+
+      "advertencia_inicial": "PCT NO es categoria formal de Endocrine Society/ASRM — es concepto de medicina deportiva/bodybuilding. Evidencia: observacional/retrospectiva, no RCTs de calidad (Perplexity 2026-05-17). WellCore documenta este protocolo para clientes que YA decidieron hacer ciclo bajo supervision externa, NO para promover ciclos. Recovery espontaneo a meses sin intervencion es alternativa valida en muchos casos.",
+
+      "compounds_combination": [
+        {"compound_slug": "hcg", "fase": "fase_1_priming_pre_pct", "dosis_semanal_total_ui": 2000, "frecuencia_aplicacion": "4 aplicaciones/semana (500 UI cada vez)", "via": "subcutanea", "duracion_semanas": 2, "razon": "Restaurar responsividad de celulas de Leydig antes de iniciar SERM"},
+        {"compound_slug": "clomifeno", "fase": "fase_2_serm_principal", "dosis_inicial_mg_dia": 50, "dosis_taper_mg_dia": 25, "duracion_semanas": 4, "patron": "50 mg/dia semanas 1-2 del bloque SERM (semanas 3-4 del protocolo), luego 25 mg/dia semanas 3-4 del bloque SERM (semanas 5-6 del protocolo)", "via": "oral", "razon": "Bloquear feedback negativo de E2 → aumentar GnRH/LH/FSH endogenos"},
+        {"compound_slug": "tamoxifeno", "fase": "opcional_si_ginecomastia_incipiente", "dosis_mg_dia": 20, "duracion_semanas": 4, "condicion_uso": "Solo si aparece ginecomastia incipiente, dolor mamario o se anticipa por dosis altas en ciclo", "via": "oral"}
+      ],
+
+      "phases": [
+        {"numero": 1, "nombre": "HCG Priming (preparacion testicular)", "semanas": "1-2", "objetivo_clinico": "Estimular celulas de Leydig que estuvieron suprimidas durante el ciclo, antes de tirar SERM", "objetivo_entrenamiento": "Mantener volumen actual. NO recortar agresivamente — preservar masa muscular.", "objetivo_nutricion": "Caloric maintenance + alta proteina (2.2-2.6 g/kg) para preservar masa.", "lab_obligatorio": "baseline en semana 0: testo_total + e2 + lh + fsh + hcg_test + lipidico"},
+        {"numero": 2, "nombre": "SERM Principal (Clomifeno)", "semanas": "3-4", "objetivo_clinico": "Activar eje HPG endogeno. Clomifeno 50 mg/dia.", "objetivo_entrenamiento": "Continuar volumen. Monitor energia (puede caer transitoriamente).", "objetivo_nutricion": "Caloric maintenance + alta proteina.", "lab_obligatorio": "Ninguno salvo sintomas. Si sintomas visuales: SUSPENDER clomifeno + oftalmologia."},
+        {"numero": 3, "nombre": "SERM Taper", "semanas": "5-6", "objetivo_clinico": "Reducir clomifeno a 25 mg/dia para permitir transicion hacia eje HPG autonomo.", "objetivo_entrenamiento": "Continuar volumen.", "objetivo_nutricion": "Caloric maintenance + alta proteina.", "lab_obligatorio": "Lab control: testo_total + e2 + lh + fsh en semana 6 (final del PCT)"},
+        {"numero": 4, "nombre": "Post-PCT Recovery Window", "semanas": "7-12 (fuera del protocolo formal)", "objetivo_clinico": "Evaluar recovery espontaneo. Lab control a las 8 semanas post-PCT. Si testo persistente <300 ng/dL → reevaluar con endocrinologo.", "objetivo_entrenamiento": "Mantener volumen razonable, no over-train.", "objetivo_nutricion": "Maintenance + proteina alta hasta que labs confirmen recovery"}
+      ],
+
+      "labs_required_baseline": ["testosterona_total", "estradiol_lc_ms_ms", "lh", "fsh", "shbg", "perfil_lipidico", "alt_ast"],
+      "labs_schedule": {"semana_0_baseline": "Panel arriba", "semana_6_fin_pct": "testo + e2 + lh + fsh", "semana_14_recovery_check": "Panel completo arriba"},
+
+      "senales_alerta_durante_pct": ["Sintomas visuales clomifeno (vision borrosa, fosfenos) → SUSPENDER + oftalmologia", "Ginecomastia rapidamente progresiva → considerar agregar tamoxifeno + endocrinologo", "Depresion severa / ideacion → salud mental + suspender SERM bajo evaluacion", "Hinchazon unilateral pierna → TVP, urgencias"],
+
+      "applicable_gender": ["masculino"],
+      "applicable_age_range": [22, 50],
+      "applicable_tier_min": "elite",
+
+      "evidence_level": "moderada",
+      "scientific_sources": ["Ramasamy R, Scovell JM, Kovac JR, Lipshultz LI — Testosterone vs clomiphene comparison", "Krzastek SC, Smith RP — Non-testosterone management of male hypogonadism"],
+
+      "legal_framing": "DOCUMENTACION bajo supervision medica externa. WellCore NO prescribe PCT. La decision de hacer ciclo ergogenico es responsabilidad del cliente y su medico tratante — WellCore solo adapta entrenamiento y nutricion durante recovery, NO indica compounds ni dosis. Documentar PCT en el plan del cliente requiere confirmacion de que existe seguimiento clinico activo.",
+
+      "needs_endocrinologist_validation": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+      "needs_explicit_client_informed_consent": true,
+      "confidence": "moderate",
+      "tags": ["mvp_obligatorio", "pct", "post_ciclo", "off_label", "supervision_medica_obligatoria"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "control-efectos-secundarios-trt",
+      "name": "Control de Efectos Secundarios TRT — Modulo Opt-In",
+      "objective": "Modulo de adjuvantes para manejar efectos adversos especificos que pueden aparecer durante TRT estable. NO es protocolo standalone — se agrega selectivamente al protocolo TRT base del cliente segun sintoma observado.",
+      "applicable_use_case": "manejo_eventos_adversos_durante_trt_estable",
+      "duration_weeks": "continuo_segun_necesidad",
+      "extendible_to_long_term": true,
+
+      "principio_operativo": "Symptom-driven: cada componente del modulo se activa SOLO si aparece sintoma especifico documentado por lab + manifestacion clinica. NO uso preventivo blanket.",
+
+      "modulos_opcionales": [
+        {"modulo": "control_e2_alto_sintomatico", "trigger_clinico": "E2 sensitivo elevado (tipicamente >50 pg/mL pero contexto-dependiente) + sintomas (sensibilidad mamaria, retencion hidrica, edema, ginecomastia incipiente)", "compound_slug": "anastrozol", "dosis_inicial_mg_semana": "0.5", "frecuencia": "0.25 mg 2x/semana", "titulacion": "Re-lab E2 + sintomas a las 4-6 semanas. Subir solo si sintomas persisten Y E2 sigue alto. Bajar/suspender si E2 cae <15-20 pg/mL.", "labs_seguimiento": "E2_lc_ms_ms cada 4-6 semanas tras inicio, luego cada 12 semanas", "advertencia_critica": "NO usar preventivo. Sobre-supresion causa los mismos sintomas que se buscaba evitar + riesgo oseo largo plazo."},
+        {"modulo": "manejo_ginecomastia_temprana_dolorosa", "trigger_clinico": "Ginecomastia palpable nueva, dolorosa, proliferativa <6 meses evolucion", "compound_slug": "tamoxifeno", "dosis_inicial_mg_dia": 10, "rango_dosis_mg_dia": "10-20", "duracion_semanas": "8-12", "labs_seguimiento": "estradiol + alt_ast + evaluacion_oftalmologica_baseline_si_uso_prolongado", "advertencia": "Solo efectivo en tejido nuevo no-fibrotico. Tejido establecido (>12 meses) usualmente requiere cirugia."},
+        {"modulo": "alopecia_androgenica_acelerada", "trigger_clinico": "Aceleracion visible de perdida capilar dentro de 3-6 meses de inicio TRT en hombre geneticamente susceptible", "compound_slug": "finasterida", "dosis_mg_dia": 1, "duracion": "Largo plazo (efecto se pierde si se suspende)", "advertencia_critica": "CONSENTIMIENTO INFORMADO EXPLICITO sobre riesgos sexuales (5-10% libido/ED) Y Post-Finasteride Syndrome (controversia activa). PSA si screening: AJUSTAR x2.", "alternativas_no_farmacologicas": ["minoxidil_topico_5_porciento", "low_level_laser_therapy", "biotina_si_deficiente"]},
+        {"modulo": "policitemia_hct_elevado", "trigger_clinico": "HCT >54%", "intervencion": "NO compound — manejo no-farmacologico", "acciones": ["Donar sangre / flebotomia terapeutica", "Hidratacion abundante (3+ L/dia)", "Reducir dosis TRT bajo endocrinologo", "Evaluar y tratar apnea sueno si aplica", "Re-control HCT en 6-8 semanas"]},
+        {"modulo": "preservacion_fertilidad_durante_trt", "trigger_clinico": "Cliente joven en TRT que aun no completa familia o quiere preservar opcion reproductiva", "compound_slug": "hcg", "dosis_semanal_total_ui": 1000, "frecuencia": "500 UI 2x/semana SC", "duracion": "Continua mientras TRT activa", "monitoreo_adicional": "Espermograma cada 6 meses + criopreservacion de semen recomendada antes de iniciar TRT como respaldo"}
+      ],
+
+      "applicable_gender": ["masculino"],
+      "applicable_age_range": [25, 75],
+      "applicable_tier_min": "elite",
+
+      "evidence_level": "alta",
+
+      "legal_framing": "DOCUMENTACION bajo supervision medica externa. WellCore NO prescribe ningun modulo. Cada modulo opt-in requiere indicacion clinica especifica por endocrinologo + monitoreo de eventos adversos del propio adjuvante. El coach WellCore documenta el modulo en el plan solo si cliente confirma prescripcion activa del modulo correspondiente.",
+
+      "needs_endocrinologist_validation": true,
+      "needs_dermatologist_validation_for_finasteride_module": true,
+      "needs_daniel_validation": true,
+      "needs_legal_review_before_seed": true,
+      "needs_explicit_client_informed_consent_per_module": true,
+      "confidence": "high",
+
+      "tags": ["mvp_obligatorio", "modulo_opt_in", "symptom_driven", "trt_adjunct", "supervision_medica_obligatoria"],
+      "version": 1,
+      "active": true
+    }
+  ],
+  "ciclo_menstrual_fases": [
+    {
+      "_evidence_disclaimer_aplicable_a_todas_las_fases": "McNulty et al 2020 meta-analisis de 78 estudios (1217 mujeres) concluyo que el efecto del ciclo menstrual sobre el performance es TRIVIAL a PEQUENO y altamente variable a nivel individual. Las recomendaciones de ajustes por fase son utiles como heuristica de coaching, NO como ley fisiologica. La evidencia es mas robusta para sintomas (PMS, dismenorrea) que para diferencias de performance. WellCore aplica estos ajustes como FRAMEWORK de tracking individual — la cliente y coach deben observar SUS patrones, no asumir que la regla generica aplica.",
+
+      "slug": "fase-folicular-temprana",
+      "name": "Fase Folicular Temprana (incluye menstruacion dias 1-5)",
+      "alternative_names": ["postmenstrual_temprana", "fase_1_baja_hormonal"],
+
+      "ciclo_dias_tipico": "1-7",
+      "ciclo_dias_rango": "1-9",
+      "ciclo_assumes_dias_totales": 28,
+
+      "hormonas_dominantes": {
+        "estrogeno": "muy_bajo_luego_creciente",
+        "progesterona": "muy_bajo",
+        "fsh": "creciente_estimulando_foliculos",
+        "lh": "bajo_luego_creciente_hacia_fase_2"
+      },
+
+      "sintomas_tipicos": [
+        "Sangrado menstrual (dias 1-5)",
+        "Fatiga general primeros dias",
+        "Dismenorrea (colicos)",
+        "Distension abdominal",
+        "Labilidad emocional residual",
+        "Recuperacion progresiva de energia y animo conforme cesa el sangrado"
+      ],
+
+      "ajustes_entrenamiento": {
+        "evidence_rank": "low_to_moderate_basado_en_McNulty_2020",
+        "principio_general": "NO hay evidencia robusta de necesidad de reducir sistematicamente carga o volumen en esta fase. Si la cliente se siente bien, entrenar normal. Si tiene dolor o fatiga importante, ajustar individualmente — pero NO como regla.",
+        "volumen_recomendado_pct_vs_baseline": "80-100 (ajustar a tolerancia individual primeros 2-3 dias de sangrado, normal del dia 4 en adelante)",
+        "intensidad_recomendada_pct_vs_baseline": "85-100",
+        "rir_target": "1-3 segun cliente",
+        "ejercicios_priorizar": "Compound habituales si energia lo permite. Si dolor pelvico, evitar abdomen intenso primeros 2 dias.",
+        "ejercicios_precaucion": "Abdominales hiper-intensos los primeros 2 dias si dismenorrea.",
+        "intensidad_cardio": "Zona 2-3 los primeros 2-3 dias si hay fatiga; intensidad normal desde dia 4-5",
+        "nota_practica": "Muchas mujeres entrenadas PR durante menstruacion. El mito de 'no entrenar fuerte con la regla' NO esta soportado por evidencia."
+      },
+
+      "ajustes_nutricion": {
+        "evidence_rank": "low_to_moderate",
+        "calorias_pct_vs_baseline": 100,
+        "carbohidratos_pct_vs_baseline": "100 (puede subir +10% dias de sangrado fuerte si hay fatiga)",
+        "proteina_g_por_kg": "1.6-2.0",
+        "grasas_g_por_kg": "0.8",
+        "sensibilidad_insulina": "alta (favorable para carbohidratos)",
+        "antojos_tipicos": "minimos despues del sangrado",
+        "hidratacion_l": "2.5-3 (puede subir si flujo abundante)",
+        "suplementos_priorizar": [
+          {"item": "hierro_si_flujo_abundante_o_lab_ferritina_baja", "razon": "Reposicion sangrado"},
+          {"item": "magnesio_glicinato_300_400mg", "razon": "Manejo dismenorrea, mejora sueno"},
+          {"item": "omega_3_2g_epa_dha", "razon": "Anti-inflamatorio, reduccion intensidad colicos"}
+        ]
+      },
+
+      "ajustes_sueno_recuperacion": {
+        "calidad_esperada": "Mejorando conforme termina sangrado",
+        "horas_recomendadas": "7.5-8.5 (puede requerir mas dias 1-3)",
+        "siestas_si_aplica": "Tolerables dias 1-3 si fatiga marcada"
+      },
+
+      "considerations_birth_control": {
+        "con_anticonceptivos_orales_combinados_coc": "El ciclo natural esta SUPRIMIDO. Las distinciones por fase son menos pronunciadas o ausentes. La 'menstruacion' bajo COC es sangrado por deprivacion, no fase folicular natural. Tratar todo el ciclo como continuum — no aplicar ajustes por fase basados en cycle-tracking.",
+        "con_diu_hormonal_levonorgestrel": "Variable. Algunas mujeres mantienen ciclo natural, otras tienen amenorrea o ciclos irregulares. Tracking individual es mas importante que regla generica.",
+        "con_diu_no_hormonal_cobre": "Mantiene ciclo natural completo — aplicar reglas estandar. Puede aumentar volumen y duracion del sangrado.",
+        "con_implante_progestina": "Suele suprimir o irregular ciclo. Similar a COC."
+      },
+
+      "scientific_sources": [
+        "McNulty KL, Elliott-Sale KJ, Dolan E, et al (2020). The Effects of Menstrual Cycle Phase on Exercise Performance in Eumenorrheic Women: A Systematic Review and Meta-Analysis. Sports Med 50:1813-1827",
+        "Colenso-Semple LM, D'Souza AC, Elliott-Sale KJ, Phillips SM (2023). Current evidence shows no influence of women's menstrual cycle phase on acute strength performance or adaptations to resistance exercise training. Frontiers in Sports and Active Living",
+        "Sims ST (2016). ROAR — How to Match Your Food and Fitness to Your Female Physiology. (Util como framework, mucha es opinion experta no RCT)",
+        "Janse de Jonge XA (2003). Effects of the menstrual cycle on exercise performance. Sports Medicine 33:833-851"
+      ],
+
+      "legal_framing": "EDUCACION sobre fisiologia femenina y entrenamiento. NO sustituye consulta ginecologica. Si la cliente presenta ciclos irregulares (<21 dias o >35 dias), amenorrea, dismenorrea severa, o sangrado anormal — debe consultar ginecologo ANTES de aplicar adaptaciones especificas. El coach WellCore documenta heuristicas generales de ajuste, NO indicaciones clinicas.",
+
+      "applicable_age_range": [16, 50],
+      "applicable_to_postmenopausal": false,
+      "applicable_to_pregnant": false,
+
+      "confidence": "moderate",
+      "needs_gynecologist_validation": true,
+      "needs_daniel_validation": true,
+
+      "tags": ["mvp_obligatorio", "ciclo_menstrual", "performance_femenino", "evidencia_baja_moderada"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "fase-folicular-tardia",
+      "name": "Fase Folicular Tardia",
+      "alternative_names": ["pre_ovulatoria", "fase_2_estrogeno_creciente"],
+
+      "ciclo_dias_tipico": "8-13",
+      "ciclo_dias_rango": "8-14",
+      "ciclo_assumes_dias_totales": 28,
+
+      "hormonas_dominantes": {
+        "estrogeno": "creciente_a_pico_pre_ovulatorio",
+        "progesterona": "bajo_estable",
+        "fsh": "decreciente_tras_seleccion_foliculo_dominante",
+        "lh": "creciente_preparacion_pico_ovulatorio"
+      },
+
+      "sintomas_tipicos": [
+        "Energia alta",
+        "Estado de animo elevado",
+        "Libido creciente",
+        "Sensacion de bienestar general",
+        "Piel mejor (efecto estrogeno)"
+      ],
+
+      "ajustes_entrenamiento": {
+        "evidence_rank": "low_to_moderate",
+        "principio_general": "Algunas mujeres reportan que esta es su ventana de mejor performance subjetiva. La evidencia objetiva es mixta — McNulty 2020 sugiere efecto trivial a pequeno. Si la cliente lo siente, aprovechar; si no, NO forzar PRs en esta fase.",
+        "volumen_recomendado_pct_vs_baseline": "100-110",
+        "intensidad_recomendada_pct_vs_baseline": "100-110 (intentar PRs si cliente lo siente bien)",
+        "rir_target": "0-2",
+        "ejercicios_priorizar": ["compound pesados", "trabajo cercano al fallo", "tecnicas avanzadas (drop sets, rest pause)"],
+        "intensidad_cardio": "Zona 3-4 si objetivo es performance"
+      },
+
+      "ajustes_nutricion": {
+        "evidence_rank": "moderate",
+        "calorias_pct_vs_baseline": 100,
+        "carbohidratos_pct_vs_baseline": 100,
+        "proteina_g_por_kg": "1.8-2.0",
+        "grasas_g_por_kg": "0.8",
+        "sensibilidad_insulina": "alta_optima",
+        "antojos_tipicos": "minimos",
+        "hidratacion_l": "2.5",
+        "suplementos_priorizar": [
+          {"item": "creatina_5g", "razon": "Optima respuesta anabolica con estrogeno alto"},
+          {"item": "omega_3_2g", "razon": "Anti-inflamatorio"},
+          {"item": "vitamina_d_2000_iu", "razon": "Soporte general"}
+        ]
+      },
+
+      "ajustes_sueno_recuperacion": {
+        "calidad_esperada": "Buena a optima",
+        "horas_recomendadas": "7.5-8"
+      },
+
+      "considerations_birth_control": {
+        "con_anticonceptivos_orales_combinados_coc": "Ciclo suprimido — distincion folicular tardia desaparece. Tratar como continuum.",
+        "con_diu_hormonal": "Variable individual",
+        "con_diu_cobre_o_natural": "Mantener regla estandar"
+      },
+
+      "scientific_sources": [
+        "McNulty KL et al (2020). Menstrual cycle phase and exercise performance meta-analysis",
+        "Colenso-Semple LM et al (2023). No influence of menstrual cycle on strength adaptations"
+      ],
+
+      "legal_framing": "EDUCACION. NO sustituye consulta ginecologica.",
+
+      "applicable_age_range": [16, 50],
+      "applicable_to_postmenopausal": false,
+      "applicable_to_pregnant": false,
+
+      "confidence": "moderate",
+      "needs_gynecologist_validation": true,
+      "needs_daniel_validation": true,
+
+      "tags": ["mvp_obligatorio", "ciclo_menstrual", "performance_femenino", "ventana_optima_subjetiva"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "fase-ovulacion",
+      "name": "Ovulacion",
+      "alternative_names": ["pico_lh", "fase_3_ventana_fertil"],
+
+      "ciclo_dias_tipico": "14-16",
+      "ciclo_dias_rango": "12-17",
+      "ciclo_assumes_dias_totales": 28,
+
+      "hormonas_dominantes": {
+        "estrogeno": "pico_pre_ovulatorio_luego_descenso_rapido",
+        "progesterona": "comenzando_a_subir_post_ovulacion",
+        "lh": "pico_brusco_estimula_ovulacion",
+        "fsh": "pico_secundario_menor"
+      },
+
+      "sintomas_tipicos": [
+        "Posible dolor ovulatorio (Mittelschmerz) — punzante unilateral",
+        "Cambio en moco cervical (clara de huevo)",
+        "Libido peak en muchas mujeres",
+        "Posible spotting leve",
+        "Energia alta",
+        "Mayor laxitud ligamentaria (riesgo lesion ligamento, especialmente ACL en deportes con cambios direccion)"
+      ],
+
+      "ajustes_entrenamiento": {
+        "evidence_rank": "moderate_para_acl_risk_low_para_performance",
+        "principio_general": "Performance puede mantenerse en peak. El riesgo de lesion de ACL (rodilla) muestra evidencia moderada de incremento alrededor de ovulacion por laxitud ligamentaria estrogeno-mediada — relevante en deportes con cambios bruscos de direccion, NO en pesas controladas. Para resistance training: aprovechar peak fuerza si cliente lo siente.",
+        "volumen_recomendado_pct_vs_baseline": "100-105",
+        "intensidad_recomendada_pct_vs_baseline": "100-105 (peak fuerza puede mantenerse de folicular tardia)",
+        "rir_target": "0-2",
+        "ejercicios_priorizar": ["1RM/3RM si periodizado", "compound pesados"],
+        "ejercicios_precaucion": "En deportes con cambios bruscos direccion (futbol, basquet, plyometric), atender warm-up + tecnica para reducir riesgo ACL. NO contraindicado, solo atencion.",
+        "intensidad_cardio": "Cualquier zona segun objetivo"
+      },
+
+      "ajustes_nutricion": {
+        "evidence_rank": "low",
+        "calorias_pct_vs_baseline": 100,
+        "carbohidratos_pct_vs_baseline": 100,
+        "proteina_g_por_kg": "1.8-2.0",
+        "grasas_g_por_kg": "0.8",
+        "sensibilidad_insulina": "alta_aun",
+        "antojos_tipicos": "minimos",
+        "hidratacion_l": "2.5",
+        "suplementos_priorizar": [
+          {"item": "creatina_5g", "razon": "Mantener"},
+          {"item": "omega_3_2g", "razon": "Anti-inflamatorio"},
+          {"item": "magnesio_glicinato_300mg", "razon": "Preparacion para fase lutea (puede prevenir intensidad PMS)"}
+        ]
+      },
+
+      "ajustes_sueno_recuperacion": {
+        "calidad_esperada": "Buena",
+        "horas_recomendadas": "7.5-8"
+      },
+
+      "considerations_birth_control": {
+        "con_anticonceptivos_orales_combinados_coc": "NO hay ovulacion bajo COC — esta fase no existe biologicamente. Sin laxitud ligamentaria ovulatoria.",
+        "con_diu_hormonal": "Variable — algunas no ovulan, otras si",
+        "con_diu_cobre_o_natural": "Ovulacion mantenida — aplicar reglas estandar incluyendo precaucion ACL en deportes de impacto"
+      },
+
+      "scientific_sources": [
+        "McNulty KL et al (2020). Menstrual cycle phase and exercise performance",
+        "Wojtys EM et al (2002). The effect of the menstrual cycle on ACL injuries. Am J Sports Med (evidencia ACL)",
+        "Hewett TE et al (2007). Anterior cruciate ligament injuries in female athletes: Part 2 (evidence ACL hormonal)"
+      ],
+
+      "legal_framing": "EDUCACION. NO sustituye consulta ginecologica. Si la cliente practica deportes de impacto con cambios direccion, mencionar la posibilidad de mayor riesgo ACL en ovulacion (evidencia moderada) — pero NO como contraindicacion.",
+
+      "applicable_age_range": [16, 50],
+      "applicable_to_postmenopausal": false,
+      "applicable_to_pregnant": false,
+
+      "confidence": "moderate",
+      "needs_gynecologist_validation": true,
+      "needs_daniel_validation": true,
+
+      "tags": ["mvp_obligatorio", "ciclo_menstrual", "ovulacion", "acl_risk_awareness", "performance_femenino"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "fase-lutea-temprana",
+      "name": "Fase Lutea Temprana",
+      "alternative_names": ["post_ovulatoria_temprana", "fase_4_progesterona_subiendo"],
+
+      "ciclo_dias_tipico": "17-21",
+      "ciclo_dias_rango": "16-22",
+      "ciclo_assumes_dias_totales": 28,
+
+      "hormonas_dominantes": {
+        "estrogeno": "medio_segundo_pico_menor",
+        "progesterona": "creciente_a_pico_dias_19_22",
+        "lh_fsh": "bajos_post_pico"
+      },
+
+      "sintomas_tipicos": [
+        "Energia estable",
+        "Temperatura corporal basal levemente elevada (+0.3-0.5 C)",
+        "Posible incremento apetito",
+        "Estado de animo estable a inicio, mas reactivo hacia fin",
+        "Mejor sueno en muchas mujeres (progesterona efecto GABA-ergico)"
+      ],
+
+      "ajustes_entrenamiento": {
+        "evidence_rank": "low_to_moderate",
+        "principio_general": "Performance suele mantenerse. Algunas mujeres reportan mayor fatiga termica (progesterona ↑ temperatura) — relevante en cardio intenso o climas calidos. Para resistance training, performance estable.",
+        "volumen_recomendado_pct_vs_baseline": "100",
+        "intensidad_recomendada_pct_vs_baseline": "95-100",
+        "rir_target": "1-2",
+        "ejercicios_priorizar": "Mismo programa habitual",
+        "intensidad_cardio": "Atender hidratacion + temperatura ambiente en cardio largo o intenso"
+      },
+
+      "ajustes_nutricion": {
+        "evidence_rank": "moderate",
+        "calorias_pct_vs_baseline": "100-105 (BMR aumenta ~5-10% en lutea por termogenesis)",
+        "carbohidratos_pct_vs_baseline": "95-100",
+        "proteina_g_por_kg": "1.8-2.0 (algunos datos sugieren ligero aumento en lutea por anabolic resistance — Colenso-Semple 2023)",
+        "grasas_g_por_kg": "0.8-1.0",
+        "sensibilidad_insulina": "moderada (decreciente vs folicular)",
+        "antojos_tipicos": "Crecientes hacia fin de fase (carbs, chocolate, salado)",
+        "hidratacion_l": "2.5-3 (compensar termogenesis)",
+        "suplementos_priorizar": [
+          {"item": "magnesio_glicinato_300_400mg", "razon": "Preparacion PMS, soporte sueno"},
+          {"item": "omega_3_2g", "razon": "Anti-inflamatorio prep lutea tardia"},
+          {"item": "vitamina_b6_p5p_50mg", "razon": "Soporte sintesis serotonina, manejo PMS"}
+        ]
+      },
+
+      "ajustes_sueno_recuperacion": {
+        "calidad_esperada": "Buena en muchas mujeres (efecto progesterona)",
+        "horas_recomendadas": "7.5-8.5"
+      },
+
+      "considerations_birth_control": {
+        "con_anticonceptivos_orales_combinados_coc": "Ciclo suprimido — no hay fase lutea natural. Progesterona sintetica continua.",
+        "con_diu_hormonal": "Variable individual",
+        "con_diu_cobre_o_natural": "Aplicar reglas estandar"
+      },
+
+      "scientific_sources": [
+        "Colenso-Semple LM et al (2023). Sex hormones and muscle protein synthesis",
+        "McNulty KL et al (2020). Cycle phase performance meta-analysis",
+        "Solomon SJ et al (1982). Menstrual cycle and basal metabolic rate (estudio clasico termogenesis lutea)"
+      ],
+
+      "legal_framing": "EDUCACION. NO sustituye consulta ginecologica.",
+
+      "applicable_age_range": [16, 50],
+      "applicable_to_postmenopausal": false,
+      "applicable_to_pregnant": false,
+
+      "confidence": "moderate",
+      "needs_gynecologist_validation": true,
+      "needs_daniel_validation": true,
+
+      "tags": ["mvp_obligatorio", "ciclo_menstrual", "fase_lutea_temprana", "termogenesis", "performance_femenino"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "fase-lutea-tardia",
+      "name": "Fase Lutea Tardia (incluye ventana PMS)",
+      "alternative_names": ["premenstrual", "fase_5_pms", "fase_5_descenso_hormonal"],
+
+      "ciclo_dias_tipico": "22-28",
+      "ciclo_dias_rango": "22-30",
+      "ciclo_assumes_dias_totales": 28,
+
+      "hormonas_dominantes": {
+        "estrogeno": "descendente_rapido",
+        "progesterona": "descendente_rapido",
+        "lh_fsh": "muy_bajos"
+      },
+
+      "sintomas_tipicos": [
+        "Sindrome premenstrual (PMS): irritabilidad, ansiedad, llanto facil, fatiga",
+        "Retencion hidrica, sensacion hinchazon",
+        "Sensibilidad mamaria",
+        "Antojos intensos (carbs, dulces, salado)",
+        "Cefalea",
+        "Acne pre-menstrual",
+        "Calidad sueno mas variable",
+        "Severidad varia mucho individual — algunas mujeres apenas sintomatica"
+      ],
+
+      "ajustes_entrenamiento": {
+        "evidence_rank": "low_para_performance_objetivo_moderate_para_recomendaciones_de_flexibilidad",
+        "principio_general": "Performance objetiva probablemente NO cae significativamente (McNulty 2020), pero performance PERCIBIDA y motivacion pueden caer. Permitir flexibilidad en el plan — si cliente se siente mal, reducir volumen 10-20% es razonable, NO obligatorio. Si se siente bien, entrenar normal.",
+        "volumen_recomendado_pct_vs_baseline": "80-100 (titulado a sensaciones)",
+        "intensidad_recomendada_pct_vs_baseline": "85-100",
+        "rir_target": "2-3 (mas conservador si fatiga marcada)",
+        "ejercicios_priorizar": "Tecnica > carga. Si dia malo, foco en mantener tecnica con cargas moderadas.",
+        "ejercicios_precaucion": "Si dolor mamario, evitar ejercicios pectoral con barra (incomodidad)",
+        "intensidad_cardio": "Zona 2-3 si fatiga; mantener intensidad si energia lo permite",
+        "principio_de_adherencia": "Mejor entrenar 'mal' a no entrenar — la consistencia importa mas que el peak de esa sesion"
+      },
+
+      "ajustes_nutricion": {
+        "evidence_rank": "moderate_para_pms_management",
+        "calorias_pct_vs_baseline": "100-110 (apetito aumentado es real — combatir cravings con saciedad)",
+        "carbohidratos_pct_vs_baseline": "100-110 (no restringir agresivamente — empeora cravings y animo)",
+        "proteina_g_por_kg": "2.0-2.2 (alta proteina = saciedad)",
+        "grasas_g_por_kg": "0.8-1.0",
+        "sensibilidad_insulina": "Mas baja vs folicular",
+        "antojos_tipicos": "Maximos — manejar con flexibilidad y opciones saludables nutricionalmente densas",
+        "hidratacion_l": "3-3.5 (combate retencion hidrica paradojicamente, sodio moderado)",
+        "suplementos_priorizar": [
+          {"item": "magnesio_glicinato_400mg", "razon": "Evidencia moderada PMS — calambres, ansiedad, sueno"},
+          {"item": "vitamina_b6_p5p_50_100mg", "razon": "Evidencia moderada PMS — animo, sintomas"},
+          {"item": "omega_3_2g_epa_dha", "razon": "Anti-inflamatorio, posible beneficio animo"},
+          {"item": "vitamina_d_2000_iu", "razon": "Soporte general"},
+          {"item": "evening_primrose_oil", "razon": "Evidencia limitada para mastalgia — uso opcional, no first-line"}
+        ]
+      },
+
+      "ajustes_sueno_recuperacion": {
+        "calidad_esperada": "Mas variable, puede empeorar",
+        "horas_recomendadas": "8-9 (mas que otras fases)",
+        "tip_practico": "Magnesio + ambiente fresco + reducir cafeina vespertina"
+      },
+
+      "considerations_birth_control": {
+        "con_anticonceptivos_orales_combinados_coc": "Sintomas PMS clasicos ausentes o muy reducidos. Algunas mujeres tienen sintomas 'pseudo-PMS' relacionados con tipo de progestina.",
+        "con_diu_hormonal": "Variable — sintomas PMS pueden persistir si ovulacion continua",
+        "con_diu_cobre_o_natural": "Sintomas PMS completos. Aplicar manejo estandar."
+      },
+
+      "scientific_sources": [
+        "McNulty KL et al (2020). Cycle phase performance meta-analysis",
+        "Fathizadeh N et al (2010). Evaluating the effect of magnesium and magnesium plus vitamin B6 supplement on the severity of premenstrual syndrome. Iran J Nurs Midwifery Res",
+        "Khajehei M et al (2009). Treatment of premenstrual syndrome with vitamin B6",
+        "Sims ST (2016). ROAR (framework de tracking individual util)"
+      ],
+
+      "legal_framing": "EDUCACION. NO sustituye consulta ginecologica. Si los sintomas PMS son severos al punto de afectar funcionalidad significativamente (PMDD — Premenstrual Dysphoric Disorder), referir a ginecologo y/o salud mental. WellCore documenta estrategias generales, NO trata PMDD.",
+
+      "applicable_age_range": [16, 50],
+      "applicable_to_postmenopausal": false,
+      "applicable_to_pregnant": false,
+
+      "confidence": "moderate",
+      "needs_gynecologist_validation": true,
+      "needs_daniel_validation": true,
+
+      "tags": ["mvp_obligatorio", "ciclo_menstrual", "fase_lutea_tardia", "pms_management", "performance_femenino", "adherencia_sobre_perfeccion"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "ajuste-entreno-nutri-sin-anticonceptivos",
+      "name": "Template de Ajuste Entreno + Nutricion — Ciclo Natural (sin anticonceptivos hormonales)",
+      "tipo": "template_meta_protocolo",
+      "objective": "Aplicar las reglas por fase del ciclo menstrual natural al plan de entrenamiento y nutricion de la cliente. Tracking obligatorio del ciclo (idealmente >3 meses para identificar patron personal).",
+
+      "applicable_birth_control_status": [
+        "sin_anticonceptivo_hormonal",
+        "diu_no_hormonal_cobre",
+        "metodos_barrera_o_naturales"
+      ],
+
+      "componentes": [
+        "Configurar tracker ciclo en perfil cliente (primer dia ultimo ciclo + duracion promedio ciclo)",
+        "Aplicar reglas por fase de las 5 entries de ciclo_menstrual_fases segun dia actual del ciclo",
+        "Monitor diario sintomas (cliente registra energia 1-10, calidad sueno, animo, sintomas especificos)",
+        "Re-evaluar cada 3 meses si las reglas genericas matchean el patron personal de la cliente — ajustar si no",
+        "Educacion explicita al cliente: estas son HEURISTICAS, no leyes — la consistencia y tracking individual son mas importantes"
+      ],
+
+      "principio_operativo_clave": "Bias hacia consistencia + flexibilidad individual sobre adherencia rigida a reglas por fase. McNulty 2020 confirma que la variabilidad inter-individual es mayor que el efecto de fase promedio.",
+
+      "monitoreo_obligatorio_cliente": [
+        "Energia diaria 1-10",
+        "Calidad sueno 1-10",
+        "Animo 1-10",
+        "Dia del ciclo",
+        "Sintomas fase-especificos (colicos, retencion, antojos, ansiedad)",
+        "Performance subjetiva del entreno (RPE 1-10)"
+      ],
+
+      "labs_recomendados_baseline": [
+        "panel_hormonal_femenino_completo (ver bloodwork_panels)",
+        "ferritina_baseline_si_flujo_abundante",
+        "vitamina_d_25oh",
+        "hemograma_cbc"
+      ],
+
+      "señales_de_alerta_que_requieren_evaluacion_ginecologica": [
+        "Ciclos <21 dias o >35 dias persistentemente",
+        "Amenorrea >3 meses sin embarazo o lactancia",
+        "Dismenorrea severa que limita funcionalidad >3 dias/mes",
+        "Sangrado entre ciclos persistente",
+        "PMS severo (PMDD) afectando trabajo/relaciones",
+        "Sintomas sospechosos endometriosis (dolor pelvico cronico, dolor durante relaciones, fatiga severa premenstrual)"
+      ],
+
+      "evidence_level": "moderada",
+
+      "legal_framing": "EDUCACION sobre fisiologia femenina y entrenamiento. NO sustituye consulta ginecologica. WellCore documenta heuristicas generales — la cliente debe consultar ginecologo si presenta cualquier senal de alerta o si los sintomas no encajan con el patron normal descrito.",
+
+      "applicable_age_range": [16, 50],
+      "needs_gynecologist_validation": true,
+      "needs_daniel_validation": true,
+
+      "confidence": "moderate",
+      "tags": ["mvp_obligatorio", "template_meta", "ciclo_natural", "tracking_individual"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "ajuste-entreno-nutri-con-anticonceptivos-orales",
+      "name": "Template de Ajuste Entreno + Nutricion — Anticonceptivos Hormonales (COC, implante, IUD hormonal)",
+      "tipo": "template_meta_protocolo",
+      "objective": "Para mujeres usando anticonceptivos hormonales que suprimen el ciclo natural, el programming basado en fases es LARGAMENTE IRRELEVANTE. Aplicar enfoque continuo con tracking de sintomas individuales.",
+
+      "applicable_birth_control_status": [
+        "anticonceptivos_orales_combinados_coc",
+        "implante_etonogestrel_nexplanon",
+        "diu_hormonal_levonorgestrel_si_amenorrea_o_ciclos_ausentes",
+        "anillo_vaginal_hormonal",
+        "parche_hormonal_transdermico",
+        "inyectable_depot_medroxiprogesterona"
+      ],
+
+      "principio_operativo_clave": "El ciclo natural esta SUPRIMIDO o muy atenuado. Las distinciones por fase folicular/lutea biologicamente NO se aplican — programar como continuum estable. La 'menstruacion' bajo COC es sangrado por deprivacion (semana de placebo), NO fase folicular natural. NO aplicar ajustes por fase basados en cycle-tracking.",
+
+      "componentes": [
+        "NO configurar tracker de fase",
+        "Programar entreno y nutricion estables sin variacion ciclica",
+        "Monitor diario sintomas (cliente registra energia, sueno, animo) para identificar patrones individuales que pueden persistir incluso bajo BC",
+        "Atender posibles efectos adversos especificos del metodo BC: depresion (raro pero documentado), libido baja (común con COC), retencion hidrica, cefalea",
+        "Re-evaluar tras 3-6 meses si cliente reporta sintomas pseudo-ciclicos"
+      ],
+
+      "monitoreo_obligatorio_cliente": [
+        "Energia diaria 1-10",
+        "Calidad sueno 1-10",
+        "Animo 1-10 (especial atencion a cambios sostenidos)",
+        "Sangrado/spotting (esperado o no)",
+        "Sintomas adversos BC (cefalea, nausea, retencion, libido)"
+      ],
+
+      "labs_recomendados_baseline": [
+        "panel_hormonal_femenino_completo (incluso bajo BC, util para identificar disfunciones tiroides, prolactina)",
+        "perfil_lipidico (algunos COC alteran perfil lipídico)",
+        "vitamina_d_25oh",
+        "hemograma_cbc",
+        "ferritina_si_sangrado_persistente_a_pesar_de_bc"
+      ],
+
+      "consideraciones_especificas_por_metodo_bc": {
+        "coc_combinados": "Suprimen ciclo. Sin fase basica. Posible afectacion libido y vitamina B6/folato — suplementar si dieta limitada.",
+        "implante_etonogestrel_nexplanon": "Suprime ovulacion. Sangrado irregular comun.",
+        "diu_hormonal_levonorgestrel": "Variable individual — algunas mujeres mantienen ovulacion, otras amenorrea. Tracking individual.",
+        "depot_medroxiprogesterona_inyectable": "Suprime fuertemente. Asociado a disminucion de densidad mineral osea con uso prolongado (>2 anos) — relevante para WellCore ya que afecta entrenamiento de fuerza y riesgo lesion."
+      },
+
+      "señales_de_alerta_que_requieren_evaluacion_medica": [
+        "Depresion nueva o agravada (puede ser efecto BC — discutir con ginecologo cambio de metodo)",
+        "Libido marcadamente reducida que afecta calidad de vida",
+        "Cefalea con aura o cefalea severa nueva (riesgo trombotico — urgente evaluacion)",
+        "Hinchazon unilateral pierna con dolor (TVP — urgencias, BC es factor riesgo)",
+        "Sangrado anormal persistente",
+        "Cambios de animo severos no explicables"
+      ],
+
+      "evidence_level": "moderada",
+
+      "legal_framing": "EDUCACION sobre fisiologia femenina y entrenamiento bajo anticonceptivos hormonales. NO sustituye consulta ginecologica. Decisiones sobre cambio o continuidad de metodo BC son del medico tratante de la cliente, NO del coach WellCore.",
+
+      "applicable_age_range": [16, 50],
+      "needs_gynecologist_validation": true,
+      "needs_daniel_validation": true,
+
+      "confidence": "moderate",
+      "tags": ["mvp_obligatorio", "template_meta", "anticonceptivos_hormonales", "tracking_continuo"],
+      "version": 1,
+      "active": true
+    }
+  ],
+  "bloodwork_panels": [
+    {
+      "slug": "panel-hormonal-masculino-completo",
+      "name": "Panel Hormonal Masculino Completo",
+      "applicable_to": "Hombres en TRT, ergogénicos, o sospecha de hipogonadismo / disfuncion endocrina",
+      "tests_incluidos": [
+        {
+          "test_name": "testosterona_total",
+          "unit": "ng/dL",
+          "reference_range_clinico": "300-1000",
+          "reference_range_optimal_athlete_off_label_no_guideline": "600-900",
+          "interpretation_low": "Hipogonadismo clinico (si <300 ng/dL en 2 mediciones matutinas separadas) — referir endocrinologo",
+          "interpretation_high": "Posible TRT exogena alta o ergogenicos. Si no esta en TRT y sale alto: investigar tumor adrenal/testicular",
+          "obligatorio": true
+        },
+        {
+          "test_name": "testosterona_libre",
+          "unit": "pg/mL",
+          "reference_range_clinico": "47-244",
+          "interpretation_low": "Posible SHBG elevada bloqueando bioavailable testo. Investigar causa.",
+          "interpretation_high": "Posible bajo SHBG — evaluar contexto",
+          "obligatorio": "si_total_borderline_o_shbg_anormal"
+        },
+        {
+          "test_name": "estradiol_e2_sensible_lc_ms_ms",
+          "unit": "pg/mL",
+          "reference_range_clinico": "10-40 (variable por lab)",
+          "interpretation_low": "<10 pg/mL: posible bloqueo aromatasa excesivo — dolor articular, libido baja, depresion. Reducir AI si aplica.",
+          "interpretation_high": ">50 pg/mL con sintomas (sensibilidad mamaria, edema): aromatizacion excesiva. NO tratar numero aislado — solo si sintomas presentes.",
+          "obligatorio": true,
+          "nota_critica": "USAR test sensible (LC-MS/MS o ECLIA sensible). Test estandar es impreciso a estos rangos. Thresholds NO son universales — interpretar EN CONTEXTO."
+        },
+        {
+          "test_name": "lh_hormona_luteinizante",
+          "unit": "mIU/mL",
+          "reference_range_clinico": "1.7-8.6",
+          "interpretation_low": "Supresion eje HPG (esperable durante TRT exogeno)",
+          "interpretation_high": "Si testo bajo + LH alta: hipogonadismo primario testicular. Si testo bajo + LH baja: hipogonadismo secundario.",
+          "obligatorio": "baseline_y_si_clinicamente_indicado"
+        },
+        {
+          "test_name": "fsh_hormona_folicular_estimulante",
+          "unit": "mIU/mL",
+          "reference_range_clinico": "1.5-12.4",
+          "interpretation_low": "Supresion eje HPG",
+          "interpretation_high": "Posible falla testicular espermatogenica",
+          "obligatorio": "baseline_y_si_evaluacion_fertilidad"
+        },
+        {
+          "test_name": "shbg",
+          "unit": "nmol/L",
+          "reference_range_clinico": "10-57",
+          "reference_range_optimal_atleta": "20-45",
+          "interpretation_low": "Posible insulino-resistencia, hipertiroidismo, esteroides anabolicos",
+          "interpretation_high": "Posible hipertiroidismo, hepatopatia, edad avanzada",
+          "obligatorio": "si_testo_total_borderline"
+        },
+        {
+          "test_name": "psa_total",
+          "unit": "ng/mL",
+          "reference_range_clinico": "<4.0",
+          "reference_range_alerta": ">2.5 o ascenso >0.75/año",
+          "interpretation_high": "Referir urologo. NO continuar TRT hasta evaluacion.",
+          "obligatorio_si_edad_mayor_40": true,
+          "ajuste_si_finasterida": "Si paciente toma finasterida, multiplicar PSA medido x2 para interpretacion real"
+        },
+        {
+          "test_name": "hematocrito",
+          "unit": "%",
+          "reference_range_clinico": "38-54",
+          "reference_range_alerta": ">54",
+          "interpretation_high": "Policitemia secundaria — riesgo trombosis. Manejo: donar sangre / flebotomia, reducir dosis testo, hidratacion abundante.",
+          "obligatorio": true
+        },
+        {
+          "test_name": "hemoglobina",
+          "unit": "g/dL",
+          "reference_range_clinico": "13-17",
+          "obligatorio": true
+        },
+        {
+          "test_name": "prolactina",
+          "unit": "ng/mL",
+          "reference_range_clinico": "2-18",
+          "interpretation_high": "Hiperprolactinemia — investigar prolactinoma, medicamentos, hipotiroidismo. Afecta libido y testo.",
+          "obligatorio": "si_libido_baja_persistente_o_galactorrea"
+        }
+      ],
+
+      "frecuencia_recomendada": "baseline + semana 6 inicio TRT + cada 12 semanas mantenimiento",
+      "costo_estimado_colombia_cop": "350.000 - 650.000 (variable por laboratorio y completitud del panel)",
+      "costo_estimado_mexico_mxn": "3.500 - 6.500",
+      "laboratorios_recomendados_co": ["Compensar", "Synlab", "Higuera Escalante", "Dinamica", "Cedimed"],
+
+      "interpretation_general": "Panel disenado para hombre en TRT o ergogenicas. Lectura debe ser hecha por endocrinologo o internista familiarizado con farmacologia hormonal deportiva — medicos generales suelen interpretar testo total >300 como 'normal' sin contexto clinico ni considerar TRT.",
+
+      "scientific_sources": [
+        "Endocrine Society Clinical Practice Guideline (Bhasin 2018)",
+        "Bhasin S et al (2018). Testosterone Therapy in Men With Hypogonadism. JCEM"
+      ],
+
+      "legal_framing": "EDUCACION sobre paneles de laboratorio. WellCore NO interpreta resultados — el cliente debe llevar resultados a un medico calificado. El coach WellCore puede recordar al cliente las fechas de control y archivar resultados en su perfil para tracking, pero NO indica al cliente que significan los valores ni que accion tomar.",
+
+      "applicable_gender": ["masculino"],
+      "applicable_age_range": [18, 80],
+
+      "confidence": "high",
+      "needs_endocrinologist_validation": true,
+      "needs_daniel_validation": true,
+      "tags": ["mvp_obligatorio", "panel_hormonal", "masculino", "trt_monitoring", "elite"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "panel-hormonal-femenino-completo",
+      "name": "Panel Hormonal Femenino Completo",
+      "applicable_to": "Mujeres con irregularidades del ciclo, amenorrea atletica, evaluacion de fertilidad, sospecha de SOP/PCOS, o evaluacion baseline para programming personalizado",
+
+      "nota_temporal_critica": "El panel hormonal femenino DEBE tomarse en fase folicular temprana (dias 2-5 del ciclo) para interpretacion correcta de baseline. Excepcion: progesterona se mide en fase lutea (dia 21 aprox) para confirmar ovulacion. Si la cliente toma anticonceptivos hormonales, algunos valores estan suprimidos — discutir con ginecologo.",
+
+      "tests_incluidos": [
+        {
+          "test_name": "estradiol_e2",
+          "unit": "pg/mL",
+          "reference_range_fase_folicular_temprana": "25-75",
+          "reference_range_pre_ovulatorio_peak": "200-400",
+          "reference_range_fase_lutea": "100-200",
+          "reference_range_postmenopausia": "<30",
+          "interpretation_low": "Posible amenorrea hipotalamica (atleta con baja energia disponible), falla ovarica prematura, perimenopausia.",
+          "obligatorio": true
+        },
+        {
+          "test_name": "progesterona",
+          "unit": "ng/mL",
+          "reference_range_fase_folicular": "<1",
+          "reference_range_fase_lutea_dia_21_post_ovulacion": ">3 (confirma ovulacion)",
+          "interpretation_low_en_lutea": "Posible anovulacion o defecto fase lutea",
+          "obligatorio": "si_evaluacion_fertilidad_o_sospecha_anovulacion",
+          "timing_critico": "Dia 21 del ciclo aprox (7 dias post-ovulacion)"
+        },
+        {
+          "test_name": "lh_hormona_luteinizante",
+          "unit": "mIU/mL",
+          "reference_range_fase_folicular_temprana": "2-10",
+          "reference_range_pico_ovulatorio": "15-90",
+          "reference_range_postmenopausia": ">30",
+          "interpretation_high_relativa_a_fsh": "Si LH:FSH >2:1 en folicular temprana: sospecha SOP/PCOS",
+          "obligatorio": true
+        },
+        {
+          "test_name": "fsh_hormona_folicular_estimulante",
+          "unit": "mIU/mL",
+          "reference_range_fase_folicular_temprana": "3-10",
+          "reference_range_postmenopausia": ">30",
+          "interpretation_high_en_premenopausia": "Posible reserva ovarica baja o perimenopausia",
+          "obligatorio": true
+        },
+        {
+          "test_name": "prolactina",
+          "unit": "ng/mL",
+          "reference_range_clinico": "5-25",
+          "interpretation_high": "Hiperprolactinemia — investigar prolactinoma, medicamentos, hipotiroidismo. Puede causar amenorrea, galactorrea, libido baja.",
+          "obligatorio": true
+        },
+        {
+          "test_name": "testosterona_total_femenina",
+          "unit": "ng/dL",
+          "reference_range_clinico": "15-70",
+          "interpretation_high": "Sospecha SOP/PCOS, hiperplasia adrenal, tumor productor andrógeno. Sintomas: hirsutismo, acne, alopecia androgenica.",
+          "interpretation_low": "Puede asociarse a libido baja, fatiga — pero TRT en mujeres es mucho mas controversial que en hombres.",
+          "obligatorio": true
+        },
+        {
+          "test_name": "shbg",
+          "unit": "nmol/L",
+          "reference_range_premenopausia": "30-90",
+          "obligatorio": "si_testo_borderline"
+        },
+        {
+          "test_name": "amh_hormona_antimulleriana",
+          "unit": "ng/mL",
+          "reference_range_reserva_normal": "1.0-3.5",
+          "interpretation_low": "Reserva ovarica baja (perimenopausia, falla ovarica)",
+          "interpretation_high": "Posible SOP/PCOS",
+          "obligatorio": "si_evaluacion_fertilidad_o_planning_familiar"
+        },
+        {
+          "test_name": "tsh_hormona_estimulante_tiroides",
+          "unit": "mIU/L",
+          "reference_range_clinico": "0.4-4.0",
+          "interpretation_alterada": "Hipotiroidismo subclinico/clinico afecta ciclo y energia. T4 libre + anti-TPO si TSH alterada.",
+          "obligatorio": true
+        },
+        {
+          "test_name": "vitamina_d_25oh",
+          "unit": "ng/mL",
+          "reference_range_optimal": "30-50",
+          "interpretation_low": "Deficiencia comun, suplementar si <30. Relevante para salud osea femenina.",
+          "obligatorio": true
+        }
+      ],
+
+      "frecuencia_recomendada": "Baseline + repetir si sintomas cambian o cada 12-24 meses como seguimiento. Si bajo monitoreo activo de ciclo: dosaje hormonal anual.",
+      "costo_estimado_colombia_cop": "300.000 - 600.000",
+      "laboratorios_recomendados_co": ["Compensar", "Synlab", "Higuera Escalante", "Dinamica"],
+
+      "interpretation_general": "Panel femenino debe ser interpretado por ginecologo o endocrinologo. Coach WellCore archiva resultados para tracking pero NO interpreta. Especial atencion al timing del muestreo segun fase del ciclo.",
+
+      "scientific_sources": [
+        "Practice Committee of the American Society for Reproductive Medicine (ASRM) — Female fertility evaluation",
+        "Endocrine Society — PCOS Guideline",
+        "Mountjoy M et al (2014). RED-S consensus statement (atleta femenina)"
+      ],
+
+      "legal_framing": "EDUCACION. WellCore NO interpreta resultados — referir a ginecologo. Especial cuidado si hay sospecha SOP/PCOS, amenorrea atletica, infertilidad o perimenopausia.",
+
+      "applicable_gender": ["femenino"],
+      "applicable_age_range": [16, 50],
+      "applicable_postmenopausal_subset": "panel_diferente_postmenopausia",
+
+      "confidence": "high",
+      "needs_gynecologist_validation": true,
+      "needs_daniel_validation": true,
+      "tags": ["mvp_obligatorio", "panel_hormonal", "femenino", "fertility_evaluation", "elite"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "panel-atleta-bodybuilding-completo",
+      "name": "Panel Atleta Bodybuilding / Performance Completo",
+      "applicable_to": "Atleta competitivo o cliente Elite con o sin ciclos hormonales, busqueda de optimizacion integral salud + performance",
+
+      "tests_incluidos": [
+        {"test_name": "cbc_hemograma_completo", "componentes": ["hemoglobina", "hematocrito", "leucocitos_diferencial", "plaquetas", "vcm", "hcm"], "obligatorio": true},
+        {"test_name": "perfil_metabolico_completo_cmp", "componentes": ["glucosa", "creatinina", "bun_urea", "tasa_filtracion_glomerular_egfr", "sodio", "potasio", "cloro", "bicarbonato", "calcio_total", "alt", "ast", "fosfatasa_alcalina", "bilirrubina_total", "proteinas_totales", "albumina"], "obligatorio": true},
+        {"test_name": "perfil_lipidico_completo", "componentes": ["colesterol_total", "ldl", "hdl", "trigliceridos", "vldl", "ratio_colesterol_total_hdl"], "obligatorio": true},
+        {"test_name": "panel_hormonal_completo_segun_genero", "ver": "panel-hormonal-masculino-completo o panel-hormonal-femenino-completo"},
+        {"test_name": "creatina_kinasa_ck_total", "unit": "U/L", "reference_range_clinico": "30-200 (variable atletas)", "interpretation_high": "Esperable post-entreno intenso. Si persistente alto sin entreno reciente: investigar rabdomiolisis o miopatia.", "obligatorio": true},
+        {"test_name": "glucosa_ayuno", "unit": "mg/dL", "reference_range_clinico": "70-99", "obligatorio": true},
+        {"test_name": "hba1c", "unit": "%", "reference_range_clinico": "<5.7", "obligatorio": true},
+        {"test_name": "insulina_ayuno", "unit": "uIU/mL", "reference_range_clinico": "2-20", "obligatorio": "si_glucosa_alta_o_sospecha_resistencia"},
+        {"test_name": "homa_ir_calculado", "formula": "(insulina_ayuno x glucosa_ayuno) / 405", "interpretation_alto": ">2.5 sospecha resistencia insulina", "obligatorio": "si_insulina_medida"},
+        {"test_name": "vitamina_d_25oh", "unit": "ng/mL", "reference_range_optimal": "30-50", "obligatorio": true},
+        {"test_name": "vitamina_b12", "unit": "pg/mL", "reference_range_clinico": ">300", "obligatorio": true},
+        {"test_name": "ferritina", "unit": "ng/mL", "reference_range_hombres": "30-400", "reference_range_mujeres_premenopausia": "15-200", "obligatorio": true},
+        {"test_name": "magnesio_serico_o_eritrocitario", "obligatorio": "opcional"},
+        {"test_name": "zinc_serico", "obligatorio": "opcional"},
+        {"test_name": "homocisteina", "obligatorio": "si_factor_riesgo_cardiovascular_o_b12_folato_borderline"},
+        {"test_name": "pcr_us_proteina_c_reactiva_ultrasensible", "unit": "mg/L", "reference_range_clinico": "<1 bajo riesgo, 1-3 moderado, >3 alto", "interpretation": "Marcador inflamacion sistemica. Elevado puede reflejar overtraining, infeccion subclinica, o riesgo cardiovascular.", "obligatorio": "recomendado"},
+        {"test_name": "tsh_t4_libre", "obligatorio": true}
+      ],
+
+      "frecuencia_recomendada": "Baseline al iniciar TRT/ergogenicas + cada 6 meses mantenimiento. Si sin compounds: anual.",
+      "costo_estimado_colombia_cop": "600.000 - 1.200.000",
+
+      "interpretation_general": "Panel integral para atleta serio. Interpretacion requiere medico con experiencia en medicina deportiva. WellCore archiva, NO interpreta.",
+
+      "scientific_sources": [
+        "Tarnopolsky MA — Comprehensive sports medicine clinical labs reference",
+        "Endocrine Society 2018 + ISSN Position Stands"
+      ],
+
+      "legal_framing": "EDUCACION. WellCore NO interpreta — referir medico especializado.",
+
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_age_range": [18, 65],
+
+      "confidence": "high",
+      "needs_endocrinologist_validation": true,
+      "needs_daniel_validation": true,
+      "tags": ["mvp_obligatorio", "panel_atleta", "performance_integral", "elite"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "panel-metabolico-diabetes",
+      "name": "Panel Metabolico / Pre-Diabetes / Resistencia Insulinica",
+      "applicable_to": "Cliente con sospecha de prediabetes, sindrome metabolico, resistencia insulinica, o seguimiento de cliente con diabetes establecida",
+
+      "tests_incluidos": [
+        {"test_name": "glucosa_ayuno", "unit": "mg/dL", "reference_range_normal": "70-99", "reference_range_prediabetes": "100-125", "reference_range_diabetes": ">=126 (confirmar con segunda medicion)", "obligatorio": true},
+        {"test_name": "hba1c_hemoglobina_glicosilada", "unit": "%", "reference_range_normal": "<5.7", "reference_range_prediabetes": "5.7-6.4", "reference_range_diabetes": ">=6.5", "obligatorio": true},
+        {"test_name": "insulina_ayuno", "unit": "uIU/mL", "reference_range_clinico": "2-20 (variable)", "interpretation_alta": ">15 sugiere resistencia insulinica incluso con glucosa normal", "obligatorio": true},
+        {"test_name": "homa_ir", "formula": "(insulina_ayuno_uIU_mL x glucosa_ayuno_mg_dL) / 405", "interpretation": "<1.0 sensible, 1.0-2.5 normal, 2.5-3.0 limite, >3.0 resistencia insulinica", "obligatorio": true},
+        {"test_name": "perfil_lipidico_completo", "componentes": ["colesterol_total", "ldl", "hdl", "trigliceridos"], "obligatorio": true},
+        {"test_name": "trigliceridos_hdl_ratio", "interpretation": ">3.5 fuerte sospecha resistencia insulinica", "obligatorio": "recomendado"},
+        {"test_name": "alt_ast", "interpretation_alta": "Esteatosis hepatica no alcoholica comun en sindrome metabolico", "obligatorio": true},
+        {"test_name": "creatinina_egfr", "obligatorio": true},
+        {"test_name": "microalbuminuria_orina", "obligatorio": "si_diabetico_establecido_o_hipertension"},
+        {"test_name": "tsh", "obligatorio": "recomendado"}
+      ],
+
+      "frecuencia_recomendada": "Baseline + cada 3-6 meses si en tratamiento activo. Anual si solo screening.",
+      "costo_estimado_colombia_cop": "200.000 - 400.000",
+
+      "interpretation_general": "Panel disenado para detectar prediabetes y monitorear sindrome metabolico. Interpretacion por endocrinologo, internista o medico general entrenado en metabolismo.",
+
+      "scientific_sources": [
+        "American Diabetes Association Standards of Care (anual)",
+        "Endocrine Society — Type 2 Diabetes guidelines"
+      ],
+
+      "legal_framing": "EDUCACION. WellCore NO interpreta ni indica tratamiento — el cliente debe llevar resultados a su medico tratante. Cualquier sospecha de diabetes requiere evaluacion medica antes de modificaciones nutricionales agresivas.",
+
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_age_range": [25, 75],
+
+      "confidence": "high",
+      "needs_endocrinologist_validation": false,
+      "needs_internist_validation": true,
+      "needs_daniel_validation": true,
+      "tags": ["mvp_obligatorio", "panel_metabolico", "prediabetes", "resistencia_insulina"],
+      "version": 1,
+      "active": true
+    },
+
+    {
+      "slug": "panel-salud-general-baseline",
+      "name": "Panel de Salud General Baseline (Anual)",
+      "applicable_to": "Cualquier cliente Elite — baseline anual estandar para screening general de salud, NO especifico de TRT/performance/ciclos",
+
+      "tests_incluidos": [
+        {"test_name": "cbc_hemograma_completo", "componentes": ["hemoglobina", "hematocrito", "leucocitos_diferencial", "plaquetas", "vcm"], "obligatorio": true},
+        {"test_name": "perfil_metabolico_completo_cmp", "componentes": ["glucosa", "creatinina", "bun_urea", "egfr", "sodio", "potasio", "calcio", "alt", "ast", "bilirrubina", "albumina"], "obligatorio": true},
+        {"test_name": "perfil_lipidico_basico", "componentes": ["colesterol_total", "ldl", "hdl", "trigliceridos"], "obligatorio": true},
+        {"test_name": "hba1c", "obligatorio": true},
+        {"test_name": "tsh", "obligatorio": true},
+        {"test_name": "vitamina_d_25oh", "obligatorio": true},
+        {"test_name": "ferritina", "obligatorio": true},
+        {"test_name": "vitamina_b12", "obligatorio": "recomendado"},
+        {"test_name": "psa_total_hombres_mayor_40", "obligatorio": "si_aplica_edad"},
+        {"test_name": "uroanalisis", "obligatorio": "recomendado"}
+      ],
+
+      "frecuencia_recomendada": "Anual baseline para adultos sanos. Mas frecuente si hallazgos previos.",
+      "costo_estimado_colombia_cop": "200.000 - 350.000",
+      "interpretation_general": "Panel screening general — cualquier medico de medicina interna puede interpretarlo. NO requiere especialista. Si hay hallazgos: referir a especialista correspondiente.",
+
+      "scientific_sources": [
+        "USPSTF (US Preventive Services Task Force) recommendations",
+        "American College of Physicians — annual physical exam guidance"
+      ],
+
+      "legal_framing": "EDUCACION. Este panel es estandar de medicina interna preventiva. El cliente puede llevarlo a su medico general. WellCore lo recomienda como practica de health-tracking responsable, no como evaluacion medica.",
+
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_age_range": [18, 80],
+
+      "confidence": "high",
+      "needs_endocrinologist_validation": false,
+      "needs_internist_validation": false,
+      "needs_daniel_validation": true,
+      "tags": ["mvp_obligatorio", "panel_baseline", "screening_anual", "salud_general"],
+      "version": 1,
+      "active": true
+    }
+  ],
+
+  "TODO_post_validacion_medica": [
+    "VALIDACION CRITICA #1: Endocrinologo aliado revisa compounds (8) + protocolos templates (4) + panel hormonal masculino + panel atleta BB",
+    "VALIDACION CRITICA #2: Ginecologo aliado revisa ciclo_menstrual_fases (5) + 2 templates ajuste + panel hormonal femenino",
+    "VALIDACION CRITICA #3: Abogado revisa legal_framing universal + brand-specific status INVIMA en Colombia + status COFEPRIS Mexico + ANMAT Argentina",
+    "VALIDACION CRITICA #4: Daniel decide policy WellCore sobre uso ergogenico vs solo TRT clinico (linea editorial)",
+    "DECISION POST-VALIDACION: Si endocrinologo objeta dosis o protocolo especifico, AJUSTAR antes de seedear",
+    "DECISION POST-VALIDACION: Si abogado encuentra exposicion legal, AJUSTAR legal_framing antes de seedear",
+    "DECISION FASE 2: Decidir si oxandrolona / SARMs / peptidos entran en futura expansion (NO en MVP)",
+    "DECISION FASE 2: Decidir si protocolo bridge-entre-ciclos entra en futura expansion",
+    "TECNICA: Una vez validado, crear migration aditiva LOCAL en wellcore_kb (NO produccion) con tablas hormonal_compounds + hormonal_protocols + ciclo_menstrual_fases + bloodwork_panels",
+    "TECNICA: Linter pre-INSERT verifica que cada entry tiene legal_framing no vacio + scientific_sources >= 2",
+    "TECNICA: Implementar killswitch WC_HORMONAL_CATALOG_ENABLED=false default OFF hasta validacion completa"
+  ],
+
+  "summary_post_curacion": {
+    "compounds_completos": 8,
+    "protocolos_templates": 4,
+    "fases_ciclo": 5,
+    "templates_ajuste_ciclo": 2,
+    "paneles_bloodwork": 5,
+    "total_entries": 24,
+    "compounds_con_controversia_marcada": ["clomifeno (long-term TRT alt)", "anastrozol (rutina TRT)", "finasterida (Post-Finasteride Syndrome)"],
+    "protocolos_alto_riesgo_legal": ["trt-alto-rango-12sem", "pct-clasico-postciclo-6sem"],
+    "ciclo_menstrual_caveat": "Evidencia McNulty 2020 (78 estudios) muestra efecto del ciclo TRIVIAL-PEQUENO en performance — framework util como tracking individual, NO como ley fisiologica",
+    "todos_los_entries_requieren_validacion_medica_antes_de_seedear": true,
+    "ningun_entry_se_seedea_a_wellcore_kb_sin_validacion_externa": true
+  }
+}

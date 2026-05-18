@@ -1,0 +1,327 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "generated_at": "2026-05-17",
+    "chunk": "09 of 12",
+    "chunk_description": "Categoría F — SELECCIÓN DE STACK BASE DE SUPLEMENTOS. 7 rules. Referencia slugs de supplement-catalog-seed.json (Pieza 4) — slugs verificados reales.",
+    "category": "F. SELECCIÓN DE STACK SUPLEMENTOS (rules F1-F7)",
+    "rule_type_global": "select_supplement_stack",
+    "depends_on": {
+      "supplement_catalog_seed": "docs/audit-motor-v2/supplement-catalog-seed.json (slugs verificados)"
+    },
+    "operators_supported_global": [
+      "equals", "not_equals", "in", "not_in",
+      "includes", "excludes", "between",
+      "greater_than", "less_than", "greater_than_or_equal", "less_than_or_equal",
+      "is_null", "is_not_null"
+    ]
+  },
+  "rules": [
+    {
+      "slug": "stack-esencial-base",
+      "name": "Stack base Esencial — 5 suplementos universales",
+      "rule_type": "select_supplement_stack",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.tier", "op": "equals", "value": "esencial"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "supplement_stack_assignment",
+        "stack_label": "Stack Esencial base",
+        "supplements": [
+          {"slug": "proteina-whey-concentrada", "dosis_default": "1 scoop (25-30 g)", "timing": "post-entreno o pre-comida si proteína dietética baja", "priority": "alta", "obligatorio": true},
+          {"slug": "creatina-monohidrato", "dosis_default": "5 g/día", "timing": "cualquier hora, diario sin saltarse", "priority": "alta", "obligatorio": true},
+          {"slug": "multivitaminico-base", "dosis_default": "1 tableta", "timing": "con desayuno", "priority": "media", "obligatorio": true},
+          {"slug": "omega-3-epa-dha", "dosis_default": "1-2 g EPA+DHA combinados", "timing": "con almuerzo", "priority": "media", "obligatorio": true},
+          {"slug": "vitamina-d3", "dosis_default": "1000-2000 UI", "timing": "mañana con desayuno", "priority": "media", "obligatorio": false, "skip_si": "cliente vive en zona con sol abundante y se expone diariamente"}
+        ],
+        "rationale_stack": "Stack mínimo evidence-based: whey (gap proteico), creatina (performance + masa magra), multivitamínico (gaps micronutrientes), omega-3 (antiinflamatorio + cognitivo), vit-d3 (déficit común en LATAM urbano)."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.dietary_flags", "op": "includes", "value": "vegetariano", "note": "Override I3 reemplaza whey-concentrada por proteina-vegetal-blend"},
+        {"field": "client.dietary_flags", "op": "includes", "value": "sin_lacteos", "note": "Override I4 idem"}
+      ],
+      "scientific_rationale": "Stack defensivo basado en evidencia: Morton 2018 (proteína para hipertrofia), Kreider 2017 (creatina sin contraindicaciones serias), Calder 2017 (omega-3 antiinflamatorio), Holick 2007 (vit D3 déficit global). El multivitamínico es 'póliza de seguro' barata para clientes con dieta no perfecta.",
+      "scientific_sources": [
+        {"citation": "Morton R.W., Murphy K.T., et al. (2018). A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains. British Journal of Sports Medicine 52(6), 376-384.", "verified": false},
+        {"citation": "Kreider R.B., Kalman D.S., Antonio J., et al. (2017). International Society of Sports Nutrition position stand: safety and efficacy of creatine supplementation. Journal of the International Society of Sports Nutrition 14, 18.", "verified": false},
+        {"citation": "Calder P.C. (2017). Omega-3 fatty acids and inflammatory processes: from molecules to man. Biochemical Society Transactions 45(5), 1105-1115.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Plan real Lizetd tiene whey + creatina + multivitamínico + omega-3 + vit-D + magnesio + cafeína (7 suplementos = stack base F1 + F5 + F6)."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "stack_base", "esencial"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-metodo-agrega-recovery",
+      "name": "Stack Método — base Esencial + recovery (magnesio + cafeína opcional)",
+      "rule_type": "select_supplement_stack",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.tier", "op": "equals", "value": "metodo"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "supplement_stack_assignment",
+        "stack_label": "Stack Método",
+        "stack_compose": "stack-esencial-base + adicionales",
+        "supplements_adicionales": [
+          {"slug": "magnesio-bisglicinato", "dosis_default": "200-400 mg", "timing": "30 min pre-cama", "priority": "media", "obligatorio": true, "rationale": "Recovery neuromuscular + sueño profundo. Forma bisglicinato no produce malestar GI."},
+          {"slug": "cafeina-anhidra", "dosis_default": "100-200 mg", "timing": "30-45 min pre-entreno", "priority": "baja", "obligatorio": false, "skip_si": "cliente intolerante a cafeína o entrena en la noche"}
+        ],
+        "rationale_stack": "Método agrega 1-2 suplementos al base Esencial. Magnesio cubre demanda aumentada por volumen mayor de entrenamiento. Cafeína opcional para clientes que aprovechan estímulo ergogénico pre-entreno."
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Magnesio bisglicinato es la forma con mejor biodisponibilidad y menor incidencia de diarrea (Schuette 1994). En atletas hay déficit relativo por mayor demanda. Cafeína 3-6 mg/kg pre-entreno mejora performance en fuerza y endurance (Grgic 2020).",
+      "scientific_sources": [
+        {"citation": "Schuette S.A., Lashner B.A., Janghorbani M. (1994). Bioavailability of magnesium diglycinate vs magnesium oxide in patients with ileal resection. Journal of Parenteral and Enteral Nutrition 18(5), 430-435.", "verified": false},
+        {"citation": "Grgic J., Grgic I., Pickering C., Schoenfeld B.J., Bishop D.J., Pedisic Z. (2020). Wake up and smell the coffee: caffeine supplementation and exercise performance—an umbrella review of 21 published meta-analyses. British Journal of Sports Medicine 54(11), 681-688.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["mvp_obligatorio", "stack_metodo"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-elite-mujer-salud-femenina",
+      "name": "Stack Elite mujer — foco salud hormonal y articular (caso Silvia)",
+      "rule_type": "select_supplement_stack",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.tier", "op": "equals", "value": "elite"},
+          {"field": "client.gender", "op": "equals", "value": "femenino"}
+        ],
+        "any_of": [],
+        "none_of": []
+      },
+      "output": {
+        "type": "supplement_stack_assignment",
+        "stack_label": "Stack Elite femenino — salud + performance",
+        "supplements": [
+          {"slug": "proteina-whey-isolada", "dosis_default": "1 scoop (25 g)", "timing": "post-entreno o entre comidas", "priority": "alta", "obligatorio": true, "rationale": "Isolada (vs concentrada) tiene menos lactosa y más proteína por gramo — preferida en cut o sensibilidad lactosa."},
+          {"slug": "creatina-monohidrato", "dosis_default": "3-5 g/día", "timing": "cualquier hora, diario", "priority": "alta", "obligatorio": true},
+          {"slug": "omega-3-epa-dha", "dosis_default": "2-3 g EPA+DHA combinados (alto EPA)", "timing": "con almuerzo", "priority": "alta", "obligatorio": true, "rationale": "EPA alto reduce inflamación articular y soporta función hormonal femenina."},
+          {"slug": "vitamina-d3-k2", "dosis_default": "2000 UI D3 + 100 mcg K2", "timing": "con desayuno", "priority": "alta", "obligatorio": true, "rationale": "K2 dirige calcio a hueso (no a arterias) — importante en mujeres adultas."},
+          {"slug": "magnesio-glicinato", "dosis_default": "200-400 mg", "timing": "pre-cama", "priority": "alta", "obligatorio": true, "rationale": "Glicinato (vs bisglicinato genérico) tiene mejor biodisponibilidad para SNC — sueño + recovery."},
+          {"slug": "multivitaminico-femenino", "dosis_default": "1 tableta", "timing": "con desayuno", "priority": "media", "obligatorio": true, "rationale": "Formulado con hierro + B6/B12 + folato + biotina priorizados."},
+          {"slug": "colageno-vit-c", "dosis_default": "10-15 g colágeno + 80 mg vit C", "timing": "30-60 min pre-entreno", "priority": "media", "obligatorio": true, "rationale": "Soporta tejido conectivo (tendones, ligamentos) — relevante en mujeres con laxitud ligamentaria fluctuante por ciclo."}
+        ],
+        "rationale_stack": "Stack diseñado para mujer Elite avanzada con foco salud hormonal + articular + performance. NO incluye pre-workout con estimulantes (vs F4 Elite hombre). 7 suplementos = misma cantidad que Lizetd Esencial pero composición distinta."
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.embarazo", "op": "equals", "value": true, "note": "Embarazo: pausar creatina (precaución), suspender colágeno con marca, ajustar dosis con obstetra"}
+      ],
+      "scientific_rationale": "Mujeres atletas tienen mayor riesgo de déficit de hierro, calcio, vitamina D y omega-3 (Mountjoy 2018 RED-S). La inclusión de colágeno + vit C tiene evidencia emergente para salud tendinosa (Shaw 2017). Stack refleja patrón observado en Silvia con outcomes favorables.",
+      "scientific_sources": [
+        {"citation": "Mountjoy M., Sundgot-Borgen J., Burke L., et al. (2018). IOC consensus statement on relative energy deficiency in sport (RED-S): 2018 update. British Journal of Sports Medicine 52(11), 687-697.", "verified": false},
+        {"citation": "Shaw G., Lee-Barthel A., Ross M.L., Wang B., Baar K. (2017). Vitamin C-enriched gelatin supplementation before intermittent activity augments collagen synthesis. American Journal of Clinical Nutrition 105(1), 136-143.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_001_silvia",
+          "matched": true,
+          "outcome": "Plan real Silvia: proteína isolada + creatina + omega-3 + vit-D3+K2 + magnesio glicinato + multi-fem + colágeno+C. Coincide 7/7."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "stack_elite_femenino", "salud_hormonal", "caso_silvia"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-elite-hombre-performance",
+      "name": "Stack Elite hombre performance — base + pre-workout + recovery agresivo (caso Daniel)",
+      "rule_type": "select_supplement_stack",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.tier", "op": "equals", "value": "elite"},
+          {"field": "client.gender", "op": "equals", "value": "masculino"},
+          {"field": "client.level", "op": "in", "value": ["intermedio", "avanzado"]}
+        ],
+        "any_of": [
+          {"field": "client.objective", "op": "in", "value": ["hipertrofia", "fuerza", "aumento_limpio", "aumento_agresivo", "performance"]}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "supplement_stack_assignment",
+        "stack_label": "Stack Elite hombre — performance + recovery",
+        "supplements": [
+          {"slug": "proteina-whey-isolada", "dosis_default": "1-2 scoops (25-50 g)", "timing": "post-entreno + entre comidas", "priority": "alta", "obligatorio": true},
+          {"slug": "creatina-monohidrato", "dosis_default": "5 g/día", "timing": "cualquier hora, diario", "priority": "alta", "obligatorio": true},
+          {"slug": "beta-alanina", "dosis_default": "3-5 g/día dividido en 2-3 tomas", "timing": "con comidas, no necesariamente pre-entreno", "priority": "alta", "obligatorio": true, "rationale": "Buffer acidosis muscular en series 30s-4min (rangos 8-15 reps típicos)."},
+          {"slug": "l-citrulina-malato", "dosis_default": "6-8 g", "timing": "30-45 min pre-entreno", "priority": "alta", "obligatorio": true, "rationale": "Mejora pump + reduce fatiga percibida + óxido nítrico."},
+          {"slug": "neuro-freak-blend-pre-workout", "dosis_default": "1 scoop (verificar etiqueta)", "timing": "20-30 min pre-entreno", "priority": "media", "obligatorio": false, "skip_si": "cliente sensible a estimulantes o entrena en la noche", "rationale": "Pre-workout completo (cafeína + nootrópicos)."},
+          {"slug": "l-glutamina", "dosis_default": "5-10 g/día", "timing": "post-entreno o pre-cama", "priority": "media", "obligatorio": false, "rationale": "Evidencia mixta para hipertrofia. Útil en cut estricto o sobreentrenamiento documentado."},
+          {"slug": "multivitaminico-base", "dosis_default": "1 tableta", "timing": "con desayuno", "priority": "media", "obligatorio": true}
+        ],
+        "rationale_stack": "Stack diseñado para hombre Elite avanzado priorizando performance anaeróbica (beta-alanina, citrulina, creatina) + pre-workout estimulante. 7 suplementos coincide con plan real de Daniel."
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.intolerances", "op": "includes", "value": "cafeina", "note": "Sin cafeína: cancelar neuro-freak; reemplazar foco pre-entreno por l-tirosina"}
+      ],
+      "scientific_rationale": "Beta-alanina (Trexler 2015) y l-citrulina (Pérez-Guisado 2010) tienen evidencia sólida para performance anaeróbica/buffer ácido láctico. Combinarlos con creatina cubre todo el espectro de duración de esfuerzo: 1-15s (creatina), 30s-4min (beta-alanina + citrulina). Patrón observado en Daniel reflejado.",
+      "scientific_sources": [
+        {"citation": "Trexler E.T., Smith-Ryan A.E., Stout J.R., et al. (2015). International Society of Sports Nutrition position stand: Beta-Alanine. Journal of the International Society of Sports Nutrition 12, 30.", "verified": false},
+        {"citation": "Pérez-Guisado J., Jakeman P.M. (2010). Citrulline malate enhances athletic anaerobic performance and relieves muscle soreness. Journal of Strength and Conditioning Research 24(5), 1215-1222.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "elite_002_daniel",
+          "matched": true,
+          "outcome": "Plan real Daniel: whey isolada + multivit + neuro-freak + creatina + l-glutamina + beta-alanina + l-citrulina malato. Coincide 7/7."
+        }
+      ],
+      "tags": ["mvp_obligatorio", "stack_elite_masculino", "performance", "caso_daniel"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-perdida-grasa-agrega-cafeina",
+      "name": "Add-on — cliente en pérdida de grasa agrega cafeína pre-entreno si tolerada",
+      "rule_type": "select_supplement_stack_addon",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.objective", "op": "in", "value": ["perdida_moderada", "perdida_agresiva"]}
+        ],
+        "any_of": [],
+        "none_of": [
+          {"field": "client.intolerances", "op": "includes", "value": "cafeina"},
+          {"field": "client.tier", "op": "equals", "value": "elite", "note": "Elite ya tiene cafeína en sus stacks dedicados (F3 vía opcional / F4 vía pre-workout)"}
+        ]
+      },
+      "output": {
+        "type": "supplement_addon",
+        "supplements_agregar": [
+          {"slug": "cafeina-anhidra", "dosis_default": "100-200 mg", "timing": "30 min pre-entreno", "priority": "media", "rationale": "Cafeína incrementa oxidación de grasa + reduce percepción de esfuerzo (Doherty 2005). En contexto de déficit, sostiene volumen e intensidad."}
+        ]
+      },
+      "priority": 100,
+      "execution_phase": "compose",
+      "exception_when": [
+        {"field": "client.horario_entreno", "op": "equals", "value": "noche_tarde", "note": "Entreno tarde + cafeína = sueño comprometido. Usar dosis baja (100 mg) o saltear."}
+      ],
+      "scientific_rationale": "Cafeína 3-6 mg/kg pre-entreno reduce percepción de esfuerzo (Doherty 2005) y mantiene volumen de trabajo en contexto de déficit, donde la fatiga es mayor. La dosis 100-200 mg cubre la mayoría de clientes WellCore sin sobreestimulación.",
+      "scientific_sources": [
+        {"citation": "Doherty M., Smith P.M. (2005). Effects of caffeine ingestion on rating of perceived exertion during and after exercise: a meta-analysis. Scandinavian Journal of Medicine & Science in Sports 15(2), 69-78.", "verified": false}
+      ],
+      "observed_in_real_clients": [
+        {
+          "client_anonimized": "esencial_001_lizetd",
+          "matched": true,
+          "outcome": "Lizetd Esencial perdida_moderada con cafeína en stack. Coincide."
+        }
+      ],
+      "tags": ["addon_stack", "perdida_grasa", "cafeina"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-problemas-sueno-agrega-magnesio",
+      "name": "Add-on — cliente reporta problemas de sueño agrega magnesio bisglicinato",
+      "rule_type": "select_supplement_stack_addon",
+      "input_conditions": {
+        "all_of": [],
+        "any_of": [
+          {"field": "client.sleep_quality_score", "op": "less_than", "value": 6},
+          {"field": "client.flags", "op": "includes", "value": "insomnio"},
+          {"field": "client.flags", "op": "includes", "value": "calambres_nocturnos"}
+        ],
+        "none_of": [
+          {"field": "engine.stack_already_includes", "op": "includes", "value": "magnesio-bisglicinato"},
+          {"field": "engine.stack_already_includes", "op": "includes", "value": "magnesio-glicinato"}
+        ]
+      },
+      "output": {
+        "type": "supplement_addon",
+        "supplements_agregar": [
+          {"slug": "magnesio-bisglicinato", "dosis_default": "200-400 mg", "timing": "30-60 min pre-cama", "priority": "alta", "rationale": "Magnesio en forma bisglicinato (alta biodisponibilidad, sin malestar GI) mejora calidad del sueño y reduce calambres nocturnos. Cofactor de melatonina y GABA."}
+        ]
+      },
+      "priority": 110,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Abbasi et al. (2012) mostraron mejora subjetiva del sueño con suplementación de magnesio en adultos mayores con insomnio. En atletas, la demanda de magnesio aumenta por sudoración y volumen de entrenamiento. La forma bisglicinato evita el efecto laxante del óxido de magnesio.",
+      "scientific_sources": [
+        {"citation": "Abbasi B., Kimiagar M., Sadeghniiat K., Shirazi M.M., Hedayati M., Rashidkhani B. (2012). The effect of magnesium supplementation on primary insomnia in elderly: A double-blind placebo-controlled clinical trial. Journal of Research in Medical Sciences 17(12), 1161-1169.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["addon_stack", "sueno", "recovery"],
+      "confidence": "high",
+      "needs_daniel_validation": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "stack-mujer-flujo-abundante-hierro",
+      "name": "Add-on — mujer con flujo menstrual abundante agrega hierro bisglicinato (con consulta médica)",
+      "rule_type": "select_supplement_stack_addon",
+      "input_conditions": {
+        "all_of": [
+          {"field": "client.gender", "op": "equals", "value": "femenino"}
+        ],
+        "any_of": [
+          {"field": "client.flags", "op": "includes", "value": "flujo_menstrual_abundante"},
+          {"field": "client.flags", "op": "includes", "value": "anemia_diagnosticada"},
+          {"field": "client.flags", "op": "includes", "value": "fatiga_cronica"}
+        ],
+        "none_of": []
+      },
+      "output": {
+        "type": "supplement_addon",
+        "supplements_agregar": [
+          {"slug": "hierro-bisglicinato", "dosis_default": "25-50 mg de hierro elemental", "timing": "con vit C (jugo cítrico o colágeno+C), separado de café/té por 2h", "priority": "alta", "rationale": "Bisglicinato es la forma con mejor absorción y menor estreñimiento. Vit C aumenta absorción 2-3×."},
+          {"slug": "vitamina-b12", "dosis_default": "500-1000 mcg metilcobalamina", "timing": "mañana", "priority": "media", "rationale": "Trío anti-anemia: hierro + B12 + folato (folato típicamente cubierto en multivitamínico femenino)."}
+        ],
+        "advertencia_obligatoria_coach": "⚠️ La suplementación de hierro debe estar respaldada por análisis de hemograma y ferritina. Solicitar al cliente labs ANTES de iniciar. Hierro sin déficit real puede ser tóxico (hemocromatosis, daño hepático).",
+        "siguiente_paso_coach": "Si cliente NO tiene labs recientes (<6 meses), derivar a médico para hemograma + ferritina antes de prescribir."
+      },
+      "priority": 130,
+      "execution_phase": "compose",
+      "exception_when": [],
+      "scientific_rationale": "Mujeres en edad reproductiva tienen alta prevalencia de déficit de hierro (Mei 2011), especialmente con flujo menstrual abundante o vegetarianismo. Hierro bisglicinato tiene 2-3× biodisponibilidad vs sulfato ferroso y menor incidencia de constipación (Pineda 2001). PERO suplementar sin déficit confirmado es riesgoso — la rule INCLUYE advertencia obligatoria de labs previos.",
+      "scientific_sources": [
+        {"citation": "Mei Z., Cogswell M.E., Looker A.C., et al. (2011). Assessment of iron status in US pregnant women from the National Health and Nutrition Examination Survey (NHANES), 1999-2006. American Journal of Clinical Nutrition 93(6), 1312-1320.", "verified": false},
+        {"citation": "Pineda O., Ashmead H.D. (2001). Effectiveness of treatment of iron-deficiency anemia in infants and young children with ferrous bisglycinate chelate. Nutrition 17(5), 381-384.", "verified": false}
+      ],
+      "observed_in_real_clients": [],
+      "tags": ["addon_stack", "mujer", "hierro", "advertencia_medica"],
+      "confidence": "high",
+      "needs_daniel_validation": true,
+      "validation_note": "Validar con Daniel si el motor v2 puede sugerir hierro automáticamente o si SIEMPRE debe derivar a humano. La advertencia es defensiva pero el motor sugiriendo hierro sin labs sigue siendo riesgoso.",
+      "version": 1,
+      "active": true
+    }
+  ],
+  "_pending_verifications": [
+    "Perplexity Pro Chrome MCP bulk al cierre — refs Morton 2018, Kreider 2017, Calder 2017, Schuette 1994, Grgic 2020, Mountjoy 2018, Shaw 2017, Trexler 2015, Pérez-Guisado 2010, Doherty 2005, Abbasi 2012, Mei 2011, Pineda 2001."
+  ]
+}

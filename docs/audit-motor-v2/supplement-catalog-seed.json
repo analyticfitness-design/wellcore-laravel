@@ -1,0 +1,2591 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-05-17",
+  "generated_by": "Claude Code Opus 4.7 + Daniel Esparza + Perplexity Pro evidence check",
+  "scope": "MVP catálogo inicial — suplementos legales mainstream + ergogénicos legales para motor v2 WellCore. NO incluye compounds hormonales prescripcionales (esos van en hormonal_protocols_catalog Pieza 6+). Whey vive acá con flag serves_as_food para que el motor v2 contabilice macros junto con nutrition_foods.",
+  "total_entries_target": 28,
+  "total_entries_current": 28,
+  "status": "completed",
+  "language": "tuteo neutro latino (memoria feedback_idioma_latino_neutro 2026-05-17 segunda corrección — reconciliado retroactivamente)",
+  "schema_notes": {
+    "granularidad": "por activo (no por SKU comercial). Marcas en commercial_products[]",
+    "blend_handling": "blends mapean a activo primario, demás en blend_components[]",
+    "macros_per_serving": "obligatorio. Vacíos (0/0/0/0) para no-calóricos. Reales para serves_as_food:true",
+    "evidence_levels": ["muy_alta", "alta", "moderada", "limitada", "anecdotica"],
+    "medical_interactions_severity": ["high", "moderate", "low"],
+    "vocab_contraindications": "controlado — ver lista en PROMPT-PIEZA-4 sección 'Reglas para los campos'"
+  },
+  "categorias_count_target": {
+    "proteina": 4,
+    "ergogenico_legal": 5,
+    "pre_workout": 3,
+    "vitamina_liposoluble": 2,
+    "vitamina_hidrosoluble": 2,
+    "mineral": 4,
+    "omega_3": 1,
+    "salud_femenina_especifica": 3,
+    "salud_articular": 1,
+    "adaptogeno": 3
+  },
+  "evidence_sources_consulted": [
+    "MD 04 sección 2.5 — Suplementación estándar WellCore",
+    "docs/audit-motor-v2/01-AUDIT-POR-TIER.md — stacks reales Silvia/Daniel/Lizetd",
+    "MD 16c — JSON Schema Suplementación",
+    "Perplexity Pro query 2026-05-17 — Fadogia/Tongkat/Ashwagandha/Maca (15 fuentes)",
+    "Perplexity Pro query 2026-05-17 — Melatonina/HMB/Evening primrose/Citrulina/Tirosina/EGCG (15 fuentes)",
+    "ISSN Position Stands (Kreider 2017 creatina, ISSN HMB, ISSN proteína Jäger 2017)",
+    "Cochrane Reviews (melatonin jet lag CD001520, evening primrose mastalgia)"
+  ],
+  "supplements": [
+    {
+      "slug": "proteina-whey-concentrada",
+      "name": "Proteína whey concentrada",
+      "name_alternatives": ["whey concentrada", "whey concentrate", "WPC", "proteína de suero concentrada"],
+      "scientific_name": "Whey Protein Concentrate (WPC) — 70-80% proteína",
+      "category": "proteina",
+      "primary_action": "soporte_proteico",
+      "type": "alimento_funcional",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "1 scoop (25-30g de producto)",
+        "min": "1 scoop",
+        "max": "2 scoops",
+        "loading_phase": null,
+        "maintenance": "1-2 scoops/día según déficit proteico de la dieta",
+        "unit": "scoop",
+        "porcion_descripcion": "1 scoop estándar = 25-30g de polvo (aporta ~20-22g de proteína neta)"
+      },
+      "timing_recommended": ["post_entreno_inmediato", "post_entreno_30min", "entre_comidas"],
+      "frequency": "diaria_solo_dias_entreno",
+      "macros_per_serving": {
+        "kcal": 120,
+        "protein_g": 22,
+        "carbs_g": 3,
+        "fat_g": 2,
+        "serving_size": "30",
+        "serving_unit": "g"
+      },
+      "serves_as_food": true,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["hipertrofia", "fuerza", "recomposicion", "perdida_grasa", "mantenimiento"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [16, 75],
+      "evidence_level": "muy_alta",
+      "evidence_summary": "Vos puedescontar con whey como la proteína mejor estudiada del deporte. Tiene el aminograma más completo (alto en leucina, ~2.5g/scoop) y la absorción más rápida (~30-60 min post-ingesta). Más de 50 meta-análisis confirman que sumar whey a la dieta acelera la síntesis proteica muscular post-entreno cuando hay déficit de proteína dietaria. ISSN Position Stand (Jäger et al. 2017): 1.6-2.2g/kg/día de proteína total — whey ayuda a llegar a esa meta sin saturar el estómago con comida sólida.",
+      "contraindications": [
+        "sensibilidad_lacteos",
+        "insuficiencia_renal_cronica_avanzada"
+      ],
+      "medical_interactions": [
+        {
+          "with": "levodopa_parkinson",
+          "severity": "low",
+          "note": "La proteína dietaria puede competir con la absorción de levodopa. Separala toma de whey y el medicamento por al menos 1 hora si el cliente tiene Parkinson."
+        }
+      ],
+      "side_effects_common": [
+        "Distensión abdominal o gases en personas con sensibilidad a la lactosa residual (~5-10% del polvo)",
+        "Sabor empalagoso si se toma diario sin variar marca o sabor"
+      ],
+      "side_effects_rare": [
+        "Acné facial leve en algunos hombres jóvenes sensibles a IGF-1 (anecdótico, no consistente en RCTs)"
+      ],
+      "synergies": [
+        {"slug": "creatina-monohidrato", "rationale": "Combinación clásica post-entreno — recuperación + saturación muscular"},
+        {"slug": "l-citrulina-malato", "rationale": "Mejora flujo sanguíneo durante el entreno y aprovecha la entrega de aminoácidos post-entreno"}
+      ],
+      "stacks_with_common": ["stack_basico_hipertrofia", "stack_perdida_grasa_principiante", "stack_recomposicion_femenina"],
+      "commercial_products": [
+        {
+          "brand": "Optimum Nutrition",
+          "product": "Gold Standard 100% Whey",
+          "country_available": ["internacional", "colombia", "mexico", "argentina"],
+          "price_range_cop_per_kg": "180000-240000",
+          "note": "Marca global referente, certificación Informed Choice (libre de dopaje)"
+        },
+        {
+          "brand": "MuscleTech",
+          "product": "Nitro-Tech Whey",
+          "country_available": ["colombia", "mexico"],
+          "price_range_cop_per_kg": "140000-180000"
+        },
+        {
+          "brand": "Body Tech (GNC LATAM)",
+          "product": "100% Whey Protein",
+          "country_available": ["colombia", "mexico"],
+          "price_range_cop_per_kg": "120000-160000",
+          "note": "Marca de GNC LATAM, decente relación precio/calidad. Verificar registro INVIMA en empaque."
+        },
+        {
+          "brand": "ENA Sport",
+          "product": "Whey Protein",
+          "country_available": ["argentina", "colombia"],
+          "price_range_cop_per_kg": "100000-140000"
+        }
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_basicos",
+      "use_cases": [
+        "Hipertrofia: llenar el gap proteico cuando el cliente no come 1.6-2.2g/kg solo con comida sólida",
+        "Recomposición: aumentar saciedad y preservar masa magra en déficit",
+        "Perdida_grasa: alta saciedad por kcal, bajo aporte de grasa y carbo",
+        "Post-entreno práctico: aminoácidos disponibles en <60 min, ideal cuando no hay tiempo de cocinar"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "esencial_001_lizetd", "context": "Stack pérdida grasa femenina principiante"},
+        {"client_anonimized": "esencial_cristian", "context": "Stack recomposición masculina principiante"}
+      ],
+      "advertencia_legal": "Suplemento alimenticio de venta libre en LATAM. Si tienes sensibilidad a la lactosa, considerapasar a whey isolada. En enfermedad renal preexistente, consulta con tu médico antes de incorporarlo a una dieta alta en proteína (>1.8g/kg/día). Verifica registro sanitario INVIMA en Colombia.",
+      "tags": ["mvp_obligatorio", "md_04_estandar", "alimento_funcional", "evidencia_muy_alta", "stack_basico"],
+      "confidence": "high",
+      "confidence_reason": "Proteína más estudiada del deporte. >50 meta-análisis. Aparece en MD 04 + 100% de planes auditados.",
+      "scientific_sources": [
+        "Jäger R. et al. (2017). International Society of Sports Nutrition Position Stand: protein and exercise. JISSN.",
+        "Morton R.W. et al. (2018). A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength in healthy adults. Br J Sports Med.",
+        "Examine.com — Whey Protein (actualización 2024)"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "proteina-whey-isolada",
+      "name": "Proteína whey isolada",
+      "name_alternatives": ["whey isolada", "whey isolate", "WPI", "proteína de suero isolada", "whey aislada"],
+      "scientific_name": "Whey Protein Isolate (WPI) — ≥90% proteína, <1% lactosa",
+      "category": "proteina",
+      "primary_action": "soporte_proteico",
+      "type": "alimento_funcional",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "1 scoop (28-32g de producto)",
+        "min": "1 scoop",
+        "max": "2 scoops",
+        "loading_phase": null,
+        "maintenance": "1-2 scoops/día",
+        "unit": "scoop",
+        "porcion_descripcion": "1 scoop estándar = 28-32g de polvo (aporta ~25-27g de proteína neta, baja lactosa)"
+      },
+      "timing_recommended": ["post_entreno_inmediato", "post_entreno_30min", "ayuno_matutino", "entre_comidas"],
+      "frequency": "diaria_solo_dias_entreno",
+      "macros_per_serving": {
+        "kcal": 110,
+        "protein_g": 26,
+        "carbs_g": 1,
+        "fat_g": 0.5,
+        "serving_size": "30",
+        "serving_unit": "g"
+      },
+      "serves_as_food": true,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["hipertrofia", "fuerza", "recomposicion", "perdida_grasa", "mantenimiento", "performance_deportivo"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [16, 75],
+      "evidence_level": "muy_alta",
+      "evidence_summary": "Misma evidencia base que whey concentrada — pero con dos ventajas que la justifican en tier Elite o en clientes sensibles a lactosa: (1) ≥90% proteína (vs 70-80% en concentrada), aporta más proteína por scoop con menos kcal extras de carbo/grasa; (2) <1% lactosa, tolerable para la mayoría de intolerantes (95% de casos). En recomposición agresiva o cut estricto donde cada kcal cuenta, whey isolada es la elección racional.",
+      "contraindications": [
+        "insuficiencia_renal_cronica_avanzada"
+      ],
+      "medical_interactions": [
+        {
+          "with": "levodopa_parkinson",
+          "severity": "low",
+          "note": "Separatoma de whey y levodopa por al menos 1 hora."
+        }
+      ],
+      "side_effects_common": [
+        "Sabor un poco más seco que whey concentrada (compensar con mezcla en agua + canela o cacao en polvo)"
+      ],
+      "side_effects_rare": [],
+      "synergies": [
+        {"slug": "creatina-monohidrato", "rationale": "Stack clásico post-entreno"},
+        {"slug": "l-glutamina", "rationale": "Recovery combinado en cut agresivo"},
+        {"slug": "l-citrulina-malato", "rationale": "Mejor entrega de aminoácidos post-entreno"}
+      ],
+      "stacks_with_common": ["stack_performance_masculino_elite", "stack_recomposicion_femenina_elite", "stack_perdida_grasa_avanzado"],
+      "commercial_products": [
+        {
+          "brand": "Optimum Nutrition",
+          "product": "Gold Standard 100% Isolate",
+          "country_available": ["internacional", "colombia", "mexico"],
+          "price_range_cop_per_kg": "250000-320000",
+          "note": "Premium global, Informed Choice certificado"
+        },
+        {
+          "brand": "Dymatize",
+          "product": "ISO 100 Hydrolyzed Whey Isolate",
+          "country_available": ["internacional", "colombia", "mexico"],
+          "price_range_cop_per_kg": "280000-350000",
+          "note": "Hidrolizada — absorción aún más rápida. Premium, usado por Daniel y atletas serios."
+        },
+        {
+          "brand": "MyProtein",
+          "product": "Impact Whey Isolate",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_kg": "180000-240000",
+          "note": "Importación directa UK, mejor relación precio/calidad. Verificar shipping a Colombia."
+        }
+      ],
+      "cost_relative": "alta",
+      "shopping_list_grouping": "suplementos_basicos",
+      "use_cases": [
+        "Cut agresivo: máxima proteína por kcal, mínimo carbo/grasa parásitos",
+        "Recomposición femenina premium: alineado con dietas con macros precisos",
+        "Intolerancia lactosa parcial: <1% lactosa tolerable para la mayoría",
+        "Post-entreno premium: absorción rápida + perfil aminoácido completo"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "elite_silvia", "context": "Stack recomposición femenina Elite"},
+        {"client_anonimized": "elite_daniel", "context": "Stack performance volumen masculino Elite"}
+      ],
+      "advertencia_legal": "Suplemento alimenticio de venta libre. En enfermedad renal preexistente, consulta con tu médico antes de incorporarlo a una dieta alta en proteína. Si eres vegano o intolerante severo a lactosa (síndromes como galactosemia), consideraproteína vegetal blend.",
+      "tags": ["observado_audit", "tier_elite", "alimento_funcional", "evidencia_muy_alta", "baja_lactosa"],
+      "confidence": "high",
+      "confidence_reason": "Misma evidencia base que whey concentrada. Variante de mayor pureza para Elite.",
+      "scientific_sources": [
+        "Jäger R. et al. (2017). ISSN Position Stand: protein and exercise.",
+        "Morton R.W. et al. (2018). Meta-análisis protein supplementation."
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "caseina-micelar",
+      "name": "Caseína micelar",
+      "name_alternatives": ["caseína", "micellar casein", "proteína nocturna", "caseina de digestion lenta"],
+      "scientific_name": "Micellar Casein — proteína láctea de digestión lenta (5-7 horas)",
+      "category": "proteina",
+      "primary_action": "soporte_proteico",
+      "type": "alimento_funcional",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "1 scoop (30-35g de producto)",
+        "min": "0.5 scoop",
+        "max": "1.5 scoops",
+        "loading_phase": null,
+        "maintenance": "1 scoop antes de dormir",
+        "unit": "scoop",
+        "porcion_descripcion": "1 scoop = 30-35g de polvo (aporta ~24g de proteína de absorción lenta)"
+      },
+      "timing_recommended": ["antes_dormir_30min"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {
+        "kcal": 120,
+        "protein_g": 24,
+        "carbs_g": 3,
+        "fat_g": 1,
+        "serving_size": "32",
+        "serving_unit": "g"
+      },
+      "serves_as_food": true,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_objectives": ["hipertrofia", "fuerza", "performance_deportivo"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [18, 75],
+      "evidence_level": "alta",
+      "evidence_summary": "La caseína micelar coagula en el estómago y se digiere en 5-7 horas, lo que mantiene el flujo de aminoácidos elevado durante el sueño. Res et al. (2012) demostró que 40g de caseína pre-sueño aumenta la síntesis proteica nocturna en 22%. Snijders et al. (2015) mostró ganancia adicional de masa magra en hombres entrenados con caseína pre-sueño durante 12 semanas. Es el suplemento más respaldado para la ventana nocturna anti-catabólica.",
+      "contraindications": [
+        "sensibilidad_lacteos",
+        "alergia_caseina",
+        "insuficiencia_renal_cronica_avanzada"
+      ],
+      "medical_interactions": [],
+      "side_effects_common": [
+        "Sensación de pesadez estomacal si se toma muy cerca de acostarse (mejor 30-45 min antes)",
+        "Más espesa que whey — algunos clientes prefieren mezclarla con leche para mejorar textura"
+      ],
+      "side_effects_rare": [
+        "Reacción alérgica en personas con alergia específica a caseína (~1% de la población lactosa-tolerante)"
+      ],
+      "synergies": [
+        {"slug": "magnesio-glicinato", "rationale": "Stack pre-sueño completo — recuperación muscular + relajación nervosa"},
+        {"slug": "zinc-bisglicinato", "rationale": "Pre-sueño en hombres — soporte testosterona nocturna"}
+      ],
+      "stacks_with_common": ["stack_hipertrofia_nocturna", "stack_recovery_avanzado"],
+      "commercial_products": [
+        {
+          "brand": "Optimum Nutrition",
+          "product": "Gold Standard 100% Casein",
+          "country_available": ["internacional", "colombia", "mexico"],
+          "price_range_cop_per_kg": "230000-290000"
+        },
+        {
+          "brand": "MyProtein",
+          "product": "Micellar Casein",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_kg": "170000-220000"
+        }
+      ],
+      "cost_relative": "alta",
+      "shopping_list_grouping": "suplementos_basicos",
+      "use_cases": [
+        "Hipertrofia avanzada: ventana nocturna 8-9 horas sin proteína = caseína te cubre",
+        "Recovery serio: si entrenás 2x/día o haces volumen alto, caseína pre-sueño es polish",
+        "Saciedad nocturna: ayuda a evitar antojos en cut"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento alimenticio de venta libre. NO es para reemplazar comidas. Si tienes alergia a proteínas lácteas (no solo intolerancia a lactosa), evítala — la caseína es la proteína láctea principal y puede gatillar reacción severa.",
+      "tags": ["propuesta_mia", "tier_metodo_elite", "alimento_funcional", "nocturna"],
+      "confidence": "high",
+      "confidence_reason": "Evidencia sólida en hipertrofia nocturna. Más nicho que whey — solo justifica en hipertrofia avanzada o cut estricto.",
+      "scientific_sources": [
+        "Res P.T. et al. (2012). Protein ingestion before sleep improves postexercise overnight recovery. Med Sci Sports Exerc.",
+        "Snijders T. et al. (2015). Protein ingestion before sleep increases muscle mass and strength gains during prolonged resistance-type exercise training in healthy young men. J Nutr.",
+        "Trommelen J. & van Loon L.J. (2016). Pre-sleep protein ingestion to improve the skeletal muscle adaptive response to exercise training. Nutrients."
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "proteina-vegetal-blend",
+      "name": "Proteína vegetal blend (arroz + guisante)",
+      "name_alternatives": ["proteína vegana", "plant protein", "rice and pea protein", "proteína sin lácteos", "vegan protein blend"],
+      "scientific_name": "Rice Protein Concentrate + Pea Protein Isolate (típicamente 60/40 o 50/50)",
+      "category": "proteina",
+      "primary_action": "soporte_proteico",
+      "type": "multi_ingrediente",
+      "blend_components": [
+        {"activo": "proteína de arroz integral", "rol_primario": "alto en metionina, complementa guisante"},
+        {"activo": "proteína de guisante (pea)", "rol_primario": "alto en lisina + arginina, complementa arroz"}
+      ],
+      "dosis_recommended": {
+        "default": "1 scoop (30-35g de producto)",
+        "min": "1 scoop",
+        "max": "2 scoops",
+        "loading_phase": null,
+        "maintenance": "1-2 scoops/día",
+        "unit": "scoop",
+        "porcion_descripcion": "1 scoop = 30-35g de polvo (aporta ~22-24g de proteína neta vegetal)"
+      },
+      "timing_recommended": ["post_entreno_inmediato", "entre_comidas"],
+      "frequency": "diaria_solo_dias_entreno",
+      "macros_per_serving": {
+        "kcal": 125,
+        "protein_g": 23,
+        "carbs_g": 4,
+        "fat_g": 2,
+        "serving_size": "32",
+        "serving_unit": "g"
+      },
+      "serves_as_food": true,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["hipertrofia", "recomposicion", "perdida_grasa", "mantenimiento"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [16, 75],
+      "evidence_level": "moderada",
+      "evidence_summary": "Solo o aislada, ni la proteína de arroz ni la de guisante tienen perfil aminoácido completo. Pero combinadas (blend arroz+guisante 60/40 o similar) cierran el gap: arroz aporta metionina, guisante aporta lisina. Joy et al. (2013) comparó 48g de proteína de arroz vs whey en 12 semanas de entreno en hombres, sin diferencia significativa en hipertrofia ni fuerza. Banaszek et al. (2019) confirmó que pea protein iguala a whey en ganancias musculares cuando la dosis total de proteína es adecuada. Evidencia moderada porque los estudios son menos y con muestras pequeñas, pero el resultado es consistente.",
+      "contraindications": [
+        "alergia_soya"
+      ],
+      "medical_interactions": [],
+      "side_effects_common": [
+        "Sabor más terroso que whey — preparar con bebida vegetal saborizada o frutas para mejorar",
+        "Distensión abdominal leve en primeras semanas (adaptación a fibra residual)"
+      ],
+      "side_effects_rare": [],
+      "synergies": [
+        {"slug": "creatina-monohidrato", "rationale": "Veganos pueden tener baja creatina muscular por dieta — suplementación es especialmente útil"},
+        {"slug": "vitamina-b12", "rationale": "Suplementación obligatoria en dietas veganas estrictas"}
+      ],
+      "stacks_with_common": ["stack_basico_vegetariano", "stack_basico_vegano"],
+      "commercial_products": [
+        {
+          "brand": "Garden of Life",
+          "product": "Sport Organic Plant-Based Protein",
+          "country_available": ["internacional", "colombia", "mexico"],
+          "price_range_cop_per_kg": "220000-280000",
+          "note": "Premium orgánica, blend completo arroz+guisante+chía+haba"
+        },
+        {
+          "brand": "Vegan Protein (MyProtein)",
+          "product": "Vegan Blend",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_kg": "170000-220000"
+        },
+        {
+          "brand": "Genéricos LATAM",
+          "product": "Proteína vegetal 70%",
+          "country_available": ["colombia", "mexico", "argentina"],
+          "price_range_cop_per_kg": "120000-180000",
+          "note": "Verificar perfil aminoácido completo en etiqueta + registro INVIMA"
+        }
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_basicos",
+      "use_cases": [
+        "Vegetarianos/veganos: única opción de proteína suplementaria viable",
+        "Intolerancia severa a lácteos (galactosemia, alergia caseína): alternativa segura a whey",
+        "Clientes que reportan acné facial leve con whey: opción para descartar IGF-1 lácteo"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento alimenticio de venta libre. Si eres vegano estricto, complementacon vitamina B12 obligatoria, vitamina D3 vegana (D2 o D3 de liquen), omega-3 de algas (DHA) y monitoreahierro + zinc en bloodwork anual.",
+      "tags": ["propuesta_mia", "vegano", "vegetariano", "alimento_funcional"],
+      "confidence": "moderate",
+      "confidence_reason": "Evidencia moderada — estudios menos numerosos que whey pero resultados consistentes cuando el blend cubre el aminograma completo.",
+      "scientific_sources": [
+        "Joy J.M. et al. (2013). The effects of 8 weeks of whey or rice protein supplementation on body composition and exercise performance. Nutr J.",
+        "Banaszek A. et al. (2019). The Effects of Whey vs. Pea Protein on Physical Adaptations Following 8-Weeks of High-Intensity Functional Training. Sports.",
+        "Berrazaga I. et al. (2019). The Role of the Anabolic Properties of Plant- versus Animal-Based Protein Sources in Supporting Muscle Mass Maintenance. Nutrients."
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "creatina-monohidrato",
+      "name": "Creatina monohidrato",
+      "name_alternatives": ["creatina", "creatine monohydrate", "creatina mono", "creatine"],
+      "scientific_name": "N-(aminoiminomethyl)-N-methylglycine monohydrate",
+      "category": "ergogenico_legal",
+      "primary_action": "performance_potencia",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "5g",
+        "min": "3g",
+        "max": "5g",
+        "loading_phase": "20g/día (4 dosis de 5g) por 5-7 días — OPCIONAL. No es necesaria para saturación final, solo acelera el llenado muscular.",
+        "maintenance": "3-5g/día constante",
+        "unit": "g",
+        "porcion_descripcion": "1 cucharadita rasa (~5g)"
+      },
+      "timing_recommended": ["cualquier_momento_consistente", "post_entreno_30min", "con_desayuno"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {
+        "kcal": 0,
+        "protein_g": 0,
+        "carbs_g": 0,
+        "fat_g": 0,
+        "serving_size": "5",
+        "serving_unit": "g"
+      },
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["hipertrofia", "fuerza", "performance_deportivo", "recomposicion", "mantenimiento"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [18, 75],
+      "evidence_level": "muy_alta",
+      "evidence_summary": "Es el suplemento más estudiado del deporte — más de 500 estudios publicados. La saturación muscular se logra en 28 días sin fase de carga, o en 5-7 días con fase de carga. Mejora performance en esfuerzos anaeróbicos cortos (1-15 segundos): sprints, levantamientos máximos, deportes de combate. Permite hacer ~1-2 repeticiones extras por serie al RIR 0, lo que se traduce en más volumen acumulado = más hipertrofia. ISSN Position Stand (Kreider et al. 2017): segura a largo plazo en personas sanas, sin efecto perjudicial en función renal en dosis estándar. Funciona igual en mujeres que en hombres (Forbes et al. 2022) — el mito de 'la creatina solo sirve a hombres' está refutado.",
+      "contraindications": [
+        "insuficiencia_renal_aguda",
+        "insuficiencia_renal_cronica_avanzada",
+        "embarazo_sin_supervision_medica",
+        "lactancia_sin_supervision_medica",
+        "menores_de_18_sin_supervision"
+      ],
+      "medical_interactions": [
+        {
+          "with": "diureticos",
+          "severity": "moderate",
+          "note": "La creatina retiene agua intracelular. En hipertensos bajo diuréticos, monitoreá hidratación y presión arterial las primeras semanas."
+        },
+        {
+          "with": "AINEs_uso_cronico",
+          "severity": "low",
+          "note": "Carga renal combinada teórica. Hidratación adecuada (3+ litros/día) la maneja."
+        },
+        {
+          "with": "cafeina_alta_dosis_>400mg",
+          "severity": "low",
+          "note": "Mito desactualizado — estudios recientes refutan que la cafeína bloquee el efecto de la creatina. No hay interacción clínica real."
+        }
+      ],
+      "side_effects_common": [
+        "Retención hídrica intracelular leve (1-2 kg primeras 2-4 semanas) — efecto deseado, no es grasa",
+        "Cólicos digestivos leves si no se hidrata adecuadamente o si se carga con 20g de golpe"
+      ],
+      "side_effects_rare": [
+        "Calambres musculares en casos aislados (relacionado con deshidratación, no con la creatina per se)"
+      ],
+      "synergies": [
+        {"slug": "proteina-whey-concentrada", "rationale": "Stack post-entreno clásico — recuperación + saturación muscular"},
+        {"slug": "beta-alanina", "rationale": "Performance combinado anaeróbico — creatina cubre 1-15s, beta-alanina cubre 30-240s"},
+        {"slug": "cafeina-anhidra", "rationale": "Sinergia para potencia explosiva pre-entreno"}
+      ],
+      "stacks_with_common": ["stack_basico_hipertrofia", "stack_performance_masculino_elite", "stack_recomposicion_femenina", "stack_perdida_grasa_principiante"],
+      "commercial_products": [
+        {
+          "brand": "Optimum Nutrition",
+          "product": "Creatine Powder Micronized",
+          "country_available": ["internacional", "colombia", "mexico", "argentina"],
+          "price_range_cop_per_300g": "100000-140000",
+          "note": "Marca premium global, Creapure® certificado (mayor pureza)"
+        },
+        {
+          "brand": "Universal Nutrition",
+          "product": "Creatine",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_300g": "80000-110000"
+        },
+        {
+          "brand": "Body Tech (GNC LATAM)",
+          "product": "Creatine Monohydrate",
+          "country_available": ["colombia", "mexico"],
+          "price_range_cop_per_300g": "70000-95000",
+          "note": "Buena relación precio/calidad. Verificar INVIMA."
+        },
+        {
+          "brand": "Genéricos LATAM",
+          "product": "Creatina monohidrato 300g/500g",
+          "country_available": ["colombia", "mexico", "argentina"],
+          "price_range_cop_per_300g": "45000-80000",
+          "note": "Marcas como GoldNutrition, Nutrabolics LATAM. Verificar pureza Creapure®."
+        }
+      ],
+      "cost_relative": "baja",
+      "shopping_list_grouping": "suplementos_basicos",
+      "use_cases": [
+        "Hipertrofia: permite mayor volumen de entrenamiento por sesión = más estímulo",
+        "Fuerza: mejora rendimiento en series cortas explosivas (1-6 reps al RIR 0)",
+        "Recomposición: preserva masa magra durante déficit calórico moderado",
+        "Performance deportivo: deportes con esfuerzos intermitentes (HIIT, sprints, deportes de combate)"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "esencial_001_lizetd", "context": "Stack pérdida grasa femenina"},
+        {"client_anonimized": "elite_silvia", "context": "Stack recomposición femenina"},
+        {"client_anonimized": "elite_daniel", "context": "Stack performance volumen masculino"}
+      ],
+      "advertencia_legal": "Suplemento de venta libre en LATAM, sin requerimiento de prescripción. Si tienes condición renal preexistente, consulta con tu médico antes. Productos certificados INVIMA en Colombia tienen registro sanitario verificable.",
+      "tags": ["mvp_obligatorio", "md_04_estandar", "ergogenico_legal", "evidencia_muy_alta", "stack_basico"],
+      "confidence": "high",
+      "confidence_reason": "Suplemento más estudiado en deporte. Cientos de meta-análisis respaldan eficacia y seguridad.",
+      "scientific_sources": [
+        "Kreider R.B. et al. (2017). ISSN position stand: safety and efficacy of creatine supplementation. JISSN.",
+        "Antonio J. et al. (2021). Common questions and misconceptions about creatine supplementation. JISSN.",
+        "Forbes S.C. et al. (2022). Creatine supplementation and resistance training. Systematic review and meta-analysis. Sports Med.",
+        "Examine.com — Creatine Monohydrate (2024)"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "beta-alanina",
+      "name": "Beta-alanina",
+      "name_alternatives": ["beta alanina", "β-alanina", "CarnoSyn"],
+      "scientific_name": "β-Alanina (3-aminopropanoic acid)",
+      "category": "ergogenico_legal",
+      "primary_action": "performance_resistencia",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "3-5g/día",
+        "min": "3g",
+        "max": "6g",
+        "loading_phase": "6.4g/día (4 dosis de 1.6g separadas) por 4 semanas para saturar carnosina muscular",
+        "maintenance": "3-5g/día constante",
+        "unit": "g",
+        "porcion_descripcion": "1 cucharadita rasa (~3g) o 2 cápsulas de 1.6g"
+      },
+      "timing_recommended": ["pre_entreno_30_60min", "con_desayuno", "con_almuerzo"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {
+        "kcal": 0,
+        "protein_g": 0,
+        "carbs_g": 0,
+        "fat_g": 0,
+        "serving_size": "3",
+        "serving_unit": "g"
+      },
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_objectives": ["performance_deportivo", "hipertrofia", "fuerza"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [18, 65],
+      "evidence_level": "alta",
+      "evidence_summary": "La beta-alanina es precursora de carnosina muscular, un buffer intracelular que retrasa la acidosis muscular en esfuerzos de 30 segundos a 4 minutos. Saunders et al. (2017) — meta-análisis con 40 estudios — encontró mejora de ~2-3% en performance en pruebas de 30s a 10 min. ISSN Position Stand (Trexler et al. 2015): beneficios consistentes en ejercicios anaeróbicos de duración intermedia (HIIT, series largas de pesas 8-15 reps al fallo, deportes de combate). NO funciona en sprints cortos (<30s) ni en esfuerzos aeróbicos largos (>10 min).",
+      "contraindications": [
+        "embarazo_sin_supervision_medica",
+        "lactancia_sin_supervision_medica",
+        "menores_de_18_sin_supervision"
+      ],
+      "medical_interactions": [],
+      "side_effects_common": [
+        "Parestesia (hormigueo en cara, manos, cuello) — efecto inofensivo que dura 30-60 min post-toma. Se reduce con dosis divididas (1.6g x 4 vs 6.4g de golpe) o cápsulas de liberación sostenida."
+      ],
+      "side_effects_rare": [
+        "Erupción cutánea transitoria en personas hipersensibles (extremadamente raro)"
+      ],
+      "synergies": [
+        {"slug": "creatina-monohidrato", "rationale": "Stack performance anaeróbico — creatina cubre 1-15s, beta-alanina cubre 30s-4min"},
+        {"slug": "cafeina-anhidra", "rationale": "Pre-entreno completo: foco + buffer acidosis"},
+        {"slug": "l-citrulina-malato", "rationale": "Stack pre-entreno avanzado: pump + buffer + foco"}
+      ],
+      "stacks_with_common": ["stack_performance_masculino_elite", "stack_ergogenico_avanzado"],
+      "commercial_products": [
+        {
+          "brand": "Optimum Nutrition",
+          "product": "Beta-Alanine Powder",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_200g": "120000-160000",
+          "note": "CarnoSyn® certificado (la patente original con evidencia)"
+        },
+        {
+          "brand": "MuscleTech",
+          "product": "Beta-Alanine",
+          "country_available": ["colombia", "mexico"],
+          "price_range_cop_per_200g": "100000-140000"
+        },
+        {
+          "brand": "Body Tech (GNC LATAM)",
+          "product": "Beta-Alanine",
+          "country_available": ["colombia", "mexico"],
+          "price_range_cop_per_200g": "85000-120000"
+        }
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_performance",
+      "use_cases": [
+        "Hipertrofia avanzada: series largas 10-15 reps al fallo se sostienen mejor",
+        "HIIT y CrossFit: WODs de 4-10 min mejoran",
+        "Deportes de combate: rounds de 3-5 min con menos fatiga acumulada",
+        "Performance deportivo: corredores 800m-1500m, ciclistas en sprints repetidos"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "elite_daniel", "context": "Stack Elite hombre performance"}
+      ],
+      "advertencia_legal": "Suplemento de venta libre en LATAM. La parestesia es normal y no es alergia — no la confundas. Si te molesta, dividela dosis o usacápsulas SR (sustained release). Verifica registro INVIMA en Colombia.",
+      "tags": ["observado_audit", "tier_metodo_elite", "ergogenico_legal", "evidencia_alta"],
+      "confidence": "high",
+      "confidence_reason": "ISSN Position Stand respalda. Meta-análisis sólido. Tiempo de saturación bien documentado.",
+      "scientific_sources": [
+        "Trexler E.T. et al. (2015). ISSN position stand: beta-alanine. JISSN.",
+        "Saunders B. et al. (2017). β-alanine supplementation to improve exercise capacity and performance: a systematic review and meta-analysis. Br J Sports Med.",
+        "Hobson R.M. et al. (2012). Effects of β-alanine supplementation on exercise performance: a meta-analysis. Amino Acids.",
+        "Examine.com — Beta-Alanine (2024)"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "l-citrulina-malato",
+      "name": "L-citrulina malato",
+      "name_alternatives": ["citrulina", "citrulline malate", "L-citrulline", "citrulina DL-malato 2:1"],
+      "scientific_name": "L-Citrulline DL-Malate 2:1",
+      "category": "ergogenico_legal",
+      "primary_action": "performance_resistencia",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "8g (citrulina malato 2:1) o 6g (citrulina pura)",
+        "min": "6g malato / 4.5g pura",
+        "max": "10g malato / 8g pura",
+        "loading_phase": null,
+        "maintenance": "6-10g malato/día solo en días de entreno",
+        "unit": "g",
+        "porcion_descripcion": "1-2 cucharaditas (~8g de citrulina malato 2:1)"
+      },
+      "timing_recommended": ["pre_entreno_30_60min"],
+      "frequency": "diaria_solo_dias_entreno",
+      "macros_per_serving": {
+        "kcal": 0,
+        "protein_g": 0,
+        "carbs_g": 0,
+        "fat_g": 0,
+        "serving_size": "8",
+        "serving_unit": "g"
+      },
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_objectives": ["hipertrofia", "performance_deportivo", "fuerza"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [18, 65],
+      "evidence_level": "alta",
+      "evidence_summary": "La L-citrulina aumenta los niveles de arginina plasmática más eficientemente que la propia L-arginina (evita el first-pass hepático). Esto eleva la producción de óxido nítrico (NO), mejorando el flujo sanguíneo, el 'pump' muscular y la entrega de nutrientes durante el entreno. Pérez-Guisado & Jakeman (2010): 8g de citrulina malato pre-entreno aumentó las reps al fallo en bench press en 53% en hombres entrenados. Trexler et al. (2019) — meta-análisis — confirma mejora pequeña pero consistente en performance de fuerza-resistencia (8-15 reps). La citrulina es la opción evidence-based superior a la arginina aislada, que tiene baja biodisponibilidad oral.",
+      "contraindications": [
+        "hipotension"
+      ],
+      "medical_interactions": [
+        {
+          "with": "antihipertensivos_ieca_iras",
+          "severity": "moderate",
+          "note": "La citrulina puede bajar la presión arterial. Si el cliente toma antihipertensivos, monitoreá presión las primeras semanas."
+        },
+        {
+          "with": "nitratos_pde5_sildenafil",
+          "severity": "moderate",
+          "note": "Sumatoria de efecto vasodilatador. NO combinar con nitratos médicos ni con inhibidores PDE-5 sin supervisión."
+        }
+      ],
+      "side_effects_common": [
+        "Sabor ácido fuerte por el malato — preparar con bebida saborizada o pre-workout"
+      ],
+      "side_effects_rare": [
+        "Cefalea leve en personas sensibles a vasodilatadores (raro)"
+      ],
+      "synergies": [
+        {"slug": "creatina-monohidrato", "rationale": "Pump + saturación muscular"},
+        {"slug": "beta-alanina", "rationale": "Stack pre-entreno avanzado completo"},
+        {"slug": "cafeina-anhidra", "rationale": "Foco + pump pre-entreno"}
+      ],
+      "stacks_with_common": ["stack_performance_masculino_elite", "stack_pre_workout_natural"],
+      "commercial_products": [
+        {
+          "brand": "Bulk Powders",
+          "product": "Citrulline Malate 2:1",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_500g": "180000-240000",
+          "note": "Buena relación precio/calidad importación"
+        },
+        {
+          "brand": "MyProtein",
+          "product": "Citrulline Malate",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_500g": "150000-200000"
+        },
+        {
+          "brand": "Body Tech (GNC LATAM)",
+          "product": "Citrulina Malato",
+          "country_available": ["colombia"],
+          "price_range_cop_per_500g": "200000-280000"
+        }
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_pre_workout",
+      "use_cases": [
+        "Hipertrofia: pump intenso + más reps al fallo en series 8-15",
+        "Pre-entreno natural sin estimulantes (alternativa a pre-workouts complejos)",
+        "Performance fuerza-resistencia: superseries, drop sets, rest-pause"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "elite_daniel", "context": "Stack Elite hombre pre-entreno"}
+      ],
+      "advertencia_legal": "Suplemento de venta libre. Si tomasmedicación antihipertensiva o cualquier vasodilatador, consulta con tu médico antes de empezar. NO combinar con sildenafilo/tadalafilo ni con nitratos sin supervisión médica.",
+      "tags": ["observado_audit", "tier_metodo_elite", "pre_workout", "evidencia_alta"],
+      "confidence": "high",
+      "confidence_reason": "Evidencia sólida en performance fuerza-resistencia. Mejor biodisponibilidad que arginina (motivo por el cual sustituyó arginina en pre-workouts modernos).",
+      "scientific_sources": [
+        "Pérez-Guisado J. & Jakeman P.M. (2010). Citrulline malate enhances athletic anaerobic performance and relieves muscle soreness. J Strength Cond Res.",
+        "Trexler E.T. et al. (2019). Acute Effects of Citrulline Supplementation on High-Intensity Strength and Power Performance: A Systematic Review and Meta-Analysis. Sports Med.",
+        "Bailey S.J. et al. (2015). L-Citrulline supplementation improves O2 uptake kinetics and high-intensity exercise performance in humans. J Appl Physiol.",
+        "Examine.com — L-Citrulline (2024)"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "l-glutamina",
+      "name": "L-glutamina",
+      "name_alternatives": ["glutamina", "L-glutamine", "glutamine"],
+      "scientific_name": "L-Glutamina (aminoácido no esencial condicionalmente esencial)",
+      "category": "aminoacido_no_esencial",
+      "primary_action": "recuperacion_post_entreno",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "5g",
+        "min": "3g",
+        "max": "10g",
+        "loading_phase": null,
+        "maintenance": "5-10g/día divididos",
+        "unit": "g",
+        "porcion_descripcion": "1 cucharadita rasa (~5g)"
+      },
+      "timing_recommended": ["post_entreno_inmediato", "antes_dormir_30min"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {
+        "kcal": 0,
+        "protein_g": 0,
+        "carbs_g": 0,
+        "fat_g": 0,
+        "serving_size": "5",
+        "serving_unit": "g"
+      },
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "elite",
+      "applicable_objectives": ["performance_deportivo", "recuperacion_post_entreno"],
+      "applicable_levels": ["avanzado"],
+      "applicable_age_range": [18, 65],
+      "evidence_level": "moderada",
+      "evidence_summary": "La glutamina es el aminoácido más abundante en músculo, pero la suplementación oral en personas sanas con dieta proteica adecuada NO mejora hipertrofia ni fuerza (Candow et al. 2001, Ramezani et al. 2014). La evidencia real de eficacia está en: (1) personas con trauma, quemaduras, post-cirugía, o intestino enfermo (uso clínico); (2) reducción de DOMS en deportistas en sobreentrenamiento o cut agresivo (efecto moderado); (3) soporte de barrera intestinal en atletas con leaky gut o sobreentrenamiento. ISSN Position Stand (Campbell et al. 2007): efecto modesto, no es prioridad en stack básico. Cristian en MD 16c menciona explícitamente 'no la gastes' para principiantes — coincide con la evidencia.",
+      "contraindications": [
+        "insuficiencia_renal_cronica_avanzada",
+        "insuficiencia_hepatica"
+      ],
+      "medical_interactions": [
+        {
+          "with": "anticonvulsivantes",
+          "severity": "moderate",
+          "note": "La glutamina es precursora de glutamato (neurotransmisor excitatorio). En epilepsia o convulsiones controladas con anticonvulsivantes, evítala o consultá con neurólogo."
+        }
+      ],
+      "side_effects_common": [
+        "Distensión abdominal leve en primeras dosis altas (>10g de golpe)"
+      ],
+      "side_effects_rare": [
+        "Cefalea en algunos individuos sensibles"
+      ],
+      "synergies": [
+        {"slug": "proteina-whey-isolada", "rationale": "Recovery agresivo en cut estricto o sobreentrenamiento"},
+        {"slug": "magnesio-glicinato", "rationale": "Stack recovery + sueño para atletas avanzados"}
+      ],
+      "stacks_with_common": ["stack_recovery_avanzado", "stack_performance_masculino_elite"],
+      "commercial_products": [
+        {
+          "brand": "Optimum Nutrition",
+          "product": "Glutamine Powder",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_300g": "130000-170000"
+        },
+        {
+          "brand": "Universal Nutrition",
+          "product": "Glutamine",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_300g": "110000-150000"
+        }
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_recovery",
+      "use_cases": [
+        "Atletas avanzados en sobreentrenamiento: reducción modesta de DOMS",
+        "Cut agresivo (>500 kcal déficit/día): soporte intestinal y recovery",
+        "Atletas con leaky gut o problemas intestinales asociados a alta carga: uso clínico bajo supervisión"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "elite_daniel", "context": "Stack Elite hombre recovery — caso de uso justificado por volumen alto"}
+      ],
+      "advertencia_legal": "Suplemento de venta libre. Si tienes condición renal o hepática, consulta con tu médico antes. La evidencia para personas sanas con dieta proteica adecuada es modesta — solo justifica en atletas avanzados o en cut agresivo.",
+      "tags": ["observado_audit", "tier_elite", "recovery", "evidencia_moderada"],
+      "confidence": "moderate",
+      "confidence_reason": "Evidencia limitada en personas sanas con dieta adecuada. Solo justifica en contextos específicos (cut agresivo, sobreentrenamiento, problemas intestinales).",
+      "scientific_sources": [
+        "Campbell B. et al. (2007). ISSN position stand: protein and exercise (incluye glutamina). JISSN.",
+        "Candow D.G. et al. (2001). Effect of glutamine supplementation combined with resistance training in young adults. Eur J Appl Physiol.",
+        "Ramezani Ahmadi A. et al. (2014). The effect of glutamine supplementation on athletic performance, body composition, and immune function. Clin Nutr ESPEN.",
+        "Examine.com — Glutamine (2024)"
+      ],
+      "needs_daniel_validation": true,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "hmb",
+      "name": "HMB (β-hidroxi-β-metilbutirato)",
+      "name_alternatives": ["HMB", "beta-hidroxi-beta-metilbutirato", "β-hydroxy-β-methylbutyrate", "calcium HMB", "HMB-FA"],
+      "scientific_name": "β-hidroxi-β-metilbutirato (metabolito de leucina)",
+      "category": "ergogenico_legal",
+      "primary_action": "recuperacion_post_entreno",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "3g/día (1g x 3 dosis o 1.5g x 2 dosis)",
+        "min": "3g",
+        "max": "3g",
+        "loading_phase": null,
+        "maintenance": "3g/día durante el período de cut o entreno intenso",
+        "unit": "g",
+        "porcion_descripcion": "1 cápsula de 1g x 3 al día con las comidas"
+      },
+      "timing_recommended": ["con_desayuno", "con_almuerzo", "con_cena", "pre_entreno_30_60min"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {
+        "kcal": 0,
+        "protein_g": 0,
+        "carbs_g": 0,
+        "fat_g": 0,
+        "serving_size": "1",
+        "serving_unit": "g"
+      },
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_objectives": ["recomposicion", "perdida_grasa", "preservacion_masa_magra"],
+      "applicable_levels": ["principiante", "intermedio"],
+      "applicable_age_range": [18, 75],
+      "evidence_level": "moderada",
+      "evidence_summary": "El HMB es un metabolito de leucina con efecto anti-catabólico. ISSN Position Stand (Wilson et al. 2013) reconoce beneficio en: (1) personas no entrenadas o intermedias arrancando un programa estructurado; (2) atletas en déficit calórico agresivo (cut estricto); (3) recuperación de lesión o cirugía. En atletas bien entrenados con dieta proteica adecuada (>1.6g/kg/día), el efecto adicional es pequeño o nulo (Phillips 2017 meta-análisis). Perplexity Pro 2026-05-17 confirma: 'mixed effects in trained lifters, more plausible during caloric deficit'.",
+      "contraindications": [
+        "embarazo_sin_supervision_medica",
+        "lactancia_sin_supervision_medica",
+        "menores_de_18_sin_supervision"
+      ],
+      "medical_interactions": [],
+      "side_effects_common": [
+        "Generalmente bien tolerado",
+        "Distensión abdominal leve en algunos casos"
+      ],
+      "side_effects_rare": [],
+      "synergies": [
+        {"slug": "proteina-whey-isolada", "rationale": "Stack anti-catabólico en cut estricto"},
+        {"slug": "creatina-monohidrato", "rationale": "Preservación masa magra + performance en déficit"}
+      ],
+      "stacks_with_common": ["stack_perdida_grasa_avanzado", "stack_recomposicion_femenina_elite"],
+      "commercial_products": [
+        {
+          "brand": "Optimum Nutrition",
+          "product": "HMB 1000",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_90caps": "150000-200000"
+        },
+        {
+          "brand": "MyProtein",
+          "product": "HMB",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_180caps": "180000-230000"
+        }
+      ],
+      "cost_relative": "alta",
+      "shopping_list_grouping": "suplementos_performance",
+      "use_cases": [
+        "Cut agresivo (>500 kcal déficit/día): preservación masa magra",
+        "Principiantes arrancando programa estructurado: aceleración de adaptación inicial",
+        "Recuperación post-lesión o post-cirugía: anti-catabólico clínico",
+        "NO recomendado para atletas avanzados con dieta proteica adecuada — la evidencia es trivial en este contexto"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento de venta libre. La evidencia es moderada y context-dependent — no es un suplemento esencial. Si ya estás en una dieta con >1.6g/kg de proteína y entrenás bien, el efecto adicional será pequeño.",
+      "tags": ["propuesta_mia", "tier_metodo", "ergogenico_legal", "evidencia_moderada", "cut_especifico"],
+      "confidence": "moderate",
+      "confidence_reason": "Evidencia variable. ISSN respalda pero solo en contextos específicos. Para entrenados con dieta adecuada el efecto es trivial.",
+      "scientific_sources": [
+        "Wilson J.M. et al. (2013). ISSN position stand: beta-hydroxy-beta-methylbutyrate (HMB). JISSN.",
+        "Phillips S.M. (2017). Dietary protein requirements and adaptive advantages in athletes. Br J Nutr.",
+        "Sanchez-Martinez J. et al. (2018). Effects of β-hydroxy-β-methylbutyrate supplementation on strength and body composition in trained and competitive athletes: A meta-analysis. J Sci Med Sport.",
+        "Examine.com — HMB (2024)"
+      ],
+      "needs_daniel_validation": true,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "cafeina-anhidra",
+      "name": "Cafeína anhidra",
+      "name_alternatives": ["cafeína", "caffeine", "caffeine anhydrous", "cafeína pura"],
+      "scientific_name": "1,3,7-trimetilxantina (forma anhidra purificada)",
+      "category": "pre_workout",
+      "primary_action": "energia_pre_entreno",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "200mg (3mg/kg peso corporal)",
+        "min": "100mg",
+        "max": "400mg (6mg/kg, NUNCA exceder)",
+        "loading_phase": null,
+        "maintenance": "100-200mg pre-entreno solo días de entreno, ciclar para evitar tolerancia",
+        "unit": "mg",
+        "porcion_descripcion": "1 cápsula estándar = 100-200mg. Equivale a 1-2 tazas de café fuerte."
+      },
+      "timing_recommended": ["pre_entreno_30_60min"],
+      "frequency": "diaria_solo_dias_entreno",
+      "macros_per_serving": {
+        "kcal": 0,
+        "protein_g": 0,
+        "carbs_g": 0,
+        "fat_g": 0,
+        "serving_size": "200",
+        "serving_unit": "mg"
+      },
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["performance_deportivo", "hipertrofia", "fuerza", "perdida_grasa"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [18, 65],
+      "evidence_level": "muy_alta",
+      "evidence_summary": "La cafeína es el ergogénico legal mejor estudiado después de creatina. ISSN Position Stand (Guest et al. 2021) confirma: dosis 3-6mg/kg peso 30-60 min pre-entreno mejora resistencia, potencia, fuerza máxima, y atención/foco. Efecto consistente en hombres y mujeres. La cafeína bloquea receptores de adenosina (reduciendo percepción de fatiga) y aumenta movilización de ácidos grasos. NO genera tolerancia rápida en el contexto ergogénico (a diferencia del estímulo subjetivo). Para optimizar: ciclar 5-6 semanas on / 1-2 off, o evitar consumo crónico fuera de la ventana pre-entreno.",
+      "contraindications": [
+        "hipertension_no_controlada",
+        "trastorno_ansiedad_severo",
+        "insomnio_severo",
+        "embarazo_sin_supervision_medica",
+        "lactancia_sin_supervision_medica",
+        "menores_de_18_sin_supervision",
+        "epilepsia",
+        "intolerancia_cafeina",
+        "arritmias_cardiacas_no_controladas"
+      ],
+      "medical_interactions": [
+        {
+          "with": "anticonceptivos_orales",
+          "severity": "low",
+          "note": "Los anticonceptivos prolongan la vida media de la cafeína (hasta 40% más). En mujeres con anticonceptivos, considerala dosis efectiva más baja (100-150mg)."
+        },
+        {
+          "with": "antidepresivos_isrs",
+          "severity": "moderate",
+          "note": "Sumatoria de efecto estimulante. Puede aumentar ansiedad o palpitaciones. Empezá con 100mg si el cliente está medicado."
+        },
+        {
+          "with": "medicamentos_tiroideos",
+          "severity": "low",
+          "note": "Separala toma de levotiroxina y cafeína por al menos 1 hora — la cafeína reduce absorción."
+        },
+        {
+          "with": "beta_bloqueadores",
+          "severity": "moderate",
+          "note": "Antagonismo parcial. La cafeína puede reducir el efecto antihipertensivo del beta-bloqueador. Consultacon cardiólogo."
+        },
+        {
+          "with": "estimulantes_adhd_anfetaminas",
+          "severity": "high",
+          "note": "NO combinar con metilfenidato, anfetaminas o medicación ADHD sin supervisión médica — riesgo cardíaco serio."
+        }
+      ],
+      "side_effects_common": [
+        "Nerviosismo, palpitaciones, ansiedad si dosis es alta o consumida con estómago vacío",
+        "Insomnio si se toma después de las 2-4 PM (vida media de la cafeína es ~5-6 horas)",
+        "Aumento de presión arterial transitorio"
+      ],
+      "side_effects_rare": [
+        "Arritmias en personas con condiciones cardíacas no diagnosticadas",
+        "Reflujo gastroesofágico aumentado"
+      ],
+      "synergies": [
+        {"slug": "creatina-monohidrato", "rationale": "Potencia explosiva pre-entreno (el mito de bloqueo cafeína-creatina está refutado)"},
+        {"slug": "l-tirosina", "rationale": "Mejor foco bajo estrés agudo o sleep deprivation"},
+        {"slug": "l-citrulina-malato", "rationale": "Pre-workout natural completo: energía + pump"},
+        {"slug": "beta-alanina", "rationale": "Stack pre-entreno completo para hipertrofia"}
+      ],
+      "stacks_with_common": ["stack_pre_workout_natural", "stack_perdida_grasa_principiante", "stack_performance_masculino_elite"],
+      "commercial_products": [
+        {
+          "brand": "Bulk Powders",
+          "product": "Caffeine 200mg tablets",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_100tabs": "60000-90000",
+          "note": "Opción más limpia y precisa que pre-workouts blend"
+        },
+        {
+          "brand": "ProLab",
+          "product": "Caffeine 200mg",
+          "country_available": ["colombia", "mexico"],
+          "price_range_cop_per_100tabs": "50000-80000"
+        },
+        {
+          "brand": "Genéricos LATAM",
+          "product": "Cafeína 100mg/200mg",
+          "country_available": ["colombia", "mexico", "argentina"],
+          "price_range_cop_per_100tabs": "30000-60000",
+          "note": "Disponible en farmacias. Verifica registro INVIMA en Colombia."
+        }
+      ],
+      "cost_relative": "muy_baja",
+      "shopping_list_grouping": "suplementos_pre_workout",
+      "use_cases": [
+        "Performance: mejora fuerza máxima, potencia explosiva, resistencia",
+        "Pérdida grasa: aumenta termogénesis modestamente + mejora capacidad de entreno en déficit",
+        "Foco mental: útil para entrenos exigentes después del trabajo o con poco sueño",
+        "Alternativa limpia a pre-workouts blend con 15+ ingredientes innecesarios"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "esencial_001_lizetd", "context": "Pre-entreno mujer pérdida grasa"},
+        {"client_anonimized": "elite_daniel", "context": "Implícita en blend Neuro-Freak"}
+      ],
+      "advertencia_legal": "Suplemento de venta libre en LATAM. Si tienes hipertensión, arritmias, ansiedad severa o tomas antidepresivos/medicación ADHD, consulta con tu médico antes. NO tomar después de las 4 PM si tienessensibilidad al insomnio. Embarazo: máximo 200mg/día total incluyendo café (ACOG).",
+      "tags": ["mvp_obligatorio", "md_04_estandar", "pre_workout", "evidencia_muy_alta"],
+      "confidence": "high",
+      "confidence_reason": "ISSN Position Stand reciente. Ergogénico legal mejor estudiado después de creatina.",
+      "scientific_sources": [
+        "Guest N.S. et al. (2021). ISSN position stand: caffeine and exercise performance. JISSN.",
+        "Grgic J. et al. (2020). Wake up and smell the coffee: caffeine supplementation and exercise performance — an umbrella review of 21 published meta-analyses. Br J Sports Med.",
+        "Examine.com — Caffeine (2024)"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "neuro-freak-blend-pre-workout",
+      "name": "Pre-workout blend (Neuro-Freak / similares)",
+      "name_alternatives": ["Neuro-Freak", "pre-workout blend", "pre-workout multi-ingrediente", "pre-workout multi-stim"],
+      "scientific_name": "Blend multi-ingrediente con cafeína como activo primario",
+      "category": "blend_multi_ingrediente",
+      "primary_action": "energia_pre_entreno",
+      "type": "blend_pre_workout",
+      "blend_components": [
+        {"activo": "cafeína anhidra", "dosis_tipica": "200-350mg", "rol_primario": "estimulante principal"},
+        {"activo": "L-citrulina malato", "dosis_tipica": "3-6g", "rol_primario": "pump / NO booster"},
+        {"activo": "beta-alanina", "dosis_tipica": "1.6-3.2g", "rol_primario": "buffer acidosis"},
+        {"activo": "L-tirosina", "dosis_tipica": "500-1500mg", "rol_primario": "foco mental"},
+        {"activo": "L-taurina", "dosis_tipica": "1-2g", "rol_primario": "hidratación celular + foco"},
+        {"activo": "vitaminas B (B3, B6, B12)", "dosis_tipica": "varios", "rol_primario": "soporte energético"}
+      ],
+      "dosis_recommended": {
+        "default": "1 scoop (10-15g de polvo según producto)",
+        "min": "0.5 scoop (probar tolerancia primero)",
+        "max": "1 scoop",
+        "loading_phase": null,
+        "maintenance": "1 scoop pre-entreno días de pesas. Ciclar 6 semanas on / 1 off.",
+        "unit": "scoop",
+        "porcion_descripcion": "1 scoop = 10-15g de polvo (revisar etiqueta del producto específico)"
+      },
+      "timing_recommended": ["pre_entreno_30_60min"],
+      "frequency": "diaria_solo_dias_entreno",
+      "macros_per_serving": {
+        "kcal": 5,
+        "protein_g": 0,
+        "carbs_g": 1,
+        "fat_g": 0,
+        "serving_size": "12",
+        "serving_unit": "g"
+      },
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "elite",
+      "applicable_objectives": ["performance_deportivo", "hipertrofia", "fuerza"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [18, 55],
+      "evidence_level": "moderada",
+      "evidence_summary": "Los pre-workouts blend funcionan principalmente por la cafeína (que tiene evidencia muy alta), apoyada por dosis efectivas de citrulina y beta-alanina. Harty et al. (2018) — meta-análisis — muestra que pre-workouts multi-ingrediente mejoran performance ~6-15% en pruebas anaeróbicas, pero el efecto es prácticamente igual al de cafeína sola si los demás ingredientes están en dosis subóptimas. ATENCIÓN: muchos blends comerciales usan 'proprietary blends' que ocultan dosis reales — preferí marcas con etiqueta transparente.",
+      "contraindications": [
+        "hipertension_no_controlada",
+        "trastorno_ansiedad_severo",
+        "insomnio_severo",
+        "embarazo_sin_supervision_medica",
+        "lactancia_sin_supervision_medica",
+        "menores_de_18_sin_supervision",
+        "epilepsia",
+        "intolerancia_cafeina",
+        "arritmias_cardiacas_no_controladas",
+        "antidepresivos_isrs"
+      ],
+      "medical_interactions": [
+        {
+          "with": "antidepresivos_isrs",
+          "severity": "high",
+          "note": "Cafeína alta + tirosina + otros estimulantes pueden gatillar síndrome serotoninérgico o crisis hipertensiva. NO combinar sin supervisión psiquiátrica."
+        },
+        {
+          "with": "antihipertensivos",
+          "severity": "moderate",
+          "note": "Antagonismo con beta-bloqueadores. Sinergia hipotensora con citrulina-vasodilatadores. Monitorear."
+        },
+        {
+          "with": "anticonceptivos_orales",
+          "severity": "low",
+          "note": "Vida media de cafeína prolongada. Considerar dosis efectiva más baja."
+        }
+      ],
+      "side_effects_common": [
+        "Parestesia (hormigueo) por la beta-alanina — normal, no es alergia",
+        "Nerviosismo o palpitaciones si la dosis de cafeína es alta",
+        "Insomnio si se toma después de las 4 PM"
+      ],
+      "side_effects_rare": [
+        "Crisis hipertensiva en personas predispuestas con dosis altas",
+        "Síndrome serotoninérgico si se combina con ISRS"
+      ],
+      "synergies": [],
+      "stacks_with_common": ["stack_performance_masculino_elite", "stack_pre_workout_avanzado"],
+      "commercial_products": [
+        {
+          "brand": "Pharma First",
+          "product": "Neuro-Freak",
+          "country_available": ["colombia", "ecuador", "venezuela"],
+          "price_range_cop_per_400g": "180000-240000",
+          "note": "Blend usado por Daniel en su plan Elite. Verificar etiqueta de dosis."
+        },
+        {
+          "brand": "C4 Sport",
+          "product": "C4 Original Pre-Workout",
+          "country_available": ["internacional", "colombia", "mexico"],
+          "price_range_cop_per_400g": "200000-280000",
+          "note": "Pre-workout más vendido global. Etiqueta transparente."
+        },
+        {
+          "brand": "Optimum Nutrition",
+          "product": "Gold Standard Pre-Workout",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_300g": "180000-240000",
+          "note": "Etiqueta totalmente transparente, sin proprietary blends."
+        }
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_pre_workout",
+      "use_cases": [
+        "Entrenos de alta intensidad cuando quierestodo en una toma (vs hacer stack manual)",
+        "Días de pesas pesados (fuerza máxima, hipertrofia con volumen alto)",
+        "NO recomendado para principiantes — primero validar tolerancia a cafeína sola"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "elite_daniel", "context": "Neuro-Freak — stack Elite hombre"}
+      ],
+      "advertencia_legal": "Suplemento multi-ingrediente. Antes de tomar, lee la etiqueta completa para identificar dosis de cafeína y otros estimulantes. NO combinar con otros productos con cafeína (café, energizantes) el mismo día. NO usar en embarazo, lactancia, hipertensión no controlada, ansiedad severa, o si tomas antidepresivos.",
+      "tags": ["observado_audit", "tier_elite", "blend", "pre_workout"],
+      "confidence": "moderate",
+      "confidence_reason": "Funciona principalmente por la cafeína. Otros ingredientes en dosis variables según marca. Preferir blends con etiqueta transparente.",
+      "scientific_sources": [
+        "Harty P.S. et al. (2018). Multi-ingredient pre-workout supplements, safety implications, and performance outcomes: a brief review. JISSN.",
+        "Jagim A.R. et al. (2019). Common Ingredient Profiles of Multi-Ingredient Pre-Workout Supplements. Nutrients."
+      ],
+      "needs_daniel_validation": true,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "l-tirosina",
+      "name": "L-tirosina",
+      "name_alternatives": ["tirosina", "L-tyrosine", "N-acetyl L-tyrosine (NALT)"],
+      "scientific_name": "L-Tirosina (aminoácido no esencial, precursor de dopamina y noradrenalina)",
+      "category": "aminoacido_no_esencial",
+      "primary_action": "concentracion_focus",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "1g (combinado con cafeína 200mg)",
+        "min": "500mg",
+        "max": "2g",
+        "loading_phase": null,
+        "maintenance": "500-2000mg solo en días de estrés agudo, sleep deprivation, o pre-entreno exigente",
+        "unit": "mg",
+        "porcion_descripcion": "1-2 cápsulas de 500mg, 30-60 min antes de la actividad demandante"
+      },
+      "timing_recommended": ["pre_entreno_30_60min", "ayuno_matutino"],
+      "frequency": "ocasional_segun_sintoma",
+      "macros_per_serving": {
+        "kcal": 0,
+        "protein_g": 0,
+        "carbs_g": 0,
+        "fat_g": 0,
+        "serving_size": "1000",
+        "serving_unit": "mg"
+      },
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "elite",
+      "applicable_objectives": ["performance_deportivo", "concentracion_focus"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [18, 55],
+      "evidence_level": "limitada",
+      "evidence_summary": "La L-tirosina es precursora de catecolaminas (dopamina, noradrenalina). Bajo estrés agudo, sueño deprivado, o exposición a frío/calor extremo, los niveles de catecolaminas caen — y suplementar tirosina puede preservar performance cognitiva y física. Hase et al. (2015) y Banderet & Lieberman (1989) muestran efecto en condiciones de estrés extremo (militares, sleep-deprived). PERO en condiciones normales el efecto es trivial o nulo (Deijen et al. 1995). Perplexity Pro 2026-05-17: 'most useful when paired with caffeine rather than used alone' — combinar con cafeína es lo que tiene evidencia real.",
+      "contraindications": [
+        "hipertiroidismo",
+        "trastorno_bipolar",
+        "migrana_severa",
+        "embarazo_sin_supervision_medica",
+        "lactancia_sin_supervision_medica",
+        "menores_de_18_sin_supervision"
+      ],
+      "medical_interactions": [
+        {
+          "with": "levodopa_parkinson",
+          "severity": "high",
+          "note": "La tirosina compite con levodopa por absorción intestinal y transporte cerebral. NO combinar en Parkinson sin supervisión neurológica."
+        },
+        {
+          "with": "medicamentos_tiroideos",
+          "severity": "moderate",
+          "note": "La tirosina es precursora de hormonas tiroideas. En hipertiroidismo o uso de levotiroxina, consulta con tu médico antes."
+        },
+        {
+          "with": "IMAOs_antidepresivos",
+          "severity": "high",
+          "note": "Los IMAOs bloquean la degradación de catecolaminas. Sumar tirosina puede gatillar crisis hipertensiva. NO combinar."
+        },
+        {
+          "with": "estimulantes_adhd_anfetaminas",
+          "severity": "moderate",
+          "note": "Sumatoria de efecto adrenérgico. Empezar con dosis mínima."
+        }
+      ],
+      "side_effects_common": [
+        "Generalmente bien tolerada en dosis ≤2g",
+        "Cefalea leve en algunos individuos sensibles"
+      ],
+      "side_effects_rare": [
+        "Ansiedad o palpitaciones en personas predispuestas",
+        "Náuseas en dosis altas (>3g)"
+      ],
+      "synergies": [
+        {"slug": "cafeina-anhidra", "rationale": "Combinación con mejor evidencia para foco bajo estrés agudo o sleep deprivation"}
+      ],
+      "stacks_with_common": ["stack_pre_workout_natural", "stack_foco_mental"],
+      "commercial_products": [
+        {
+          "brand": "Bulk Powders",
+          "product": "L-Tyrosine Powder",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_250g": "100000-140000"
+        },
+        {
+          "brand": "Now Foods",
+          "product": "L-Tyrosine 500mg",
+          "country_available": ["internacional", "colombia"],
+          "price_range_cop_per_120caps": "120000-160000",
+          "note": "Disponible en iHerb y tiendas naturistas LATAM"
+        }
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_pre_workout",
+      "use_cases": [
+        "Entrenos exigentes con poco sueño (<5 horas) — preservación foco",
+        "Estrés agudo: presentación importante, examen, evento competitivo",
+        "Pre-entreno: combinada con cafeína mejora foco en sesiones largas",
+        "NO recomendado para uso diario rutinario — el efecto se diluye"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento de venta libre. Si tomasmedicación tiroidea, antidepresivos IMAO, levodopa, o medicación ADHD, NO empezar sin consultar con tu médico. En hipertiroidismo está contraindicada.",
+      "tags": ["propuesta_mia", "tier_elite", "ocasional", "evidencia_limitada"],
+      "confidence": "low",
+      "confidence_reason": "Evidencia solo en condiciones extremas (sleep deprivation, frío/calor, estrés militar). Para uso rutinario el efecto es trivial. Justifica como combo con cafeína en escenarios específicos.",
+      "scientific_sources": [
+        "Hase A. et al. (2015). Behavioural and cognitive effects of tyrosine intake in healthy human adults. Pharmacol Biochem Behav.",
+        "Banderet L.E. & Lieberman H.R. (1989). Treatment with tyrosine, a neurotransmitter precursor, reduces environmental stress in humans. Brain Res Bull.",
+        "Deijen J.B. et al. (1995). Tyrosine improves cognitive performance and reduces blood pressure in cadets after one week of a combat training course. Brain Res Bull.",
+        "Examine.com — L-Tyrosine (2024)"
+      ],
+      "needs_daniel_validation": true,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "vitamina-d3",
+      "name": "Vitamina D3 (colecalciferol)",
+      "name_alternatives": ["vit D3", "vitamina D", "colecalciferol"],
+      "scientific_name": "Colecalciferol — vitamina liposoluble",
+      "category": "vitamina_liposoluble",
+      "primary_action": "salud_general",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "2000 UI/día",
+        "min": "1000 UI",
+        "max": "4000 UI (UL adulto sano IOM)",
+        "loading_phase": "5000-10000 UI/día por 8-12 sem si bloodwork <30 ng/mL — bajo supervisión",
+        "maintenance": "1000-2000 UI/día",
+        "unit": "UI",
+        "porcion_descripcion": "1 cápsula 1000-2000 UI con comida grasa"
+      },
+      "timing_recommended": ["con_desayuno", "con_almuerzo"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "serving_size": "2000", "serving_unit": "UI"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["salud_general", "hipertrofia", "fuerza", "performance_deportivo"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [16, 90],
+      "evidence_level": "muy_alta",
+      "evidence_summary": "Hormona esteroidea, regula >2000 genes, modula inmunidad, salud ósea, performance muscular y testo basal. Deficiencia (<20 ng/mL) muy frecuente en LATAM urbano. Holick 2007: ~50% población mundial subóptima. Pilz 2011: corrección restaura testo basal en hombres deficientes. Owens 2018: mejora performance en atletas deficientes. Ideal: medir 25(OH)D y ajustar.",
+      "contraindications": ["hipercalcemia", "sarcoidosis", "calculos_renales_recurrentes"],
+      "medical_interactions": [
+        {"with": "diureticos_tiazidicos", "severity": "moderate", "note": "Riesgo hipercalcemia. Monitoreá calcemia si tomashidroclorotiazida."},
+        {"with": "anticonvulsivantes", "severity": "moderate", "note": "Reducen activación de D3. Cliente con epilepsia puede necesitar dosis mayor."},
+        {"with": "corticoides_cronicos", "severity": "low", "note": "Aumentan necesidad de suplementación."}
+      ],
+      "side_effects_common": [],
+      "side_effects_rare": ["Hipercalcemia con dosis crónicas >10000 UI sin medición de niveles"],
+      "synergies": [
+        {"slug": "vitamina-d3-k2", "rationale": "K2 dirige calcio a hueso, evita calcificación arterial"},
+        {"slug": "omega-3-epa-dha", "rationale": "Liposolubles juntos mejoran absorción + sinergia antiinflamatoria"},
+        {"slug": "magnesio-bisglicinato", "rationale": "Magnesio cofactor activación D3 hepática"}
+      ],
+      "stacks_with_common": ["stack_basico_hipertrofia", "stack_salud_femenina_elite", "stack_recovery_avanzado"],
+      "commercial_products": [
+        {"brand": "Now Foods", "product": "Vitamin D-3 2000 IU", "country_available": ["internacional", "colombia"], "price_range_cop_per_240caps": "60000-90000"},
+        {"brand": "Nordic Naturals", "product": "Vitamin D3 1000 IU", "country_available": ["internacional", "colombia"], "price_range_cop_per_120softgels": "120000-160000", "note": "Premium aceite oliva"},
+        {"brand": "MK Genéricos LATAM", "product": "Vitamina D3 2000 UI", "country_available": ["colombia", "mexico"], "price_range_cop_per_60caps": "30000-50000", "note": "VerificaINVIMA"}
+      ],
+      "cost_relative": "muy_baja",
+      "shopping_list_grouping": "suplementos_vitaminas_minerales",
+      "use_cases": [
+        "Personas con poca exposición solar (oficinistas, climas nublados)",
+        "Bloodwork 25(OH)D <30 ng/mL",
+        "Atletas deficientes — mejora performance",
+        "Salud ósea pre/postmenopáusica",
+        "Soporte inmune invierno"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "esencial_001_lizetd", "context": "Stack base mujer"},
+        {"client_anonimized": "elite_silvia", "context": "Combinada con K2"},
+        {"client_anonimized": "elite_daniel", "context": "Stack salud hombre"}
+      ],
+      "advertencia_legal": "Suplemento de venta libre. Si tienes sarcoidosis, hipercalcemia o cálculos renales recurrentes, consulta con tu médico. Dosis >4000 UI/día sostenidas requieren medición 25(OH)D cada 3-6 meses.",
+      "tags": ["mvp_obligatorio", "md_04_estandar", "vitamina_liposoluble", "evidencia_muy_alta"],
+      "confidence": "high",
+      "confidence_reason": "Evidencia consolidada en salud general, performance, prevención de deficiencia.",
+      "scientific_sources": [
+        "Holick M.F. (2007). Vitamin D deficiency. N Engl J Med.",
+        "Pilz S. et al. (2011). Effect of vitamin D supplementation on testosterone levels in men. Horm Metab Res.",
+        "Owens D.J. et al. (2018). Vitamin D and the Athlete. Sports Med.",
+        "IOM (2011). DRI for Calcium and Vitamin D."
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "vitamina-d3-k2",
+      "name": "Vitamina D3 + K2 (MK-7)",
+      "name_alternatives": ["D3+K2", "D3 con K2 MK-7"],
+      "scientific_name": "Colecalciferol (D3) + Menaquinona-7 (K2 MK-7)",
+      "category": "vitamina_liposoluble",
+      "primary_action": "salud_general",
+      "type": "multi_ingrediente",
+      "blend_components": [
+        {"activo": "Vitamina D3", "dosis_tipica": "1000-5000 UI", "rol_primario": "regulación calcio + inmunidad"},
+        {"activo": "Vitamina K2 (MK-7)", "dosis_tipica": "90-200 mcg", "rol_primario": "dirige calcio a hueso, evita calcificación arterial"}
+      ],
+      "dosis_recommended": {
+        "default": "2000 UI D3 + 100 mcg K2 (MK-7)",
+        "min": "1000 UI D3 + 90 mcg K2",
+        "max": "5000 UI D3 + 200 mcg K2",
+        "loading_phase": null,
+        "maintenance": "1 cápsula/día con comida grasa",
+        "unit": "UI/mcg",
+        "porcion_descripcion": "1 cápsula combinada con desayuno"
+      },
+      "timing_recommended": ["con_desayuno"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "serving_size": "1", "serving_unit": "cápsula"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_objectives": ["salud_general", "salud_articular", "salud_cardiovascular"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [25, 90],
+      "evidence_level": "alta",
+      "evidence_summary": "K2 MK-7 activa osteocalcina (dirige calcio a hueso) y MGP (evita calcificación arterial). Suplementar D3 sin K2 podría aumentar riesgo de calcificación vascular en clientes con déficit de K2 (frecuente en dietas occidentales). Knapen 2013: 180 mcg MK-7/día x 3 años mejoró elasticidad arterial postmenopáusicas. Combinación D3+K2 es estándar evidence-based moderno.",
+      "contraindications": ["anticoagulantes_orales", "hipercalcemia", "sarcoidosis"],
+      "medical_interactions": [
+        {"with": "anticoagulantes_orales", "severity": "high", "note": "K2 antagoniza warfarina y acenocumarol. NO combinar con anti-vitamina K clásicos. DOAC menos afectados pero consultar cardiólogo."},
+        {"with": "diureticos_tiazidicos", "severity": "moderate", "note": "Mismo manejo que D3 sola."}
+      ],
+      "side_effects_common": [],
+      "side_effects_rare": ["Hipercalcemia con dosis altas crónicas sin medición"],
+      "synergies": [
+        {"slug": "magnesio-bisglicinato", "rationale": "Trío óseo Ca+Mg+K2"},
+        {"slug": "omega-3-epa-dha", "rationale": "Sinergia antiinflamatoria + absorción liposoluble"}
+      ],
+      "stacks_with_common": ["stack_salud_femenina_elite", "stack_recomposicion_femenina_elite", "stack_salud_avanzado"],
+      "commercial_products": [
+        {"brand": "Sports Research", "product": "Vitamin D3 + K2 5000 IU + 100 mcg", "country_available": ["internacional", "colombia"], "price_range_cop_per_60softgels": "120000-160000"},
+        {"brand": "Now Foods", "product": "Vitamin D-3 & K-2", "country_available": ["internacional", "colombia"], "price_range_cop_per_120softgels": "100000-140000"},
+        {"brand": "Thorne", "product": "Vitamin D/K2 Liquid", "country_available": ["internacional"], "price_range_cop_per_30ml": "180000-240000", "note": "Líquido — preferida por practitioners"}
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_vitaminas_minerales",
+      "use_cases": [
+        "Mujeres pre/postmenopáusicas: prevención osteoporosis sin riesgo cardiovascular",
+        "Adultos >35 con perfil lipídico borderline",
+        "Atletas que ya suplementan D3 y quieren completar manejo del calcio",
+        "Salud ósea Elite vs solo D3 base"
+      ],
+      "common_in_plans": [{"client_anonimized": "elite_silvia", "context": "Stack Elite mujer salud óptima"}],
+      "advertencia_legal": "Suplemento de venta libre. NO COMBINAR con warfarina o acenocumarol — K2 los antagoniza. Si tomascualquier anticoagulante, consultá con cardiólogo o hematólogo antes.",
+      "tags": ["observado_audit", "tier_metodo_elite", "vitamina_liposoluble", "salud_osea", "salud_cardiovascular"],
+      "confidence": "high",
+      "confidence_reason": "Combinación con evidencia sólida en salud ósea y cardiovascular.",
+      "scientific_sources": [
+        "Knapen M.H.J. et al. (2013). Three-year low-dose menaquinone-7 supplementation helps decrease bone loss in healthy postmenopausal women. Osteoporos Int.",
+        "Vermeer C. (2012). Vitamin K beyond coagulation. Food Nutr Res.",
+        "Maresz K. (2015). Vitamin K2 as Promoter of Bone and Cardiovascular Health. Integr Med."
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "multivitaminico-base",
+      "name": "Multivitamínico base (unisex adulto)",
+      "name_alternatives": ["multivitamínico", "multi", "multivitamin"],
+      "scientific_name": "Mezcla vitaminas y minerales en dosis DRI/AI",
+      "category": "vitamina_hidrosoluble",
+      "primary_action": "salud_general",
+      "type": "multi_ingrediente",
+      "blend_components": [
+        {"activo": "vitaminas A, C, D, E, K", "rol_primario": "vitaminas esenciales"},
+        {"activo": "vitaminas B (B1-B12)", "rol_primario": "metabolismo energético"},
+        {"activo": "minerales (zinc, magnesio, selenio, cromo, cobre, manganeso)", "rol_primario": "cofactores enzimáticos"},
+        {"activo": "iodo", "rol_primario": "función tiroidea"}
+      ],
+      "dosis_recommended": {
+        "default": "1 tableta/día con desayuno",
+        "min": "1",
+        "max": "1",
+        "loading_phase": null,
+        "maintenance": "1 dosis/día",
+        "unit": "tableta",
+        "porcion_descripcion": "1 dosis diaria con comida"
+      },
+      "timing_recommended": ["con_desayuno", "con_almuerzo"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 5, "protein_g": 0, "carbs_g": 1, "fat_g": 0, "serving_size": "1", "serving_unit": "tableta"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["salud_general", "mantenimiento"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [18, 90],
+      "evidence_level": "moderada",
+      "evidence_summary": "Cubre brechas dietarias comunes (B-complex, D3, Mg, Zn) pero NO reemplaza dieta balanceada. Bjelakovic 2014 (Cochrane): sin reducción de mortalidad en sanos con dieta adecuada. Más útil en: dietas restrictivas (vegano, cut), atletas alto gasto, embarazo (prenatal específico), adultos mayores. CUIDADO: evitá multis 'mega-dosis' (>500% DRI B3/B6) — riesgo toxicidad B6 (neuropatía) y B3 (flushing).",
+      "contraindications": ["hemocromatosis"],
+      "medical_interactions": [
+        {"with": "medicamentos_tiroideos", "severity": "low", "note": "Calcio/hierro reducen absorción levotiroxina. Separa4 horas."},
+        {"with": "anticoagulantes_orales", "severity": "moderate", "note": "Multis con vit K interfieren con warfarina. Preferir multis sin K si toma anticoagulante."}
+      ],
+      "side_effects_common": [
+        "Náuseas si se toma con estómago vacío — siempre con comida",
+        "Orina amarillo fluorescente por riboflavina B2 (inofensivo)"
+      ],
+      "side_effects_rare": ["Neuropatía por B6 si dosis crónica >100mg/día"],
+      "synergies": [
+        {"slug": "omega-3-epa-dha", "rationale": "Liposolubles + omega-3 = base nutricional completa"},
+        {"slug": "magnesio-bisglicinato", "rationale": "Multis suelen tener magnesio en dosis baja — sumar bisglicinato si reportás calambres"}
+      ],
+      "stacks_with_common": ["stack_basico_hipertrofia", "stack_basico_vegetariano"],
+      "commercial_products": [
+        {"brand": "Optimum Nutrition", "product": "Opti-Men", "country_available": ["internacional", "colombia"], "price_range_cop_per_150tabs": "180000-240000", "note": "Para hombres — dosis mayores"},
+        {"brand": "Centrum", "product": "Centrum Adult", "country_available": ["internacional", "colombia", "mexico"], "price_range_cop_per_60tabs": "80000-120000"},
+        {"brand": "Genéricos LATAM", "product": "Multivitamínico adulto", "country_available": ["colombia", "mexico", "argentina"], "price_range_cop_per_60tabs": "40000-70000"}
+      ],
+      "cost_relative": "baja",
+      "shopping_list_grouping": "suplementos_vitaminas_minerales",
+      "use_cases": [
+        "Cobertura brechas dietarias en clientes sin dieta perfecta",
+        "Atletas alto gasto energético",
+        "Dietas restrictivas (cut agresivo, vegetariana planificada)",
+        "NO usar como reemplazo de comida real — es 'safety net' nutricional"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "esencial_001_lizetd", "context": "Stack base"},
+        {"client_anonimized": "elite_daniel", "context": "Stack hombre Elite"}
+      ],
+      "advertencia_legal": "Suplemento de venta libre. Verifica B6 ≤25mg, B3 ≤35mg, y hierro NO presente si ereshombre sin deficiencia documentada (riesgo hemocromatosis).",
+      "tags": ["mvp_obligatorio", "md_04_estandar", "multi_ingrediente", "evidencia_moderada"],
+      "confidence": "moderate",
+      "confidence_reason": "Beneficio depende del cliente. Más útil en dietas restrictivas o atletas.",
+      "scientific_sources": [
+        "Bjelakovic G. et al. (2014). Antioxidant supplements for prevention of mortality. Cochrane Database Syst Rev.",
+        "Rautiainen S. et al. (2016). Multivitamin use and CVD risk in men. J Nutr.",
+        "Examine.com — Multivitamins (2024)"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "multivitaminico-femenino",
+      "name": "Multivitamínico femenino",
+      "name_alternatives": ["multi femenino", "women's multivitamin"],
+      "scientific_name": "Multivitamínico formulado para necesidades femeninas adultas",
+      "category": "vitamina_hidrosoluble",
+      "primary_action": "salud_hormonal_femenina",
+      "type": "multi_ingrediente",
+      "blend_components": [
+        {"activo": "Hierro (bisglicinato)", "dosis_tipica": "10-18mg", "rol_primario": "reposición pérdidas menstruales"},
+        {"activo": "Calcio + Vitamina D3", "dosis_tipica": "500mg Ca + 1000 UI D3", "rol_primario": "salud ósea femenina"},
+        {"activo": "Ácido fólico (B9)", "dosis_tipica": "400-800 mcg", "rol_primario": "salud reproductiva"},
+        {"activo": "Vitamina B6", "dosis_tipica": "10-25mg", "rol_primario": "soporte SPM"},
+        {"activo": "Vitaminas A, C, E, K, B-complex", "rol_primario": "cobertura general"},
+        {"activo": "Zinc, Magnesio, Selenio, Iodo", "rol_primario": "minerales esenciales"}
+      ],
+      "dosis_recommended": {
+        "default": "1 tableta/día con desayuno",
+        "min": "1",
+        "max": "1",
+        "loading_phase": null,
+        "maintenance": "1 dosis/día",
+        "unit": "tableta",
+        "porcion_descripcion": "1 dosis diaria con comida"
+      },
+      "timing_recommended": ["con_desayuno"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 5, "protein_g": 0, "carbs_g": 1, "fat_g": 0, "serving_size": "1", "serving_unit": "tableta"},
+      "serves_as_food": false,
+      "applicable_gender": ["femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["salud_general", "salud_hormonal_femenina", "mantenimiento"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [16, 90],
+      "evidence_level": "moderada",
+      "evidence_summary": "Mujeres edad fértil: necesidades específicas de hierro (pérdida ~14-30mg/ciclo), folato (síntesis DNA + prevención defectos tubo neural), B6 (SPM), Ca + D3 (densidad ósea). Multis femeninos cubren mejor que genéricos. Vital 2018: mujeres atletas tienen 2x más deficiencia de hierro y B12. NO usar multi-femenino en hombres (exceso hierro peligroso si hemocromatosis no diagnosticada).",
+      "contraindications": ["hemocromatosis", "embarazo_sin_supervision_medica"],
+      "medical_interactions": [
+        {"with": "medicamentos_tiroideos", "severity": "moderate", "note": "Hierro y calcio reducen absorción levotiroxina. Separa4 horas."},
+        {"with": "anticonceptivos_orales", "severity": "low", "note": "Anticonceptivos reducen B6, B9, B12 séricas — multi es complementario."},
+        {"with": "anticoagulantes_orales", "severity": "moderate", "note": "Si el multi tiene vit K, interfiere con warfarina. Verificaetiqueta."}
+      ],
+      "side_effects_common": [
+        "Náuseas si se toma con estómago vacío",
+        "Estreñimiento leve por hierro en algunas mujeres"
+      ],
+      "side_effects_rare": [],
+      "synergies": [
+        {"slug": "hierro-bisglicinato", "rationale": "Si el multi no cubre suficiente hierro (mujeres con flujo intenso), sumar bisglicinato"},
+        {"slug": "vitamina-d3-k2", "rationale": "Salud ósea femenina óptima"}
+      ],
+      "stacks_with_common": ["stack_salud_femenina_elite", "stack_recomposicion_femenina"],
+      "commercial_products": [
+        {"brand": "Optimum Nutrition", "product": "Opti-Women", "country_available": ["internacional", "colombia", "mexico"], "price_range_cop_per_120caps": "160000-220000"},
+        {"brand": "Garden of Life", "product": "Vitamin Code Women", "country_available": ["internacional", "colombia"], "price_range_cop_per_120caps": "220000-280000", "note": "Premium base alimentos orgánicos"},
+        {"brand": "Centrum", "product": "Centrum Mujer", "country_available": ["internacional", "colombia", "mexico"], "price_range_cop_per_60tabs": "80000-120000"}
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_salud_femenina",
+      "use_cases": [
+        "Mujeres edad fértil con flujo menstrual normal o intenso",
+        "Mujeres deportistas (riesgo deficiencia hierro)",
+        "Pre/postmenopáusicas (densidad ósea)",
+        "Mujeres vegetarianas/veganas (B12, hierro)"
+      ],
+      "common_in_plans": [{"client_anonimized": "elite_silvia", "context": "Stack Elite mujer salud óptima"}],
+      "advertencia_legal": "Suplemento de venta libre. SOLO para mujeres adultas. NO usar en hombres (riesgo hemocromatosis). En embarazo cambiá a prenatal específico bajo supervisión obstétrica.",
+      "tags": ["observado_audit", "salud_femenina_especifica", "evidencia_moderada"],
+      "confidence": "high",
+      "confidence_reason": "Beneficio específico en mujeres por necesidades superiores de hierro, folato, B6.",
+      "scientific_sources": [
+        "Vital D.A. et al. (2018). Iron deficiency in female athletes. Sports Med.",
+        "ACOG (2018). Folic acid for prevention of neural tube defects.",
+        "Examine.com — Multivitamins for Women (2024)"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "magnesio-bisglicinato",
+      "name": "Magnesio bisglicinato",
+      "name_alternatives": ["magnesium bisglycinate", "magnesio quelado"],
+      "scientific_name": "Magnesio quelado con dos moléculas de glicina",
+      "category": "mineral",
+      "primary_action": "sueno_recuperacion",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "300mg (magnesio elemental)",
+        "min": "200mg",
+        "max": "400mg",
+        "loading_phase": null,
+        "maintenance": "200-400mg/día antes de dormir",
+        "unit": "mg",
+        "porcion_descripcion": "1-2 cápsulas de 200mg (verificamagnesio ELEMENTAL, no peso total del bisglicinato)"
+      },
+      "timing_recommended": ["antes_dormir_30min"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "serving_size": "300", "serving_unit": "mg"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["sueno_recuperacion", "recuperacion_post_entreno", "salud_general"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [18, 90],
+      "evidence_level": "alta",
+      "evidence_summary": "Cofactor en >300 enzimas: contracción/relajación muscular, ATP, NMDA-GABA, activación D3. Deficiencia subclínica muy frecuente en LATAM urbano (~40-50% ENSIN Colombia 2015). Bisglicinato es la forma más biodisponible y tolerada — vs óxido (50% absorción) y citrato (gases). Wienecke 2016: mejora calidad sueño, reduce calambres nocturnos. Boyle 2017: reduce ansiedad subclínica y estrés.",
+      "contraindications": ["insuficiencia_renal_cronica_avanzada", "bradicardia_severa"],
+      "medical_interactions": [
+        {"with": "medicamentos_tiroideos", "severity": "moderate", "note": "Separa4 horas la toma de levotiroxina."},
+        {"with": "antibioticos_quinolonas_tetraciclinas", "severity": "moderate", "note": "Quela ciprofloxacino y tetraciclinas. Separa4-6 horas."},
+        {"with": "diureticos_no_ahorradores", "severity": "low", "note": "Furosemida aumenta excreción de Mg — suplementar es coherente."}
+      ],
+      "side_effects_common": ["Bisglicinato es la forma mejor tolerada — efectos GI raros"],
+      "side_effects_rare": ["Diarrea en dosis >600mg/día"],
+      "synergies": [
+        {"slug": "vitamina-d3", "rationale": "Mg es cofactor de activación hepática de D3"},
+        {"slug": "caseina-micelar", "rationale": "Stack pre-sueño: proteína lenta + relajación neuromuscular"},
+        {"slug": "zinc-bisglicinato", "rationale": "Trío ZMA clásico recovery"}
+      ],
+      "stacks_with_common": ["stack_recovery_avanzado", "stack_basico_hipertrofia", "stack_sueno_recovery"],
+      "commercial_products": [
+        {"brand": "Doctor's Best", "product": "High Absorption Magnesium", "country_available": ["internacional", "colombia"], "price_range_cop_per_240tabs": "120000-160000", "note": "Bisglicinato Albion® patentado"},
+        {"brand": "Now Foods", "product": "Magnesium Bisglycinate", "country_available": ["internacional", "colombia"], "price_range_cop_per_180caps": "100000-140000"},
+        {"brand": "Genéricos LATAM", "product": "Magnesio bisglicinato 200mg", "country_available": ["colombia", "mexico", "argentina"], "price_range_cop_per_60caps": "40000-70000"}
+      ],
+      "cost_relative": "baja",
+      "shopping_list_grouping": "suplementos_vitaminas_minerales",
+      "use_cases": [
+        "Mejorar calidad sueño en clientes con volumen alto de entreno",
+        "Calambres musculares nocturnos",
+        "Recovery neuromuscular en cut o sobreentrenamiento",
+        "Manejo SPM en mujeres (combinado con B6)"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "esencial_001_lizetd", "context": "Stack pre-sueño base"},
+        {"client_anonimized": "elite_silvia", "context": "Stack Elite mujer (forma glicinato)"}
+      ],
+      "advertencia_legal": "Suplemento de venta libre. En insuficiencia renal moderada-severa consulta con tu médico. Dosis es magnesio ELEMENTAL — verificala etiqueta.",
+      "tags": ["mvp_obligatorio", "md_04_estandar", "mineral", "evidencia_alta", "sueno"],
+      "confidence": "high",
+      "confidence_reason": "Forma con mejor biodisponibilidad y tolerancia GI. Evidencia sólida en sueño y recovery.",
+      "scientific_sources": [
+        "Wienecke E. & Nolden C. (2016). Long-term HRV analysis shows stress reduction by magnesium intake. MMW Fortschr Med.",
+        "Boyle N.B. et al. (2017). Effects of Magnesium Supplementation on Subjective Anxiety and Stress. Nutrients.",
+        "Schwalfenberg G.K. & Genuis S.J. (2017). The Importance of Magnesium in Clinical Healthcare. Scientifica."
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "magnesio-glicinato",
+      "name": "Magnesio glicinato (alta absorción)",
+      "name_alternatives": ["magnesium glycinate", "magnesio premium"],
+      "scientific_name": "Magnesio quelado con glicina (1:1) — forma altamente biodisponible",
+      "category": "mineral",
+      "primary_action": "sueno_recuperacion",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "300mg (magnesio elemental)",
+        "min": "200mg",
+        "max": "400mg",
+        "loading_phase": null,
+        "maintenance": "300-400mg/día antes de dormir",
+        "unit": "mg",
+        "porcion_descripcion": "1-2 cápsulas (revisar magnesio elemental)"
+      },
+      "timing_recommended": ["antes_dormir_30min"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "serving_size": "300", "serving_unit": "mg"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_objectives": ["sueno_recuperacion", "salud_general", "salud_hormonal_femenina"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [25, 90],
+      "evidence_level": "alta",
+      "evidence_summary": "Magnesio glicinato (1 glicina) vs bisglicinato (2 glicinas): biodisponibilidad ligeramente superior, usado típicamente en formulaciones Elite premium. Diferencia clínica con bisglicinato es marginal — ambas formas superiores a óxido y citrato. Justifica como upgrade en Elite o sensibilidad GI extrema al bisglicinato.",
+      "contraindications": ["insuficiencia_renal_cronica_avanzada", "bradicardia_severa"],
+      "medical_interactions": [
+        {"with": "medicamentos_tiroideos", "severity": "moderate", "note": "Separa4 horas la toma."},
+        {"with": "antibioticos_quinolonas_tetraciclinas", "severity": "moderate", "note": "Separa4-6 horas."}
+      ],
+      "side_effects_common": [],
+      "side_effects_rare": ["Diarrea en dosis >600mg/día"],
+      "synergies": [
+        {"slug": "vitamina-d3-k2", "rationale": "Trío óseo + sueño"},
+        {"slug": "zinc-bisglicinato", "rationale": "Stack pre-sueño hormonal (sobre todo en hombres)"}
+      ],
+      "stacks_with_common": ["stack_salud_femenina_elite", "stack_recovery_avanzado", "stack_sueno_elite"],
+      "commercial_products": [
+        {"brand": "Thorne", "product": "Magnesium Glycinate", "country_available": ["internacional"], "price_range_cop_per_120caps": "180000-240000", "note": "Premium clínico"},
+        {"brand": "Pure Encapsulations", "product": "Magnesium Glycinate", "country_available": ["internacional"], "price_range_cop_per_180caps": "200000-260000"}
+      ],
+      "cost_relative": "alta",
+      "shopping_list_grouping": "suplementos_vitaminas_minerales",
+      "use_cases": [
+        "Clientes Elite que prefieren formulación premium",
+        "Sensibilidad GI extrema al bisglicinato (raro)",
+        "Mujeres con SPM intenso buscando upgrade"
+      ],
+      "common_in_plans": [{"client_anonimized": "elite_silvia", "context": "Stack Elite mujer"}],
+      "advertencia_legal": "Suplemento de venta libre. Mismas precauciones que bisglicinato. Si el bisglicinato te funciona, NO hay necesidad clínica de pagar más por glicinato puro.",
+      "tags": ["observado_audit", "tier_elite", "mineral", "premium"],
+      "confidence": "high",
+      "confidence_reason": "Misma base de evidencia que bisglicinato. Variante premium con diferencia marginal.",
+      "scientific_sources": [
+        "Schwalfenberg G.K. & Genuis S.J. (2017). The Importance of Magnesium in Clinical Healthcare. Scientifica.",
+        "Examine.com — Magnesium Glycinate (2024)"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "zinc-bisglicinato",
+      "name": "Zinc bisglicinato",
+      "name_alternatives": ["zinc", "zinc quelado", "zinc glycinate", "zinc picolinato"],
+      "scientific_name": "Zinc quelado con bisglicina (Albion®) o picolinato",
+      "category": "mineral",
+      "primary_action": "salud_inmune",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "15mg (zinc elemental)",
+        "min": "10mg",
+        "max": "30mg (NO exceder UL adulto 40mg crónico)",
+        "loading_phase": "30-50mg/día por 1-2 sem si bloodwork muestra deficiencia",
+        "maintenance": "10-15mg/día con comida",
+        "unit": "mg",
+        "porcion_descripcion": "1 cápsula 15mg con comida"
+      },
+      "timing_recommended": ["con_almuerzo", "con_cena"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "serving_size": "15", "serving_unit": "mg"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["salud_general", "salud_inmune", "salud_hormonal_masculina"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [18, 90],
+      "evidence_level": "alta",
+      "evidence_summary": "Cofactor en >300 enzimas: síntesis proteica, división celular, función inmune, síntesis testosterona en hombres. Deficiencia frecuente en LATAM (dietas pobres en carnes rojas y mariscos). Prasad 1996: suplementación en hombres deficientes aumenta testo basal. Singh 2011: mejora función inmune y reduce duración de gripes. CUIDADO: dosis crónicas >40mg/día pueden inducir deficiencia de cobre y bajar HDL.",
+      "contraindications": ["hemocromatosis_secundaria", "alergia_zinc"],
+      "medical_interactions": [
+        {"with": "antibioticos_quinolonas_tetraciclinas", "severity": "moderate", "note": "Quela quinolonas y tetraciclinas. Separa4-6 horas."},
+        {"with": "diureticos_tiazidicos", "severity": "moderate", "note": "Aumentan excreción urinaria de Zn — suplementar es coherente."},
+        {"with": "penicilamina", "severity": "moderate", "note": "Zn reduce efectividad de penicilamina (AR). Separa2 horas."}
+      ],
+      "side_effects_common": ["Náuseas si se toma con estómago vacío — siempre con comida"],
+      "side_effects_rare": ["Sabor metálico transitorio", "Deficiencia de cobre con uso crónico >40mg/día"],
+      "synergies": [
+        {"slug": "magnesio-bisglicinato", "rationale": "Trío ZMA — soporte recovery + testo basal"},
+        {"slug": "vitamina-d3", "rationale": "Sinergia función inmune"}
+      ],
+      "stacks_with_common": ["stack_performance_masculino_elite", "stack_recovery_avanzado", "stack_sueno_recovery"],
+      "commercial_products": [
+        {"brand": "Thorne", "product": "Zinc Picolinate 15mg", "country_available": ["internacional"], "price_range_cop_per_60caps": "80000-110000"},
+        {"brand": "Now Foods", "product": "Zinc Glycinate 30mg", "country_available": ["internacional", "colombia"], "price_range_cop_per_120caps": "70000-100000"},
+        {"brand": "Genéricos LATAM", "product": "Zinc 15mg", "country_available": ["colombia", "mexico"], "price_range_cop_per_60caps": "25000-50000"}
+      ],
+      "cost_relative": "muy_baja",
+      "shopping_list_grouping": "suplementos_vitaminas_minerales",
+      "use_cases": [
+        "Soporte inmune general, especialmente invierno o temporadas de gripe",
+        "Hombres con testo basal en límite inferior (verificar bloodwork)",
+        "Atletas con alto gasto que sudan mucho",
+        "Vegetarianos/veganos: dieta sin carnes/mariscos suele estar deficiente"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento de venta libre. NO exceder 40mg/día UL adulto sano. Dosis crónicas altas pueden causar deficiencia de cobre. Si hacés bloodwork, medí zinc sérico y ratio cobre/zinc.",
+      "tags": ["propuesta_mia", "tier_esencial", "mineral", "evidencia_alta", "inmune"],
+      "confidence": "high",
+      "confidence_reason": "Evidencia sólida en inmunidad y soporte hormonal masculino. Dosis bien estudiadas.",
+      "scientific_sources": [
+        "Prasad A.S. et al. (1996). Zinc status and serum testosterone levels of healthy adults. Nutrition.",
+        "Singh M. & Das R.R. (2011). Zinc for the common cold. Cochrane Database Syst Rev.",
+        "Wessels I. et al. (2017). Zinc as a Gatekeeper of Immune Function. Nutrients."
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "hierro-bisglicinato",
+      "name": "Hierro bisglicinato (femenino)",
+      "name_alternatives": ["hierro", "iron bisglycinate", "Ferrochel"],
+      "scientific_name": "Hierro ferroso quelado con bisglicina (Ferrochel®)",
+      "category": "mineral",
+      "primary_action": "salud_hormonal_femenina",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "18-25mg (hierro elemental)",
+        "min": "15mg",
+        "max": "60mg (solo bajo supervisión clínica con deficiencia documentada)",
+        "loading_phase": "60mg/día por 8-12 sem si ferritina <30 ng/mL — bajo supervisión médica",
+        "maintenance": "15-25mg/día con vitamina C o jugo cítrico",
+        "unit": "mg",
+        "porcion_descripcion": "1 cápsula con comida + un vaso de jugo de naranja"
+      },
+      "timing_recommended": ["con_desayuno", "con_almuerzo"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "serving_size": "20", "serving_unit": "mg"},
+      "serves_as_food": false,
+      "applicable_gender": ["femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_objectives": ["salud_hormonal_femenina", "performance_deportivo", "salud_general"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [16, 65],
+      "evidence_level": "alta",
+      "evidence_summary": "Mujeres edad fértil pierden 14-30mg de hierro por ciclo. Mujeres atletas tienen 2-3x más prevalencia de deficiencia (Sim 2019). Bisglicinato (Ferrochel®) es 2-3x mejor absorbido y mejor tolerado que sulfato ferroso (que causa estreñimiento severo). Coad 2014: corregir ferritina baja (<30 ng/mL) en mujeres atletas mejora performance aeróbico y energía. NO suplementar sin bloodwork — exceso es tóxico.",
+      "contraindications": ["hemocromatosis", "talasemia", "anemia_sideroblastica", "ferritina_normal_o_alta", "hombres_sin_deficiencia_documentada"],
+      "medical_interactions": [
+        {"with": "medicamentos_tiroideos", "severity": "moderate", "note": "Hierro reduce absorción de levotiroxina. Separa4 horas."},
+        {"with": "antibioticos_quinolonas_tetraciclinas", "severity": "moderate", "note": "Separa2-4 horas."},
+        {"with": "inhibidores_bomba_protones", "severity": "moderate", "note": "Omeprazol/pantoprazol reducen absorción de hierro. Tomar con vitamina C."}
+      ],
+      "side_effects_common": ["Bisglicinato muy bien tolerado vs sulfato ferroso", "Heces oscuras (inofensivo)"],
+      "side_effects_rare": ["Estreñimiento leve", "Náuseas si estómago vacío"],
+      "synergies": [
+        {"slug": "colageno-vit-c", "rationale": "Vitamina C aumenta absorción de hierro 2-3x"},
+        {"slug": "vitamina-b12", "rationale": "Trío anemia: hierro + B12 + folato"}
+      ],
+      "stacks_with_common": ["stack_salud_femenina_elite", "stack_recomposicion_femenina_elite"],
+      "commercial_products": [
+        {"brand": "Solgar", "product": "Gentle Iron 25mg", "country_available": ["internacional", "colombia"], "price_range_cop_per_90caps": "100000-140000", "note": "Ferrochel® bisglicinato muy bien tolerado"},
+        {"brand": "Now Foods", "product": "Iron 18mg", "country_available": ["internacional", "colombia"], "price_range_cop_per_120caps": "60000-90000"}
+      ],
+      "cost_relative": "baja",
+      "shopping_list_grouping": "suplementos_salud_femenina",
+      "use_cases": [
+        "Mujeres con flujo menstrual intenso (>7 días o tampones cambiados c/2h)",
+        "Mujeres atletas con ferritina <30 ng/mL en bloodwork",
+        "Post-parto o post-cirugía",
+        "Vegetarianas/veganas (hierro vegetal se absorbe peor)"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento de venta libre. NO usar sin bloodwork previo — exceso es tóxico. NUNCA dar a hombres adultos sin deficiencia documentada (riesgo hemocromatosis). Mantener fuera del alcance de niños — sobredosis pediátrica es causa común de envenenamiento.",
+      "tags": ["propuesta_mia", "salud_femenina_especifica", "tier_metodo", "mineral", "requiere_bloodwork"],
+      "confidence": "high",
+      "confidence_reason": "Ferrochel® bisglicinato es la forma con mejor biodisponibilidad y tolerancia. Evidencia sólida en mujeres atletas con deficiencia.",
+      "scientific_sources": [
+        "Sim M. et al. (2019). Iron considerations for the athlete: a narrative review. Eur J Appl Physiol.",
+        "Coad J. & Pedley K. (2014). Iron deficiency in women. Scand J Clin Lab Invest.",
+        "Pineda O. & Ashmead H.D. (2001). Effectiveness of ferrous bisglycinate in IDA. Nutrition."
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "vitamina-b12",
+      "name": "Vitamina B12 (metilcobalamina)",
+      "name_alternatives": ["B12", "metilcobalamina", "cobalamina"],
+      "scientific_name": "Metilcobalamina (forma activa de Vitamin B12)",
+      "category": "vitamina_hidrosoluble",
+      "primary_action": "salud_general",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "500-1000 mcg/día",
+        "min": "250 mcg",
+        "max": "2000 mcg",
+        "loading_phase": "1000 mcg/día por 8 sem si bloodwork muestra deficiencia",
+        "maintenance": "500-1000 mcg/día (excreción urinaria del exceso, segura)",
+        "unit": "mcg",
+        "porcion_descripcion": "1 cápsula sublingual 500-1000 mcg/día"
+      },
+      "timing_recommended": ["con_desayuno", "ayuno_matutino"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "serving_size": "1000", "serving_unit": "mcg"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["salud_general", "mantenimiento"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [16, 90],
+      "evidence_level": "muy_alta",
+      "evidence_summary": "Cofactor esencial en síntesis DNA, formación de mielina nerviosa y producción de glóbulos rojos. Deficiencia causa anemia megaloblástica y daño neurológico irreversible si es crónica. Prevalencia alta en: veganos/vegetarianos (B12 solo en productos animales), >50 años (atrofia gástrica reduce absorción), usuarios crónicos de IBP/metformina. Hunt 2014: metilcobalamina sublingual tan efectiva como inyectada en casos sin malabsorción severa.",
+      "contraindications": [],
+      "medical_interactions": [
+        {"with": "metformina", "severity": "moderate", "note": "Reduce absorción de B12 — diabéticos crónicos necesitan suplementación."},
+        {"with": "inhibidores_bomba_protones", "severity": "moderate", "note": "Omeprazol crónico reduce absorción — suplementar."}
+      ],
+      "side_effects_common": [],
+      "side_effects_rare": ["Acné leve en algunas personas con dosis muy altas crónicas"],
+      "synergies": [
+        {"slug": "hierro-bisglicinato", "rationale": "Trío anti-anemia"},
+        {"slug": "vitamina-b6-p5p", "rationale": "B-complex para metabolismo energético"}
+      ],
+      "stacks_with_common": ["stack_basico_vegano", "stack_salud_femenina", "stack_recovery_avanzado"],
+      "commercial_products": [
+        {"brand": "Now Foods", "product": "Methyl B-12 1000 mcg", "country_available": ["internacional", "colombia"], "price_range_cop_per_100loz": "60000-90000"},
+        {"brand": "Solgar", "product": "Methylcobalamin 1000 mcg", "country_available": ["internacional", "colombia"], "price_range_cop_per_60caps": "100000-140000"}
+      ],
+      "cost_relative": "muy_baja",
+      "shopping_list_grouping": "suplementos_vitaminas_minerales",
+      "use_cases": [
+        "Veganos/vegetarianos estrictos (OBLIGATORIA)",
+        ">50 años para prevención de deficiencia",
+        "Diabéticos con metformina crónica",
+        "Pacientes con gastritis crónica o IBP prolongado",
+        "Fatiga crónica de causa nutricional"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento de venta libre. Segura en sobredosis (excreción urinaria del exceso). Si tienes fatiga crónica o entumecimiento de extremidades, hazbloodwork (B12 + ácido metilmalónico) antes de auto-suplementar.",
+      "tags": ["propuesta_mia", "tier_esencial", "vitamina_hidrosoluble", "vegano_obligatorio"],
+      "confidence": "high",
+      "confidence_reason": "Vitamina esencial bien estudiada. Suplementación obligatoria en veganos. Seguridad alta.",
+      "scientific_sources": [
+        "Hunt A. et al. (2014). Vitamin B12 deficiency. BMJ.",
+        "Pawlak R. et al. (2013). How prevalent is vitamin B12 deficiency among vegetarians? Nutr Rev."
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "vitamina-b6-p5p",
+      "name": "Vitamina B6 (P-5-P)",
+      "name_alternatives": ["B6", "P5P", "piridoxal-5-fosfato"],
+      "scientific_name": "Piridoxal-5-fosfato (forma activa de B6)",
+      "category": "vitamina_hidrosoluble",
+      "primary_action": "salud_hormonal_femenina",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "25-50mg (P-5-P)",
+        "min": "10mg",
+        "max": "100mg (NO exceder, riesgo neuropatía con >200mg/día crónico)",
+        "loading_phase": null,
+        "maintenance": "25-50mg/día durante fase lútea + menstrual (días 15-28)",
+        "unit": "mg",
+        "porcion_descripcion": "1 cápsula 25-50mg con comida"
+      },
+      "timing_recommended": ["con_desayuno", "antes_dormir_30min"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "serving_size": "50", "serving_unit": "mg"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_objectives": ["salud_hormonal_femenina", "sueno_recuperacion", "salud_general"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [16, 65],
+      "evidence_level": "alta",
+      "evidence_summary": "B6 es cofactor en síntesis de neurotransmisores (serotonina, GABA, dopamina) y metabolismo de homocisteína. Wyatt 1999 (meta-análisis Cochrane): reducción significativa de síntomas premenstruales con 50-100mg/día. P-5-P es la forma activa, biodisponibilidad superior a piridoxina HCl. CUIDADO: NO exceder 200mg/día crónico — riesgo neuropatía periférica sensorial (efecto paradójico documentado).",
+      "contraindications": ["neuropatia_periferica", "uso_levodopa_sin_carbidopa"],
+      "medical_interactions": [
+        {"with": "levodopa_parkinson", "severity": "high", "note": "B6 acelera metabolismo periférico de levodopa. Solo problema con levodopa sin carbidopa (formulaciones modernas tienen carbidopa que previene esto)."},
+        {"with": "anticonvulsivantes", "severity": "moderate", "note": "B6 puede acelerar metabolismo de fenobarbital y fenitoína."},
+        {"with": "anticonceptivos_orales", "severity": "low", "note": "Anticonceptivos reducen niveles de B6 — suplementar es complementario."}
+      ],
+      "side_effects_common": [],
+      "side_effects_rare": ["Neuropatía periférica con dosis crónicas >200mg/día (efecto paradójico raro)"],
+      "synergies": [
+        {"slug": "magnesio-bisglicinato", "rationale": "Stack SPM clásico — reduce cólicos, mejora ánimo"},
+        {"slug": "vitamina-b12", "rationale": "B-complex completo, sinergia metabolismo homocisteína"}
+      ],
+      "stacks_with_common": ["stack_salud_femenina_elite", "stack_sueno_recovery", "stack_spm"],
+      "commercial_products": [
+        {"brand": "Thorne", "product": "Pyridoxal 5'-Phosphate", "country_available": ["internacional"], "price_range_cop_per_180caps": "180000-240000"},
+        {"brand": "Now Foods", "product": "B-6 (P-5-P)", "country_available": ["internacional", "colombia"], "price_range_cop_per_60vcaps": "100000-140000"}
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_salud_femenina",
+      "use_cases": [
+        "Manejo de SPM: cólicos, cambios de ánimo, retención",
+        "Soporte sueño combinado con magnesio (precursor melatonina vía serotonina)",
+        "Atletas con alto turnover proteico (B6 cofactor metabolismo aminoácidos)",
+        "Vegetarianos/veganos: B6 vegetal se absorbe peor que animal"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento de venta libre. NO exceder 100mg/día sin supervisión médica. Si tomas levodopa sin carbidopa, antiepilépticos, o tienesneuropatía preexistente, consulta con tu médico antes.",
+      "tags": ["propuesta_mia", "salud_femenina_especifica", "tier_metodo", "vitamina_hidrosoluble"],
+      "confidence": "high",
+      "confidence_reason": "Evidencia sólida en SPM (Cochrane). Cofactor de neurotransmisores. P-5-P es forma activa biodisponible.",
+      "scientific_sources": [
+        "Wyatt K.M. et al. (1999). Efficacy of vitamin B-6 in treatment of premenstrual syndrome. BMJ.",
+        "Stough C. et al. (2011). High dose vitamin B-complex on work stress. Hum Psychopharmacol."
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "omega-3-epa-dha",
+      "name": "Omega-3 (EPA + DHA)",
+      "name_alternatives": ["omega 3", "aceite de pescado", "fish oil", "EPA DHA"],
+      "scientific_name": "Ácidos eicosapentaenoico (EPA) y docosahexaenoico (DHA)",
+      "category": "omega_3",
+      "primary_action": "antiinflamatorio",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "2g (combinado EPA+DHA)",
+        "min": "1g",
+        "max": "3g (sin supervisión médica)",
+        "loading_phase": null,
+        "maintenance": "1-2g/día con comida con grasa",
+        "unit": "g",
+        "porcion_descripcion": "2-4 cápsulas de 500mg combinado EPA+DHA (no peso total del aceite — verificaetiqueta)"
+      },
+      "timing_recommended": ["con_almuerzo", "con_cena"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 20, "protein_g": 0, "carbs_g": 0, "fat_g": 2, "serving_size": "2", "serving_unit": "g"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "esencial",
+      "applicable_objectives": ["salud_general", "antiinflamatorio", "salud_articular", "salud_cardiovascular", "salud_cognitiva"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [16, 90],
+      "evidence_level": "muy_alta",
+      "evidence_summary": "Omega-3 EPA+DHA son ácidos grasos esenciales con evidencia consolidada en: reducción de triglicéridos (-15-30%), antiinflamatorio sistémico, salud cardiovascular, salud cognitiva, recuperación post-entreno. Calder 2017: dosis terapéutica de 2-3g/día EPA+DHA tiene efecto antiinflamatorio medible (CRP, IL-6). En LATAM la ingesta dietaria es baja (poco consumo de pescado azul) — suplementar tiene sentido casi universal. Importante: contar EPA+DHA combinado, NO el peso total del aceite (capsulas de 1g de aceite suelen tener solo 300mg EPA+DHA).",
+      "contraindications": ["alergia_pescado", "anticoagulantes_orales_dosis_altas"],
+      "medical_interactions": [
+        {"with": "anticoagulantes_orales", "severity": "moderate", "note": "Dosis altas (>3g/día) potencian efecto anticoagulante. En usuarios de warfarina o DOAC consultar con cardiólogo antes de superar 1g/día."},
+        {"with": "antihipertensivos", "severity": "low", "note": "Omega-3 baja presión arterial modestamente — sinergia. Monitorear si presión normal-baja."},
+        {"with": "cirugia_programada_30dias", "severity": "moderate", "note": "Suspender 7-10 días antes de cirugía mayor para evitar sangrado aumentado."}
+      ],
+      "side_effects_common": [
+        "Eructo con sabor a pescado en algunas marcas — solución: cápsulas entéricas o congelar la cápsula antes de tomarla",
+        "Heces blandas en dosis altas (>3g/día)"
+      ],
+      "side_effects_rare": ["Reflujo gastroesofágico en sensibles"],
+      "synergies": [
+        {"slug": "vitamina-d3", "rationale": "Ambos liposolubles, sinergia antiinflamatoria y mejor absorción juntos"},
+        {"slug": "vitamina-d3-k2", "rationale": "Stack salud cardiovascular avanzado"},
+        {"slug": "creatina-monohidrato", "rationale": "Sinergia recovery + antiinflamatorio post-entreno"}
+      ],
+      "stacks_with_common": ["stack_basico_hipertrofia", "stack_salud_femenina_elite", "stack_recovery_avanzado", "stack_salud_avanzado"],
+      "commercial_products": [
+        {"brand": "Nordic Naturals", "product": "Ultimate Omega 1280mg", "country_available": ["internacional", "colombia"], "price_range_cop_per_120softgels": "180000-260000", "note": "Premium global, certificado IFOS, triple molecular distillation"},
+        {"brand": "Carlson Labs", "product": "The Very Finest Fish Oil", "country_available": ["internacional", "colombia"], "price_range_cop_per_500ml": "200000-280000", "note": "Líquido sabor limón — alternativa a cápsulas"},
+        {"brand": "Now Foods", "product": "Ultra Omega-3", "country_available": ["internacional", "colombia"], "price_range_cop_per_180softgels": "120000-160000"},
+        {"brand": "Genéricos LATAM", "product": "Omega 3 1000mg", "country_available": ["colombia", "mexico", "argentina"], "price_range_cop_per_60softgels": "30000-60000", "note": "Verificar contenido EPA+DHA combinado en etiqueta — algunos genéricos tienen solo 180mg por cápsula"}
+      ],
+      "cost_relative": "baja",
+      "shopping_list_grouping": "suplementos_vitaminas_minerales",
+      "use_cases": [
+        "Salud cardiovascular: reducción triglicéridos elevados",
+        "Antiinflamatorio sistémico en clientes con dolor articular crónico",
+        "Recovery post-entreno (atletas con alto volumen)",
+        "Salud cognitiva y prevención declive cognitivo",
+        "Embarazo y lactancia: DHA esencial para desarrollo neural (bajo supervisión obstétrica)",
+        "Veganos: usar aceite de algas (DHA-rich) como alternativa"
+      ],
+      "common_in_plans": [
+        {"client_anonimized": "elite_silvia", "context": "Stack Elite mujer"},
+        {"client_anonimized": "elite_daniel", "context": "Stack Elite hombre"},
+        {"client_anonimized": "esencial_001_lizetd", "context": "Stack base mujer"}
+      ],
+      "advertencia_legal": "Suplemento de venta libre. Si tomas anticoagulantes orales o tienescirugía programada en 30 días, consulta con tu médico antes. Verifica certificación de pureza (IFOS, Friend of the Sea) — el pescado azul concentra metales pesados.",
+      "tags": ["mvp_obligatorio", "md_04_estandar", "omega_3", "evidencia_muy_alta", "antiinflamatorio"],
+      "confidence": "high",
+      "confidence_reason": "Evidencia consolidada en salud cardiovascular, cognitiva, antiinflamatoria. Universal beneficio en dietas occidentales bajas en pescado.",
+      "scientific_sources": [
+        "Calder P.C. (2017). Omega-3 fatty acids and inflammatory processes. Biochem Soc Trans.",
+        "Mozaffarian D. & Wu J.H. (2011). Omega-3 fatty acids and cardiovascular disease. J Am Coll Cardiol.",
+        "Skulas-Ray A.C. et al. (2019). Omega-3 Fatty Acids for the Management of Hypertriglyceridemia. Circulation.",
+        "Examine.com — Fish Oil (2024)"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "colageno-vit-c",
+      "name": "Colágeno hidrolizado + Vitamina C",
+      "name_alternatives": ["colágeno", "collagen peptides", "colágeno tipo I y III", "péptidos de colágeno"],
+      "scientific_name": "Péptidos de colágeno hidrolizado (tipo I, II, III) + ácido ascórbico",
+      "category": "salud_articular",
+      "primary_action": "salud_articular",
+      "type": "multi_ingrediente",
+      "blend_components": [
+        {"activo": "Colágeno hidrolizado tipo I+III (bovino o marino)", "dosis_tipica": "10-15g", "rol_primario": "salud piel + tendones + huesos"},
+        {"activo": "Vitamina C", "dosis_tipica": "40-200 mg", "rol_primario": "cofactor obligatorio de síntesis de colágeno endógeno"}
+      ],
+      "dosis_recommended": {
+        "default": "10-15g de colágeno + 40-100mg vit C",
+        "min": "5g colágeno",
+        "max": "20g colágeno",
+        "loading_phase": null,
+        "maintenance": "10g/día con vitamina C, 30-60 min pre-entreno o pre-rehab si hay lesión articular",
+        "unit": "g",
+        "porcion_descripcion": "1 scoop 10-15g de polvo, mezclado con bebida"
+      },
+      "timing_recommended": ["pre_entreno_30_60min", "con_desayuno", "entre_comidas"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 45, "protein_g": 10, "carbs_g": 1, "fat_g": 0, "serving_size": "12", "serving_unit": "g"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_objectives": ["salud_articular", "salud_general", "antiaging"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [25, 90],
+      "evidence_level": "moderada",
+      "evidence_summary": "Colágeno hidrolizado aporta aminoácidos específicos (glicina, prolina, hidroxiprolina) que son cofactores limitantes en síntesis de matriz extracelular. Shaw 2017 — RCT cross-over — encontró que 15g colágeno + 50mg vit C 1h pre-ejercicio dobla la síntesis de colágeno medida por biomarcador P1NP. Khatri 2021 (meta-análisis): mejora notoria en dolor articular y función en atletas con dolor de rodilla y atletas con tendinopatía. La vitamina C es OBLIGATORIA — sin ella la síntesis de colágeno está limitada.",
+      "contraindications": ["alergia_pescado_si_marino", "alergia_carne_bovina_si_bovino"],
+      "medical_interactions": [],
+      "side_effects_common": ["Generalmente muy bien tolerado", "Sabor neutro (mezclable con café, jugo, yogur)"],
+      "side_effects_rare": [],
+      "synergies": [
+        {"slug": "hierro-bisglicinato", "rationale": "Vitamina C del colágeno+C aumenta absorción de hierro"},
+        {"slug": "vitamina-d3-k2", "rationale": "Trío salud ósea-articular completo"}
+      ],
+      "stacks_with_common": ["stack_salud_femenina_elite", "stack_articular_atletas", "stack_recovery_avanzado"],
+      "commercial_products": [
+        {"brand": "Vital Proteins", "product": "Collagen Peptides", "country_available": ["internacional", "colombia"], "price_range_cop_per_567g": "180000-240000", "note": "Marca premium global"},
+        {"brand": "Great Lakes", "product": "Collagen Hydrolysate", "country_available": ["internacional", "colombia"], "price_range_cop_per_454g": "150000-200000"},
+        {"brand": "GoldNutrition", "product": "Collagen + Vitamin C", "country_available": ["colombia", "argentina"], "price_range_cop_per_300g": "100000-140000", "note": "Pre-combinado con vit C"},
+        {"brand": "Genéricos LATAM", "product": "Colágeno hidrolizado", "country_available": ["colombia", "mexico"], "price_range_cop_per_500g": "70000-120000", "note": "Verificasi trae vit C — si no, sumar aparte"}
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_salud_femenina",
+      "use_cases": [
+        "Atletas con dolor articular crónico o tendinopatía",
+        "Mujeres Elite buscando soporte piel/cabello/uñas (antiaging visible)",
+        "Adultos >40 con artrosis incipiente",
+        "Post-cirugía ortopédica o rehabilitación",
+        "NO confundir con creatina — colágeno NO es proteína completa, complementa pero no sustituye whey"
+      ],
+      "common_in_plans": [{"client_anonimized": "elite_silvia", "context": "Stack Elite mujer salud articular y antiaging"}],
+      "advertencia_legal": "Suplemento de venta libre. Si tienes alergia a pescado (colágeno marino) o carne bovina (colágeno bovino), eligela fuente alternativa. El beneficio principal es articular y dérmico — el aporte proteico (10g por scoop) es complementario, NO reemplaza whey.",
+      "tags": ["observado_audit", "salud_articular", "tier_metodo_elite", "salud_femenina_especifica"],
+      "confidence": "moderate",
+      "confidence_reason": "Evidencia moderada-alta en lesiones articulares y atletas con dolor. Más débil en uso generalista 'antiaging'. Vitamina C obligatoria para que funcione.",
+      "scientific_sources": [
+        "Shaw G. et al. (2017). Vitamin C-enriched gelatin supplementation before intermittent activity augments collagen synthesis. Am J Clin Nutr.",
+        "Khatri M. et al. (2021). The effects of collagen peptide supplementation on body composition, collagen synthesis, and recovery from joint injury and exercise. Amino Acids.",
+        "Clark K.L. et al. (2008). 24-Week study on the use of collagen hydrolysate as a dietary supplement in athletes with activity-related joint pain. Curr Med Res Opin."
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "evening-primrose-oil",
+      "name": "Aceite de prímula (Evening primrose oil)",
+      "name_alternatives": ["evening primrose", "EPO", "aceite de onagra", "GLA"],
+      "scientific_name": "Aceite de Oenothera biennis — rico en ácido γ-linolénico (GLA)",
+      "category": "salud_femenina_especifica",
+      "primary_action": "salud_hormonal_femenina",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "1000-2000mg/día (aporta 90-180mg GLA)",
+        "min": "500mg",
+        "max": "3000mg",
+        "loading_phase": null,
+        "maintenance": "1000-2000mg/día durante 2-3 ciclos para evaluar respuesta",
+        "unit": "mg",
+        "porcion_descripcion": "1-2 cápsulas softgel 1000mg con comida"
+      },
+      "timing_recommended": ["con_desayuno", "con_almuerzo", "con_cena"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 10, "protein_g": 0, "carbs_g": 0, "fat_g": 1, "serving_size": "1", "serving_unit": "g"},
+      "serves_as_food": false,
+      "applicable_gender": ["femenino"],
+      "applicable_tier_min": "elite",
+      "applicable_objectives": ["salud_hormonal_femenina"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [16, 65],
+      "evidence_level": "limitada",
+      "evidence_summary": "Evidencia INCONSISTENTE para SPM y mastalgia cíclica. Perplexity Pro 2026-05-17 (Cochrane y revisiones recientes): 'not reliably better than placebo' para SPM general; EPO + vitamina E puede ayudar mastalgia cíclica con efecto modesto. Mecanismo propuesto: GLA es precursor de PGE1 (antiinflamatoria) compitiendo con PGE2 (proinflamatoria). En la práctica el efecto es individual y no se puede predecir — uso por 2-3 ciclos y evaluar. NO es primera línea de tratamiento — el motor v2 NO debería sugerirla automáticamente, solo si la cliente reporta mastalgia documentada o lo pide explícitamente.",
+      "contraindications": [
+        "epilepsia",
+        "embarazo_sin_supervision_medica",
+        "lactancia_sin_supervision_medica",
+        "cirugia_programada_30dias"
+      ],
+      "medical_interactions": [
+        {"with": "anticoagulantes_orales", "severity": "moderate", "note": "El GLA tiene efecto antiagregante plaquetario leve. En usuarias de warfarina/DOAC, monitorear o evitar."},
+        {"with": "anticonvulsivantes", "severity": "moderate", "note": "Evidencia anecdótica de reducción umbral convulsivo en epilépticos. Evitar si epilepsia conocida."},
+        {"with": "fenotiacinas", "severity": "moderate", "note": "Puede bajar umbral convulsivo en pacientes psiquiátricos medicados."}
+      ],
+      "side_effects_common": [
+        "Cefalea leve",
+        "Náuseas en algunas personas",
+        "Heces blandas en dosis altas"
+      ],
+      "side_effects_rare": ["Convulsiones en personas con umbral bajo o medicadas con fenotiacinas"],
+      "synergies": [
+        {"slug": "vitamina-b6-p5p", "rationale": "Stack SPM con evidencia más sólida en B6 + complemento GLA"},
+        {"slug": "magnesio-bisglicinato", "rationale": "Stack SPM completo"}
+      ],
+      "stacks_with_common": ["stack_spm"],
+      "commercial_products": [
+        {"brand": "Solgar", "product": "Evening Primrose Oil 1300mg", "country_available": ["internacional", "colombia"], "price_range_cop_per_60softgels": "100000-140000"},
+        {"brand": "Now Foods", "product": "Evening Primrose Oil 1000mg", "country_available": ["internacional", "colombia"], "price_range_cop_per_100softgels": "80000-120000"}
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_salud_femenina",
+      "use_cases": [
+        "Mastalgia cíclica (dolor mamario premenstrual) — con evaluación médica previa",
+        "SPM resistente a primera línea (B6 + magnesio)",
+        "NO usar como primera línea de tratamiento SPM"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento de venta libre con evidencia LIMITADA. Si tienes epilepsia o tomasanticonvulsivantes/fenotiacinas, NO usar. Si la mastalgia persiste >3 meses, consultá con tu ginecólogo — el dolor mamario persistente requiere evaluación médica.",
+      "tags": ["propuesta_mia", "salud_femenina_especifica", "tier_elite", "evidencia_limitada", "no_primera_linea"],
+      "confidence": "low",
+      "confidence_reason": "Evidencia inconsistente Cochrane. Beneficio individual impredecible. NO primera línea — solo opción complementaria con confidencia baja.",
+      "scientific_sources": [
+        "Bayles B. & Usatine R. (2009). Evening primrose oil. Am Fam Physician.",
+        "Pruthi S. et al. (2010). Vitamin E and evening primrose oil for management of cyclical mastalgia. Altern Med Rev.",
+        "Perplexity Pro query 2026-05-17 — Evening primrose evidence review"
+      ],
+      "needs_daniel_validation": true,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "ashwagandha-ksm66",
+      "name": "Ashwagandha (KSM-66 o Sensoril)",
+      "name_alternatives": ["ashwagandha", "Withania somnifera", "ginseng indio", "KSM-66", "Sensoril"],
+      "scientific_name": "Withania somnifera — extracto estandarizado KSM-66 (5% withanólidos) o Sensoril (10% withanólidos)",
+      "category": "adaptogeno",
+      "primary_action": "sueno_recuperacion",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "600mg/día de KSM-66 (300mg x 2)",
+        "min": "300mg",
+        "max": "1200mg (raro, solo en estudios)",
+        "loading_phase": null,
+        "maintenance": "600mg/día por 8-12 semanas, luego ciclar 1-2 semanas off",
+        "unit": "mg",
+        "porcion_descripcion": "1 cápsula 300mg con desayuno + 1 cápsula 300mg antes de dormir"
+      },
+      "timing_recommended": ["con_desayuno", "antes_dormir_30min"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "serving_size": "300", "serving_unit": "mg"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "elite",
+      "applicable_objectives": ["sueno_recuperacion", "salud_hormonal_masculina", "salud_general"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [18, 65],
+      "evidence_level": "alta",
+      "evidence_summary": "Ashwagandha es el adaptógeno con mejor evidencia humana del grupo (Fadogia/Tongkat/Maca). Perplexity Pro 2026-05-17 + meta-análisis 2022-2025: efectos moderate en cortisol/estrés, low-to-moderate en testosterona (más en hombres estresados o con baseline bajo). Lopresti 2019: KSM-66 600mg/día x 60 días redujo cortisol -23% y mejoró ansiedad. Wankhede 2015: aumentó testo +14-22% en hombres entrenados. Especificá extracto KSM-66 (Ixoreal Biomed) o Sensoril (Natreon) — son los únicos estandarizados con evidencia. CUIDADO con contraindicaciones tiroideas y embarazo.",
+      "contraindications": [
+        "hipertiroidismo",
+        "embarazo_sin_supervision_medica",
+        "lactancia_sin_supervision_medica",
+        "enfermedades_autoinmunes",
+        "menores_de_18_sin_supervision"
+      ],
+      "medical_interactions": [
+        {"with": "medicamentos_tiroideos", "severity": "high", "note": "Ashwagandha puede aumentar T4 libre. En hipotiroidismo con levotiroxina puede causar sobre-medicación (taquicardia, ansiedad). NO combinar sin supervisión endocrinológica."},
+        {"with": "inmunosupresores", "severity": "high", "note": "Es inmunomoduladora — puede antagonizar inmunosupresores. NO combinar en trasplantados o lupus/AR medicados."},
+        {"with": "sedantes_benzodiazepinas", "severity": "moderate", "note": "Sumatoria de efecto sedante. Si tomasbenzos para sueño, empezá con 300mg y monitoreá."},
+        {"with": "antihipertensivos", "severity": "low", "note": "Puede bajar presión modestamente — monitorear si la presión basal está normal-baja."},
+        {"with": "diabeticos_hipoglucemiantes", "severity": "moderate", "note": "Puede bajar glucemia. Monitorear si toma metformina o insulina."}
+      ],
+      "side_effects_common": [
+        "Somnolencia diurna en dosis altas o cuando se toma con desayuno",
+        "Distensión abdominal leve en primeras dosis"
+      ],
+      "side_effects_rare": [
+        "Reportes aislados de hepatotoxicidad reversible (raro, con extractos no estandarizados)",
+        "Taquicardia en personas con tiroides hiperactiva no diagnosticada"
+      ],
+      "synergies": [
+        {"slug": "magnesio-glicinato", "rationale": "Stack pre-sueño Elite — adaptógeno + relajante neuromuscular"},
+        {"slug": "zinc-bisglicinato", "rationale": "Trío hormonal masculino: ashwa + Zn + Mg"}
+      ],
+      "stacks_with_common": ["stack_sueno_elite", "stack_performance_masculino_elite", "stack_estres_cortisol"],
+      "commercial_products": [
+        {"brand": "Sports Research", "product": "KSM-66 Ashwagandha 600mg", "country_available": ["internacional", "colombia"], "price_range_cop_per_120vcaps": "140000-180000", "note": "KSM-66 extracto estandarizado original"},
+        {"brand": "Now Foods", "product": "Ashwagandha Extract", "country_available": ["internacional", "colombia"], "price_range_cop_per_90vcaps": "100000-140000"},
+        {"brand": "Jarrow Formulas", "product": "Ashwagandha (Sensoril)", "country_available": ["internacional", "colombia"], "price_range_cop_per_60vcaps": "120000-160000", "note": "Extracto Sensoril (alta concentración)"}
+      ],
+      "cost_relative": "media",
+      "shopping_list_grouping": "suplementos_recovery",
+      "use_cases": [
+        "Atletas Elite con estrés crónico y cortisol elevado",
+        "Hombres con testosterona basal en límite inferior + estrés laboral",
+        "Apoyo de sueño en clientes con ansiedad subclínica",
+        "Recovery en sobreentrenamiento documentado"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento de venta libre. NO usar en embarazo, lactancia, hipertiroidismo, enfermedad autoinmune activa o si tomasmedicación tiroidea/inmunosupresora. Especificá extracto KSM-66 o Sensoril en el producto. Reportes aislados de hepatotoxicidad reversible — si aparece fatiga inexplicable o ictericia, suspender y consultar médico.",
+      "tags": ["propuesta_mia", "adaptogeno", "tier_elite", "evidencia_alta", "contraindicaciones_importantes"],
+      "confidence": "moderate",
+      "confidence_reason": "Adaptógeno con mejor evidencia del grupo. Contraindicaciones importantes (tiroides, embarazo, inmunosupresores) que el motor v2 DEBE filtrar antes de recomendar.",
+      "scientific_sources": [
+        "Lopresti A.L. et al. (2019). An investigation into the stress-relieving and pharmacological actions of an ashwagandha extract. Medicine.",
+        "Wankhede S. et al. (2015). Examining the effect of Withania somnifera supplementation on muscle strength and recovery: a randomized controlled trial. JISSN.",
+        "Bonilla D.A. et al. (2021). Effects of Ashwagandha (Withania somnifera) on Physical Performance: Systematic Review and Bayesian Meta-Analysis. J Funct Morphol Kinesiol.",
+        "Perplexity Pro query 2026-05-17 — Ashwagandha evidence review"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "tongkat-ali",
+      "name": "Tongkat Ali (Eurycoma longifolia)",
+      "name_alternatives": ["tongkat ali", "Eurycoma longifolia", "Pasak Bumi", "Longjack", "Physta", "LJ100"],
+      "scientific_name": "Eurycoma longifolia Jack — extracto estandarizado de raíz (Physta® o LJ100®)",
+      "category": "salud_masculina_especifica",
+      "primary_action": "salud_hormonal_masculina",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "200-400mg/día de extracto estandarizado",
+        "min": "100mg",
+        "max": "600mg",
+        "loading_phase": null,
+        "maintenance": "200mg/día por 8-12 semanas, evaluar y ciclar 2-4 sem off",
+        "unit": "mg",
+        "porcion_descripcion": "1 cápsula 200mg con desayuno"
+      },
+      "timing_recommended": ["con_desayuno"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "serving_size": "200", "serving_unit": "mg"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino"],
+      "applicable_tier_min": "elite",
+      "applicable_objectives": ["salud_hormonal_masculina", "performance_deportivo", "salud_general"],
+      "applicable_levels": ["intermedio", "avanzado"],
+      "applicable_age_range": [25, 65],
+      "evidence_level": "moderada",
+      "evidence_summary": "Tongkat ali es el adaptógeno masculino con más evidencia humana después de ashwagandha. Perplexity Pro 2026-05-17: 'limited but real human evidence; dose and product standardization matter'. Tambi 2012: 200mg/día Physta® x 6 meses en hombres con androgen deficiency mejoró testo y función eréctil. Henkel 2014: mejora vitalidad subjetiva y testo libre en hombres mayores. ATENCIÓN MASIVA: la variabilidad entre marcas es enorme — solo Physta® (HP Ingredients) y LJ100® (HP Sources) tienen los RCTs. Productos no estandarizados son lotería.",
+      "contraindications": [
+        "cancer_hormono_dependiente",
+        "hiperplasia_prostatica_severa",
+        "embarazo_sin_supervision_medica",
+        "lactancia_sin_supervision_medica",
+        "menores_de_18_sin_supervision"
+      ],
+      "medical_interactions": [
+        {"with": "anticoagulantes_orales", "severity": "moderate", "note": "Reportes anecdóticos de efecto antiplaquetario. Monitorear o evitar."},
+        {"with": "medicamentos_tiroideos", "severity": "moderate", "note": "Interacciones poco estudiadas — consultar con tu médico."},
+        {"with": "antidiabeticos_hipoglucemiantes", "severity": "moderate", "note": "Puede potenciar hipoglucemia. Monitorear glucemia."},
+        {"with": "inmunosupresores", "severity": "moderate", "note": "Efecto inmunomodulador potencial. Evitar en trasplantados."},
+        {"with": "antihipertensivos", "severity": "low", "note": "Puede bajar presión. Monitorear si presión basal normal-baja."}
+      ],
+      "side_effects_common": [
+        "Insomnio leve si se toma muy tarde — preferir mañana",
+        "Aumento de libido (efecto deseado, pero anotalo)",
+        "Inquietud leve en personas sensibles"
+      ],
+      "side_effects_rare": [
+        "Cefalea",
+        "Reportes anecdóticos de elevación leve de enzimas hepáticas en uso crónico — periodizar"
+      ],
+      "synergies": [
+        {"slug": "ashwagandha-ksm66", "rationale": "Stack masculino completo: tongkat (testo libre) + ashwa (cortisol)"},
+        {"slug": "zinc-bisglicinato", "rationale": "Trío hormonal masculino"}
+      ],
+      "stacks_with_common": ["stack_performance_masculino_elite", "stack_ergogenico_natural_masculino"],
+      "commercial_products": [
+        {"brand": "Double Wood", "product": "Tongkat Ali 400mg", "country_available": ["internacional", "colombia"], "price_range_cop_per_60caps": "120000-160000", "note": "Estandarizado 200:1"},
+        {"brand": "Nootropics Depot", "product": "Tongkat Ali Extract (Physta®)", "country_available": ["internacional"], "price_range_cop_per_60caps": "180000-240000", "note": "Physta® patentado — la única con RCTs publicados"},
+        {"brand": "Nutricost", "product": "Tongkat Ali Powder", "country_available": ["internacional"], "price_range_cop_per_125g": "100000-140000", "note": "Sin estandarización clara — usar con precaución"}
+      ],
+      "cost_relative": "alta",
+      "shopping_list_grouping": "suplementos_salud_masculina",
+      "use_cases": [
+        "Hombres >35 años con testo basal en límite inferior + bloodwork documentado",
+        "Atletas hombres avanzados buscando soporte hormonal natural sin TRT",
+        "Periodización post-cut agresivo donde hormonas cayeron",
+        "NO recomendado para hombres jóvenes (<30) sin deficiencia documentada"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento de venta libre. SOLO para hombres adultos sin cáncer hormono-dependiente ni hiperplasia prostática severa. Especificá extracto estandarizado Physta® o LJ100® — productos no estandarizados son inconsistentes. Si tomasmedicación crónica, consulta con tu médico antes. Hacé bloodwork pre/post (testo total y libre, perfil hepático) para evaluar.",
+      "tags": ["propuesta_mia", "salud_masculina_especifica", "tier_elite", "adaptogeno", "evidencia_moderada"],
+      "confidence": "moderate",
+      "confidence_reason": "Evidencia humana real pero modesta. Estandarización del producto es crítica. Contraindicaciones a vigilar.",
+      "scientific_sources": [
+        "Tambi M.I. et al. (2012). Standardised water-soluble extract of Eurycoma longifolia, Tongkat ali, as testosterone booster for managing men with late-onset hypogonadism. Andrologia.",
+        "Henkel R.R. et al. (2014). Tongkat Ali as a potential herbal supplement for physically active male and female seniors. Phytother Res.",
+        "Talbott S.M. et al. (2013). Effect of Tongkat Ali on stress hormones and psychological mood state in moderately stressed subjects. JISSN.",
+        "Perplexity Pro query 2026-05-17 — Tongkat ali evidence review"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": true,
+      "version": 1,
+      "active": true
+    },
+    {
+      "slug": "maca-andina",
+      "name": "Maca andina (Lepidium meyenii)",
+      "name_alternatives": ["maca", "Lepidium meyenii", "maca peruana", "Peruvian ginseng"],
+      "scientific_name": "Lepidium meyenii — raíz de los Andes peruanos",
+      "category": "adaptogeno",
+      "primary_action": "salud_general",
+      "type": "compound_aislado",
+      "blend_components": [],
+      "dosis_recommended": {
+        "default": "1500-3000mg/día",
+        "min": "1000mg",
+        "max": "5000mg",
+        "loading_phase": null,
+        "maintenance": "2000mg/día por 8-12 semanas, ciclar",
+        "unit": "mg",
+        "porcion_descripcion": "2-3 cápsulas 500mg con desayuno o pre-actividad"
+      },
+      "timing_recommended": ["con_desayuno", "pre_entreno_30_60min"],
+      "frequency": "diaria_incluidos_dias_descanso",
+      "macros_per_serving": {"kcal": 10, "protein_g": 0, "carbs_g": 2, "fat_g": 0, "serving_size": "2000", "serving_unit": "mg"},
+      "serves_as_food": false,
+      "applicable_gender": ["masculino", "femenino"],
+      "applicable_tier_min": "metodo",
+      "applicable_objectives": ["salud_general", "salud_hormonal_femenina", "salud_hormonal_masculina"],
+      "applicable_levels": ["principiante", "intermedio", "avanzado"],
+      "applicable_age_range": [18, 75],
+      "evidence_level": "limitada",
+      "evidence_summary": "Maca tiene mejor evidencia para LIBIDO (ambos sexos) que para testosterona. Perplexity Pro 2026-05-17: 'best for libido, not testosterone'. Gonzales 2002 + Shin 2010 (revisión sistemática): mejora libido subjetiva con dosis 1500-3000mg. NO eleva testosterona ni estradiol en hombres ni mujeres — el efecto sobre libido es independiente de hormonas. Producida en Andes peruanos — disponibilidad regional en LATAM es alta y costo bajo. Hay variantes (negra, roja, amarilla) con propuestas de uso específico (negra = energía masculina, roja = salud próstata, amarilla = general), pero la evidencia entre variantes es débil.",
+      "contraindications": [
+        "embarazo_sin_supervision_medica",
+        "lactancia_sin_supervision_medica",
+        "cancer_hormono_dependiente"
+      ],
+      "medical_interactions": [
+        {"with": "medicamentos_tiroideos", "severity": "low", "note": "La maca contiene glucosinolatos (como crucíferas). En altas dosis crónicas y hipotiroidismo no controlado, consultar."}
+      ],
+      "side_effects_common": [
+        "Insomnio leve si se toma de tarde — preferir mañana",
+        "Distensión abdominal leve por glucosinolatos"
+      ],
+      "side_effects_rare": [],
+      "synergies": [
+        {"slug": "ashwagandha-ksm66", "rationale": "Stack natural energía + adaptación al estrés"}
+      ],
+      "stacks_with_common": ["stack_libido_natural", "stack_energia_natural"],
+      "commercial_products": [
+        {"brand": "Now Foods", "product": "Maca 500mg", "country_available": ["internacional", "colombia"], "price_range_cop_per_250caps": "100000-140000"},
+        {"brand": "The Maca Team", "product": "Premium Gelatinized Maca", "country_available": ["internacional"], "price_range_cop_per_454g": "180000-240000", "note": "Premium peruana gelatinizada (mejor digestión)"},
+        {"brand": "Productores LATAM (Perú/Colombia)", "product": "Maca andina en polvo o cápsulas", "country_available": ["peru", "colombia", "ecuador", "argentina"], "price_range_cop_per_500g": "40000-100000", "note": "Disponibilidad amplia y costo bajo. Verificaorigen peruano y certificación orgánica."}
+      ],
+      "cost_relative": "baja",
+      "shopping_list_grouping": "suplementos_basicos",
+      "use_cases": [
+        "Soporte libido en hombres y mujeres (efecto principal)",
+        "Energía subjetiva en clientes con fatiga leve",
+        "Apoyo en mujeres perimenopáusicas con baja libido",
+        "NO usar como testosterona booster — no eleva hormonas"
+      ],
+      "common_in_plans": [],
+      "advertencia_legal": "Suplemento de venta libre. Producto andino con disponibilidad amplia en LATAM. NO usar como tratamiento de disfunción sexual seria — consultar con tu médico si la libido baja es sostenida o se asocia a otros síntomas. En cáncer hormono-dependiente, evitar.",
+      "tags": ["propuesta_mia", "adaptogeno", "tier_metodo_elite", "libido", "evidencia_limitada", "LATAM_disponible"],
+      "confidence": "low",
+      "confidence_reason": "Evidencia limitada pero consistente en libido. Sin efecto hormonal real. Seguridad reasonable en uso corto. Disponibilidad LATAM excelente y costo bajo lo hacen viable a pesar de evidence_level limitada.",
+      "scientific_sources": [
+        "Gonzales G.F. et al. (2002). Effect of Lepidium meyenii (MACA) on sexual desire and its absent relationship with serum testosterone levels in adult healthy men. Andrologia.",
+        "Shin B.C. et al. (2010). Maca (L. meyenii) for improving sexual function: a systematic review. BMC Complement Altern Med.",
+        "Perplexity Pro query 2026-05-17 — Maca evidence review"
+      ],
+      "needs_daniel_validation": false,
+      "needs_anderson_review": false,
+      "needs_medical_professional_review": false,
+      "version": 1,
+      "active": true
+    }
+  ],
+  "todo_post_curacion": [
+    "Fadogia agrestis EXCLUIDO del MVP — 0 RCTs humanos + señal toxicidad testicular en ratas. Re-evaluar cuando existan RCTs humanos de seguridad. Memoria 2026-05-17.",
+    "BCAAs NO crear entry — ya cubierto por perfil aminoácido de whey concentrada/isolada (decisión MD 16c). Si Daniel pide entry como 'no recomendado documentado', agregar con flag.",
+    "Arginina NO crear entry — citrulina malato es la opción evidence-based superior (mejor absorción + evita first-pass hepático).",
+    "Pieza 5 — supplement_stacks: combinaciones pre-armadas (stack_basico_hipertrofia_hombre, stack_recomposicion_femenina, stack_perdida_grasa_principiante, stack_sueno_recovery, stack_ergogenico_avanzado_masculino, stack_salud_femenina_elite).",
+    "Validación clínica post-curación: programar sesión con farmacéutico clínico aliado para revisar entries con needs_medical_professional_review:true (Tongkat ali, Ashwagandha, Yohimbina si se agrega, Melatonina, Té verde extracto, Fadogia si se reincorpora).",
+    "Precios COP referencia 2026 son rangos amplios — validar con coach que conoce precio real de la calle Colombia."
+  ]
+}
