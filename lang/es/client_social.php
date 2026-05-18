@@ -81,7 +81,7 @@ return [
     // Comments
     'comments_placeholder' => 'Comentar...',
     'comments_send' => 'Enviar',
-    'comments_more' => '+ :n comentarios más',
+    'comments_more' => '+ {n} comentarios más',
     'comments_empty' => 'Sin comentarios aún',
     'comments_be_first' => 'Sé el primero en comentar.',
     'comments_now' => 'ahora',
@@ -94,9 +94,9 @@ return [
 
     // Time ago
     'time_just_now' => 'hace un momento',
-    'time_minutes' => 'hace :n m',
-    'time_hours' => 'hace :n h',
-    'time_days' => 'hace :n d',
+    'time_minutes' => 'hace {n} m',
+    'time_hours' => 'hace {n} h',
+    'time_days' => 'hace {n} d',
 
     // Empty states
     'empty_following_title' => 'Aún no sigues a nadie',
@@ -127,12 +127,12 @@ return [
     // ============================================================
     'pulso_load_error' => 'No se pudo cargar este Pulso.',
     'pulso_close' => 'Cerrar',
-    'pulso_expires_in' => 'Expira en :time',
+    'pulso_expires_in' => 'Expira en {time}',
     'pulso_expired' => 'Expirado',
     'pulso_delete_tooltip' => 'Eliminar Pulso',
     'pulso_deleted' => 'Pulso eliminado',
     'pulso_delete_failed' => 'No se pudo eliminar',
-    'pulso_viewers' => ':n vio tu Pulso|:n vieron tu Pulso',
+    'pulso_viewers' => '{n} vio tu Pulso|{n} vieron tu Pulso',
     'pulso_no_viewers' => 'Nadie lo ha visto todavía.',
     'pulso_alt_default' => 'Pulso',
 
@@ -183,7 +183,7 @@ return [
     'gpf_empty' => 'Sin actividad del grupo en este rango.',
     'gpf_load_more' => 'Cargar más',
     'gpf_loading_short' => 'Cargando...',
-    'gpf_minutes_ago' => 'hace :n min',
+    'gpf_minutes_ago' => 'hace {n} min',
 
     // ============================================================
     // REPORT POST MENU
@@ -236,7 +236,7 @@ return [
     'challenges_status_completed' => 'Completado',
     'challenges_status_participating' => 'Participando',
     'challenges_progress' => 'Progreso',
-    'challenges_days_left' => ':n día restante|:n días restantes',
+    'challenges_days_left' => '{n} día restante|{n} días restantes',
     'challenges_join' => 'Unirme al reto',
     'challenges_joining' => 'Uniéndose...',
     'challenges_type_strength' => 'Fuerza',
@@ -268,7 +268,7 @@ return [
     'mindfulness_session_resume' => 'Reanudar',
     'mindfulness_session_progress_start' => 'Inicio',
     'mindfulness_session_progress_end' => 'Fin',
-    'mindfulness_session_aria_start' => 'Iniciar sesión: :title',
+    'mindfulness_session_aria_start' => 'Iniciar sesión: {title}',
 
     // Session cards
     'mindfulness_session_4_7_8_title' => 'Respiración 4-7-8',
@@ -313,13 +313,13 @@ return [
     'mindfulness_phase_exhale_short' => 'Exhala',
 
     // Ring UI
-    'mindfulness_ring_cycle' => 'Ciclo :current/:total',
+    'mindfulness_ring_cycle' => 'Ciclo {current}/{total}',
     'mindfulness_ring_press_start' => 'PRESIONA INICIAR',
 
     // Config
     'mindfulness_config_cycles' => 'Ciclos',
     'mindfulness_config_cycles_aria' => 'Número de ciclos',
-    'mindfulness_config_total_duration' => 'Duración total: :time',
+    'mindfulness_config_total_duration' => 'Duración total: {time}',
     'mindfulness_config_sound' => 'Sonido ambiental guía',
     'mindfulness_config_sound_aria' => 'Sonido ambiental',
 
@@ -332,7 +332,7 @@ return [
 
     // Completion banner
     'mindfulness_completed_title' => 'Sesión completada',
-    'mindfulness_completed_meta' => ':label · :cycles ciclos · :time',
+    'mindfulness_completed_meta' => '{label} · {cycles} ciclos · {time}',
 
     // Info cards
     'mindfulness_info_478_heading' => '4-7-8',

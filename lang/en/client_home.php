@@ -17,7 +17,7 @@ return [
     'stat_this_month' => 'this month',
     'stat_level' => 'Level',
     'stat_xp' => 'XP',
-    'stat_xp_progress' => ':in / 200 to level :next',
+    'stat_xp_progress' => '{in} / 200 to level {next}',
     'stat_this_week' => 'This week',
     'stat_days_trained' => 'days trained',
 
@@ -25,16 +25,16 @@ return [
     'gp_title' => 'Group Pulse',
     'gp_group_growing' => 'Your group is growing',
     'gp_group_resting' => 'Group resting',
-    'gp_active_bpm' => ':n active · :bpm BPM',
+    'gp_active_bpm' => '{n} active · {bpm} BPM',
     'gp_workouts_today' => 'Workouts today',
     'gp_prs_week' => 'PRs this week',
     'gp_achievements_today' => 'Wins today',
-    'gp_minutes_ago' => ':n min ago',
+    'gp_minutes_ago' => '{n} min ago',
     'gp_see_all' => 'See the full pulse',
 
     // Missions
     'missions_title' => 'Daily missions',
-    'missions_completed_today' => ':done / :total today',
+    'missions_completed_today' => '{done} / {total} today',
     'missions_with_you' => 'with you',
     'missions_done' => 'Done',
     'missions_pending' => 'Pending',
@@ -58,9 +58,9 @@ return [
 
     // Plan timeline
     'timeline_title' => 'Your progress',
-    'timeline_plan_meta' => ':weeks-week plan',
+    'timeline_plan_meta' => '{weeks}-week plan',
     'timeline_week' => 'Week',
-    'timeline_of' => 'of :total',
+    'timeline_of' => 'of {total}',
     'timeline_start' => 'Start',
     'timeline_continuous' => 'Ongoing',
 
@@ -71,13 +71,13 @@ return [
     'heatmap_less' => 'Less',
     'heatmap_more' => 'More',
     'heatmap_sessions_total' => 'sessions · 90 days',
-    'heatmap_session_count' => ':n session|:n sessions',
+    'heatmap_session_count' => '{n} session|{n} sessions',
     'heatmap_best_streak' => 'Best streak',
-    'heatmap_best_streak_unit' => ':n day|:n days',
+    'heatmap_best_streak_unit' => '{n} day|{n} days',
     'heatmap_vs_user' => 'You average',
     'heatmap_vs_group' => 'Group',
     'heatmap_vs_unit' => '/wk',
-    'heatmap_vs_top' => 'Top :pct%',
+    'heatmap_vs_top' => 'Top {pct}%',
     'heatmap_intl_month' => 'en',
 
     // Weight chart
@@ -90,7 +90,7 @@ return [
 
     // Weekly grid (today's week)
     'weekly_grid_title' => 'Training week',
-    'weekly_grid_week_range' => 'Wk. :week · :start — :end',
+    'weekly_grid_week_range' => 'Wk. {week} · {start} — {end}',
     'weekly_grid_dow' => ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
     'weekly_grid_completed' => 'Done',
     'weekly_grid_today' => 'Today',
@@ -98,15 +98,15 @@ return [
 
     // Weekly summary
     'weekly_summary_title' => 'Weekly summary',
-    'weekly_summary_meta' => 'Wk. :week',
+    'weekly_summary_meta' => 'Wk. {week}',
     'weekly_summary_new_week' => 'New week',
     'weekly_summary_new_week_desc' => 'Complete your first workout and check-in to see your summary here.',
 
     // Profile completion banner
     'profile_card_title' => 'Community profile',
-    'profile_card_meta' => ':pct% complete',
+    'profile_card_meta' => '{pct}% complete',
     'profile_card_title_full' => 'Complete your profile',
-    'profile_card_missing' => 'Missing: :items',
+    'profile_card_missing' => 'Missing: {items}',
     'profile_card_cta' => 'Complete',
     'profile_card_dismiss' => 'Close',
 
@@ -154,7 +154,7 @@ return [
     // Getting Started checklist
     'gs_title' => 'GETTING STARTED',
     'gs_subtitle' => 'Complete your starter profile',
-    'gs_days_left' => ':n day left|:n days left',
+    'gs_days_left' => '{n} day left|{n} days left',
     'gs_photos_title' => 'Upload your progress photos',
     'gs_photos_sub' => 'Front, side and back so you can compare progress',
     'gs_metrics_title' => 'Log your weight and metrics',
@@ -163,9 +163,9 @@ return [
 
     // Weekly summary dynamic messages
     'ws_exceptional_label' => 'Exceptional week',
-    'ws_exceptional_desc' => ':n workouts done. Keep it rolling.',
+    'ws_exceptional_desc' => '{n} workouts done. Keep it rolling.',
     'ws_good_pace_label' => 'Good pace',
-    'ws_good_pace_desc' => ':n workouts this week. You are on the right track.',
+    'ws_good_pace_desc' => '{n} workouts this week. You are on the right track.',
     'ws_on_track_label' => 'On track',
     'ws_on_track_desc' => 'Every session counts. Try to add one more this week.',
     'ws_new_week_label' => 'New week',

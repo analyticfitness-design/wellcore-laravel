@@ -6,7 +6,7 @@ return [
     'checkin_title' => 'Check-in semanal',
     'checkin_coach_replies_prefix' => 'Tu coach responde en',
     'checkin_coach_replies_value' => 'menos de 24 h',
-    'checkin_week_label' => 'Semana :n',
+    'checkin_week_label' => 'Semana {n}',
     'checkin_not_available_title' => 'Check-in no disponible hoy',
     'checkin_not_available_body_prefix' => 'El check-in semanal estará disponible el próximo',
     'checkin_not_available_body_days' => 'viernes o sábado',
@@ -70,7 +70,7 @@ return [
     'checkin_notes_label_sr' => 'Comentario para tu coach',
     'checkin_notes_placeholder' => 'Ej: Esta semana sentí el press inclinado más fuerte, llegué a 80kg × 8. La nutrición estuvo al 75% por una salida de trabajo. ¿Podemos ajustar las porciones del almuerzo?',
     'checkin_notes_realtime_hint' => 'Tu coach lo recibe al instante.',
-    'checkin_err_notes_max' => 'El comentario no puede superar 1000 caracteres (:n/1000)',
+    'checkin_err_notes_max' => 'El comentario no puede superar 1000 caracteres ({n}/1000)',
     'checkin_summary_title' => 'Resumen',
     'checkin_summary_wellbeing' => 'Bienestar',
     'checkin_summary_days' => 'Días',
@@ -124,16 +124,16 @@ return [
     'checkin_recent_title' => 'Check-ins anteriores',
     'checkin_recent_status_replied' => 'Respondido',
     'checkin_recent_status_pending' => 'En revisión',
-    'checkin_recent_badge_wellbeing' => 'Bienestar :value/5',
-    'checkin_recent_badge_rpe' => 'RPE :value/10',
-    'checkin_recent_badge_days' => ':value/7 días',
+    'checkin_recent_badge_wellbeing' => 'Bienestar {value}/5',
+    'checkin_recent_badge_rpe' => 'RPE {value}/10',
+    'checkin_recent_badge_days' => '{value}/7 días',
     'checkin_recent_nutrition_full' => 'Nutri 100%',
     'checkin_recent_nutrition_partial' => 'Nutri Parcial',
     'checkin_recent_nutrition_no' => 'Nutri No',
     'checkin_recent_coach_reply_label' => 'Respuesta del coach',
 
     // Date formatting
-    'date_format_long' => ':d de :month, :year',
+    'date_format_long' => '{d} de {month}, {year}',
     'month_jan' => 'enero',
     'month_feb' => 'febrero',
     'month_mar' => 'marzo',
@@ -152,8 +152,8 @@ return [
     'metrics_breadcrumb_dashboard' => 'Dashboard',
     'metrics_breadcrumb_metrics' => 'Métricas',
     'metrics_hero_subtitle' => 'Tu peso, composición y mediciones — leídos en contexto por tu coach.',
-    'metrics_streak_weeks_short' => ':n sem',
-    'metrics_streak_weeks_title' => ':n semanas consecutivas',
+    'metrics_streak_weeks_short' => '{n} sem',
+    'metrics_streak_weeks_title' => '{n} semanas consecutivas',
     'metrics_last_prefix' => 'Último:',
 
     // Tutorial
@@ -187,7 +187,7 @@ return [
 
     // WeightChart
     'metrics_chart_title' => 'Peso Corporal',
-    'metrics_chart_sub' => 'Evolución de :period',
+    'metrics_chart_sub' => 'Evolución de {period}',
     'metrics_chart_period_aria' => 'Período del gráfico',
     'metrics_chart_legend_weight' => 'Peso',
     'metrics_chart_empty_title' => 'Sin datos de peso',
@@ -198,7 +198,7 @@ return [
     'metrics_streak_title' => 'Check-ins Semanales',
     'metrics_streak_sub' => 'Últimas 12 semanas',
     'metrics_streak_history_aria' => 'Historial de check-ins',
-    'metrics_streak_week_n' => 'Semana :n: :cnt check-in(s)',
+    'metrics_streak_week_n' => 'Semana {n}: {cnt} check-in(s)',
     'metrics_streak_empty' => 'Sin check-ins recientes',
     'metrics_streak_axis_past' => 'HACE 12 SEM',
     'metrics_streak_axis_today' => 'HOY',
@@ -223,8 +223,8 @@ return [
 
     // CrossLinkPhotos
     'metrics_photos_title' => 'Fotos de progreso',
-    'metrics_photos_count_singular' => ':n foto registrada',
-    'metrics_photos_count_plural' => ':n fotos registradas',
+    'metrics_photos_count_singular' => '{n} foto registrada',
+    'metrics_photos_count_plural' => '{n} fotos registradas',
     'metrics_photos_empty' => 'La transformación visual supera a los números',
     'metrics_photos_view' => 'Ver fotos',
 
@@ -273,10 +273,10 @@ return [
     'food_title' => 'Mi alimentación',
     'food_subtitle' => 'Documenta cada comida y tu coach la revisa',
     'food_retry' => 'Reintentar',
-    'food_streak_days' => ':n días seguidos',
-    'food_xp_today' => '+:n XP hoy',
+    'food_streak_days' => '{n} días seguidos',
+    'food_xp_today' => '+{n} XP hoy',
     'food_no_plan_notice' => 'Aún no tienes un plan de nutrición personalizado. Mientras tu coach lo arma, puedes documentar tus comidas con las categorías generales de abajo.',
-    'food_progress_label' => 'Hoy llevas :done de :total comidas documentadas',
+    'food_progress_label' => 'Hoy llevas {done} de {total} comidas documentadas',
     'food_bonus_complete' => 'Bonus diario completo (+30 XP)',
     'food_xp_per_meal' => '+15 XP',
     'food_kcal_unit' => 'kcal',
@@ -308,8 +308,8 @@ return [
     'food_confirm_photo' => 'Confirmar foto',
     'food_upload_photo' => 'Subir foto',
     'food_coach_note_label' => 'Nota del coach',
-    'food_alt_meal_photo' => 'Foto de :meal',
-    'food_alt_preview' => 'Preview :meal',
+    'food_alt_meal_photo' => 'Foto de {meal}',
+    'food_alt_preview' => 'Preview {meal}',
 
     // Errors
     'food_err_format' => 'Solo se permiten imágenes (JPG, PNG, WebP).',
@@ -325,7 +325,7 @@ return [
     'photos_kicker' => 'Fotos de progreso',
     'photos_title_line1' => 'Tu cuerpo,',
     'photos_title_line2' => 'semana a semana.',
-    'photos_hero_intro' => 'Estas fotos cuentan una historia que el peso no puede contar. Suben aquí solo para tu coach :coachName — privadas, encriptadas, tuyas.',
+    'photos_hero_intro' => 'Estas fotos cuentan una historia que el peso no puede contar. Suben aquí solo para tu coach {coachName} — privadas, encriptadas, tuyas.',
     'photos_stat_sessions' => 'Sesiones',
     'photos_stat_weeks' => 'Semanas',
     'photos_stat_weeks_short' => 'sem',
@@ -333,12 +333,12 @@ return [
     'photos_next_session' => 'Próxima sesión',
     'photos_next_today_prefix' => 'hoy — ',
     'photos_next_tomorrow_prefix' => 'mañana — ',
-    'photos_next_in_days' => 'en :n días — :date',
+    'photos_next_in_days' => 'en {n} días — {date}',
 
     // PrivacyReassurance
     'photos_privacy_title' => 'Solo tu coach ve estas fotos',
     'photos_privacy_body' => 'Encriptadas en tránsito y en reposo. Nunca aparecen en tu perfil público ni se comparten con la comunidad.',
-    'photos_privacy_only_coach' => 'Solo :coachName',
+    'photos_privacy_only_coach' => 'Solo {coachName}',
     'photos_aes_encrypt' => 'AES-256',
     'photos_privacy_policy' => 'Política',
 
@@ -378,7 +378,7 @@ return [
     'photos_upload_date_label' => 'Fecha de la sesión',
     'photos_upload_uploading' => 'Subiendo...',
     'photos_upload_pick_one' => 'Selecciona al menos 1 foto',
-    'photos_upload_partial' => 'Subir :selected de :total',
+    'photos_upload_partial' => 'Subir {selected} de {total}',
     'photos_upload_session_cta' => 'Subir sesión',
 
     // PhotoUploadZone
@@ -386,14 +386,14 @@ return [
     'photos_zone_uploading' => 'SUBIENDO',
     'photos_zone_review' => 'REVISAR',
     'photos_zone_ready' => 'LISTA',
-    'photos_zone_upload_aria' => 'Subir foto de :label',
+    'photos_zone_upload_aria' => 'Subir foto de {label}',
     'photos_zone_drag_or_take' => 'Arrastra o toma la foto',
     'photos_zone_formats' => 'JPG · PNG · max 12MB',
-    'photos_zone_preview_alt' => 'Preview :label',
-    'photos_zone_replace_aria' => 'Cambiar foto de :label',
+    'photos_zone_preview_alt' => 'Preview {label}',
+    'photos_zone_replace_aria' => 'Cambiar foto de {label}',
     'photos_zone_change' => 'Cambiar',
-    'photos_zone_remove_aria' => 'Eliminar foto de :label',
-    'photos_zone_uploading_label' => 'Subiendo :label...',
+    'photos_zone_remove_aria' => 'Eliminar foto de {label}',
+    'photos_zone_uploading_label' => 'Subiendo {label}...',
 
     // PhotoValidationChips
     'photos_chips_aria' => 'Validación de la foto',
@@ -418,7 +418,7 @@ return [
     'photos_timeline_next_aria' => 'Sesiones siguientes',
     'photos_week_first' => 'Inicio',
     'photos_week_latest' => 'Reciente',
-    'photos_session_view_aria' => 'Ver :label de la sesión',
+    'photos_session_view_aria' => 'Ver {label} de la sesión',
     'photos_has_notes_aria' => 'Tiene notas del coach',
     'photos_meta_kg' => 'kg',
     'photos_meta_waist_cm' => 'cm cintura',
@@ -452,7 +452,7 @@ return [
     // Feedback badge
     'photos_badge_reviewed' => 'Revisada',
     'photos_badge_notes' => 'Notas',
-    'photos_badge_notes_count' => 'Notas · :n',
+    'photos_badge_notes_count' => 'Notas · {n}',
     'photos_badge_pending' => 'Pendiente',
 
     // Achievement overlay

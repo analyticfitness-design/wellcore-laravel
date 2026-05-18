@@ -6,7 +6,7 @@ return [
     'checkin_title' => 'Weekly check-in',
     'checkin_coach_replies_prefix' => 'Your coach replies in',
     'checkin_coach_replies_value' => 'under 24 hours',
-    'checkin_week_label' => 'Week :n',
+    'checkin_week_label' => 'Week {n}',
     'checkin_not_available_title' => 'Check-in not available today',
     'checkin_not_available_body_prefix' => 'The weekly check-in opens',
     'checkin_not_available_body_days' => 'Friday or Saturday',
@@ -70,7 +70,7 @@ return [
     'checkin_notes_label_sr' => 'Comment for your coach',
     'checkin_notes_placeholder' => 'e.g. Incline press felt strong this week, hit 175 lb × 8. Nutrition was around 75% because of a work dinner. Can we adjust lunch portions?',
     'checkin_notes_realtime_hint' => 'Your coach gets it instantly.',
-    'checkin_err_notes_max' => 'Comment can\'t exceed 1000 characters (:n/1000)',
+    'checkin_err_notes_max' => 'Comment can\'t exceed 1000 characters ({n}/1000)',
     'checkin_summary_title' => 'Summary',
     'checkin_summary_wellbeing' => 'Wellbeing',
     'checkin_summary_days' => 'Days',
@@ -124,16 +124,16 @@ return [
     'checkin_recent_title' => 'Previous check-ins',
     'checkin_recent_status_replied' => 'Replied',
     'checkin_recent_status_pending' => 'In review',
-    'checkin_recent_badge_wellbeing' => 'Wellbeing :value/5',
-    'checkin_recent_badge_rpe' => 'RPE :value/10',
-    'checkin_recent_badge_days' => ':value/7 days',
+    'checkin_recent_badge_wellbeing' => 'Wellbeing {value}/5',
+    'checkin_recent_badge_rpe' => 'RPE {value}/10',
+    'checkin_recent_badge_days' => '{value}/7 days',
     'checkin_recent_nutrition_full' => 'Nutrition 100%',
     'checkin_recent_nutrition_partial' => 'Nutrition partial',
     'checkin_recent_nutrition_no' => 'Nutrition off',
     'checkin_recent_coach_reply_label' => 'Coach reply',
 
     // Date formatting
-    'date_format_long' => ':month :d, :year',
+    'date_format_long' => '{month} {d}, {year}',
     'month_jan' => 'January',
     'month_feb' => 'February',
     'month_mar' => 'March',
@@ -152,8 +152,8 @@ return [
     'metrics_breadcrumb_dashboard' => 'Dashboard',
     'metrics_breadcrumb_metrics' => 'Metrics',
     'metrics_hero_subtitle' => 'Your weight, body composition and measurements — read in context by your coach.',
-    'metrics_streak_weeks_short' => ':nw',
-    'metrics_streak_weeks_title' => ':n weeks in a row',
+    'metrics_streak_weeks_short' => '{nw}',
+    'metrics_streak_weeks_title' => '{n} weeks in a row',
     'metrics_last_prefix' => 'Last:',
 
     // Tutorial
@@ -187,7 +187,7 @@ return [
 
     // WeightChart
     'metrics_chart_title' => 'Body weight',
-    'metrics_chart_sub' => ':period evolution',
+    'metrics_chart_sub' => '{period} evolution',
     'metrics_chart_period_aria' => 'Chart period',
     'metrics_chart_legend_weight' => 'Weight',
     'metrics_chart_empty_title' => 'No weight data',
@@ -198,7 +198,7 @@ return [
     'metrics_streak_title' => 'Weekly check-ins',
     'metrics_streak_sub' => 'Last 12 weeks',
     'metrics_streak_history_aria' => 'Check-in history',
-    'metrics_streak_week_n' => 'Week :n: :cnt check-in(s)',
+    'metrics_streak_week_n' => 'Week {n}: {cnt} check-in(s)',
     'metrics_streak_empty' => 'No recent check-ins',
     'metrics_streak_axis_past' => '12 WEEKS AGO',
     'metrics_streak_axis_today' => 'TODAY',
@@ -223,8 +223,8 @@ return [
 
     // CrossLinkPhotos
     'metrics_photos_title' => 'Progress photos',
-    'metrics_photos_count_singular' => ':n photo logged',
-    'metrics_photos_count_plural' => ':n photos logged',
+    'metrics_photos_count_singular' => '{n} photo logged',
+    'metrics_photos_count_plural' => '{n} photos logged',
     'metrics_photos_empty' => 'The visual transformation tells what the numbers can\'t',
     'metrics_photos_view' => 'View photos',
 
@@ -273,10 +273,10 @@ return [
     'food_title' => 'My nutrition',
     'food_subtitle' => 'Log every meal and your coach reviews it',
     'food_retry' => 'Retry',
-    'food_streak_days' => ':n days in a row',
-    'food_xp_today' => '+:n XP today',
+    'food_streak_days' => '{n} days in a row',
+    'food_xp_today' => '+{n} XP today',
     'food_no_plan_notice' => 'You don\'t have a personalized nutrition plan yet. While your coach builds it, you can log your meals using the general categories below.',
-    'food_progress_label' => 'Today you\'ve logged :done of :total meals',
+    'food_progress_label' => 'Today you\'ve logged {done} of {total} meals',
     'food_bonus_complete' => 'Daily bonus complete (+30 XP)',
     'food_xp_per_meal' => '+15 XP',
     'food_kcal_unit' => 'kcal',
@@ -308,8 +308,8 @@ return [
     'food_confirm_photo' => 'Confirm photo',
     'food_upload_photo' => 'Upload photo',
     'food_coach_note_label' => 'Coach note',
-    'food_alt_meal_photo' => 'Photo of :meal',
-    'food_alt_preview' => 'Preview :meal',
+    'food_alt_meal_photo' => 'Photo of {meal}',
+    'food_alt_preview' => 'Preview {meal}',
 
     // Errors
     'food_err_format' => 'Only images are allowed (JPG, PNG, WebP).',
@@ -325,7 +325,7 @@ return [
     'photos_kicker' => 'Progress photos',
     'photos_title_line1' => 'Your body,',
     'photos_title_line2' => 'week by week.',
-    'photos_hero_intro' => 'These photos tell a story the scale can\'t. They go only to your coach :coachName — private, encrypted, yours.',
+    'photos_hero_intro' => 'These photos tell a story the scale can\'t. They go only to your coach {coachName} — private, encrypted, yours.',
     'photos_stat_sessions' => 'Sessions',
     'photos_stat_weeks' => 'Weeks',
     'photos_stat_weeks_short' => 'wk',
@@ -333,12 +333,12 @@ return [
     'photos_next_session' => 'Next session',
     'photos_next_today_prefix' => 'today — ',
     'photos_next_tomorrow_prefix' => 'tomorrow — ',
-    'photos_next_in_days' => 'in :n days — :date',
+    'photos_next_in_days' => 'in {n} days — {date}',
 
     // PrivacyReassurance
     'photos_privacy_title' => 'Only your coach sees these photos',
     'photos_privacy_body' => 'Encrypted in transit and at rest. Never visible on your public profile and never shared with the community.',
-    'photos_privacy_only_coach' => 'Only :coachName',
+    'photos_privacy_only_coach' => 'Only {coachName}',
     'photos_aes_encrypt' => 'AES-256',
     'photos_privacy_policy' => 'Policy',
 
@@ -378,7 +378,7 @@ return [
     'photos_upload_date_label' => 'Session date',
     'photos_upload_uploading' => 'Uploading...',
     'photos_upload_pick_one' => 'Pick at least 1 photo',
-    'photos_upload_partial' => 'Upload :selected of :total',
+    'photos_upload_partial' => 'Upload {selected} of {total}',
     'photos_upload_session_cta' => 'Upload session',
 
     // PhotoUploadZone
@@ -386,14 +386,14 @@ return [
     'photos_zone_uploading' => 'UPLOADING',
     'photos_zone_review' => 'REVIEW',
     'photos_zone_ready' => 'READY',
-    'photos_zone_upload_aria' => 'Upload :label photo',
+    'photos_zone_upload_aria' => 'Upload {label} photo',
     'photos_zone_drag_or_take' => 'Drag in or take a photo',
     'photos_zone_formats' => 'JPG · PNG · max 12MB',
-    'photos_zone_preview_alt' => 'Preview :label',
-    'photos_zone_replace_aria' => 'Replace :label photo',
+    'photos_zone_preview_alt' => 'Preview {label}',
+    'photos_zone_replace_aria' => 'Replace {label} photo',
     'photos_zone_change' => 'Change',
-    'photos_zone_remove_aria' => 'Remove :label photo',
-    'photos_zone_uploading_label' => 'Uploading :label...',
+    'photos_zone_remove_aria' => 'Remove {label} photo',
+    'photos_zone_uploading_label' => 'Uploading {label}...',
 
     // PhotoValidationChips
     'photos_chips_aria' => 'Photo validation',
@@ -418,7 +418,7 @@ return [
     'photos_timeline_next_aria' => 'Next sessions',
     'photos_week_first' => 'Start',
     'photos_week_latest' => 'Latest',
-    'photos_session_view_aria' => 'View session :label',
+    'photos_session_view_aria' => 'View session {label}',
     'photos_has_notes_aria' => 'Has coach notes',
     'photos_meta_kg' => 'kg',
     'photos_meta_waist_cm' => 'cm waist',
@@ -452,7 +452,7 @@ return [
     // Feedback badge
     'photos_badge_reviewed' => 'Reviewed',
     'photos_badge_notes' => 'Notes',
-    'photos_badge_notes_count' => 'Notes · :n',
+    'photos_badge_notes_count' => 'Notes · {n}',
     'photos_badge_pending' => 'Pending',
 
     // Achievement overlay

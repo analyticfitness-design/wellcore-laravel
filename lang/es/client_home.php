@@ -17,7 +17,7 @@ return [
     'stat_this_month' => 'este mes',
     'stat_level' => 'Nivel',
     'stat_xp' => 'XP',
-    'stat_xp_progress' => ':in / 200 al nivel :next',
+    'stat_xp_progress' => '{in} / 200 al nivel {next}',
     'stat_this_week' => 'Esta semana',
     'stat_days_trained' => 'días entrenados',
 
@@ -25,16 +25,16 @@ return [
     'gp_title' => 'Latido del Grupo',
     'gp_group_growing' => 'Tu grupo crece pronto',
     'gp_group_resting' => 'Grupo descansando',
-    'gp_active_bpm' => ':n activos · :bpm BPM',
+    'gp_active_bpm' => '{n} activos · {bpm} BPM',
     'gp_workouts_today' => 'Entrenos hoy',
     'gp_prs_week' => 'PRs semana',
     'gp_achievements_today' => 'Logros hoy',
-    'gp_minutes_ago' => 'hace :n min',
+    'gp_minutes_ago' => 'hace {n} min',
     'gp_see_all' => 'Ver todo el latido',
 
     // Missions
     'missions_title' => 'Misiones diarias',
-    'missions_completed_today' => ':done / :total hoy',
+    'missions_completed_today' => '{done} / {total} hoy',
     'missions_with_you' => 'contigo',
     'missions_done' => 'Completada',
     'missions_pending' => 'Pendiente',
@@ -58,9 +58,9 @@ return [
 
     // Plan timeline
     'timeline_title' => 'Tu progreso',
-    'timeline_plan_meta' => 'Plan :weeks semanas',
+    'timeline_plan_meta' => 'Plan {weeks} semanas',
     'timeline_week' => 'Semana',
-    'timeline_of' => 'de :total',
+    'timeline_of' => 'de {total}',
     'timeline_start' => 'Inicio',
     'timeline_continuous' => 'Continuo',
 
@@ -71,13 +71,13 @@ return [
     'heatmap_less' => 'Menos',
     'heatmap_more' => 'Más',
     'heatmap_sessions_total' => 'sesiones · 90 días',
-    'heatmap_session_count' => ':n sesión|:n sesiones',
+    'heatmap_session_count' => '{n} sesión|{n} sesiones',
     'heatmap_best_streak' => 'Mejor racha',
-    'heatmap_best_streak_unit' => ':n día|:n días',
+    'heatmap_best_streak_unit' => '{n} día|{n} días',
     'heatmap_vs_user' => 'Tu promedio',
     'heatmap_vs_group' => 'Grupo',
     'heatmap_vs_unit' => '/sem',
-    'heatmap_vs_top' => 'Top :pct%',
+    'heatmap_vs_top' => 'Top {pct}%',
     'heatmap_intl_month' => 'es',
 
     // Weight chart
@@ -90,7 +90,7 @@ return [
 
     // Weekly grid (today's week)
     'weekly_grid_title' => 'Sem. entrenamiento',
-    'weekly_grid_week_range' => 'Sem. :week · :start — :end',
+    'weekly_grid_week_range' => 'Sem. {week} · {start} — {end}',
     'weekly_grid_dow' => ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'],
     'weekly_grid_completed' => 'Completado',
     'weekly_grid_today' => 'Hoy',
@@ -98,15 +98,15 @@ return [
 
     // Weekly summary
     'weekly_summary_title' => 'Resumen semanal',
-    'weekly_summary_meta' => 'Sem. :week',
+    'weekly_summary_meta' => 'Sem. {week}',
     'weekly_summary_new_week' => 'Nueva semana',
     'weekly_summary_new_week_desc' => 'Completa tu primer entrenamiento y check-in para ver tu resumen aquí.',
 
     // Profile completion banner
     'profile_card_title' => 'Perfil de comunidad',
-    'profile_card_meta' => ':pct% completo',
+    'profile_card_meta' => '{pct}% completo',
     'profile_card_title_full' => 'Completa tu perfil',
-    'profile_card_missing' => 'Falta: :items',
+    'profile_card_missing' => 'Falta: {items}',
     'profile_card_cta' => 'Completar',
     'profile_card_dismiss' => 'Cerrar',
 
@@ -154,7 +154,7 @@ return [
     // Getting Started checklist
     'gs_title' => 'PRIMEROS PASOS',
     'gs_subtitle' => 'Completa tu perfil de inicio',
-    'gs_days_left' => ':n día restante|:n días restantes',
+    'gs_days_left' => '{n} día restante|{n} días restantes',
     'gs_photos_title' => 'Sube tus fotos de progreso',
     'gs_photos_sub' => 'Frente, perfil y espalda para comparar tu avance',
     'gs_metrics_title' => 'Registra tu peso y métricas',
@@ -163,9 +163,9 @@ return [
 
     // Weekly summary dynamic messages (from Dashboard.vue computed)
     'ws_exceptional_label' => 'Semana excepcional',
-    'ws_exceptional_desc' => ':n entrenamientos completados. Sigue así.',
+    'ws_exceptional_desc' => '{n} entrenamientos completados. Sigue así.',
     'ws_good_pace_label' => 'Buen ritmo',
-    'ws_good_pace_desc' => ':n entrenamientos esta semana. Vas por buen camino.',
+    'ws_good_pace_desc' => '{n} entrenamientos esta semana. Vas por buen camino.',
     'ws_on_track_label' => 'En camino',
     'ws_on_track_desc' => 'Cada sesión cuenta. Intenta sumar una más esta semana.',
     'ws_new_week_label' => 'Nueva semana',

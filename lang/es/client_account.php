@@ -18,7 +18,7 @@ return [
     'profile_completion_label' => 'Completitud del perfil',
     'profile_completion_complete' => 'Tu perfil está completo y visible en la comunidad.',
     'profile_completion_missing_one' => 'Falta 1 dato para completar tu perfil.',
-    'profile_completion_missing_many' => 'Faltan :n datos para completar tu perfil.',
+    'profile_completion_missing_many' => 'Faltan {n} datos para completar tu perfil.',
     'profile_completion_pending_label' => 'Campos pendientes',
     'profile_completion_complete_legacy' => 'Perfil completo — apareces con toda tu info en la comunidad.',
     'profile_completion_missing_intro_legacy' => 'Un perfil completo te hace destacar en la comunidad. Faltan:',
@@ -30,7 +30,7 @@ return [
 
     // Avatar
     'profile_avatar_alt' => 'Tu foto de perfil',
-    'profile_avatar_alt_named' => 'Foto de :name',
+    'profile_avatar_alt_named' => 'Foto de {name}',
     'profile_avatar_upload' => 'Subir foto',
     'profile_change_avatar' => 'Cambiar foto',
     'profile_avatar_save' => 'Guardar foto',
@@ -132,20 +132,20 @@ return [
     'profile_savebar_label' => 'Cambios sin guardar',
     'profile_unsaved_changes' => 'Hay cambios sin guardar',
     'profile_unsaved_changes_one' => '1 cambio sin guardar',
-    'profile_unsaved_changes_many' => ':n cambios sin guardar',
+    'profile_unsaved_changes_many' => '{n} cambios sin guardar',
 
     // Community preview
     'profile_preview_caption' => 'VISTA EN LA COMUNIDAD',
     'profile_preview_default_name' => 'Tu nombre',
     'profile_preview_empty_bio' => 'Escribe algo sobre ti…',
-    'profile_preview_age' => ':n años',
+    'profile_preview_age' => '{n} años',
     'profile_preview_label' => 'Vista previa de cómo se verá tu perfil en la comunidad',
 
-    // Public profile (Profile.vue — /client/profile/:id)
+    // Public profile (Profile.vue — /client/profile/{id})
     'public_profile_unavailable_title' => 'PERFIL NO DISPONIBLE',
     'public_profile_unavailable_sub' => 'Este perfil no existe o pertenece a otra comunidad.',
     'public_profile_back_to_community' => 'Volver a la comunidad',
-    'public_profile_since' => 'Desde :date',
+    'public_profile_since' => 'Desde {date}',
     'public_profile_follow' => 'Seguir',
     'public_profile_following' => 'Siguiendo ✓',
     'public_profile_unfollow' => 'Dejar de seguir',
@@ -277,8 +277,8 @@ return [
     'achievements_xp_accumulated' => 'acumulado',
     'achievements_workouts' => 'Entrenamientos',
     'achievements_workouts_completed' => 'completados',
-    'achievements_streak_days' => ':n días de racha',
-    'achievements_xp_to_next' => ':current de :max XP para subir al nivel :level',
+    'achievements_streak_days' => '{n} días de racha',
+    'achievements_xp_to_next' => '{current} de {max} XP para subir al nivel {level}',
 
     'achievements_filter_status_all' => 'Todas',
     'achievements_filter_status_achieved' => 'Logradas',
@@ -324,9 +324,9 @@ return [
     'referrals_exclusive_badge' => 'Tu link exclusivo',
     'referrals_copy_link' => 'Copiar link',
     'referrals_copied' => 'Copiado',
-    'referrals_copy_manual' => 'Copia el link manualmente: :link',
+    'referrals_copy_manual' => 'Copia el link manualmente: {link}',
     'referrals_share_whatsapp' => 'Compartir por WhatsApp',
-    'referrals_whatsapp_message' => '¡Hola! Te invito a unirte a WellCore Fitness, la plataforma de entrenamiento personalizado. Usa mi link: :link',
+    'referrals_whatsapp_message' => '¡Hola! Te invito a unirte a WellCore Fitness, la plataforma de entrenamiento personalizado. Usa mi link: {link}',
 
     'referrals_invite_title' => 'Invitar por correo electrónico',
     'referrals_invite_sub' => 'Envía una invitación directa a la bandeja de entrada',
