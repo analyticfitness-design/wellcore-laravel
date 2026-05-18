@@ -166,6 +166,17 @@ export const useAdminPlanTicketDetailStore = defineStore('adminPlanTicketDetail'
             }
         },
 
+        async fetchExport(section = 'full') {
+            const id = this.ticket?.id;
+            if (!id) throw new Error('No hay ticket cargado.');
+            const api = useApi();
+            const url = section === 'full'
+                ? `/api/v/admin/plan-tickets/${id}/export`
+                : `/api/v/admin/plan-tickets/${id}/export/${section}`;
+            const { data } = await api.get(url);
+            return data;
+        },
+
         async addComment(body) {
             if (this.actionInFlight) return;
             const id = this.ticket?.id;

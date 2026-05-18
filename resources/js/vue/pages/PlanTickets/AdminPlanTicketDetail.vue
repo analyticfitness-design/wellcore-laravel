@@ -136,6 +136,68 @@ function renderableEntries(obj) {
     return Object.entries(obj).filter(([, v]) => v !== null && v !== undefined && v !== '');
 }
 
+// ─── export JSON (para motor v2) ─────────────────────────────────────
+const exportLoading = ref(false);
+const exportFeedback = ref('');
+let exportFeedbackTimer = null;
+
+function flashExportFeedback(msg, ms = 2400) {
+    exportFeedback.value = msg;
+    if (exportFeedbackTimer) clearTimeout(exportFeedbackTimer);
+    exportFeedbackTimer = setTimeout(() => { exportFeedback.value = ''; }, ms);
+}
+
+async function copyExportJson() {
+    if (exportLoading.value) return;
+    exportLoading.value = true;
+    try {
+        const data = await store.fetchExport('full');
+        const text = JSON.stringify(data, null, 2);
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(text);
+        } else {
+            // Fallback navegadores antiguos / contextos sin permiso
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        }
+        flashExportFeedback('JSON copiado al portapapeles');
+    } catch (err) {
+        flashExportFeedback(err.response?.data?.error || 'No se pudo copiar el JSON');
+    } finally {
+        exportLoading.value = false;
+    }
+}
+
+async function downloadExportJson() {
+    if (exportLoading.value) return;
+    exportLoading.value = true;
+    try {
+        const data = await store.fetchExport('full');
+        const text = JSON.stringify(data, null, 2);
+        const blob = new Blob([text], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const safeName = (store.ticket?.client_name || 'cliente').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        a.href = url;
+        a.download = `plan-ticket-${store.ticket?.id ?? 'x'}-${safeName}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        flashExportFeedback('JSON descargado');
+    } catch (err) {
+        flashExportFeedback(err.response?.data?.error || 'No se pudo descargar el JSON');
+    } finally {
+        exportLoading.value = false;
+    }
+}
+
 // ─── lifecycle ───────────────────────────────────────────────────────
 onMounted(async () => {
     if (Number.isFinite(ticketId.value)) {
@@ -153,6 +215,7 @@ watch(ticketId, async (id) => {
 onBeforeUnmount(() => {
     store.stopCommentsPolling();
     store.$resetState();
+    if (exportFeedbackTimer) clearTimeout(exportFeedbackTimer);
 });
 </script>
 
@@ -218,6 +281,33 @@ onBeforeUnmount(() => {
                         <div v-if="store.ticket.deadline_at" class="pt-detail-meta-row">
                             <dt>DEADLINE</dt>
                             <dd>{{ formatLong(store.ticket.deadline_at) }}</dd>
+                        </div>
+
+                        <div class="pt-detail-export">
+                            <span class="pt-detail-export-label">EXPORT JSON · MOTOR V2</span>
+                            <div class="pt-detail-export-actions">
+                                <button
+                                    type="button"
+                                    class="pt-export-btn"
+                                    :disabled="exportLoading"
+                                    title="Copia el JSON completo al portapapeles (cliente, profile, intake, planes previos, check-ins, coach brief, instrucciones)"
+                                    @click="copyExportJson"
+                                >
+                                    {{ exportLoading ? '…' : 'Copiar' }}
+                                </button>
+                                <button
+                                    type="button"
+                                    class="pt-export-btn pt-export-btn--primary"
+                                    :disabled="exportLoading"
+                                    title="Descarga el JSON completo como archivo .json"
+                                    @click="downloadExportJson"
+                                >
+                                    {{ exportLoading ? '…' : 'Descargar .json' }}
+                                </button>
+                            </div>
+                            <p v-if="exportFeedback" class="pt-detail-export-feedback" role="status" aria-live="polite">
+                                {{ exportFeedback }}
+                            </p>
                         </div>
                     </dl>
                 </header>
@@ -534,6 +624,68 @@ onBeforeUnmount(() => {
     color: var(--color-wc-text);
     margin: 0;
     text-align: right;
+}
+
+/* ─── export JSON (motor v2) ─── */
+.pt-detail-export {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.pt-detail-export-label {
+    font-family: var(--font-mono, monospace);
+    font-size: 8px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-wc-gold, #C8A769);
+}
+.pt-detail-export-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.pt-export-btn {
+    flex: 1 1 auto;
+    min-width: 110px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-wc-border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-wc-text-secondary);
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s var(--ease-out, ease), border-color 0.15s var(--ease-out, ease), color 0.15s var(--ease-out, ease);
+}
+.pt-export-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-wc-text);
+    border-color: var(--color-wc-text-tertiary);
+}
+.pt-export-btn--primary {
+    background: rgba(200, 167, 105, 0.08);
+    color: var(--color-wc-gold, #C8A769);
+    border-color: rgba(200, 167, 105, 0.30);
+}
+.pt-export-btn--primary:hover:not(:disabled) {
+    background: rgba(200, 167, 105, 0.14);
+    border-color: var(--color-wc-gold, #C8A769);
+    color: var(--color-wc-gold, #C8A769);
+}
+.pt-export-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.pt-detail-export-feedback {
+    margin: 0;
+    font-family: var(--font-mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-wc-green-text, #34D399);
 }
 
 /* ─── tabs ─── */
