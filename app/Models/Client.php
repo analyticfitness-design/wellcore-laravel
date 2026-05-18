@@ -36,6 +36,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
     'autoshare_weight',
     'autoshare_streak',
     'coach_id',
+    'locale',
+    'locale_locked',
+    'unit_system',
 ])]
 #[Hidden(['password_hash'])]
 class Client extends Authenticatable
@@ -59,6 +62,7 @@ class Client extends Authenticatable
             'status' => ClientStatus::class,
             'fecha_inicio' => 'date',
             'birth_date' => 'date',
+            'locale_locked' => 'boolean',
         ];
     }
 

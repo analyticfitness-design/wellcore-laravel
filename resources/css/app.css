@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source(none);
 /* Alpine x-cloak — oculta elementos antes de que Alpine inicialice */
 [x-cloak] { display: none !important; }
 /* Fuentes oficiales WellCore: Oswald (titulares) + Raleway (cuerpos) + JetBrains Mono (labels técnicos). */

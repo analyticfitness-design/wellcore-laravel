@@ -22,6 +22,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
     'inactive_reason',
     'onboarding_state',
     'last_login_at',
+    'locale',
+    'locale_locked',
+    'currency',
 ])]
 #[Hidden(['password_hash'])]
 class Admin extends Authenticatable
@@ -46,6 +49,7 @@ class Admin extends Authenticatable
             'must_change_password' => 'boolean',
             'active' => 'boolean',
             'onboarding_state' => 'array',
+            'locale_locked' => 'boolean',
         ];
     }
 

@@ -3,6 +3,7 @@ import { createPinia } from 'pinia';
 import router from './router';
 import App from './App.vue';
 import { useAuthStore } from './stores/auth';
+import { i18n, loadLocaleMessages } from './i18n';
 
 import '../../css/app.css';
 
@@ -84,6 +85,11 @@ const app = createApp(App);
 const pinia = createPinia();
 
 app.use(pinia);
+app.use(i18n);
+
+// Carga el bundle del locale activo en background. El Blade root ya inyectó
+// namespaces críticos via window.__wcMessages para evitar FOUC.
+loadLocaleMessages(i18n.global.locale.value).catch(() => { /* noop */ });
 
 // Hidratar coachStrategy store si el usuario es coach
 const authStore = useAuthStore();

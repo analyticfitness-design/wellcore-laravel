@@ -48,6 +48,7 @@ use App\Http\Controllers\Api\RiseController;
 use App\Http\Controllers\Api\ShopController;
 use App\Http\Controllers\Api\SocialController;
 use App\Http\Controllers\Api\TrainingController;
+use App\Http\Controllers\Api\TranslationsController;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Http\Request;
@@ -95,6 +96,11 @@ Route::prefix('v/public')->group(function () {
     Route::get('/invitations/{code}', [PublicFormController::class, 'resolveInvitation']);
     Route::post('/invitation-intake', [PublicFormController::class, 'invitationIntake']);
 });
+
+// i18n translations bundle for vue-i18n (public — locale param validates)
+Route::get('/v/translations/{locale}', [TranslationsController::class, 'show'])
+    ->where('locale', '[a-z]{2}')
+    ->middleware('throttle:60,1');
 
 // Shop (public — no auth required)
 Route::prefix('v/shop')->group(function () {
@@ -247,6 +253,9 @@ Route::prefix('v')->middleware(['auth:wellcore', 'throttle:api'])->group(functio
 
     // Client autoshare preferences
     Route::patch('/me/preferences', [MeController::class, 'updatePreferences']);
+
+    // Locale + unit system (cliente y coach lo usan; ver i18n ADR-0004)
+    Route::patch('/me/locale', [MeController::class, 'updateLocale']);
 });
 
 // Rise (Phase 7 — authenticated client, Bearer token)

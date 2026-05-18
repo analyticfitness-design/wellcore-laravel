@@ -1,0 +1,1 @@
+import{G as e,U as t,ft as n}from"./vue-core-1qrk6Yed.js";function r(){let r=n(!1),i=null;function a(){r.value=i?i.matches:!1}return e(()=>{typeof window>`u`||(i=window.matchMedia(`(prefers-reduced-motion: reduce)`),a(),i.addEventListener(`change`,a))}),t(()=>{i&&i.removeEventListener(`change`,a)}),r}export{r as t};
