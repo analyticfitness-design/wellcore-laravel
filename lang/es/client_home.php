@@ -137,4 +137,93 @@ return [
     // Weekly grid daysOfWeek short
     'weekly_grid_short' => ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
     'weekly_grid_intl_locale' => 'es',
+
+    // Progress collapsible
+    'progress_collapse_title' => 'Tu progreso completo',
+    'progress_collapse_sub' => 'Timeline · racha · peso · resumen semanal',
+    'progress_collapse_show' => 'Ver más detalles',
+    'progress_collapse_hide' => 'Ocultar detalles',
+
+    // Install PWA prompt
+    'install_title' => 'Instalar WellCore',
+    'install_sub' => 'Acceso rápido desde tu pantalla de inicio',
+    'install_later' => 'Después',
+    'install_install' => 'Instalar',
+    'install_dismiss' => 'Descartar',
+
+    // Getting Started checklist
+    'gs_title' => 'PRIMEROS PASOS',
+    'gs_subtitle' => 'Completa tu perfil de inicio',
+    'gs_days_left' => ':n día restante|:n días restantes',
+    'gs_photos_title' => 'Sube tus fotos de progreso',
+    'gs_photos_sub' => 'Frente, perfil y espalda para comparar tu avance',
+    'gs_metrics_title' => 'Registra tu peso y métricas',
+    'gs_metrics_sub' => 'Tu punto de partida es el dato más importante',
+    'gs_complete' => 'Perfil inicial completo. Tu punto de partida queda registrado.',
+
+    // Weekly summary dynamic messages (from Dashboard.vue computed)
+    'ws_exceptional_label' => 'Semana excepcional',
+    'ws_exceptional_desc' => ':n entrenamientos completados. Sigue así.',
+    'ws_good_pace_label' => 'Buen ritmo',
+    'ws_good_pace_desc' => ':n entrenamientos esta semana. Vas por buen camino.',
+    'ws_on_track_label' => 'En camino',
+    'ws_on_track_desc' => 'Cada sesión cuenta. Intenta sumar una más esta semana.',
+    'ws_new_week_label' => 'Nueva semana',
+    'ws_new_week_desc' => 'Es un nuevo comienzo. Tu primera sesión te espera.',
+
+    // Motivational quotes — 7 por plan (varía por día de la semana)
+    'quotes_rise' => [
+        'El cambio que buscas empieza con la disciplina de hoy.',
+        'La ciencia no miente: la constancia reescribe tu biología.',
+        'Cada sesión es datos. Cada dato te acerca a quien puedes ser.',
+        'RISE no es un programa. Es una decisión que tomas cada mañana.',
+        'Transformación real requiere esfuerzo real. Hoy es ese día.',
+        'Tu cuerpo responde a las señales que le das. Dale las correctas.',
+        'No buscamos perfección. Buscamos progreso medible, sostenido.',
+    ],
+    'quotes_elite' => [
+        'Los elite no descansan en su objetivo, descansan para su objetivo.',
+        'El rendimiento máximo no se improvisa: se construye rep a rep.',
+        'Tu límite de ayer es tu punto de partida de hoy.',
+        'Los que llegan al top hacen lo ordinario con extraordinaria consistencia.',
+        'Intensidad sin estrategia es ruido. Tú entrenas con propósito.',
+        'La excelencia no es un evento, es un hábito que defiendes cada día.',
+        'Cuando todos se detienen, el elite da un paso más. Da ese paso.',
+    ],
+    'quotes_metodo' => [
+        'El método no es perfección, es consistencia implacable.',
+        'Proceso sobre resultado. El resultado es consecuencia del proceso.',
+        'Los hábitos que construyes hoy son la persona que serás mañana.',
+        'No hay atajo al cuerpo que quieres. Hay un método. Este es el tuyo.',
+        'La semana más importante es la próxima. Empieza con esta sesión.',
+        'Confía en el plan. Los resultados llegan cuando la disciplina se vuelve rutina.',
+        'Un día a la vez, una sesión a la vez. Eso es el método en acción.',
+    ],
+    'quotes_presencial' => [
+        'La presencia lo es todo: cuerpo, mente y enfoque en cada sesión.',
+        'Cada entrenamiento en persona es una inversión directa en ti.',
+        'Tu coach está aquí. Tu esfuerzo también tiene que estarlo.',
+        'Lo que construyes en persona, nadie te lo puede quitar.',
+        'Conexión real, resultados reales. Eso es lo que logras hoy.',
+        'La disciplina que traes al gym se traduce en la vida que llevas afuera.',
+        'Hoy no es un día común: es otro día que elegiste mejorar.',
+    ],
+    'quotes_esencial' => [
+        'Cada gran transformación comenzó con un primer paso. El tuyo cuenta.',
+        'No necesitas ser el mejor hoy. Solo necesitas ser mejor que ayer.',
+        'La salud no es un destino, es un camino. Hoy caminas en la dirección correcta.',
+        'Resultados reales vienen de acciones reales. Esta es una de ellas.',
+        'No subestimes el poder de la constancia. Los cambios llegan.',
+        'Tu cuerpo es capaz de más de lo que crees. Hoy lo demuestras.',
+        'Moverse es vivir. Seguir moviéndose es prosperar.',
+    ],
+    'quotes_trial' => [
+        'Bienvenido al inicio de algo diferente. Hoy cuentas.',
+        'Los mejores viajes empiezan con curiosidad. La tuya te trajo aquí.',
+        'Una semana puede cambiar una perspectiva. Esta es la tuya.',
+        'No hay mejor momento para empezar que cuando ya empezaste.',
+        'El primer paso siempre es el más importante. Ya lo diste.',
+        'Siente la diferencia que hace moverse con propósito.',
+        'Esto es solo el comienzo. Y los comienzos son poderosos.',
+    ],
 ];

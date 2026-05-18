@@ -189,68 +189,14 @@ const trainedRingOffset = computed(() => {
     return circumference - (circumference * trained / 7);
 });
 
-// ── Plan-specific motivational quotes (client-side, varies by day of week) ──
-const PLAN_QUOTES = {
-    rise: [
-        'El cambio que buscas empieza con la disciplina de hoy.',
-        'La ciencia no miente: la constancia reescribe tu biología.',
-        'Cada sesión es datos. Cada dato te acerca a quien puedes ser.',
-        'RISE no es un programa. Es una decisión que tomas cada mañana.',
-        'Transformación real requiere esfuerzo real. Hoy es ese día.',
-        'Tu cuerpo responde a las señales que le das. Dale las correctas.',
-        'No buscamos perfección. Buscamos progreso medible, sostenido.',
-    ],
-    elite: [
-        'Los elite no descansan en su objetivo, descansan para su objetivo.',
-        'El rendimiento máximo no se improvisa: se construye rep a rep.',
-        'Tu límite de ayer es tu punto de partida de hoy.',
-        'Los que llegan al top hacen lo ordinario con extraordinaria consistencia.',
-        'Intensidad sin estrategia es ruido. Tú entrenas con propósito.',
-        'La excelencia no es un evento, es un hábito que defiendes cada día.',
-        'Cuando todos se detienen, el elite da un paso más. Da ese paso.',
-    ],
-    metodo: [
-        'El método no es perfección, es consistencia implacable.',
-        'Proceso sobre resultado. El resultado es consecuencia del proceso.',
-        'Los hábitos que construyes hoy son la persona que serás mañana.',
-        'No hay atajo al cuerpo que quieres. Hay un método. Este es el tuyo.',
-        'La semana más importante es la próxima. Empieza con esta sesión.',
-        'Confía en el plan. Los resultados llegan cuando la disciplina se vuelve rutina.',
-        'Un día a la vez, una sesión a la vez. Eso es el método en acción.',
-    ],
-    presencial: [
-        'La presencia lo es todo: cuerpo, mente y enfoque en cada sesión.',
-        'Cada entrenamiento en persona es una inversión directa en ti.',
-        'Tu coach está aquí. Tu esfuerzo también tiene que estarlo.',
-        'Lo que construyes en persona, nadie te lo puede quitar.',
-        'Conexión real, resultados reales. Eso es lo que logras hoy.',
-        'La disciplina que traes al gym se traduce en la vida que llevas afuera.',
-        'Hoy no es un día común: es otro día que elegiste mejorar.',
-    ],
-    esencial: [
-        'Cada gran transformación comenzó con un primer paso. El tuyo cuenta.',
-        'No necesitas ser el mejor hoy. Solo necesitas ser mejor que ayer.',
-        'La salud no es un destino, es un camino. Hoy caminas en la dirección correcta.',
-        'Resultados reales vienen de acciones reales. Esta es una de ellas.',
-        'No subestimes el poder de la constancia. Los cambios llegan.',
-        'Tu cuerpo es capaz de más de lo que crees. Hoy lo demuestras.',
-        'Moverse es vivir. Seguir moviéndose es prosperar.',
-    ],
-    trial: [
-        'Bienvenido al inicio de algo diferente. Hoy cuentas.',
-        'Los mejores viajes empiezan con curiosidad. La tuya te trajo aquí.',
-        'Una semana puede cambiar una perspectiva. Esta es la tuya.',
-        'No hay mejor momento para empezar que cuando ya empezaste.',
-        'El primer paso siempre es el más importante. Ya lo diste.',
-        'Siente la diferencia que hace moverse con propósito.',
-        'Esto es solo el comienzo. Y los comienzos son poderosos.',
-    ],
-};
-
+// Motivational quotes — vienen del namespace client_home (i18n por plan + locale)
 const motivationalQuote = computed(() => {
     const day = new Date().getDay(); // 0 (Sun) – 6 (Sat)
     const planType = (data.value?.planType || 'esencial').toLowerCase();
-    const quotes = PLAN_QUOTES[planType] ?? PLAN_QUOTES.esencial;
+    const supported = ['rise', 'elite', 'metodo', 'presencial', 'esencial', 'trial'];
+    const key = supported.includes(planType) ? planType : 'esencial';
+    const quotes = t(`client_home.quotes_${key}`);
+    if (!Array.isArray(quotes) || quotes.length === 0) return '';
     return quotes[day % quotes.length];
 });
 
@@ -258,10 +204,10 @@ const motivationalQuote = computed(() => {
 const weeklySummaryMessage = computed(() => {
     if (!data.value) return {};
     const w = data.value.lastWeekWorkouts || 0;
-    if (w >= 5) return { label: 'Semana excepcional', colorClass: 'text-emerald-600 dark:text-emerald-400', desc: `${w} entrenamientos completados. Sigue así.` };
-    if (w >= 3) return { label: 'Buen ritmo', colorClass: 'text-sky-600 dark:text-sky-400', desc: `${w} entrenamientos esta semana. Vas por buen camino.` };
-    if (w >= 1) return { label: 'En camino', colorClass: 'text-amber-600 dark:text-amber-400', desc: 'Cada sesión cuenta. Intenta sumar una más esta semana.' };
-    return { label: 'Nueva semana', colorClass: 'text-wc-accent', desc: 'Es un nuevo comienzo. Tu primera sesión te espera.' };
+    if (w >= 5) return { label: t('client_home.ws_exceptional_label'), colorClass: 'text-emerald-600 dark:text-emerald-400', desc: t('client_home.ws_exceptional_desc', { n: w }) };
+    if (w >= 3) return { label: t('client_home.ws_good_pace_label'), colorClass: 'text-sky-600 dark:text-sky-400', desc: t('client_home.ws_good_pace_desc', { n: w }) };
+    if (w >= 1) return { label: t('client_home.ws_on_track_label'), colorClass: 'text-amber-600 dark:text-amber-400', desc: t('client_home.ws_on_track_desc') };
+    return { label: t('client_home.ws_new_week_label'), colorClass: 'text-wc-accent', desc: t('client_home.ws_new_week_desc') };
 });
 
 // ── Week markers for plan progress bar (desktop) ──
@@ -450,13 +396,13 @@ const weekMarkers = computed(() => {
               </svg>
             </div>
             <div>
-              <h2 class="font-display text-base tracking-wider text-wc-text">PRIMEROS PASOS</h2>
-              <p class="text-xs text-wc-text-tertiary">Completa tu perfil de inicio</p>
+              <h2 class="font-display text-base tracking-wider text-wc-text">{{ t('client_home.gs_title') }}</h2>
+              <p class="text-xs text-wc-text-tertiary">{{ t('client_home.gs_subtitle') }}</p>
             </div>
           </div>
           <span v-if="data.gettingStarted.daysLeft > 0"
             class="shrink-0 rounded-full bg-violet-500/15 px-2.5 py-0.5 text-xs font-semibold text-violet-400">
-            {{ data.gettingStarted.daysLeft }} día{{ data.gettingStarted.daysLeft !== 1 ? 's' : '' }} restante{{ data.gettingStarted.daysLeft !== 1 ? 's' : '' }}
+            {{ data.gettingStarted.daysLeft === 1 ? t('client_home.gs_days_left', { n: data.gettingStarted.daysLeft }).split('|')[0] : t('client_home.gs_days_left', { n: data.gettingStarted.daysLeft }).split('|')[1] }}
           </span>
         </div>
 
@@ -479,9 +425,9 @@ const weekMarkers = computed(() => {
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-semibold" :class="data.gettingStarted.hasPhotos ? 'text-emerald-400 line-through opacity-70' : 'text-wc-text'">
-                Sube tus fotos de progreso
+                {{ t('client_home.gs_photos_title') }}
               </p>
-              <p class="text-xs text-wc-text-tertiary">Frente, perfil y espalda para comparar tu avance</p>
+              <p class="text-xs text-wc-text-tertiary">{{ t('client_home.gs_photos_sub') }}</p>
             </div>
             <svg v-if="!data.gettingStarted.hasPhotos" class="h-4 w-4 shrink-0 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -505,9 +451,9 @@ const weekMarkers = computed(() => {
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-semibold" :class="data.gettingStarted.hasMetrics ? 'text-emerald-400 line-through opacity-70' : 'text-wc-text'">
-                Registra tu peso y métricas
+                {{ t('client_home.gs_metrics_title') }}
               </p>
-              <p class="text-xs text-wc-text-tertiary">Tu punto de partida es el dato más importante</p>
+              <p class="text-xs text-wc-text-tertiary">{{ t('client_home.gs_metrics_sub') }}</p>
             </div>
             <svg v-if="!data.gettingStarted.hasMetrics" class="h-4 w-4 shrink-0 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -521,7 +467,7 @@ const weekMarkers = computed(() => {
           <svg class="h-5 w-5 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
-          <p class="text-sm font-semibold text-emerald-400">Perfil inicial completo. Tu punto de partida queda registrado.</p>
+          <p class="text-sm font-semibold text-emerald-400">{{ t('client_home.gs_complete') }}</p>
         </div>
       </div>
 

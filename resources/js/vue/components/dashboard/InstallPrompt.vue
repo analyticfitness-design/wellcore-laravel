@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useHaptics } from '../../composables/useHaptics';
+
+const { t } = useI18n();
 
 /**
  * InstallPrompt — banner "Instalar WellCore" (PWA install prompt).
@@ -101,7 +104,7 @@ onBeforeUnmount(() => {
         bottom: 'calc(5.5rem + env(safe-area-inset-bottom))'
       }"
       role="dialog"
-      aria-label="Instalar WellCore"
+      :aria-label="t('client_home.install_title')"
     >
       <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-wc-accent/15">
         <svg class="h-6 w-6 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -109,24 +112,24 @@ onBeforeUnmount(() => {
         </svg>
       </div>
       <div class="min-w-0 flex-1">
-        <p class="text-sm font-semibold text-wc-text">Instalar WellCore</p>
-        <p class="text-xs text-wc-text-secondary">Acceso rápido desde tu pantalla de inicio</p>
+        <p class="text-sm font-semibold text-wc-text">{{ t('client_home.install_title') }}</p>
+        <p class="text-xs text-wc-text-secondary">{{ t('client_home.install_sub') }}</p>
       </div>
       <div class="flex shrink-0 items-center gap-2">
         <button
           type="button"
           @click="handleDismiss"
           class="rounded-lg px-3 py-1.5 text-xs font-medium text-wc-text-secondary hover:text-wc-text"
-          aria-label="Descartar"
+          :aria-label="t('client_home.install_dismiss')"
         >
-          Después
+          {{ t('client_home.install_later') }}
         </button>
         <button
           type="button"
           @click="handleInstall"
           class="rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-semibold text-white shadow-md hover:bg-wc-accent-hover active:scale-95 transition-transform"
         >
-          Instalar
+          {{ t('client_home.install_install') }}
         </button>
       </div>
     </div>

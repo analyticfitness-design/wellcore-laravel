@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useHaptics } from '../../composables/useHaptics';
 
 const props = defineProps({
@@ -9,6 +10,7 @@ const props = defineProps({
 });
 
 const haptics = useHaptics();
+const { t } = useI18n();
 
 function initialOpen() {
     if (props.defaultOpen !== null) return props.defaultOpen;
@@ -17,7 +19,7 @@ function initialOpen() {
 }
 
 const open = ref(initialOpen());
-const toggleLabel = computed(() => open.value ? 'Ocultar detalles' : 'Ver más detalles');
+const toggleLabel = computed(() => open.value ? t('client_home.progress_collapse_hide') : t('client_home.progress_collapse_show'));
 
 function toggle() {
     open.value = !open.value;
@@ -41,8 +43,8 @@ function toggle() {
           </svg>
         </div>
         <div>
-          <h2 class="text-base font-semibold text-wc-text">Tu progreso completo</h2>
-          <p class="text-xs text-wc-text-secondary">Timeline · racha · peso · resumen semanal</p>
+          <h2 class="text-base font-semibold text-wc-text">{{ t('client_home.progress_collapse_title') }}</h2>
+          <p class="text-xs text-wc-text-secondary">{{ t('client_home.progress_collapse_sub') }}</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
