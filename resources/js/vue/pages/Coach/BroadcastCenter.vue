@@ -1,11 +1,13 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import WcPageHeader from '../../components/WcPageHeader.vue';
 import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
 import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
+const { t } = useI18n();
 const api = useApi();
 const loading = ref(false);
 const sending = ref(false);
@@ -17,24 +19,24 @@ const selectedClients = ref([]);
 const messageText = ref('');
 const clients = ref([]);
 
-const builtInTemplates = [
-    { id: 'b1', category: 'bienvenida', name: 'Bienvenida nuevo cliente', message: 'Bienvenido/a a WellCore! Soy tu coach y estare acompanandote en tu proceso. Cualquier duda no dudes en escribirme. Vamos con todo!' },
-    { id: 'b2', category: 'motivacion', name: 'Motivacion semanal', message: 'Nueva semana, nuevas oportunidades! Recuerda que cada repeticion cuenta y cada decision saludable te acerca a tu objetivo. Tu puedes!' },
-    { id: 'b3', category: 'recordatorio', name: 'Recordatorio check-in', message: 'Recuerda enviar tu check-in semanal! Es importante para poder ajustar tu plan y asegurar que sigamos en el camino correcto. Te espero!' },
-    { id: 'b4', category: 'seguimiento', name: 'Seguimiento nutricional', message: 'Como vas con la alimentacion esta semana? Recuerda registrar tus comidas para que pueda ayudarte mejor. La nutricion es el 70% del resultado!' },
-    { id: 'b5', category: 'motivacion', name: 'Celebracion de logro', message: 'Quiero felicitarte por tu compromiso y constancia! Los resultados se construyen dia a dia y tu lo estas demostrando. Sigue asi!' },
-    { id: 'b6', category: 'recordatorio', name: 'Recordatorio fotos progreso', message: 'No olvides subir tus fotos de progreso esta semana. Son una herramienta fundamental para ver tu evolucion. Te sorprenderas de los cambios!' },
-];
+const builtInTemplates = computed(() => [
+    { id: 'b1', category: t('coach_growth.broadcast.tpl_b1_category'), name: t('coach_growth.broadcast.tpl_b1_name'), message: t('coach_growth.broadcast.tpl_b1_message') },
+    { id: 'b2', category: t('coach_growth.broadcast.tpl_b2_category'), name: t('coach_growth.broadcast.tpl_b2_name'), message: t('coach_growth.broadcast.tpl_b2_message') },
+    { id: 'b3', category: t('coach_growth.broadcast.tpl_b3_category'), name: t('coach_growth.broadcast.tpl_b3_name'), message: t('coach_growth.broadcast.tpl_b3_message') },
+    { id: 'b4', category: t('coach_growth.broadcast.tpl_b4_category'), name: t('coach_growth.broadcast.tpl_b4_name'), message: t('coach_growth.broadcast.tpl_b4_message') },
+    { id: 'b5', category: t('coach_growth.broadcast.tpl_b5_category'), name: t('coach_growth.broadcast.tpl_b5_name'), message: t('coach_growth.broadcast.tpl_b5_message') },
+    { id: 'b6', category: t('coach_growth.broadcast.tpl_b6_category'), name: t('coach_growth.broadcast.tpl_b6_name'), message: t('coach_growth.broadcast.tpl_b6_message') },
+]);
 
 const showTemplates = ref(false);
 
 const recipientLabel = computed(() => {
     switch (recipientMode.value) {
-        case 'all': return 'Todos los clientes';
-        case 'plan': return 'Por plan';
-        case 'status': return 'Por estado';
-        case 'individual': return 'Seleccion individual';
-        default: return 'Todos';
+        case 'all': return t('coach_growth.broadcast.recipient_label_all');
+        case 'plan': return t('coach_growth.broadcast.recipient_label_plan');
+        case 'status': return t('coach_growth.broadcast.recipient_label_status');
+        case 'individual': return t('coach_growth.broadcast.recipient_label_individual');
+        default: return t('coach_growth.broadcast.recipient_label_default');
     }
 });
 
@@ -59,7 +61,7 @@ async function sendBroadcast() {
         selectedClients.value = [];
         setTimeout(() => { success.value = false; }, 4000);
     } catch (e) {
-        error.value = e?.response?.data?.message || 'Error al enviar el broadcast. Intenta de nuevo.';
+        error.value = e?.response?.data?.message || t('coach_growth.broadcast.toast_error_default');
     } finally {
         sending.value = false;
     }
@@ -93,7 +95,7 @@ onMounted(loadClients);
   <CoachLayout>
     <div class="space-y-6">
 
-      <WcPageHeader contextLabel="ÁREA DE TRABAJO" title="BROADCAST" subtitle="Envía mensajes masivos a tus clientes" />
+      <WcPageHeader :contextLabel="t('coach_growth.broadcast.page_context')" :title="t('coach_growth.broadcast.page_title')" :subtitle="t('coach_growth.broadcast.page_subtitle')" />
 
       <!-- Success toast -->
       <Transition
@@ -108,7 +110,7 @@ onMounted(loadClients);
           <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
-          Broadcast enviado exitosamente
+          {{ t('coach_growth.broadcast.toast_success') }}
         </div>
       </Transition>
 
@@ -135,10 +137,10 @@ onMounted(loadClients);
 
           <!-- Recipient mode -->
           <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
-            <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary mb-3">Destinatarios</p>
+            <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary mb-3">{{ t('coach_growth.broadcast.recipients_label') }}</p>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <button
-                v-for="mode in [{ key: 'all', label: 'Todos' }, { key: 'plan', label: 'Por plan' }, { key: 'status', label: 'Por estado' }, { key: 'individual', label: 'Individual' }]"
+                v-for="mode in [{ key: 'all', label: t('coach_growth.broadcast.mode_all') }, { key: 'plan', label: t('coach_growth.broadcast.mode_plan') }, { key: 'status', label: t('coach_growth.broadcast.mode_status') }, { key: 'individual', label: t('coach_growth.broadcast.mode_individual') }]"
                 :key="mode.key"
                 @click="recipientMode = mode.key"
                 class="relative overflow-hidden rounded-card p-4 text-sm font-medium transition-colors text-center"
@@ -175,7 +177,7 @@ onMounted(loadClients);
           <!-- Message compose -->
           <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
             <div class="flex items-center justify-between mb-3">
-              <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Mensaje</p>
+              <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">{{ t('coach_growth.broadcast.message_label') }}</p>
               <button
                 @click="showTemplates = !showTemplates"
                 class="inline-flex items-center gap-1.5 rounded-button border border-wc-border bg-wc-bg-secondary px-3 py-1.5 text-xs font-medium text-wc-text-secondary hover:text-wc-text transition-colors"
@@ -183,13 +185,13 @@ onMounted(loadClients);
                 <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                 </svg>
-                Templates
+                {{ t('coach_growth.broadcast.templates_btn') }}
               </button>
             </div>
             <textarea
               v-model="messageText"
               rows="5"
-              placeholder="Escribe tu mensaje broadcast..."
+              :placeholder="t('coach_growth.broadcast.message_placeholder')"
               class="w-full rounded-button border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent resize-none"
             ></textarea>
             <div class="mt-3 flex items-center justify-between">
@@ -206,7 +208,7 @@ onMounted(loadClients);
                 <svg v-else class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                 </svg>
-                {{ sending ? 'Enviando...' : 'Enviar broadcast' }}
+                {{ sending ? t('coach_growth.broadcast.sending') : t('coach_growth.broadcast.send_btn') }}
               </button>
             </div>
           </div>
@@ -214,7 +216,7 @@ onMounted(loadClients);
 
         <!-- Templates panel -->
         <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
-          <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary mb-4">Templates rápidos</p>
+          <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary mb-4">{{ t('coach_growth.broadcast.templates_label') }}</p>
           <div class="space-y-2">
             <button
               v-for="tpl in builtInTemplates"

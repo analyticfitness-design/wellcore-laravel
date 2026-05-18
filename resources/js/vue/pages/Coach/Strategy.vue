@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, onActivated } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useCoachStrategyStore } from '../../stores/coachStrategy';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import StrategyHero from '../../components/coach/strategy/StrategyHero.vue';
@@ -14,6 +15,7 @@ import WeeklyBankCard from '../../components/coach/strategy/WeeklyBankCard.vue';
 import HashtagSetCard from '../../components/coach/strategy/HashtagSetCard.vue';
 import StrategyHistoryList from '../../components/coach/strategy/StrategyHistoryList.vue';
 
+const { t } = useI18n();
 const store = useCoachStrategyStore();
 const tab = ref('this-week');
 
@@ -39,25 +41,25 @@ onActivated(async () => {
                         :class="{ active: tab === 'this-week' }"
                         @click="tab = 'this-week'"
                     >
-                        Esta semana
+                        {{ t('coach_growth.strategy.tab_this_week') }}
                     </button>
                     <button
                         class="tab"
                         :class="{ active: tab === 'history' }"
                         @click="async () => { tab = 'history'; if (!store.history.length) await store.fetchHistory(); }"
                     >
-                        Historial
+                        {{ t('coach_growth.strategy.tab_history') }}
                     </button>
                 </nav>
 
                 <template v-if="tab === 'this-week'">
                     <template v-if="store.isLoadingDrop">
-                        <div class="font-mono text-sm text-wc-text-tertiary animate-pulse py-8">Cargando estrategia...</div>
+                        <div class="font-mono text-sm text-wc-text-tertiary animate-pulse py-8">{{ t('coach_growth.strategy.loading') }}</div>
                     </template>
                     <template v-else-if="store.dropError">
                         <div class="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400 text-center">
                             <p class="mb-2">{{ store.dropError }}</p>
-                            <button @click="store.fetchCurrentDrop()" class="underline text-wc-accent text-xs">Reintentar</button>
+                            <button @click="store.fetchCurrentDrop()" class="underline text-wc-accent text-xs">{{ t('coach_growth.strategy.retry') }}</button>
                         </div>
                     </template>
                     <template v-else-if="!store.currentDrop">
@@ -71,10 +73,10 @@ onActivated(async () => {
                             :assets="store.currentDrop.content?.assets ?? []"
                         />
 
-                        <SectionDivider number="01" title="BRIEF" sub="de la semana" icon="amber" />
+                        <SectionDivider number="01" :title="t('coach_growth.strategy.section_brief_title')" :sub="t('coach_growth.strategy.section_brief_sub')" icon="amber" />
                         <BriefSection :brief="store.currentDrop.content.brief" />
 
-                        <SectionDivider number="02" title="REELS" sub="dos guiones de producción" icon="red" />
+                        <SectionDivider number="02" :title="t('coach_growth.strategy.section_reels_title')" :sub="t('coach_growth.strategy.section_reels_sub')" icon="red" />
                         <ReelScriptCard
                             v-for="reel in store.currentDrop.content.reels"
                             :key="reel.key"
@@ -84,7 +86,7 @@ onActivated(async () => {
                             :drop-assets="store.currentDrop.content?.assets ?? []"
                         />
 
-                        <SectionDivider number="03" title="STORIES" sub="siete piezas Lun → Dom" icon="sky" />
+                        <SectionDivider number="03" :title="t('coach_growth.strategy.section_stories_title')" :sub="t('coach_growth.strategy.section_stories_sub')" icon="sky" />
                         <StoriesWeekRow
                             :stories="store.currentDrop.content.stories"
                             :drop-id="store.currentDrop.id"
@@ -92,17 +94,17 @@ onActivated(async () => {
                             :drop-assets="store.currentDrop.content?.assets ?? []"
                         />
 
-                        <SectionDivider number="04" title="CHECKLIST" sub="producción de reel" icon="emerald" />
+                        <SectionDivider number="04" :title="t('coach_growth.strategy.section_checklist_title')" :sub="t('coach_growth.strategy.section_checklist_sub')" icon="emerald" />
                         <ProductionChecklistCard
                             :checklist="store.currentDrop.content.checklist"
                             :drop-id="store.currentDrop.id"
                             :pieces="store.currentDrop.pieces"
                         />
 
-                        <SectionDivider number="05" title="BANCO SEMANAL" sub="alternativos si la idea principal no encaja" icon="orange" />
+                        <SectionDivider number="05" :title="t('coach_growth.strategy.section_bank_title')" :sub="t('coach_growth.strategy.section_bank_sub')" icon="orange" />
                         <WeeklyBankCard :bank="store.currentDrop.content.bank" />
 
-                        <SectionDivider number="06" title="HASHTAGS" sub="sets curados por tema" icon="emerald" />
+                        <SectionDivider number="06" :title="t('coach_growth.strategy.section_hashtags_title')" :sub="t('coach_growth.strategy.section_hashtags_sub')" icon="emerald" />
                         <HashtagSetCard :hashtags="store.currentDrop.content.hashtags" />
                     </template>
                 </template>

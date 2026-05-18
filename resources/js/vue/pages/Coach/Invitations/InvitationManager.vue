@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import CoachLayout from '../../../layouts/CoachLayout.vue';
 import { useInvitationsStore } from '../../../stores/invitationsStore';
 import InvitationList from './InvitationList.vue';
 import InvitationForm from './InvitationForm.vue';
 
+const { t } = useI18n();
 const store = useInvitationsStore();
 
 // 'list' | 'form'
@@ -35,9 +37,9 @@ onMounted(() => {
       <!-- Page header -->
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">Mis Invitaciones</h1>
+          <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ t('coach_growth.invitations.manager_title') }}</h1>
           <p class="mt-1 text-sm text-wc-text-secondary">
-            Invita prospectos y gestiona los links de pago Wompi.
+            {{ t('coach_growth.invitations.manager_subtitle') }}
           </p>
         </div>
 
@@ -50,7 +52,7 @@ onMounted(() => {
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
           </svg>
-          Volver a la lista
+          {{ t('coach_growth.invitations.manager_back') }}
         </button>
       </div>
 

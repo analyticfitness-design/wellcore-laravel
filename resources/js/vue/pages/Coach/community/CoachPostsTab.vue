@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useCoachCommunity } from '../../../composables/useCoachCommunity';
 import CoachBadge from '../../../components/community/CoachBadge.vue';
 import OfficialBadge from '../../../components/community/OfficialBadge.vue';
@@ -9,6 +10,8 @@ import CommunityEmptyIllustration from '../../../components/community/CommunityE
 import AvatarConic from '../../../components/coach/ios/AvatarConic.vue';
 import EmptyState from '../../../components/coach/ios/EmptyState.vue';
 
+const { t } = useI18n();
+
 const props = defineProps({
     triggerRefresh: { type: Number, default: 0 },
 });
@@ -16,13 +19,13 @@ const emit = defineEmits(['open-announce']);
 
 const { fetchFeed, loading, error } = useCoachCommunity();
 
-const FILTERS = [
-    { key: 'all',          label: 'Todos' },
-    { key: 'pinned',       label: 'Fijados' },
-    { key: 'reported',     label: 'Reportados' },
-    { key: 'achievements', label: 'Logros' },
-    { key: 'prs',          label: 'PRs' },
-];
+const FILTERS = computed(() => [
+    { key: 'all',          label: t('coach_inbox.posts_filter_all') },
+    { key: 'pinned',       label: t('coach_inbox.posts_filter_pinned') },
+    { key: 'reported',     label: t('coach_inbox.posts_filter_reported') },
+    { key: 'achievements', label: t('coach_inbox.posts_filter_achievements') },
+    { key: 'prs',          label: t('coach_inbox.posts_filter_prs') },
+]);
 
 const activeFilter = ref('all');
 const posts = ref([]);
@@ -145,7 +148,7 @@ onBeforeUnmount(() => {
         @click="flushBuffer"
         class="fixed top-20 left-1/2 -translate-x-1/2 z-30 bg-wc-accent text-white rounded-full px-4 py-2 shadow-lg text-sm font-semibold cursor-pointer hover:scale-105 transition-transform"
       >
-        ↑ {{ newPostsBuffer }} {{ newPostsBuffer === 1 ? 'nuevo post' : 'nuevos posts' }}
+        {{ newPostsBuffer === 1 ? t('coach_inbox.posts_new_post_one') : t('coach_inbox.posts_new_post_other', { count: newPostsBuffer }) }}
       </button>
     </Transition>
 
@@ -165,18 +168,18 @@ onBeforeUnmount(() => {
     <div v-else-if="error && !posts.length" class="rounded-xl border border-rose-500/30 bg-rose-500/5 p-6 text-center">
       <p class="text-wc-text">{{ error }}</p>
       <button @click="load(true)" class="mt-3 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white">
-        ↻ Reintentar
+        ↻ {{ t('coach_inbox.posts_retry') }}
       </button>
     </div>
 
     <EmptyState
       v-else-if="!posts.length"
       kind="activity"
-      title="Tu equipo aún no postea"
-      subtitle="Cuando un cliente comparta un PR, foto o pensamiento, aparecerá aquí."
+      :title="t('coach_inbox.posts_empty_title')"
+      :subtitle="t('coach_inbox.posts_empty_subtitle')"
     >
       <button @click="emit('open-announce')" class="mt-4 rounded-full bg-wc-accent text-white px-5 py-2 text-sm font-semibold">
-        Mensaje al equipo
+        {{ t('coach_inbox.posts_empty_cta') }}
       </button>
     </EmptyState>
 
@@ -200,7 +203,7 @@ onBeforeUnmount(() => {
           />
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="font-semibold text-wc-text truncate">{{ post.author_name || post.client_name || 'Cliente' }}</span>
+              <span class="font-semibold text-wc-text truncate">{{ post.author_name || post.client_name || t('coach_inbox.posts_author_fallback') }}</span>
               <CoachBadge v-if="post.author_type === 'coach'" size="xs" />
               <OfficialBadge v-if="post.is_official" />
             </div>
@@ -213,14 +216,14 @@ onBeforeUnmount(() => {
         <img v-if="post.image_url" :src="post.image_url" alt="" class="mt-3 rounded-xl w-full max-h-96 object-cover" />
 
         <footer class="mt-3 flex items-center gap-4 text-xs text-wc-text-tertiary">
-          <span v-if="post.reactions_count">{{ post.reactions_count }} reacciones</span>
-          <span v-if="post.comments_count">{{ post.comments_count }} comentarios</span>
-          <span v-if="post.report_count" class="text-rose-500 font-semibold">⚠️ {{ post.report_count }} reporte{{ post.report_count > 1 ? 's' : '' }}</span>
+          <span v-if="post.reactions_count">{{ post.reactions_count === 1 ? t('coach_inbox.posts_reactions_count_one') : t('coach_inbox.posts_reactions_count_other', { count: post.reactions_count }) }}</span>
+          <span v-if="post.comments_count">{{ post.comments_count === 1 ? t('coach_inbox.posts_comments_count_one') : t('coach_inbox.posts_comments_count_other', { count: post.comments_count }) }}</span>
+          <span v-if="post.report_count" class="text-rose-500 font-semibold">{{ post.report_count === 1 ? t('coach_inbox.posts_report_count_one') : t('coach_inbox.posts_report_count_other', { count: post.report_count }) }}</span>
         </footer>
       </article>
 
       <div ref="sentinelRef" class="h-4"></div>
-      <div v-if="loadingMore" class="text-center text-xs text-wc-text-tertiary py-3">Cargando más…</div>
+      <div v-if="loadingMore" class="text-center text-xs text-wc-text-tertiary py-3">{{ t('coach_inbox.posts_loading_more') }}</div>
     </div>
   </div>
 </template>

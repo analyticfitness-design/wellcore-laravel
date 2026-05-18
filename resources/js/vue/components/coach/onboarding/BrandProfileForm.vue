@@ -1,5 +1,6 @@
 <script setup>
 import { reactive, ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useCoachStrategyStore } from '../../../stores/coachStrategy';
 import ProfileSection01Identity from './ProfileSection01Identity.vue';
 import ProfileSection02Specialty from './ProfileSection02Specialty.vue';
@@ -7,6 +8,8 @@ import ProfileSection03Audience from './ProfileSection03Audience.vue';
 import ProfileSection04MethodsTopics from './ProfileSection04MethodsTopics.vue';
 import ProfileSection05Voice from './ProfileSection05Voice.vue';
 import ProfileSection06OffersAndPosts from './ProfileSection06OffersAndPosts.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     initial: { type: Object, default: null },
@@ -43,7 +46,7 @@ function emptyForm() {
 
 const form = reactive(emptyForm());
 const errorMessages = ref([]);
-const saveStatus = ref('AUTO-GUARDADO ACTIVO');
+const saveStatus = ref(t('coach_growth.onboarding_form.save_status_auto'));
 let savedTimer = null;
 let hydrated = false;
 
@@ -88,17 +91,17 @@ const debouncedSaveDraft = debounce(async () => {
     if (!hydrated && !props.initial) {
         // Permitir guardado aunque no haya initial (primer onboarding)
     }
-    saveStatus.value = 'GUARDANDO...';
+    saveStatus.value = t('coach_growth.onboarding_form.save_status_saving');
     try {
         await store.saveProfileDraft({ ...form });
-        saveStatus.value = 'GUARDADO';
+        saveStatus.value = t('coach_growth.onboarding_form.save_status_saved');
         if (savedTimer) clearTimeout(savedTimer);
         savedTimer = setTimeout(() => {
-            saveStatus.value = 'AUTO-GUARDADO ACTIVO';
+            saveStatus.value = t('coach_growth.onboarding_form.save_status_auto');
         }, 2000);
     } catch (e) {
         // Silent fail
-        saveStatus.value = 'AUTO-GUARDADO ACTIVO';
+        saveStatus.value = t('coach_growth.onboarding_form.save_status_auto');
     }
 }, 500);
 
@@ -117,45 +120,45 @@ onBeforeUnmount(() => {
 function validate() {
     const errors = [];
     if (!form.brand_name || form.brand_name.length < 1) {
-        errors.push('Nombre de marca es requerido.');
+        errors.push(t('coach_growth.onboarding_form.err_brand_name'));
     }
     if (!form.specialty_primary) {
-        errors.push('Especialidad principal es requerida.');
+        errors.push(t('coach_growth.onboarding_form.err_specialty_primary'));
     }
     if (form.specialty_primary === 'otro' && !form.specialty_primary_other) {
-        errors.push('Especifica la especialidad principal "otro".');
+        errors.push(t('coach_growth.onboarding_form.err_specialty_primary_other'));
     }
     if (!form.differentiator || form.differentiator.length < 20) {
-        errors.push('El diferenciador necesita al menos 20 caracteres.');
+        errors.push(t('coach_growth.onboarding_form.err_differentiator'));
     }
     if (!form.audience_age_range) {
-        errors.push('Rango de edad de audiencia es requerido.');
+        errors.push(t('coach_growth.onboarding_form.err_age_range'));
     }
     if (!form.audience_gender) {
-        errors.push('Genero de audiencia es requerido.');
+        errors.push(t('coach_growth.onboarding_form.err_gender'));
     }
     if (!form.audience_pain_main || form.audience_pain_main.length < 1) {
-        errors.push('Dolor principal de audiencia es requerido.');
+        errors.push(t('coach_growth.onboarding_form.err_pain_main'));
     }
     if (!form.audience_offer_main) {
-        errors.push('Oferta principal es requerida.');
+        errors.push(t('coach_growth.onboarding_form.err_offer_main'));
     }
     if (!Array.isArray(form.preferred_methodologies) || form.preferred_methodologies.length < 1) {
-        errors.push('Selecciona al menos una metodologia preferida.');
+        errors.push(t('coach_growth.onboarding_form.err_methodologies'));
     }
     if (!Array.isArray(form.content_topics) || form.content_topics.length < 1) {
-        errors.push('Selecciona al menos un tema de contenido.');
+        errors.push(t('coach_growth.onboarding_form.err_topics'));
     }
     if (!Array.isArray(form.voice_adjectives) || form.voice_adjectives.length !== 3) {
-        errors.push('Necesitas exactamente 3 adjetivos de voz.');
+        errors.push(t('coach_growth.onboarding_form.err_voice_adj'));
     }
     if (!Array.isArray(form.active_offers) || form.active_offers.length < 1) {
-        errors.push('Necesitas al menos una oferta activa.');
+        errors.push(t('coach_growth.onboarding_form.err_active_offers'));
     } else {
         form.active_offers.forEach((o, i) => {
-            if (!o.name) errors.push(`Oferta ${i + 1}: nombre requerido.`);
+            if (!o.name) errors.push(t('coach_growth.onboarding_form.err_offer_name', { n: i + 1 }));
             if (o.price === null || o.price === undefined || isNaN(Number(o.price))) {
-                errors.push(`Oferta ${i + 1}: precio requerido.`);
+                errors.push(t('coach_growth.onboarding_form.err_offer_price', { n: i + 1 }));
             }
         });
     }
@@ -183,7 +186,7 @@ function handleSubmit() {
       v-if="errorMessages.length"
       class="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400"
     >
-      <p class="font-mono uppercase text-xs mb-2 tracking-[0.15em]">Faltan campos:</p>
+      <p class="font-mono uppercase text-xs mb-2 tracking-[0.15em]">{{ t('coach_growth.onboarding_form.errors_title') }}</p>
       <ul class="list-disc pl-5 space-y-1">
         <li v-for="msg in errorMessages" :key="msg">{{ msg }}</li>
       </ul>
@@ -198,7 +201,7 @@ function handleSubmit() {
         :disabled="isSaving"
         class="rounded-lg bg-wc-accent px-6 py-3 font-display text-sm uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-50"
       >
-        Activar mi Estrategia
+        {{ t('coach_growth.onboarding_form.submit_btn') }}
       </button>
     </div>
   </form>

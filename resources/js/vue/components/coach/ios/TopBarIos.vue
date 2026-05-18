@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   variant: {
@@ -14,6 +15,8 @@ const props = defineProps({
   coachInitial: { type: String, default: 'C' },
   coachName: { type: String, default: '' },
 });
+
+const { t } = useI18n();
 
 const emit = defineEmits([
   'menu-open',
@@ -46,7 +49,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
     <button
       class="relative h-9 w-9 inline-flex flex-col items-center justify-center gap-[5px] rounded-[10px] border border-[var(--b1)] active:scale-[0.94] transition"
       style="background: var(--s1); transition-duration: var(--t-tap); transition-timing-function: var(--ease-spring-ios);"
-      :aria-label="`Menú${urgentCount > 0 ? ', ' + urgentCount + ' alertas' : ''}`"
+      :aria-label="urgentCount > 0 ? t('coach_nav.menu_alerts', { n: urgentCount }) : t('coach_nav.open_menu')"
       @click="emit('menu-open')"
     >
       <span
@@ -69,13 +72,13 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
     <div class="flex items-center gap-2">
       <div v-if="showUpdated" class="updated-indicator">
         <span class="dot pulse-green" />
-        <span>ahora</span>
+        <span>{{ t('coach_nav.now') }}</span>
       </div>
 
       <button
         class="relative h-9 w-9 inline-flex items-center justify-center rounded-[10px] border border-[var(--b1)] active:scale-[0.92] transition"
         style="background: var(--s1); transition-duration: var(--t-tap); transition-timing-function: var(--ease-spring-ios);"
-        :aria-label="`Notificaciones${unreadNotifs > 0 ? ', ' + unreadNotifs + ' sin leer' : ''}`"
+        :aria-label="unreadNotifs > 0 ? t('coach_nav.notifications_unread', { n: unreadNotifs }) : t('coach_nav.view_notifications')"
         @click="emit('bell-click')"
       >
         <span v-if="unreadNotifs > 0" class="notif-badge">{{ unreadNotifs > 9 ? '9+' : unreadNotifs }}</span>
@@ -91,7 +94,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
       <button
         class="h-9 w-9 inline-flex items-center justify-center rounded-[10px] border border-[var(--b1)] active:scale-[0.92] transition"
         style="background: var(--s1); transition-duration: var(--t-tap); transition-timing-function: var(--ease-spring-ios);"
-        aria-label="Cambiar modo claro/oscuro"
+        :aria-label="t('coach_nav.change_mode')"
         @click="emit('theme-toggle')"
       >
         <svg class="h-4 w-4 dark:hidden" style="stroke: var(--color-wc-text-2);" fill="none" viewBox="0 0 24 24" stroke-width="1.5" aria-hidden="true">
@@ -105,7 +108,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
       <button
         class="ring-conic-accent w-9 h-9 active:scale-[0.92] transition"
         style="transition-duration: var(--t-tap); transition-timing-function: var(--ease-spring-ios);"
-        :aria-label="coachName ? `Perfil de ${coachName}` : 'Perfil'"
+        :aria-label="coachName ? t('coach_nav.profile_of', { name: coachName }) : t('coach_nav.profile')"
         @click="emit('avatar-click')"
       >
         <span class="absolute inset-[2px] rounded-full bg-wc-accent flex items-center justify-center font-display text-[13px] font-semibold tracking-wider text-white z-[1]">
@@ -115,13 +118,13 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
 
       <button
         class="action-pill"
-        aria-label="Acciones rápidas"
+        :aria-label="t('coach_nav.quick_actions')"
         @click="emit('action-pill-click')"
       >
         <svg class="h-3 w-3 stroke-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
-        <span>Acciones</span>
+        <span>{{ t('coach_nav.actions') }}</span>
       </button>
     </div>
   </header>
@@ -137,20 +140,20 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
       </span>
       <div v-if="showUpdated" class="updated-indicator">
         <span class="dot pulse-green" />
-        <span>act. hace 0s</span>
+        <span>{{ t('coach_nav.updated_ago') }}</span>
       </div>
     </div>
 
     <button
       class="search-bar flex items-center gap-2 w-[280px] h-9 px-3 border border-[var(--b1)] rounded-[10px] hover:border-[var(--b2)] transition"
       style="background: var(--s1); transition-duration: var(--t-tap);"
-      aria-label="Buscar o ejecutar comando — Cmd+K"
+      :aria-label="t('coach_nav.search_or_run_cmd')"
       @click="emit('cmd-k-open')"
     >
       <svg class="h-3.5 w-3.5" style="stroke: var(--color-wc-text-3);" fill="none" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
       </svg>
-      <span class="flex-1 text-left text-[13px] text-[var(--color-wc-text-3)]">Buscar o Cmd+K…</span>
+      <span class="flex-1 text-left text-[13px] text-[var(--color-wc-text-3)]">{{ t('coach_nav.search_or_cmd_k') }}</span>
       <kbd class="flex items-center gap-1 px-1.5 py-0.5 text-[10px] text-[var(--color-wc-text-3)] border border-[var(--b1)] rounded" style="background: var(--s2);">
         <span>⌘</span><span>K</span>
       </kbd>
@@ -160,7 +163,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
       <button
         class="relative h-9 w-9 inline-flex items-center justify-center rounded-[9px] border border-[var(--b1)] hover:border-[var(--b2)] active:scale-[0.93] transition"
         style="background: var(--s1); transition-duration: var(--t-tap); transition-timing-function: var(--ease-spring-ios);"
-        :aria-label="`Notificaciones${unreadNotifs > 0 ? ', ' + unreadNotifs + ' sin leer' : ''}`"
+        :aria-label="unreadNotifs > 0 ? t('coach_nav.notifications_unread', { n: unreadNotifs }) : t('coach_nav.view_notifications')"
         @click="emit('bell-click')"
       >
         <span v-if="unreadNotifs > 0" class="notif-badge">{{ unreadNotifs > 9 ? '9+' : unreadNotifs }}</span>
@@ -176,7 +179,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
       <button
         class="h-9 w-9 inline-flex items-center justify-center rounded-[9px] border border-[var(--b1)] hover:border-[var(--b2)] active:scale-[0.93] transition"
         style="background: var(--s1); transition-duration: var(--t-tap);"
-        aria-label="Cambiar modo claro/oscuro"
+        :aria-label="t('coach_nav.change_mode')"
         @click="emit('theme-toggle')"
       >
         <svg class="h-4 w-4 dark:hidden" style="stroke: var(--color-wc-text-2);" fill="none" viewBox="0 0 24 24" stroke-width="1.5" aria-hidden="true">
@@ -190,7 +193,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
       <button
         class="ring-conic-accent w-9 h-9 hover:scale-[1.05] transition"
         style="transition-duration: var(--t-tap); transition-timing-function: var(--ease-spring-ios);"
-        :aria-label="coachName ? `Perfil de ${coachName}` : 'Perfil'"
+        :aria-label="coachName ? t('coach_nav.profile_of', { name: coachName }) : t('coach_nav.profile')"
         @click="emit('avatar-click')"
       >
         <span class="absolute inset-[2px] rounded-full bg-wc-accent flex items-center justify-center font-display text-[13px] font-bold text-white z-[1]">
@@ -201,13 +204,13 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
 
       <button
         class="action-pill"
-        aria-label="Acciones rápidas"
+        :aria-label="t('coach_nav.quick_actions')"
         @click="emit('actions-btn-click')"
       >
         <svg class="h-3 w-3 stroke-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
         </svg>
-        <span>Acciones</span>
+        <span>{{ t('coach_nav.actions') }}</span>
         <svg class="h-2.5 w-2.5 stroke-white/70" fill="none" viewBox="0 0 24 24" stroke-width="2.5" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
         </svg>

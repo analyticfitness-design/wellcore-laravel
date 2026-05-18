@@ -1,17 +1,20 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useInvitationsStore } from '../../../stores/invitationsStore';
 import EmailPreview from './EmailPreview.vue';
+
+const { t } = useI18n();
 
 /**
  * @typedef {'esencial'|'metodo'|'elite'} PlanType
  */
 
-const PLANS = [
-    { value: 'esencial', label: 'Esencial', price: '$259.000 COP/mes' },
-    { value: 'metodo',   label: 'Metodo',   price: '$339.150 COP/mes' },
-    { value: 'elite',    label: 'Elite',    price: '$439.050 COP/mes' },
-];
+const PLANS = computed(() => [
+    { value: 'esencial', label: t('coach_growth.invitations.plan_esencial_price') },
+    { value: 'metodo',   label: t('coach_growth.invitations.plan_metodo_price') },
+    { value: 'elite',    label: t('coach_growth.invitations.plan_elite_price') },
+]);
 
 const emit = defineEmits(['success', 'cancel']);
 
@@ -21,9 +24,9 @@ const store = useInvitationsStore();
 const email          = ref('');
 const name           = ref('');
 const plan           = ref('esencial');
-const subject        = ref('Te invito a unirte a WellCore');
+const subject        = ref(t('coach_growth.invitations.form_subject_default'));
 const intro_message  = ref('');
-const cta_label      = ref('Unirme ahora');
+const cta_label      = ref(t('coach_growth.invitations.form_cta_default'));
 const expires_in_days = ref(7);
 
 // UI state
@@ -46,9 +49,9 @@ function clearErrors() {
 async function handlePreview() {
     clearErrors();
     if (!email.value || !subject.value || !plan.value) {
-        if (!email.value) errors.value.email = ['El correo es obligatorio.'];
-        if (!subject.value) errors.value.subject = ['El asunto es obligatorio.'];
-        if (!plan.value) errors.value.plan = ['Selecciona un plan.'];
+        if (!email.value) errors.value.email = [t('coach_growth.invitations.form_email_required')];
+        if (!subject.value) errors.value.subject = [t('coach_growth.invitations.form_subject_required')];
+        if (!plan.value) errors.value.plan = [t('coach_growth.invitations.form_plan_required')];
         return;
     }
     previewing.value = true;
@@ -65,7 +68,7 @@ async function handlePreview() {
         previewHtml.value = html;
         previewSeen.value = true;
     } catch (err) {
-        errorMessage.value = 'No se pudo generar la vista previa. Verifica los datos.';
+        errorMessage.value = t('coach_growth.invitations.form_preview_error');
     } finally {
         previewing.value = false;
     }
@@ -103,12 +106,12 @@ async function handleSubmit() {
                 errors.value = data.errors;
             }
             errorCode.value  = data?.error_code ?? '';
-            errorMessage.value = data?.message ?? 'Verifica los campos e intenta de nuevo.';
+            errorMessage.value = data?.message ?? t('coach_growth.invitations.form_submit_error_validation');
         } else if (status === 429) {
             errorCode.value  = 'RATE_LIMIT';
-            errorMessage.value = data?.message ?? 'Has alcanzado el limite de invitaciones. Espera antes de enviar otra.';
+            errorMessage.value = data?.message ?? t('coach_growth.invitations.form_submit_error_rate_limit');
         } else {
-            errorMessage.value = 'Ocurrio un error al enviar la invitacion. Intenta de nuevo.';
+            errorMessage.value = t('coach_growth.invitations.form_submit_error_generic');
         }
     } finally {
         submitting.value = false;
@@ -131,9 +134,9 @@ async function handleSubmit() {
     <div v-else key="form" class="space-y-6">
       <!-- Header -->
       <div>
-        <h2 class="font-display text-2xl tracking-wide text-wc-text">Nueva Invitacion</h2>
+        <h2 class="font-display text-2xl tracking-wide text-wc-text">{{ t('coach_growth.invitations.form_title') }}</h2>
         <p class="mt-1 text-sm text-wc-text-secondary">
-          Envia un correo de invitacion con link de pago Wompi a tu prospecto.
+          {{ t('coach_growth.invitations.form_subtitle') }}
         </p>
       </div>
 
@@ -183,13 +186,13 @@ async function handleSubmit() {
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">
-              Correo electronico <span class="text-wc-accent">*</span>
+              {{ t('coach_growth.invitations.form_email_label') }} <span class="text-wc-accent">*</span>
             </label>
             <input
               v-model="email"
               type="email"
               required
-              placeholder="cliente@ejemplo.com"
+              :placeholder="t('coach_growth.invitations.form_email_placeholder')"
               class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30"
               :class="errors.email ? 'border-red-500/60' : ''"
             />
@@ -197,12 +200,12 @@ async function handleSubmit() {
           </div>
           <div>
             <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">
-              Nombre (opcional)
+              {{ t('coach_growth.invitations.form_name_label') }}
             </label>
             <input
               v-model="name"
               type="text"
-              placeholder="Ana Garcia"
+              :placeholder="t('coach_growth.invitations.form_name_placeholder')"
               class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30"
             />
           </div>
@@ -211,7 +214,7 @@ async function handleSubmit() {
         <!-- Plan select -->
         <div>
           <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">
-            Plan <span class="text-wc-accent">*</span>
+            {{ t('coach_growth.invitations.form_plan_label') }} <span class="text-wc-accent">*</span>
           </label>
           <select
             v-model="plan"
@@ -220,7 +223,7 @@ async function handleSubmit() {
             :class="errors.plan ? 'border-red-500/60' : ''"
           >
             <option v-for="p in PLANS" :key="p.value" :value="p.value">
-              {{ p.label }} — {{ p.price }}
+              {{ p.label }}
             </option>
           </select>
           <p v-if="errors.plan" class="mt-1 text-xs text-red-400">{{ errors.plan[0] }}</p>
@@ -229,13 +232,13 @@ async function handleSubmit() {
         <!-- Subject -->
         <div>
           <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">
-            Asunto del correo <span class="text-wc-accent">*</span>
+            {{ t('coach_growth.invitations.form_subject_label') }} <span class="text-wc-accent">*</span>
           </label>
           <input
             v-model="subject"
             type="text"
             required
-            placeholder="Te invito a unirte a WellCore"
+            :placeholder="t('coach_growth.invitations.form_subject_placeholder')"
             class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30"
             :class="errors.subject ? 'border-red-500/60' : ''"
           />
@@ -246,17 +249,17 @@ async function handleSubmit() {
         <div>
           <div class="mb-1.5 flex items-center justify-between">
             <label class="text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">
-              Mensaje de introduccion
+              {{ t('coach_growth.invitations.form_intro_label') }}
             </label>
             <span class="text-xs" :class="introLength > 1900 ? 'text-amber-400' : 'text-wc-text-tertiary'">
-              {{ introLength }} / 2000
+              {{ t('coach_growth.invitations.form_intro_count', { count: introLength }) }}
             </span>
           </div>
           <textarea
             v-model="intro_message"
             rows="4"
             maxlength="2000"
-            placeholder="Escribe un mensaje personalizado para tu prospecto..."
+            :placeholder="t('coach_growth.invitations.form_intro_placeholder')"
             class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30 resize-y"
             :class="errors.intro_message ? 'border-red-500/60' : ''"
           ></textarea>
@@ -267,18 +270,18 @@ async function handleSubmit() {
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">
-              Texto del boton CTA (opcional)
+              {{ t('coach_growth.invitations.form_cta_label') }}
             </label>
             <input
               v-model="cta_label"
               type="text"
-              placeholder="Unirme ahora"
+              :placeholder="t('coach_growth.invitations.form_cta_placeholder')"
               class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30"
             />
           </div>
           <div>
             <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">
-              Expira en (dias) <span class="text-wc-accent">*</span>
+              {{ t('coach_growth.invitations.form_expires_label') }} <span class="text-wc-accent">*</span>
             </label>
             <input
               v-model.number="expires_in_days"
@@ -300,7 +303,7 @@ async function handleSubmit() {
             @click="emit('cancel')"
             class="rounded-lg bg-wc-bg-tertiary px-4 py-2 text-sm font-semibold text-wc-text hover:bg-zinc-700 transition-colors"
           >
-            Cancelar
+            {{ t('coach_growth.invitations.form_cancel') }}
           </button>
 
           <div class="flex items-center gap-3">
@@ -319,14 +322,14 @@ async function handleSubmit() {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
               </svg>
-              Vista previa
+              {{ t('coach_growth.invitations.form_preview') }}
             </button>
 
             <!-- Send button (requires preview seen) -->
             <button
               type="submit"
               :disabled="submitting || !previewSeen"
-              :title="!previewSeen ? 'Debes ver la vista previa antes de enviar' : ''"
+              :title="!previewSeen ? t('coach_growth.invitations.form_send_disabled_title') : ''"
               class="inline-flex items-center gap-2 rounded-lg bg-wc-accent px-5 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg v-if="submitting" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -336,14 +339,14 @@ async function handleSubmit() {
               <svg v-else class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
               </svg>
-              Enviar invitacion
+              {{ t('coach_growth.invitations.form_send') }}
             </button>
           </div>
         </div>
 
         <!-- Preview hint -->
         <p v-if="!previewSeen" class="text-center text-xs text-wc-text-tertiary">
-          Haz clic en "Vista previa" para ver el correo antes de enviarlo. El boton "Enviar" se activara al hacerlo.
+          {{ t('coach_growth.invitations.form_preview_hint') }}
         </p>
       </form>
     </div>

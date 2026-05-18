@@ -1,11 +1,13 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import PaymentProofUploader from '../../components/coach/PaymentProofUploader.vue';
 import PaymentProofList from '../../components/coach/PaymentProofList.vue';
 import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
 
+const { t } = useI18n();
 const api = useApi();
 const loading = ref(true);
 const saving = ref(false);
@@ -31,7 +33,7 @@ function refreshProofList() {
     proofListRef.value?.reload();
 }
 
-const coachName = computed(() => localStorage.getItem('wc_user_name') || 'Coach');
+const coachName = computed(() => localStorage.getItem('wc_user_name') || t('coach_growth.profile.default_name'));
 const coachInitial = computed(() => (coachName.value || 'C').charAt(0).toUpperCase());
 
 async function loadProfile() {
@@ -90,8 +92,8 @@ onMounted(loadProfile);
           size="lg"
         />
         <div>
-          <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">Mi Perfil</h1>
-          <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ coachName }} -- Gestiona tu perfil y revenue</p>
+          <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ t('coach_growth.profile.page_title') }}</h1>
+          <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('coach_growth.profile.page_subtitle', { name: coachName }) }}</p>
         </div>
       </div>
 
@@ -101,14 +103,14 @@ onMounted(loadProfile);
           <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
-          Perfil actualizado
+          {{ t('coach_growth.profile.toast_success') }}
         </div>
       </Transition>
 
       <!-- Tab bar -->
       <div class="flex items-center gap-1 border-b border-wc-border">
         <button
-          v-for="tab in [{ key: 'profile', label: 'Perfil' }, { key: 'revenue', label: 'Revenue' }, { key: 'comprobantes', label: 'Comprobantes' }]"
+          v-for="tab in [{ key: 'profile', label: t('coach_growth.profile.tab_profile') }, { key: 'revenue', label: t('coach_growth.profile.tab_revenue') }, { key: 'comprobantes', label: t('coach_growth.profile.tab_comprobantes') }]"
           :key="tab.key"
           @click="activeTab = tab.key"
           class="relative px-4 py-2.5 text-sm font-medium transition-colors"
@@ -134,20 +136,20 @@ onMounted(loadProfile);
           <div class="space-y-5 lg:col-span-3">
             <!-- Bio -->
             <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
-              <h3 class="font-display text-lg tracking-wide text-wc-text">Informacion basica</h3>
+              <h3 class="font-display text-lg tracking-wide text-wc-text">{{ t('coach_growth.profile.basic_title') }}</h3>
               <div class="mt-4 space-y-4">
                 <div>
-                  <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Bio</label>
-                  <textarea v-model="bio" rows="3" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" placeholder="Describe tu experiencia y enfoque como coach..."></textarea>
+                  <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_growth.profile.bio_label') }}</label>
+                  <textarea v-model="bio" rows="3" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" :placeholder="t('coach_growth.profile.bio_placeholder')"></textarea>
                 </div>
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Ciudad</label>
-                    <input v-model="city" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" placeholder="Bogota, CO" />
+                    <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_growth.profile.city_label') }}</label>
+                    <input v-model="city" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" :placeholder="t('coach_growth.profile.city_placeholder')" />
                   </div>
                   <div>
-                    <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Experiencia</label>
-                    <input v-model="experience" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" placeholder="5 anos" />
+                    <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_growth.profile.experience_label') }}</label>
+                    <input v-model="experience" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" :placeholder="t('coach_growth.profile.experience_placeholder')" />
                   </div>
                 </div>
               </div>
@@ -155,19 +157,19 @@ onMounted(loadProfile);
 
             <!-- Social links -->
             <div class="rounded-[14px] border border-[var(--b1)] p-5" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
-              <h3 class="font-display text-lg tracking-wide text-wc-text">Redes sociales</h3>
+              <h3 class="font-display text-lg tracking-wide text-wc-text">{{ t('coach_growth.profile.socials_title') }}</h3>
               <div class="mt-4 space-y-4">
                 <div>
-                  <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">Instagram</label>
-                  <input v-model="instagram" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" placeholder="@username" />
+                  <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_growth.profile.instagram_label') }}</label>
+                  <input v-model="instagram" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" :placeholder="t('coach_growth.profile.instagram_placeholder')" />
                 </div>
                 <div>
-                  <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">TikTok</label>
-                  <input v-model="tiktok" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" placeholder="@username" />
+                  <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_growth.profile.tiktok_label') }}</label>
+                  <input v-model="tiktok" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" :placeholder="t('coach_growth.profile.tiktok_placeholder')" />
                 </div>
                 <div>
-                  <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">YouTube</label>
-                  <input v-model="youtube" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" placeholder="URL del canal" />
+                  <label class="mb-1.5 block text-xs font-medium uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_growth.profile.youtube_label') }}</label>
+                  <input v-model="youtube" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent/30" :placeholder="t('coach_growth.profile.youtube_placeholder')" />
                 </div>
               </div>
             </div>
@@ -182,14 +184,14 @@ onMounted(loadProfile);
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
-              {{ saving ? 'Guardando...' : 'Guardar cambios' }}
+              {{ saving ? t('coach_growth.profile.saving') : t('coach_growth.profile.save_btn') }}
             </button>
           </div>
 
           <!-- Preview card -->
           <div class="lg:col-span-2">
             <div class="rounded-[14px] border border-[var(--b1)] p-5 sticky top-24" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
-              <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary mb-3">Preview</p>
+              <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary mb-3">{{ t('coach_growth.profile.preview_label') }}</p>
               <div class="flex items-center gap-3">
                 <AvatarConic
                   :initial="coachInitial"
@@ -198,13 +200,13 @@ onMounted(loadProfile);
                 />
                 <div>
                   <p class="text-sm font-semibold text-wc-text">{{ coachName }}</p>
-                  <p class="text-xs text-wc-text-tertiary">{{ city || 'Sin ciudad' }} -- {{ experience || 'N/A' }} exp.</p>
+                  <p class="text-xs text-wc-text-tertiary">{{ city || t('coach_growth.profile.preview_no_city') }} -- {{ experience || t('coach_growth.profile.preview_no_exp') }} {{ t('coach_growth.profile.preview_exp_suffix') }}</p>
                 </div>
               </div>
               <p v-if="bio" class="mt-3 text-xs text-wc-text-secondary leading-relaxed">{{ bio }}</p>
               <div v-if="instagram || tiktok || youtube" class="mt-3 flex items-center gap-2">
-                <span v-if="instagram" class="text-[10px] text-wc-accent">IG: {{ instagram }}</span>
-                <span v-if="tiktok" class="text-[10px] text-wc-text-tertiary">TK: {{ tiktok }}</span>
+                <span v-if="instagram" class="text-[10px] text-wc-accent">{{ t('coach_growth.profile.preview_ig', { handle: instagram }) }}</span>
+                <span v-if="tiktok" class="text-[10px] text-wc-text-tertiary">{{ t('coach_growth.profile.preview_tk', { handle: tiktok }) }}</span>
               </div>
             </div>
           </div>
@@ -215,19 +217,19 @@ onMounted(loadProfile);
           <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <div class="rounded-[14px] border border-[var(--b1)] p-5 text-center" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-data text-3xl font-bold text-wc-text">${{ revenue.total.toLocaleString() }}</p>
-              <p class="mt-1 text-xs text-wc-text-tertiary">Revenue total</p>
+              <p class="mt-1 text-xs text-wc-text-tertiary">{{ t('coach_growth.profile.revenue_total') }}</p>
             </div>
             <div class="rounded-[14px] border border-[var(--b1)] p-5 text-center" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-data text-3xl font-bold text-emerald-500">${{ revenue.monthly.toLocaleString() }}</p>
-              <p class="mt-1 text-xs text-wc-text-tertiary">Este mes</p>
+              <p class="mt-1 text-xs text-wc-text-tertiary">{{ t('coach_growth.profile.revenue_monthly') }}</p>
             </div>
             <div class="rounded-[14px] border border-[var(--b1)] p-5 text-center" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-data text-3xl font-bold text-wc-text">{{ revenue.clients_paying }}</p>
-              <p class="mt-1 text-xs text-wc-text-tertiary">Clientes activos</p>
+              <p class="mt-1 text-xs text-wc-text-tertiary">{{ t('coach_growth.profile.revenue_clients') }}</p>
             </div>
             <div class="rounded-[14px] border border-[var(--b1)] p-5 text-center" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
               <p class="font-data text-3xl font-bold text-violet-500">{{ revenue.referrals }}</p>
-              <p class="mt-1 text-xs text-wc-text-tertiary">Referidos</p>
+              <p class="mt-1 text-xs text-wc-text-tertiary">{{ t('coach_growth.profile.revenue_referrals') }}</p>
             </div>
           </div>
         </div>

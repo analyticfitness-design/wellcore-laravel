@@ -1,4 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 defineProps({
     rows: { type: Array, required: true },
 });
@@ -9,10 +13,10 @@ defineProps({
         <table class="timecode-table">
             <thead>
                 <tr>
-                    <th>Tiempo</th>
-                    <th>Diálogo</th>
-                    <th>Visual</th>
-                    <th>Notas de edit</th>
+                    <th>{{ t('coach_growth.strategy.tc_time') }}</th>
+                    <th>{{ t('coach_growth.strategy.tc_dialogue') }}</th>
+                    <th>{{ t('coach_growth.strategy.tc_visual') }}</th>
+                    <th>{{ t('coach_growth.strategy.tc_edit_notes') }}</th>
                 </tr>
             </thead>
             <tbody>

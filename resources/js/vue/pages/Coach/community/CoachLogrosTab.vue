@@ -1,19 +1,22 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useCoachCommunity } from '../../../composables/useCoachCommunity';
 import { useToast } from '../../../composables/useToast';
 import { useHaptics } from '../../../composables/useHaptics';
 import EmptyState from '../../../components/coach/ios/EmptyState.vue';
 
+const { t, locale } = useI18n();
+
 const { fetchAchievements, loading, error } = useCoachCommunity();
 const toast = useToast();
 const haptics = useHaptics();
 
-const PERIODS = [
-    { key: 'week',  label: 'Esta semana' },
-    { key: 'month', label: 'Este mes' },
-    { key: 'all',   label: 'Histórico' },
-];
+const PERIODS = computed(() => [
+    { key: 'week',  label: t('coach_inbox.wins_period_week') },
+    { key: 'month', label: t('coach_inbox.wins_period_month') },
+    { key: 'all',   label: t('coach_inbox.wins_period_all') },
+]);
 const activePeriod = ref('week');
 const items = ref([]);
 const totals = ref({ prs: 0, achievements: 0 });
@@ -28,11 +31,17 @@ async function load() {
 
 async function congratulate(item) {
     try {
-        toast.success(`Felicitación enviada a ${item.client_name}.`);
+        toast.success(t('coach_inbox.wins_congrats_sent', { name: item.client_name }));
         haptics.success();
     } catch (err) {
-        toast.apiError(err, 'No pudimos enviar la felicitación.');
+        toast.apiError(err, t('coach_inbox.wins_congrats_error'));
     }
+}
+
+function formatAchievedAt(iso) {
+    if (!iso) return '';
+    const localeTag = locale.value === 'en' ? 'en-US' : 'es-CO';
+    return new Date(iso).toLocaleDateString(localeTag);
 }
 
 watch(activePeriod, () => load());
@@ -51,7 +60,7 @@ onMounted(() => load());
     </div>
 
     <div v-if="totals.prs >= 10" class="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-400 font-semibold">
-      Equipo en racha — {{ totals.prs }} PRs y {{ totals.achievements }} logros este período
+      {{ totals.prs === 1 ? t('coach_inbox.wins_streak_banner_one', { achievements: totals.achievements }) : t('coach_inbox.wins_streak_banner_other', { prs: totals.prs, achievements: totals.achievements }) }}
     </div>
 
     <div v-if="loading && !items.length" class="space-y-3">
@@ -61,8 +70,8 @@ onMounted(() => load());
     <EmptyState
       v-else-if="!items.length"
       kind="success"
-      title="Aún no hay logros"
-      subtitle="Sé proactivo: motiva al cliente que esté cerca de un PR."
+      :title="t('coach_inbox.wins_empty_title')"
+      :subtitle="t('coach_inbox.wins_empty_subtitle')"
     />
     <div v-else class="space-y-3">
       <article v-for="(item, idx) in items" :key="`${item.type}-${item.client_id}-${idx}`" class="rounded-[14px] border border-[var(--b1)] p-4 flex items-start gap-3" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
@@ -71,14 +80,14 @@ onMounted(() => load());
           <p class="font-semibold text-wc-text">{{ item.client_name }}</p>
           <p class="text-sm text-wc-text-secondary">
             <template v-if="item.type === 'pr'">
-              PR de <strong>{{ item.exercise }}</strong>: {{ item.weight_kg }}kg
+              {{ t('coach_inbox.wins_pr_label', { exercise: item.exercise, weight: item.weight_kg }) }}
             </template>
             <template v-else>{{ item.achievement_name }}</template>
           </p>
-          <p class="text-xs text-wc-text-tertiary mt-1">{{ new Date(item.achieved_at).toLocaleDateString('es-CO') }}</p>
+          <p class="text-xs text-wc-text-tertiary mt-1">{{ formatAchievedAt(item.achieved_at) }}</p>
         </div>
         <button @click="congratulate(item)" class="shrink-0 rounded-full bg-wc-accent/10 text-wc-accent px-3 py-1.5 text-xs font-semibold hover:bg-wc-accent/20">
-          Felicitar
+          {{ t('coach_inbox.wins_congratulate') }}
         </button>
       </article>
     </div>

@@ -1,7 +1,10 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useCoachStrategyStore } from '../../../stores/coachStrategy';
 import { useViewportAnimate } from '../../../composables/dashboard/useViewportAnimate';
+
+const { t } = useI18n();
 
 const props = defineProps({
     checklist: { type: Object, required: true },
@@ -11,12 +14,17 @@ const props = defineProps({
 
 const store = useCoachStrategyStore();
 
-const phaseLabels = {
-    pre: 'Pre-producción',
-    cam: 'Cámara',
-    edit: 'Edición',
-    pub: 'Publicación',
+const phaseLabelKeys = {
+    pre: 'check_phase_pre',
+    cam: 'check_phase_cam',
+    edit: 'check_phase_edit',
+    pub: 'check_phase_pub',
 };
+
+function phaseLabelFor(key) {
+    const tKey = phaseLabelKeys[key];
+    return tKey ? t(`coach_growth.strategy.${tKey}`) : null;
+}
 
 const phaseColorMap = {
     pre: 'amber',
@@ -131,7 +139,7 @@ function ringOffset(phase /*, phaseIdx */) {
                     </svg>
                 </span>
                 <span class="phase-label">{{ String(phaseIdx + 1).padStart(2, '0') }} /</span>
-                <span class="phase-name">{{ phase.title ?? phaseLabels[phase.key] ?? `Fase ${phaseIdx + 1}` }}</span>
+                <span class="phase-name">{{ phase.title ?? phaseLabelFor(phase.key) ?? t('coach_growth.strategy.check_phase_fallback', { num: phaseIdx + 1 }) }}</span>
                 <div class="mini-ring-wrap">
                     <svg class="mini-ring-svg" width="40" height="40" viewBox="0 0 40 40">
                         <circle class="mini-ring-bg" cx="20" cy="20" r="17"/>
@@ -149,7 +157,7 @@ function ringOffset(phase /*, phaseIdx */) {
                 <div
                     class="phase-complete"
                     :class="{ visible: countChecked(phase) === (phase.items ?? []).length && (phase.items ?? []).length > 0 }"
-                >✓ PHASE COMPLETE</div>
+                >{{ t('coach_growth.strategy.check_phase_complete') }}</div>
                 <div
                     v-for="(item, itemIdx) in (phase.items ?? [])"
                     :key="itemIdx"

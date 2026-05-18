@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   items: { type: Array, default: () => [] },
@@ -12,6 +13,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['select']);
+const { t } = useI18n();
 
 const gridCols = computed(() =>
   props.layout === 'desktop' ? 'grid-cols-4' : 'grid-cols-2'
@@ -34,7 +36,7 @@ const isDesktop = computed(() => props.layout === 'desktop');
           : 'flex-col gap-2 p-4',
       ]"
       style="background: var(--s2); box-shadow: var(--shadow-card-ios); transition-duration: var(--t-tap); transition-timing-function: var(--ease-spring-ios);"
-      :aria-label="item.label + (item.badge ? ', ' + item.badge + ' pendientes' : '')"
+      :aria-label="item.label + (item.badge ? ', ' + item.badge + ' ' + t('coach_nav.pending') : '')"
       @click="emit('select', item)"
     >
       <span

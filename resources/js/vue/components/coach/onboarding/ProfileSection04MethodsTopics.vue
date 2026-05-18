@@ -1,34 +1,37 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     modelValue: { type: Object, required: true },
 });
 const emit = defineEmits(['update:modelValue']);
 
-const METHODOLOGIES = [
-    { value: 'sobrecarga_progresiva', label: 'Sobrecarga progresiva' },
-    { value: 'deficit_calorico', label: 'Deficit calorico' },
-    { value: 'periodizacion_lineal', label: 'Periodizacion lineal' },
-    { value: 'periodizacion_ondulante', label: 'Periodizacion ondulante' },
-    { value: 'full_body', label: 'Full body' },
-    { value: 'push_pull_legs', label: 'Push / Pull / Legs' },
-    { value: 'upper_lower', label: 'Upper / Lower' },
-    { value: 'calistenia', label: 'Calistenia' },
-    { value: 'hiit', label: 'HIIT' },
-    { value: 'baja_carga_alta_volumen', label: 'Baja carga / alto volumen' },
-];
+const METHODOLOGIES = computed(() => [
+    { value: 'sobrecarga_progresiva', label: t('coach_growth.onboarding_form.s4_m_sobrecarga') },
+    { value: 'deficit_calorico', label: t('coach_growth.onboarding_form.s4_m_deficit') },
+    { value: 'periodizacion_lineal', label: t('coach_growth.onboarding_form.s4_m_per_lineal') },
+    { value: 'periodizacion_ondulante', label: t('coach_growth.onboarding_form.s4_m_per_ondulante') },
+    { value: 'full_body', label: t('coach_growth.onboarding_form.s4_m_fullbody') },
+    { value: 'push_pull_legs', label: t('coach_growth.onboarding_form.s4_m_ppl') },
+    { value: 'upper_lower', label: t('coach_growth.onboarding_form.s4_m_upper_lower') },
+    { value: 'calistenia', label: t('coach_growth.onboarding_form.s4_m_calistenia') },
+    { value: 'hiit', label: t('coach_growth.onboarding_form.s4_m_hiit') },
+    { value: 'baja_carga_alta_volumen', label: t('coach_growth.onboarding_form.s4_m_baja_alta') },
+]);
 
-const TOPICS = [
-    { value: 'mitos_fitness', label: 'Mitos fitness' },
-    { value: 'transformaciones', label: 'Transformaciones' },
-    { value: 'ciencia_del_entrenamiento', label: 'Ciencia del entrenamiento' },
-    { value: 'recetas_macros', label: 'Recetas / macros' },
-    { value: 'suplementacion', label: 'Suplementacion' },
-    { value: 'mentalidad', label: 'Mentalidad' },
-    { value: 'vida_real', label: 'Vida real' },
-    { value: 'tutoriales_tecnica', label: 'Tutoriales de tecnica' },
-];
+const TOPICS = computed(() => [
+    { value: 'mitos_fitness', label: t('coach_growth.onboarding_form.s4_t_mitos') },
+    { value: 'transformaciones', label: t('coach_growth.onboarding_form.s4_t_transformaciones') },
+    { value: 'ciencia_del_entrenamiento', label: t('coach_growth.onboarding_form.s4_t_ciencia') },
+    { value: 'recetas_macros', label: t('coach_growth.onboarding_form.s4_t_recetas') },
+    { value: 'suplementacion', label: t('coach_growth.onboarding_form.s4_t_suplementacion') },
+    { value: 'mentalidad', label: t('coach_growth.onboarding_form.s4_t_mentalidad') },
+    { value: 'vida_real', label: t('coach_growth.onboarding_form.s4_t_vida_real') },
+    { value: 'tutoriales_tecnica', label: t('coach_growth.onboarding_form.s4_t_tutoriales') },
+]);
 
 const newMethodology = ref('');
 const newTopic = ref('');
@@ -70,14 +73,14 @@ function removeOther(field, value) {
 <template>
   <section class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-8 space-y-10">
     <header>
-      <p class="font-mono text-xs uppercase tracking-[0.15em] text-wc-accent">04 / METODOS Y TEMAS</p>
-      <h2 class="mt-2 font-display text-3xl uppercase tracking-tight text-wc-text">El como y el que</h2>
-      <p class="mt-2 font-editorial italic text-base text-wc-text-secondary">El como y el que de tu trabajo.</p>
+      <p class="font-mono text-xs uppercase tracking-[0.15em] text-wc-accent">{{ t('coach_growth.onboarding_form.s4_eyebrow') }}</p>
+      <h2 class="mt-2 font-display text-3xl uppercase tracking-tight text-wc-text">{{ t('coach_growth.onboarding_form.s4_title') }}</h2>
+      <p class="mt-2 font-editorial italic text-base text-wc-text-secondary">{{ t('coach_growth.onboarding_form.s4_subtitle') }}</p>
     </header>
 
     <div>
       <label class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-        Metodologias preferidas
+        {{ t('coach_growth.onboarding_form.s4_methods_label') }}
       </label>
       <div class="mt-3 flex flex-wrap gap-2">
         <button
@@ -114,7 +117,7 @@ function removeOther(field, value) {
           v-model="newMethodology"
           type="text"
           maxlength="80"
-          placeholder="Agregar otra metodologia"
+          :placeholder="t('coach_growth.onboarding_form.s4_add_method_placeholder')"
           class="flex-1 rounded-lg border border-wc-border bg-wc-bg px-4 py-2 text-sm text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
           @keydown.enter.prevent="addOther('preferred_methodologies_other', newMethodology)"
         />
@@ -123,14 +126,14 @@ function removeOther(field, value) {
           class="rounded-lg border border-wc-border bg-wc-bg px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-wc-text-secondary hover:border-wc-accent hover:text-wc-text"
           @click="addOther('preferred_methodologies_other', newMethodology)"
         >
-          Agregar
+          {{ t('coach_growth.onboarding_form.add_btn') }}
         </button>
       </div>
     </div>
 
     <div>
       <label class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-        Temas de contenido
+        {{ t('coach_growth.onboarding_form.s4_topics_label') }}
       </label>
       <div class="mt-3 flex flex-wrap gap-2">
         <button
@@ -167,7 +170,7 @@ function removeOther(field, value) {
           v-model="newTopic"
           type="text"
           maxlength="80"
-          placeholder="Agregar otro tema"
+          :placeholder="t('coach_growth.onboarding_form.s4_add_topic_placeholder')"
           class="flex-1 rounded-lg border border-wc-border bg-wc-bg px-4 py-2 text-sm text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
           @keydown.enter.prevent="addOther('content_topics_other', newTopic)"
         />
@@ -176,7 +179,7 @@ function removeOther(field, value) {
           class="rounded-lg border border-wc-border bg-wc-bg px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-wc-text-secondary hover:border-wc-accent hover:text-wc-text"
           @click="addOther('content_topics_other', newTopic)"
         >
-          Agregar
+          {{ t('coach_growth.onboarding_form.add_btn') }}
         </button>
       </div>
     </div>

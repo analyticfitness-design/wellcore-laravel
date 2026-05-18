@@ -1,169 +1,242 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 
-const stages = [
+const { t } = useI18n();
+
+const stages = computed(() => [
   {
     id: 'preventa',
     num: '01',
-    badge: 'Etapa 1 · Preventa',
-    title: 'Atraer, conectar y convertir.',
-    objective: 'Que el prospecto llegue al DM, sienta que lo entiendes y quiera tu servicio — sin que tengas que presionarlo.',
+    badge: t('coach_growth.flow.stage1_badge'),
+    title: t('coach_growth.flow.stage1_title'),
+    objective: t('coach_growth.flow.stage1_objective'),
     accent: 'red',
+    navLabel: t('coach_growth.flow.nav_preventa'),
     steps: [
       {
-        index: 'Paso 01', title: 'Contenido con intención', tag: 'Redes',
-        quote: { lead: 'El contenido educa.', em: 'El DM convierte.' },
-        body: 'Publica contenido de valor — educativo, motivacional, resultados de clientes — con un CTA claro que dirija al DM. No vendes directamente en la publicación. Posicionas. Generas la curiosidad suficiente para que el prospecto dé el primer paso.',
-        rule: { label: 'Regla de oro', text: 'Todo post tiene un propósito único. Si no sabes exactamente qué quieres que haga el que lo ve al terminar de leerlo, el post está incompleto.' },
+        index: t('coach_growth.flow.stage1_step1_index'),
+        title: t('coach_growth.flow.stage1_step1_title'),
+        tag: t('coach_growth.flow.stage1_step1_tag'),
+        quote: {
+          lead: t('coach_growth.flow.stage1_step1_quote_lead'),
+          em: t('coach_growth.flow.stage1_step1_quote_em'),
+        },
+        body: t('coach_growth.flow.stage1_step1_body'),
+        rule: {
+          label: t('coach_growth.flow.stage1_step1_rule_label'),
+          text: t('coach_growth.flow.stage1_step1_rule_text'),
+        },
         checklist: [
-          { strong: 'Tip de entrenamiento o nutrición', rest: ' — dato verificable, no motivación genérica' },
-          { strong: 'Resultado de cliente', rest: ' — con nombre (con permiso) y contexto real' },
-          { strong: 'BTS del trabajo del coach', rest: ' — día típico, preparación de plan, consulta' },
-          { strong: 'CTA único al final', rest: ' — "Escríbeme", "Manda DM", "Pregúntame cómo"' },
+          { strong: t('coach_growth.flow.stage1_step1_check1_strong'), rest: t('coach_growth.flow.stage1_step1_check1_rest') },
+          { strong: t('coach_growth.flow.stage1_step1_check2_strong'), rest: t('coach_growth.flow.stage1_step1_check2_rest') },
+          { strong: t('coach_growth.flow.stage1_step1_check3_strong'), rest: t('coach_growth.flow.stage1_step1_check3_rest') },
+          { strong: t('coach_growth.flow.stage1_step1_check4_strong'), rest: t('coach_growth.flow.stage1_step1_check4_rest') },
         ],
       },
       {
-        index: 'Paso 02', title: 'Primer contacto humano', tag: 'DM',
-        editorial: 'Cuando alguien llega al DM, lo primero que hago es conocerle. No vendo todavía. Primero escucho.',
-        body: 'Cuando alguien llega al DM — o tú inicias la conversación — la prioridad es **conectar antes de presentar el servicio.** El objetivo en este punto no es hablar de lo que ofreces. Es conocer a la persona, mostrar interés genuino y generar confianza.',
-        rule: { label: 'Apertura sugerida', text: '"Hola, ¿cómo has estado? Vi que le dabas like a mis publicaciones sobre entrenamiento, ¿hace cuánto llevas activo en el gym?"' },
+        index: t('coach_growth.flow.stage1_step2_index'),
+        title: t('coach_growth.flow.stage1_step2_title'),
+        tag: t('coach_growth.flow.stage1_step2_tag'),
+        editorial: t('coach_growth.flow.stage1_step2_editorial'),
+        body: t('coach_growth.flow.stage1_step2_body'),
+        rule: {
+          label: t('coach_growth.flow.stage1_step2_rule_label'),
+          text: t('coach_growth.flow.stage1_step2_rule_text'),
+        },
         checklist: [
-          { strong: 'Habla a la persona', rest: ', no sobre el servicio' },
-          { strong: 'Usa su nombre', rest: ' desde el primer mensaje' },
-          { strong: 'Haz una pregunta abierta', rest: ' — que ella/él hable primero' },
-          { strong: 'No lances el precio', rest: ' ni la oferta en el primer contacto' },
+          { strong: t('coach_growth.flow.stage1_step2_check1_strong'), rest: t('coach_growth.flow.stage1_step2_check1_rest') },
+          { strong: t('coach_growth.flow.stage1_step2_check2_strong'), rest: t('coach_growth.flow.stage1_step2_check2_rest') },
+          { strong: t('coach_growth.flow.stage1_step2_check3_strong'), rest: t('coach_growth.flow.stage1_step2_check3_rest') },
+          { strong: t('coach_growth.flow.stage1_step2_check4_strong'), rest: t('coach_growth.flow.stage1_step2_check4_rest') },
         ],
       },
       {
-        index: 'Paso 03', title: 'Diagnóstico de situación', tag: 'Escucha',
-        quote: { lead: 'El que más habla aquí es el prospecto,', em: 'no el coach.' },
-        body: 'Haz preguntas estratégicas para entender el punto de partida real. La persona habla — tú escuchas para identificar el dolor específico. Sin diagnóstico real, cualquier presentación del servicio suena genérica.',
+        index: t('coach_growth.flow.stage1_step3_index'),
+        title: t('coach_growth.flow.stage1_step3_title'),
+        tag: t('coach_growth.flow.stage1_step3_tag'),
+        quote: {
+          lead: t('coach_growth.flow.stage1_step3_quote_lead'),
+          em: t('coach_growth.flow.stage1_step3_quote_em'),
+        },
+        body: t('coach_growth.flow.stage1_step3_body'),
         checklist: [
-          { strong: '', rest: '¿Hace cuánto tiempo entrenas o haces ejercicio?' },
-          { strong: '', rest: '¿Qué has intentado antes para mejorar tu físico o tu salud?' },
-          { strong: '', rest: '¿Qué resultados esperabas y qué pasó realmente?' },
-          { strong: '', rest: '¿Qué es lo que más te frustra de tu proceso actual?' },
-          { strong: '', rest: '¿Qué aspiras cambiar o lograr en los próximos meses?' },
+          { strong: '', rest: t('coach_growth.flow.stage1_step3_check1') },
+          { strong: '', rest: t('coach_growth.flow.stage1_step3_check2') },
+          { strong: '', rest: t('coach_growth.flow.stage1_step3_check3') },
+          { strong: '', rest: t('coach_growth.flow.stage1_step3_check4') },
+          { strong: '', rest: t('coach_growth.flow.stage1_step3_check5') },
         ],
-        rule: { label: 'Nunca', text: 'No interrumpas con la oferta antes de tener el panorama completo. Si ya sabes el problema antes de que termine de hablar, esperas igual.' },
+        rule: {
+          label: t('coach_growth.flow.stage1_step3_rule_label'),
+          text: t('coach_growth.flow.stage1_step3_rule_text'),
+        },
       },
       {
-        index: 'Paso 04', title: 'Presentación de solución', tag: 'Propuesta',
-        editorial: 'No presento el servicio de WellCore. Le cuento qué puedo hacer por ella específicamente, con lo que me acaba de decir.',
-        body: 'Con base en lo que escuchaste, conecta cada ventaja del servicio directamente con los dolores que el prospecto ya expresó. No un guión genérico — una respuesta personalizada a lo que acabas de escuchar.',
+        index: t('coach_growth.flow.stage1_step4_index'),
+        title: t('coach_growth.flow.stage1_step4_title'),
+        tag: t('coach_growth.flow.stage1_step4_tag'),
+        editorial: t('coach_growth.flow.stage1_step4_editorial'),
+        body: t('coach_growth.flow.stage1_step4_body'),
         checklist: [
-          { strong: 'Seguimiento 1 a 1', rest: ' — chat directo contigo, sin intermediarios ni bots' },
-          { strong: 'Plan 100% personalizado', rest: ' — funciona desde principiante hasta avanzado' },
-          { strong: 'Nutrición adaptada a tu vida real', rest: ' — sin regímenes imposibles ni prohibiciones extremas' },
-          { strong: 'Revisión mensual', rest: ' — el plan evoluciona contigo, no es estático' },
-          { strong: 'Siempre hay una persona detrás', rest: ' — tú, respondiendo con criterio, no respuestas automáticas' },
+          { strong: t('coach_growth.flow.stage1_step4_check1_strong'), rest: t('coach_growth.flow.stage1_step4_check1_rest') },
+          { strong: t('coach_growth.flow.stage1_step4_check2_strong'), rest: t('coach_growth.flow.stage1_step4_check2_rest') },
+          { strong: t('coach_growth.flow.stage1_step4_check3_strong'), rest: t('coach_growth.flow.stage1_step4_check3_rest') },
+          { strong: t('coach_growth.flow.stage1_step4_check4_strong'), rest: t('coach_growth.flow.stage1_step4_check4_rest') },
+          { strong: t('coach_growth.flow.stage1_step4_check5_strong'), rest: t('coach_growth.flow.stage1_step4_check5_rest') },
         ],
       },
       {
-        index: 'Paso 05', title: 'Envío de oferta personalizada', tag: 'HTML · Oferta',
-        body: 'Si el prospecto muestra interés, envías el **HTML de propuesta oficial WellCore**. Un documento visual que el cliente abre y lee como una presentación completa.',
+        index: t('coach_growth.flow.stage1_step5_index'),
+        title: t('coach_growth.flow.stage1_step5_title'),
+        tag: t('coach_growth.flow.stage1_step5_tag'),
+        body: t('coach_growth.flow.stage1_step5_body'),
         checklist: [
-          { strong: '', rest: 'Qué es WellCore y qué va a obtener el cliente' },
-          { strong: '', rest: 'Tu presentación en primera persona — experiencia, estilo de trabajo, qué te diferencia' },
-          { strong: '', rest: 'Descripción del acompañamiento: "seguimiento directo conmigo, chequeo mensual..."' },
-          { strong: '', rest: 'Los planes disponibles (Esencial / Método / Elite) con diferencias y precios' },
-          { strong: '', rest: 'El siguiente paso claro: qué hacer si quiere inscribirse' },
+          { strong: '', rest: t('coach_growth.flow.stage1_step5_check1') },
+          { strong: '', rest: t('coach_growth.flow.stage1_step5_check2') },
+          { strong: '', rest: t('coach_growth.flow.stage1_step5_check3') },
+          { strong: '', rest: t('coach_growth.flow.stage1_step5_check4') },
+          { strong: '', rest: t('coach_growth.flow.stage1_step5_check5') },
         ],
-        rule: { label: 'Voz de la oferta', text: 'Primera persona del coach en todo el documento. WellCore aparece solo en el footer como respaldo. La presentación es tuya — WellCore es la infraestructura.' },
+        rule: {
+          label: t('coach_growth.flow.stage1_step5_rule_label'),
+          text: t('coach_growth.flow.stage1_step5_rule_text'),
+        },
       },
       {
-        index: 'Paso 06', title: 'Cierre y pago', tag: 'Pago',
+        index: t('coach_growth.flow.stage1_step6_index'),
+        title: t('coach_growth.flow.stage1_step6_title'),
+        tag: t('coach_growth.flow.stage1_step6_tag'),
         body: '',
         payments: [
-          { label: 'Opción A · Recomendada', title: 'Pago por Wompi', recommended: true,
-            desc: 'Compartes tu link de referido personal. El sistema registra el pago automáticamente y activa el proceso de inscripción de inmediato. Sin fricciones.' },
-          { label: 'Opción B · Manual', title: 'Pago externo',
-            desc: 'Nequi, transferencia o cuenta bancaria. El cliente paga — tú solicitas el comprobante y lo subes al portal WellCore. El equipo valida y genera el acceso en máx. 30 min.' },
+          {
+            label: t('coach_growth.flow.stage1_step6_payment_a_label'),
+            title: t('coach_growth.flow.stage1_step6_payment_a_title'),
+            recommended: true,
+            desc: t('coach_growth.flow.stage1_step6_payment_a_desc'),
+          },
+          {
+            label: t('coach_growth.flow.stage1_step6_payment_b_label'),
+            title: t('coach_growth.flow.stage1_step6_payment_b_title'),
+            desc: t('coach_growth.flow.stage1_step6_payment_b_desc'),
+          },
         ],
-        rule: { label: 'Regla sin excepción', text: 'Nunca dar acceso sin tener el comprobante registrado en el sistema. Protege al coach y al cliente por igual.' },
+        rule: {
+          label: t('coach_growth.flow.stage1_step6_rule_label'),
+          text: t('coach_growth.flow.stage1_step6_rule_text'),
+        },
       },
     ],
   },
   {
     id: 'onboarding',
     num: '02',
-    badge: 'Etapa 2 · Onboarding',
-    title: 'Acceso, entrevista y carga del ticket.',
-    objective: 'Vincular al cliente a la plataforma y recolectar toda la información necesaria para construir su plan.',
+    badge: t('coach_growth.flow.stage2_badge'),
+    title: t('coach_growth.flow.stage2_title'),
+    objective: t('coach_growth.flow.stage2_objective'),
     accent: 'gold',
+    navLabel: t('coach_growth.flow.nav_onboarding'),
     steps: [
       {
-        index: 'Paso 01', title: 'Acceso a la plataforma', tag: 'Sistema',
+        index: t('coach_growth.flow.stage2_step1_index'),
+        title: t('coach_growth.flow.stage2_step1_title'),
+        tag: t('coach_growth.flow.stage2_step1_tag'),
         body: '',
         checklist: [
-          { strong: 'Pago por Wompi:', rest: ' el cliente recibe su enlace de inscripción de forma automática e inmediata. Se registra solo.' },
-          { strong: 'Pago externo:', rest: ' subes el comprobante al portal → el equipo lo valida → envías el enlace al cliente. Plazo: máx. 30 minutos.' },
-          { strong: 'Confirma siempre', rest: ' que el cliente pudo acceder correctamente antes de continuar.' },
+          { strong: t('coach_growth.flow.stage2_step1_check1_strong'), rest: t('coach_growth.flow.stage2_step1_check1_rest') },
+          { strong: t('coach_growth.flow.stage2_step1_check2_strong'), rest: t('coach_growth.flow.stage2_step1_check2_rest') },
+          { strong: t('coach_growth.flow.stage2_step1_check3_strong'), rest: t('coach_growth.flow.stage2_step1_check3_rest') },
         ],
       },
       {
-        index: 'Paso 02', title: 'Entrevista de perfil', tag: 'WhatsApp · Videollamada',
-        quote: { lead: 'El propósito no es llenar un formulario.', em: 'Es entender a la persona.' },
-        body: 'Realizas la entrevista oficial con el cliente — por WhatsApp o videollamada — usando el cuestionario profesional WellCore. La calidad del plan depende directamente de la calidad de la información que recolectas aquí.',
+        index: t('coach_growth.flow.stage2_step2_index'),
+        title: t('coach_growth.flow.stage2_step2_title'),
+        tag: t('coach_growth.flow.stage2_step2_tag'),
+        quote: {
+          lead: t('coach_growth.flow.stage2_step2_quote_lead'),
+          em: t('coach_growth.flow.stage2_step2_quote_em'),
+        },
+        body: t('coach_growth.flow.stage2_step2_body'),
         checklist: [
-          { strong: 'Datos personales', rest: ' — nombre, edad, género, peso, estatura, nivel de actividad' },
-          { strong: 'Entrenamiento', rest: ' — lugar, nivel, disponibilidad horaria, lesiones, restricciones, split deseado' },
-          { strong: 'Nutrición', rest: ' — hábitos actuales, horarios, preferencias, restricciones alimentarias' },
-          { strong: 'Hábitos y estilo de vida', rest: ' — sueño, estrés, rutina matutina y nocturna' },
-          { strong: 'Suplementación', rest: ' — qué toma actualmente, objetivo del stack' },
-          { strong: 'Objetivo real', rest: ' — motivación de fondo, no solo el físico' },
+          { strong: t('coach_growth.flow.stage2_step2_check1_strong'), rest: t('coach_growth.flow.stage2_step2_check1_rest') },
+          { strong: t('coach_growth.flow.stage2_step2_check2_strong'), rest: t('coach_growth.flow.stage2_step2_check2_rest') },
+          { strong: t('coach_growth.flow.stage2_step2_check3_strong'), rest: t('coach_growth.flow.stage2_step2_check3_rest') },
+          { strong: t('coach_growth.flow.stage2_step2_check4_strong'), rest: t('coach_growth.flow.stage2_step2_check4_rest') },
+          { strong: t('coach_growth.flow.stage2_step2_check5_strong'), rest: t('coach_growth.flow.stage2_step2_check5_rest') },
+          { strong: t('coach_growth.flow.stage2_step2_check6_strong'), rest: t('coach_growth.flow.stage2_step2_check6_rest') },
         ],
-        rule: { label: 'No apresurarse', text: 'Esta conversación es el fundamento del plan. Si la saltas o la acortas, el plan lo refleja — y el cliente lo nota en la primera semana.' },
+        rule: {
+          label: t('coach_growth.flow.stage2_step2_rule_label'),
+          text: t('coach_growth.flow.stage2_step2_rule_text'),
+        },
       },
       {
-        index: 'Paso 03', title: 'Carga del ticket en el portal', tag: 'Portal',
-        body: 'Con toda la información de la entrevista, llenas el ticket de plan en tu portal WellCore y lo envías al equipo para su elaboración. Una vez enviado, le comunicás al cliente:',
-        rule: { label: 'Mensaje al cliente tras enviar el ticket', text: '"Ya subí toda tu información a la plataforma. En un máximo de 48 horas recibirás tu plan personalizado completo con todas las indicaciones. Cualquier duda antes de eso, aquí estoy contigo."' },
+        index: t('coach_growth.flow.stage2_step3_index'),
+        title: t('coach_growth.flow.stage2_step3_title'),
+        tag: t('coach_growth.flow.stage2_step3_tag'),
+        body: t('coach_growth.flow.stage2_step3_body'),
+        rule: {
+          label: t('coach_growth.flow.stage2_step3_rule_label'),
+          text: t('coach_growth.flow.stage2_step3_rule_text'),
+        },
       },
     ],
   },
   {
     id: 'activacion',
     num: '03',
-    badge: 'Etapa 3 · Activación',
-    title: 'Entregar, orientar y activar.',
-    objective: 'Presentar el plan, orientar al cliente en el portal y garantizar una primera semana de arranque exitosa.',
+    badge: t('coach_growth.flow.stage3_badge'),
+    title: t('coach_growth.flow.stage3_title'),
+    objective: t('coach_growth.flow.stage3_objective'),
     accent: 'blue',
+    navLabel: t('coach_growth.flow.nav_activacion'),
     steps: [
       {
-        index: 'Paso 01', title: 'Presentación del plan personalizado', tag: 'Entrega',
-        quote: { lead: 'El plan nunca', em: 'se entrega en frío.' },
-        body: 'Cuando WellCore sube el plan, le notificas al cliente y haces una presentación directa — mensaje de voz, videollamada corta o mensaje escrito. El cliente que no entiende su plan no lo sigue. El coach que lo presenta genera compromiso desde el día uno.',
+        index: t('coach_growth.flow.stage3_step1_index'),
+        title: t('coach_growth.flow.stage3_step1_title'),
+        tag: t('coach_growth.flow.stage3_step1_tag'),
+        quote: {
+          lead: t('coach_growth.flow.stage3_step1_quote_lead'),
+          em: t('coach_growth.flow.stage3_step1_quote_em'),
+        },
+        body: t('coach_growth.flow.stage3_step1_body'),
         checklist: [
-          { strong: 'Qué contiene', rest: ' su plan — entrenamiento, nutrición, hábitos, suplementación' },
-          { strong: 'Por qué se diseñó así', rest: ' para él/ella específicamente' },
-          { strong: 'Qué puede esperar', rest: ' en las primeras 2 a 4 semanas' },
-          { strong: 'Cuál es el punto de enfoque', rest: ' principal al comenzar' },
+          { strong: t('coach_growth.flow.stage3_step1_check1_strong'), rest: t('coach_growth.flow.stage3_step1_check1_rest') },
+          { strong: t('coach_growth.flow.stage3_step1_check2_strong'), rest: t('coach_growth.flow.stage3_step1_check2_rest') },
+          { strong: t('coach_growth.flow.stage3_step1_check3_strong'), rest: t('coach_growth.flow.stage3_step1_check3_rest') },
+          { strong: t('coach_growth.flow.stage3_step1_check4_strong'), rest: t('coach_growth.flow.stage3_step1_check4_rest') },
         ],
       },
       {
-        index: 'Paso 02', title: 'Orientación del portal', tag: 'Plataforma',
-        editorial: 'El cliente que entiende y usa el portal se mantiene activo. El que no lo entiende, desaparece. Esta orientación es tan importante como el plan mismo.',
-        body: 'Haces un recorrido rápido por la plataforma para que el cliente sepa exactamente dónde está todo y cómo usarla desde el primer día.',
+        index: t('coach_growth.flow.stage3_step2_index'),
+        title: t('coach_growth.flow.stage3_step2_title'),
+        tag: t('coach_growth.flow.stage3_step2_tag'),
+        editorial: t('coach_growth.flow.stage3_step2_editorial'),
+        body: t('coach_growth.flow.stage3_step2_body'),
         checklist: [
-          { strong: 'Plan de entrenamiento y nutrición', rest: ' — dónde encontrarlos' },
-          { strong: 'Check-in semanal', rest: ' — cómo registrar peso, fotos y sensaciones' },
-          { strong: 'Chat directo contigo', rest: ' — para hablarte cuando lo necesite' },
-          { strong: 'Seguimiento mes a mes', rest: ' — qué esperar' },
-          { strong: 'Ajustes al plan', rest: ' — cómo se comunican y se interpretan' },
+          { strong: t('coach_growth.flow.stage3_step2_check1_strong'), rest: t('coach_growth.flow.stage3_step2_check1_rest') },
+          { strong: t('coach_growth.flow.stage3_step2_check2_strong'), rest: t('coach_growth.flow.stage3_step2_check2_rest') },
+          { strong: t('coach_growth.flow.stage3_step2_check3_strong'), rest: t('coach_growth.flow.stage3_step2_check3_rest') },
+          { strong: t('coach_growth.flow.stage3_step2_check4_strong'), rest: t('coach_growth.flow.stage3_step2_check4_rest') },
+          { strong: t('coach_growth.flow.stage3_step2_check5_strong'), rest: t('coach_growth.flow.stage3_step2_check5_rest') },
         ],
       },
       {
-        index: 'Paso 03', title: 'Primera semana de activación', tag: 'Seguimiento',
-        quote: { lead: 'Esta semana define el tono', em: 'de toda la relación.' },
-        body: 'Durante los primeros 7 días haces seguimiento activo y directo. Un cliente bien acompañado en la primera semana es un cliente que renueva.',
+        index: t('coach_growth.flow.stage3_step3_index'),
+        title: t('coach_growth.flow.stage3_step3_title'),
+        tag: t('coach_growth.flow.stage3_step3_tag'),
+        quote: {
+          lead: t('coach_growth.flow.stage3_step3_quote_lead'),
+          em: t('coach_growth.flow.stage3_step3_quote_em'),
+        },
+        body: t('coach_growth.flow.stage3_step3_body'),
         checklist: [
-          { strong: 'Confirmar acceso al portal', rest: ' y que vio su plan' },
-          { strong: 'Preguntar por el primer entrenamiento', rest: ' — cómo se sintió' },
-          { strong: 'Resolver dudas iniciales', rest: ' sobre ejercicios, comidas o suplementos' },
-          { strong: 'Celebrar el primer logro', rest: ' — por pequeño que sea' },
-          { strong: 'Reforzar el vínculo', rest: ' y el compromiso a largo plazo' },
+          { strong: t('coach_growth.flow.stage3_step3_check1_strong'), rest: t('coach_growth.flow.stage3_step3_check1_rest') },
+          { strong: t('coach_growth.flow.stage3_step3_check2_strong'), rest: t('coach_growth.flow.stage3_step3_check2_rest') },
+          { strong: t('coach_growth.flow.stage3_step3_check3_strong'), rest: t('coach_growth.flow.stage3_step3_check3_rest') },
+          { strong: t('coach_growth.flow.stage3_step3_check4_strong'), rest: t('coach_growth.flow.stage3_step3_check4_rest') },
+          { strong: t('coach_growth.flow.stage3_step3_check5_strong'), rest: t('coach_growth.flow.stage3_step3_check5_rest') },
         ],
       },
     ],
@@ -171,32 +244,48 @@ const stages = [
   {
     id: 'activo',
     num: '04',
-    badge: 'Etapa 4 · Servicio Activo',
-    title: 'Sostener, ajustar y fidelizar.',
-    objective: 'Mantener el progreso, ajustar continuamente y convertir al cliente en alguien que permanece y refiere.',
+    badge: t('coach_growth.flow.stage4_badge'),
+    title: t('coach_growth.flow.stage4_title'),
+    objective: t('coach_growth.flow.stage4_objective'),
     accent: 'green',
+    navLabel: t('coach_growth.flow.nav_activo'),
     cycles: [
-      { tag: 'Ciclo semanal', title: 'Check-in + Respuesta',
-        text: 'El cliente registra su check-in semanal en la plataforma — peso, foto, cómo se sintió, qué dificultades tuvo. Tú revisas y respondes con indicaciones específicas, ajustes o motivación.',
-        rule: 'Un check-in sin respuesta del coach es un cliente que empieza a desconectarse.' },
-      { tag: 'Ciclo mensual', title: 'Revisión y ajuste',
-        text: 'Evaluás si el plan sigue siendo el adecuado o si necesita cambios en entrenamiento, nutrición o hábitos. Comunicas los cambios con claridad y explicas el porqué.',
-        rule: 'Este es el momento en que el cliente siente que el servicio es vivo y evoluciona con él.' },
-      { tag: 'Comunicación', title: 'Chat directo',
-        text: 'El cliente puede escribirte en cualquier momento por el chat de la plataforma. Respondés con agilidad, especialmente ante dudas urgentes sobre ejercicios o alimentación.',
-        rule: 'Tono siempre cercano, profesional y motivador.' },
-      { tag: 'Renovación', title: 'Anticipar y proponer',
-        text: 'Antes de que venza el mes, inicias tú la conversación de renovación. Muestras los resultados obtenidos y propones continuar — o hacer un upgrade de plan.',
-        rule: 'Un cliente satisfecho que renueva y refiere es el mejor activo que puedes tener.' },
+      {
+        tag: t('coach_growth.flow.stage4_cycle1_tag'),
+        title: t('coach_growth.flow.stage4_cycle1_title'),
+        text: t('coach_growth.flow.stage4_cycle1_text'),
+        rule: t('coach_growth.flow.stage4_cycle1_rule'),
+      },
+      {
+        tag: t('coach_growth.flow.stage4_cycle2_tag'),
+        title: t('coach_growth.flow.stage4_cycle2_title'),
+        text: t('coach_growth.flow.stage4_cycle2_text'),
+        rule: t('coach_growth.flow.stage4_cycle2_rule'),
+      },
+      {
+        tag: t('coach_growth.flow.stage4_cycle3_tag'),
+        title: t('coach_growth.flow.stage4_cycle3_title'),
+        text: t('coach_growth.flow.stage4_cycle3_text'),
+        rule: t('coach_growth.flow.stage4_cycle3_rule'),
+      },
+      {
+        tag: t('coach_growth.flow.stage4_cycle4_tag'),
+        title: t('coach_growth.flow.stage4_cycle4_title'),
+        text: t('coach_growth.flow.stage4_cycle4_text'),
+        rule: t('coach_growth.flow.stage4_cycle4_rule'),
+      },
     ],
-    extraRule: { label: 'Referidos', text: 'Tu link de referido personal en WellCore vincula automáticamente a cada nuevo cliente que llegue a través tuyo. Reconoce y agradece cada referido — genera comunidad y lealtad alrededor de tu perfil.' },
+    extraRule: {
+      label: t('coach_growth.flow.stage4_extra_label'),
+      text: t('coach_growth.flow.stage4_extra_text'),
+    },
   },
-];
+]);
 
 const activeIndex = ref(0);
-const activeStage = computed(() => stages[activeIndex.value]);
+const activeStage = computed(() => stages.value[activeIndex.value]);
 const isFirst = computed(() => activeIndex.value === 0);
-const isLast = computed(() => activeIndex.value === stages.length - 1);
+const isLast = computed(() => activeIndex.value === stages.value.length - 1);
 
 function setActive(index) {
   if (index === activeIndex.value) return;
@@ -214,14 +303,13 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
 
       <!-- ── HERO ── -->
       <header class="hero-block">
-        <p class="hero-eyebrow">Manual Operativo · Coaches WellCore</p>
+        <p class="hero-eyebrow">{{ t('coach_growth.flow.hero_eyebrow') }}</p>
         <h1 class="hero-title">
-          Nuestro sistema<br>
-          <em>4 etapas.</em>
+          {{ t('coach_growth.flow.hero_title_lead') }}<br>
+          <em>{{ t('coach_growth.flow.hero_title_em') }}</em>
         </h1>
         <p class="hero-subtitle">
-          Este onboarding te explica todo paso a paso — desde el primer contacto
-          con un prospecto hasta el cliente que lleva meses contigo y te recomienda.
+          {{ t('coach_growth.flow.hero_subtitle') }}
         </p>
       </header>
 
@@ -234,7 +322,7 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
           :class="['stage-nav-tab', activeIndex === idx ? `is-active accent-${s.accent}` : '']"
         >
           <span class="stage-nav-num">{{ s.num }}</span>
-          <span class="stage-nav-label">{{ s.id === 'activo' ? 'Servicio Activo' : (s.id.charAt(0).toUpperCase() + s.id.slice(1)) }}</span>
+          <span class="stage-nav-label">{{ s.navLabel }}</span>
         </button>
       </nav>
 
@@ -247,7 +335,7 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
             <div class="stage-header-text">
               <span :class="['stage-badge', `accent-${activeStage.accent}`]">{{ activeStage.badge }}</span>
               <h2 class="stage-title">{{ activeStage.title }}</h2>
-              <p class="stage-objective"><strong>Objetivo:</strong> {{ activeStage.objective }}</p>
+              <p class="stage-objective"><strong>{{ t('coach_growth.flow.objective_label') }}</strong> {{ activeStage.objective }}</p>
             </div>
           </div>
 
@@ -328,8 +416,8 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
             >
               <span class="pager-arrow">←</span>
               <span class="pager-text">
-                <span class="pager-eyebrow">Anterior</span>
-                <span class="pager-label">{{ isFirst ? '—' : stages[activeIndex - 1].badge }}</span>
+                <span class="pager-eyebrow">{{ t('coach_growth.flow.pager_prev') }}</span>
+                <span class="pager-label">{{ isFirst ? t('coach_growth.flow.pager_dash') : stages[activeIndex - 1].badge }}</span>
               </span>
             </button>
             <button
@@ -339,8 +427,8 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
               @click="goNext"
             >
               <span class="pager-text pager-text-right">
-                <span class="pager-eyebrow">Siguiente</span>
-                <span class="pager-label">{{ isLast ? '—' : stages[activeIndex + 1].badge }}</span>
+                <span class="pager-eyebrow">{{ t('coach_growth.flow.pager_next') }}</span>
+                <span class="pager-label">{{ isLast ? t('coach_growth.flow.pager_dash') : stages[activeIndex + 1].badge }}</span>
               </span>
               <span class="pager-arrow">→</span>
             </button>
@@ -350,51 +438,51 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
 
       <!-- ── SUMMARY ── -->
       <div class="summary-divider">
-        <span>Resumen del sistema</span>
+        <span>{{ t('coach_growth.flow.summary_title') }}</span>
       </div>
 
       <div class="summary-table">
         <header class="summary-header">
-          <p>Flujo completo · Del primer DM al cliente fidelizado</p>
+          <p>{{ t('coach_growth.flow.summary_subtitle') }}</p>
         </header>
         <div class="summary-row">
-          <div class="summary-stage accent-red">Preventa</div>
+          <div class="summary-stage accent-red">{{ t('coach_growth.flow.summary_preventa') }}</div>
           <div class="summary-pills">
-            <span class="summary-pill">01 · Contenido</span>
-            <span class="summary-pill">02 · Contacto</span>
-            <span class="summary-pill">03 · Diagnóstico</span>
-            <span class="summary-pill">04 · Solución</span>
-            <span class="summary-pill">05 · Oferta HTML</span>
-            <span class="summary-pill">06 · Pago</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_01_contenido') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_02_contacto') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_03_diagnostico') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_04_solucion') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_05_oferta') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_06_pago') }}</span>
           </div>
           <div class="summary-count">6</div>
         </div>
         <div class="summary-row">
-          <div class="summary-stage accent-gold">Onboarding</div>
+          <div class="summary-stage accent-gold">{{ t('coach_growth.flow.summary_onboarding') }}</div>
           <div class="summary-pills">
-            <span class="summary-pill">01 · Acceso plataforma</span>
-            <span class="summary-pill">02 · Entrevista perfil</span>
-            <span class="summary-pill">03 · Ticket portal</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_acceso') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_entrevista') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_ticket') }}</span>
           </div>
           <div class="summary-count">3</div>
         </div>
         <div class="summary-row">
-          <div class="summary-stage accent-blue">Activación</div>
+          <div class="summary-stage accent-blue">{{ t('coach_growth.flow.summary_activacion') }}</div>
           <div class="summary-pills">
-            <span class="summary-pill">01 · Presentar plan</span>
-            <span class="summary-pill">02 · Orientar portal</span>
-            <span class="summary-pill">03 · Primera semana</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_presentar') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_orientar') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_primera_semana') }}</span>
           </div>
           <div class="summary-count">3</div>
         </div>
         <div class="summary-row">
-          <div class="summary-stage accent-green">Activo</div>
+          <div class="summary-stage accent-green">{{ t('coach_growth.flow.summary_activo') }}</div>
           <div class="summary-pills">
-            <span class="summary-pill">Check-in semanal</span>
-            <span class="summary-pill">Revisión mensual</span>
-            <span class="summary-pill">Chat directo</span>
-            <span class="summary-pill">Renovación</span>
-            <span class="summary-pill">Referidos</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_checkin') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_revision') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_chat') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_renovacion') }}</span>
+            <span class="summary-pill">{{ t('coach_growth.flow.summary_pill_referidos') }}</span>
           </div>
           <div class="summary-count">∞</div>
         </div>
@@ -402,10 +490,10 @@ function goNext() { if (!isLast.value) setActive(activeIndex.value + 1); }
 
       <!-- ── POWERED BY ── -->
       <div class="powered-bar">
-        <span>Powered</span><span class="dot"></span>
-        <span>by</span><span class="dot"></span>
-        <span class="brand">WellCore Fitness</span><span class="dot"></span>
-        <span>Metodología basada en evidencia científica</span>
+        <span>{{ t('coach_growth.flow.powered_word') }}</span><span class="dot"></span>
+        <span>{{ t('coach_growth.flow.powered_by') }}</span><span class="dot"></span>
+        <span class="brand">{{ t('coach_growth.flow.powered_brand') }}</span><span class="dot"></span>
+        <span>{{ t('coach_growth.flow.powered_tagline') }}</span>
       </div>
 
     </div>

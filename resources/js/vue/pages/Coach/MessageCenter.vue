@@ -1,17 +1,7 @@
-<!-- Message templates — static data from ResponseTemplateService (context: "message") -->
-<script>
-const MESSAGE_TEMPLATES = [
-  { title: 'Bienvenida', body: 'Bienvenido/a a WellCore! Estoy aqui para guiarte en tu transformacion. Revisa tu plan de entrenamiento y no dudes en escribirme si tienes preguntas.' },
-  { title: 'Recordatorio check-in', body: 'Recuerda completar tu check-in semanal para que pueda evaluar tu progreso y ajustar el plan si es necesario. Tu feedback es clave para tus resultados.' },
-  { title: 'Felicitacion general', body: 'Queria felicitarte por tu compromiso y dedicacion. Los resultados se estan notando y quiero que sepas que tu esfuerzo vale la pena. Sigue asi!' },
-  { title: 'Recordatorio rutina', body: 'Recuerda que tu nueva rutina ya esta disponible en el dashboard. Revisa los ejercicios y avisame si tienes alguna duda antes de empezar.' },
-  { title: 'Seguimiento semanal', body: 'Como vas con el entrenamiento esta semana? Queria hacer un seguimiento rapido. Cuentame como te has sentido y si has tenido algun problema con los ejercicios.' },
-  { title: 'Disponibilidad', body: 'Estoy disponible para resolver cualquier duda que tengas. Puedes escribirme por aqui o crear un ticket si necesitas algo especifico. Estamos para ayudarte.' },
-];
-</script>
-
+<!-- Message templates — translated via coach_inbox namespace (context: "message") -->
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { useAuthStore } from '../../stores/auth';
 import { useSmartPolling } from '../../composables/useSmartPolling';
@@ -22,6 +12,17 @@ import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
 const api = useApi();
 const authStore = useAuthStore();
+const { t } = useI18n();
+
+// Quick reply templates — built reactively so they react to locale switches
+const MESSAGE_TEMPLATES = computed(() => [
+  { title: t('coach_inbox.tpl_welcome_title'),          body: t('coach_inbox.tpl_welcome_body') },
+  { title: t('coach_inbox.tpl_checkin_reminder_title'), body: t('coach_inbox.tpl_checkin_reminder_body') },
+  { title: t('coach_inbox.tpl_congrats_title'),         body: t('coach_inbox.tpl_congrats_body') },
+  { title: t('coach_inbox.tpl_routine_reminder_title'), body: t('coach_inbox.tpl_routine_reminder_body') },
+  { title: t('coach_inbox.tpl_weekly_followup_title'),  body: t('coach_inbox.tpl_weekly_followup_body') },
+  { title: t('coach_inbox.tpl_availability_title'),     body: t('coach_inbox.tpl_availability_body') },
+]);
 
 const loading = ref(true);
 const clients = ref([]);
@@ -49,10 +50,11 @@ let sidebarInterval = null;
 
 // Filtered templates based on search
 const filteredTemplates = computed(() => {
-  if (!templateSearch.value) return MESSAGE_TEMPLATES;
+  const all = MESSAGE_TEMPLATES.value;
+  if (!templateSearch.value) return all;
   const q = templateSearch.value.toLowerCase();
-  return MESSAGE_TEMPLATES.filter(
-    (t) => t.title.toLowerCase().includes(q) || t.body.toLowerCase().includes(q)
+  return all.filter(
+    (tpl) => tpl.title.toLowerCase().includes(q) || tpl.body.toLowerCase().includes(q)
   );
 });
 
@@ -201,14 +203,14 @@ async function sendMessage() {
       id: Date.now(),
       message: text,
       is_coach: true,
-      time: 'Ahora',
+      time: t('coach_inbox.messages_sent_now'),
     });
     await nextTick();
     scrollToBottom();
   } catch {
     // Restore typed text so the coach doesn't lose their message
     newMessage.value = text;
-    sendError.value = 'No se pudo enviar el mensaje.';
+    sendError.value = t('coach_inbox.messages_send_error');
   } finally {
     sending.value = false;
   }
@@ -244,7 +246,7 @@ onBeforeUnmount(() => {
   <CoachLayout>
     <div class="space-y-6">
 
-      <WcPageHeader contextLabel="PRINCIPAL" title="MENSAJES" subtitle="Conversaciones con tus clientes" />
+      <WcPageHeader :contextLabel="t('coach_inbox.context_main')" :title="t('coach_inbox.messages_title')" :subtitle="t('coach_inbox.messages_subtitle')" />
 
       <!-- Loading skeleton -->
       <template v-if="loading">
@@ -272,12 +274,12 @@ onBeforeUnmount(() => {
         <!-- Client list panel -->
         <div class="rounded-[14px] border border-[var(--b1)] lg:col-span-4 overflow-hidden flex flex-col" style="background: var(--s2); box-shadow: var(--shadow-card-ios);">
           <div class="border-b border-[var(--b1)] px-4 py-3">
-            <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">Clientes</p>
+            <p class="font-sans text-xs font-bold uppercase tracking-widest text-wc-text-secondary">{{ t('coach_inbox.messages_panel_clients_title') }}</p>
           </div>
           <div class="flex-1 overflow-y-auto">
             <div v-if="clientsError" class="px-4 py-3 text-center text-xs text-red-400">
-              Error al cargar clientes.
-              <button @click="loadClients" class="ml-1 underline hover:no-underline">Reintentar</button>
+              {{ t('coach_inbox.messages_panel_clients_error') }}
+              <button @click="loadClients" class="ml-1 underline hover:no-underline">{{ t('coach_inbox.messages_panel_retry') }}</button>
             </div>
             <ul v-if="clients.length > 0" class="divide-y divide-[var(--b1)]">
               <li v-for="client in clients" :key="client.id">
@@ -304,7 +306,7 @@ onBeforeUnmount(() => {
                       <p class="text-sm font-medium text-wc-text truncate" :class="{ 'font-semibold': client.unread_count > 0 }">{{ client.name }}</p>
                       <span v-if="client.last_message_time" class="shrink-0 text-[10px] text-wc-text-tertiary">{{ client.last_message_time }}</span>
                     </div>
-                    <p class="text-xs text-wc-text-tertiary truncate" :class="{ 'text-wc-text-secondary font-medium': client.unread_count > 0 }">{{ client.last_message_preview || 'Sin mensajes' }}</p>
+                    <p class="text-xs text-wc-text-tertiary truncate" :class="{ 'text-wc-text-secondary font-medium': client.unread_count > 0 }">{{ client.last_message_preview || t('coach_inbox.messages_no_messages_preview') }}</p>
                   </div>
                 </button>
               </li>
@@ -312,8 +314,8 @@ onBeforeUnmount(() => {
             <EmptyState
               v-else
               kind="messages"
-              title="Sin clientes asignados"
-              subtitle="Cuando se te asigne un cliente, aparecerá aquí."
+              :title="t('coach_inbox.messages_empty_clients_title')"
+              :subtitle="t('coach_inbox.messages_empty_clients_subtitle')"
             />
           </div>
         </div>
@@ -331,19 +333,19 @@ onBeforeUnmount(() => {
               />
               <div class="flex-1">
                 <p class="text-sm font-medium text-wc-text">{{ selectedClient.name }}</p>
-                <p class="text-xs text-wc-text-tertiary">{{ selectedClient.plan || 'Sin plan' }}</p>
+                <p class="text-xs text-wc-text-tertiary">{{ selectedClient.plan || t('coach_inbox.messages_client_no_plan') }}</p>
               </div>
               <!-- Realtime indicator -->
               <div v-if="echoChannel" class="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5">
                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-[10px] font-medium text-emerald-500">En vivo</span>
+                <span class="text-[10px] font-medium text-emerald-500">{{ t('coach_inbox.messages_live_indicator') }}</span>
               </div>
             </div>
 
             <!-- Messages load error -->
             <div v-if="messagesError" class="flex items-center justify-between border-b border-wc-border bg-red-500/10 px-4 py-2 text-xs text-red-400">
-              <span>No se pudieron cargar los mensajes.</span>
-              <button @click="loadMessages(selectedClientId)" class="ml-2 shrink-0 underline hover:no-underline">Reintentar</button>
+              <span>{{ t('coach_inbox.messages_load_error') }}</span>
+              <button @click="loadMessages(selectedClientId)" class="ml-2 shrink-0 underline hover:no-underline">{{ t('coach_inbox.messages_panel_retry') }}</button>
             </div>
 
             <!-- Messages -->
@@ -362,8 +364,8 @@ onBeforeUnmount(() => {
               <EmptyState
                 v-else
                 kind="messages"
-                title="Inicia la conversación"
-                subtitle="Envía el primer mensaje para empezar el chat."
+                :title="t('coach_inbox.messages_empty_thread_title')"
+                :subtitle="t('coach_inbox.messages_empty_thread_subtitle')"
               />
             </div>
 
@@ -377,12 +379,12 @@ onBeforeUnmount(() => {
                     @click="toggleTemplates"
                     type="button"
                     class="inline-flex items-center gap-1.5 rounded-button bg-wc-bg-secondary px-3 py-2.5 text-xs font-medium text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text border border-wc-border transition-colors"
-                    title="Plantillas de respuesta rapida"
+                    :title="t('coach_inbox.messages_templates_tooltip')"
                   >
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    <span class="hidden sm:inline">Plantillas</span>
+                    <span class="hidden sm:inline">{{ t('coach_inbox.messages_templates_title') }}</span>
                   </button>
 
                   <!-- Template dropdown -->
@@ -401,7 +403,7 @@ onBeforeUnmount(() => {
                             ref="templateSearchInput"
                             v-model="templateSearch"
                             type="text"
-                            placeholder="Buscar plantilla..."
+                            :placeholder="t('coach_inbox.messages_templates_search_placeholder')"
                             class="w-full rounded-button border border-wc-border bg-wc-bg-secondary py-1.5 pl-8 pr-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
                             @keydown.escape="templateOpen = false"
                           />
@@ -427,14 +429,14 @@ onBeforeUnmount(() => {
 
                         <!-- No results -->
                         <div v-if="filteredTemplates.length === 0" class="px-3 py-6 text-center">
-                          <p class="text-xs text-wc-text-tertiary">No se encontraron plantillas para "<span class="font-medium text-wc-text-secondary">{{ templateSearch }}</span>"</p>
+                          <p class="text-xs text-wc-text-tertiary">{{ t('coach_inbox.messages_templates_no_results', { query: templateSearch }) }}</p>
                         </div>
                       </div>
 
                       <!-- Footer hint -->
                       <div class="border-t border-wc-border px-3 py-2">
                         <p class="text-[10px] text-wc-text-tertiary text-center">
-                          {{ MESSAGE_TEMPLATES.length }} plantillas disponibles
+                          {{ MESSAGE_TEMPLATES.length === 1 ? t('coach_inbox.messages_templates_footer_one') : t('coach_inbox.messages_templates_footer_other', { count: MESSAGE_TEMPLATES.length }) }}
                         </p>
                       </div>
                     </div>
@@ -453,7 +455,7 @@ onBeforeUnmount(() => {
                 <input
                   v-model="newMessage"
                   type="text"
-                  placeholder="Escribe un mensaje..."
+                  :placeholder="t('coach_inbox.messages_input_placeholder')"
                   class="flex-1 rounded-button border border-wc-border bg-wc-bg-secondary py-2.5 px-4 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
                   :disabled="sending"
                 />
@@ -478,8 +480,8 @@ onBeforeUnmount(() => {
           <div v-else class="flex flex-1 items-center justify-center">
             <EmptyState
               kind="messages"
-              title="Selecciona un cliente"
-              subtitle="Elige un cliente del panel izquierdo para ver la conversación."
+              :title="t('coach_inbox.messages_no_client_selected_title')"
+              :subtitle="t('coach_inbox.messages_no_client_selected_subtitle')"
             />
           </div>
         </div>

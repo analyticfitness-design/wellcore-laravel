@@ -1,5 +1,8 @@
 <script setup>
 import { ref, computed, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     bank: { type: Object, required: true },
@@ -7,9 +10,9 @@ const props = defineProps({
 
 // Items por columna — code prefix mapping
 const COLS = [
-    { type: 'h', key: 'alt_hooks', title: 'Hooks', icon: 'orange' },
-    { type: 'c', key: 'alt_ctas', title: 'CTAs', icon: 'emerald' },
-    { type: 'k', key: 'alt_captions', title: 'Captions', icon: 'sky' },
+    { type: 'h', key: 'alt_hooks', titleKey: 'bank_col_hooks', icon: 'orange' },
+    { type: 'c', key: 'alt_ctas', titleKey: 'bank_col_ctas', icon: 'emerald' },
+    { type: 'k', key: 'alt_captions', titleKey: 'bank_col_captions', icon: 'sky' },
 ];
 
 const taken = ref({}); // key: `${type}-${idx}` -> true
@@ -48,6 +51,7 @@ async function copyText(text, type, idx) {
 
 const itemsByCol = computed(() => COLS.map(col => ({
     ...col,
+    title: t(`coach_growth.strategy.${col.titleKey}`),
     items: props.bank?.[col.key] ?? [],
 })));
 
@@ -62,7 +66,7 @@ onBeforeUnmount(() => {
 <template>
     <div v-if="!hasAnyItems" class="card">
         <p class="banco-empty" style="text-align:center;color:var(--ink-3,#888);font-family:var(--font-mono,monospace);font-size:.85rem;padding:2rem 0;">
-            Sin alternativos disponibles
+            {{ t('coach_growth.strategy.bank_empty_long') }}
         </p>
     </div>
 
@@ -85,7 +89,7 @@ onBeforeUnmount(() => {
                         <button
                             type="button"
                             class="banco-copy-btn"
-                            :title="`Copiar ${codeFor(col.type, idx)}`"
+                            :title="t('coach_growth.strategy.bank_copy_title', { code: codeFor(col.type, idx) })"
                             @click="copyText(text, col.type, idx)"
                         >
                             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -96,11 +100,11 @@ onBeforeUnmount(() => {
                                 />
                             </svg>
                         </button>
-                        <div class="banco-taken-overlay">✓ TAKEN</div>
+                        <div class="banco-taken-overlay">{{ t('coach_growth.strategy.bank_taken') }}</div>
                     </div>
                 </template>
                 <p v-else class="banco-empty" style="font-size:.78rem;color:var(--ink-3,#888);font-family:var(--font-mono,monospace);padding:.5rem 0;">
-                    Sin alternativos
+                    {{ t('coach_growth.strategy.bank_empty_short') }}
                 </p>
             </div>
         </div>

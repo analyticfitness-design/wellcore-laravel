@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { useRoute, RouterLink } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   tabs: { type: Array, required: true },
@@ -8,6 +9,7 @@ const props = defineProps({
 
 const emit = defineEmits(['tab-change']);
 
+const { t } = useI18n();
 const route = useRoute();
 const navRef = ref(null);
 const indicatorStyle = ref({ left: '0px', width: '0px', opacity: 0 });
@@ -44,7 +46,7 @@ watch(() => route.name, () => {
 </script>
 
 <template>
-  <nav class="bottom-nav-ios" role="navigation" aria-label="Navegación principal">
+  <nav class="bottom-nav-ios" role="navigation" :aria-label="t('coach_nav.main_navigation')">
     <div ref="navRef" class="bottom-nav-ios-inner">
       <span class="tab-indicator" :style="indicatorStyle" aria-hidden="true" />
       <RouterLink
@@ -58,7 +60,7 @@ watch(() => route.name, () => {
         ]"
         style="transition-duration: var(--t-tap); transition-timing-function: var(--ease-spring-ios);"
         :aria-current="activeIdx === i ? 'page' : undefined"
-        :aria-label="tab.label + (tab.badge ? ', ' + tab.badge + ' pendientes' : '')"
+        :aria-label="tab.label + (tab.badge ? ', ' + tab.badge + ' ' + t('coach_nav.pending') : '')"
         @click="emit('tab-change', tab)"
       >
         <span

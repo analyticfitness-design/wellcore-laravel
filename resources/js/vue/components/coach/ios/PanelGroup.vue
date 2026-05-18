@@ -1,12 +1,18 @@
 <script setup>
-defineProps({
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps({
   title: { type: String, default: '' },
   badge: { type: String, default: '' },
   link: { type: String, default: '' },
-  linkLabel: { type: String, default: 'Ver todos →' },
+  linkLabel: { type: String, default: '' },
 });
 
 const emit = defineEmits(['link-click']);
+const { t } = useI18n();
+
+const resolvedLinkLabel = computed(() => props.linkLabel || t('coach_home.messages_see_all'));
 </script>
 
 <template>
@@ -20,7 +26,7 @@ const emit = defineEmits(['link-click']);
         class="section-link"
         @click.prevent="emit('link-click')"
       >
-        {{ linkLabel }}
+        {{ resolvedLinkLabel }}
       </a>
     </header>
     <div class="panel">

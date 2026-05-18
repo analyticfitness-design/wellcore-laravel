@@ -1,7 +1,9 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useCoachStrategyStore } from '../../../stores/coachStrategy';
 
+const { t } = useI18n();
 const store = useCoachStrategyStore();
 const comingSoon = ref(false);
 
@@ -11,19 +13,33 @@ onMounted(async () => {
     }
 });
 
-const statusLabels = {
-    pending: { label: 'Pendiente', cls: 'bg-yellow-500/10 text-yellow-500' },
-    generating: { label: 'Generando', cls: 'bg-blue-500/10 text-blue-400' },
-    in_review: { label: 'En revision', cls: 'bg-blue-500/10 text-blue-400' },
-    approved: { label: 'Aprobado', cls: 'bg-emerald-500/10 text-emerald-400' },
-    ready: { label: 'Listo', cls: 'bg-emerald-500/10 text-emerald-400' },
-    in_progress: { label: 'En progreso', cls: 'bg-blue-500/10 text-blue-400' },
-    completed: { label: 'Completado', cls: 'bg-emerald-500/10 text-emerald-500' },
-    archived: { label: 'Archivado', cls: 'bg-wc-bg-tertiary text-wc-text-tertiary' },
+const statusClasses = {
+    pending: 'bg-yellow-500/10 text-yellow-500',
+    generating: 'bg-blue-500/10 text-blue-400',
+    in_review: 'bg-blue-500/10 text-blue-400',
+    approved: 'bg-emerald-500/10 text-emerald-400',
+    ready: 'bg-emerald-500/10 text-emerald-400',
+    in_progress: 'bg-blue-500/10 text-blue-400',
+    completed: 'bg-emerald-500/10 text-emerald-500',
+    archived: 'bg-wc-bg-tertiary text-wc-text-tertiary',
+};
+
+const statusKeys = {
+    pending: 'status_pending',
+    generating: 'status_generating',
+    in_review: 'status_in_review',
+    approved: 'status_approved',
+    ready: 'status_ready',
+    in_progress: 'status_in_progress',
+    completed: 'status_completed',
+    archived: 'status_archived',
 };
 
 function getStatusConfig(status) {
-    return statusLabels[status] ?? { label: status, cls: 'bg-wc-bg-tertiary text-wc-text-tertiary' };
+    const cls = statusClasses[status] ?? 'bg-wc-bg-tertiary text-wc-text-tertiary';
+    const key = statusKeys[status];
+    const label = key ? t(`coach_growth.history.${key}`) : status;
+    return { label, cls };
 }
 </script>
 
@@ -34,7 +50,7 @@ function getStatusConfig(status) {
         </div>
 
         <div v-else-if="!store.history.length" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-12 text-center">
-            <p class="text-sm text-wc-text-secondary">Sin historial de drops anteriores.</p>
+            <p class="text-sm text-wc-text-secondary">{{ t('coach_growth.history.empty') }}</p>
         </div>
 
         <div v-else class="space-y-4">
@@ -48,20 +64,20 @@ function getStatusConfig(status) {
                 <div class="flex items-start justify-between gap-4">
                     <div class="space-y-2 flex-1">
                         <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">
-                            {{ drop.iso_year }}-W{{ String(drop.iso_week).padStart(2, '0') }}
+                            {{ t('coach_growth.history.week_label', { year: drop.iso_year, week: String(drop.iso_week).padStart(2, '0') }) }}
                         </span>
                         <h3 class="font-display text-xl uppercase tracking-tight text-wc-text">
-                            {{ drop.brief_title ?? 'Sin titulo' }}
+                            {{ drop.brief_title ?? t('coach_growth.history.no_title') }}
                         </h3>
 
                         <!-- Progress bar -->
                         <div class="pt-1">
                             <div class="flex items-center justify-between mb-1">
                                 <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-wc-text-tertiary">
-                                    Progreso
+                                    {{ t('coach_growth.history.progress_label') }}
                                 </span>
                                 <span class="font-data text-xs text-wc-text tabular-nums">
-                                    {{ drop.pieces_completed }} / {{ drop.pieces_total }}
+                                    {{ t('coach_growth.history.progress_count', { done: drop.pieces_completed, total: drop.pieces_total }) }}
                                 </span>
                             </div>
                             <div class="h-px w-full bg-wc-border">
@@ -95,15 +111,15 @@ function getStatusConfig(status) {
         <Transition name="fade">
             <div v-if="comingSoon" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4" @click="comingSoon = false">
                 <div class="rounded-xl border border-wc-border bg-wc-bg-secondary p-8 text-center max-w-sm w-full" @click.stop>
-                    <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">Proximo</span>
-                    <h3 class="mt-3 font-display text-2xl uppercase text-wc-text">Vista detallada del drop</h3>
-                    <p class="mt-2 text-sm text-wc-text-secondary">Esta funcion estara disponible pronto.</p>
+                    <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-wc-text-tertiary">{{ t('coach_growth.history.coming_soon_label') }}</span>
+                    <h3 class="mt-3 font-display text-2xl uppercase text-wc-text">{{ t('coach_growth.history.coming_soon_title') }}</h3>
+                    <p class="mt-2 text-sm text-wc-text-secondary">{{ t('coach_growth.history.coming_soon_body') }}</p>
                     <button
                         type="button"
                         @click="comingSoon = false"
                         class="mt-6 rounded-lg bg-wc-accent px-6 py-2 font-mono text-xs uppercase tracking-wider text-white hover:bg-wc-accent/90 transition-colors"
                     >
-                        Cerrar
+                        {{ t('coach_growth.history.coming_soon_close') }}
                     </button>
                 </div>
             </div>

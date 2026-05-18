@@ -1,4 +1,5 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
 import AvatarConic from './AvatarConic.vue';
 import PRBadge from './PRBadge.vue';
 
@@ -18,6 +19,7 @@ defineProps({
 });
 
 const emit = defineEmits(['click']);
+const { t } = useI18n();
 </script>
 
 <template>
@@ -47,7 +49,7 @@ const emit = defineEmits(['click']);
     <span
       v-if="isUnread"
       class="w-2 h-2 rounded-full bg-wc-accent flex-shrink-0 mt-1.5"
-      aria-label="Sin leer"
+      :aria-label="t('coach_nav.unread')"
     />
   </button>
 </template>

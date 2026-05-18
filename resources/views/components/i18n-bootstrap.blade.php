@@ -8,7 +8,7 @@
     <x-i18n-bootstrap :namespaces="['nav','dashboard','common','validation']" />
 --}}
 @props([
-    'namespaces' => ['nav', 'dashboard', 'client_dashboard', 'client_nav', 'client_home', 'client_plan', 'client_social', 'client_progress', 'client_account', 'coach_nav', 'common', 'coaches', 'validation'],
+    'namespaces' => ['nav', 'dashboard', 'client_dashboard', 'client_nav', 'client_home', 'client_plan', 'client_social', 'client_progress', 'client_account', 'coach_nav', 'coach_home', 'coach_inbox', 'coach_ops', 'coach_growth', 'common', 'coaches', 'validation'],
 ])
 
 @php

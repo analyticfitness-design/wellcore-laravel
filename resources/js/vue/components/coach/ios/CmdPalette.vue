@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -9,6 +10,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:open', 'execute']);
 
+const { t } = useI18n();
 const router = useRouter();
 const inputRef = ref(null);
 const query = ref('');
@@ -111,7 +113,7 @@ function indexOfItem(itemId) {
       :class="['cmd-palette', { open }]"
       role="dialog"
       :aria-modal="open"
-      aria-label="Buscar y ejecutar comandos"
+      :aria-label="t('coach_nav.palette_label')"
     >
       <div class="flex items-center gap-2.5 p-3.5 px-4 border-b" style="border-color: var(--b1);">
         <svg class="h-4 w-4 flex-shrink-0" style="stroke: var(--color-wc-text-3);" fill="none" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
@@ -121,7 +123,7 @@ function indexOfItem(itemId) {
           ref="inputRef"
           v-model="query"
           type="text"
-          placeholder="Buscar o ejecutar comando…"
+          :placeholder="t('coach_nav.search_or_run_cmd')"
           autocomplete="off"
           class="flex-1 bg-transparent border-none outline-none font-sans text-[15px] font-medium text-wc-text"
           style="caret-color: var(--color-wc-accent);"
@@ -159,13 +161,13 @@ function indexOfItem(itemId) {
           </button>
         </template>
         <div v-if="filteredFlat.length === 0" class="p-6 text-center text-[13px]" style="color: var(--color-wc-text-3);">
-          Sin resultados para "{{ query }}"
+          {{ t('coach_nav.palette_no_results', { query }) }}
         </div>
       </div>
       <div class="flex items-center gap-3 px-4 py-2 border-t text-[10px]" style="border-color: var(--b1); color: var(--color-wc-text-3);">
-        <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 border rounded text-[9px]" style="background: var(--s2); border-color: var(--b1);">↑↓</kbd> Navegar</span>
-        <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 border rounded text-[9px]" style="background: var(--s2); border-color: var(--b1);">↵</kbd> Seleccionar</span>
-        <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 border rounded text-[9px]" style="background: var(--s2); border-color: var(--b1);">Esc</kbd> Cerrar</span>
+        <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 border rounded text-[9px]" style="background: var(--s2); border-color: var(--b1);">↑↓</kbd> {{ t('coach_nav.palette_navigate') }}</span>
+        <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 border rounded text-[9px]" style="background: var(--s2); border-color: var(--b1);">↵</kbd> {{ t('coach_nav.palette_select') }}</span>
+        <span class="flex items-center gap-1"><kbd class="px-1 py-0.5 border rounded text-[9px]" style="background: var(--s2); border-color: var(--b1);">Esc</kbd> {{ t('coach_nav.palette_close') }}</span>
       </div>
     </div>
     </div>

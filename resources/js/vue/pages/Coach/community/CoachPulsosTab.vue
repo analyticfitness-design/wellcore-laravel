@@ -1,8 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useCoachCommunity } from '../../../composables/useCoachCommunity';
 import AvatarConic from '../../../components/coach/ios/AvatarConic.vue';
 import EmptyState from '../../../components/coach/ios/EmptyState.vue';
+
+const { t } = useI18n();
 
 const { fetchPulsos, loading, error } = useCoachCommunity();
 const pulsos = ref([]);
@@ -24,8 +27,8 @@ onMounted(() => load());
     <EmptyState
       v-else-if="!pulsos.length"
       kind="activity"
-      title="Sin pulsos activos"
-      subtitle="Los pulsos duran 24-48h. Cuando un cliente suba uno, aparecerá aquí en orden de prioridad."
+      :title="t('coach_inbox.stories_empty_title')"
+      :subtitle="t('coach_inbox.stories_empty_subtitle')"
     />
     <div v-else class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
       <button
@@ -40,7 +43,7 @@ onMounted(() => load());
           tone="accent"
           size="lg"
         />
-        <span class="text-[10px] text-wc-text-tertiary mt-1 truncate w-full">{{ p.client_name || 'Cliente' }}</span>
+        <span class="text-[10px] text-wc-text-tertiary mt-1 truncate w-full">{{ p.client_name || t('coach_inbox.stories_client_fallback') }}</span>
       </button>
     </div>
   </div>

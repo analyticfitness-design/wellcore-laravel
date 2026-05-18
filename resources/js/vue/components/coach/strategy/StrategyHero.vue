@@ -1,7 +1,10 @@
 <script setup>
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { coachStrategyApi } from '../../../api/coachStrategy';
 import { useViewportAnimate } from '../../../composables/dashboard/useViewportAnimate';
+
+const { t } = useI18n();
 
 const props = defineProps({
     drop: { type: Object, required: true },
@@ -19,7 +22,7 @@ async function downloadAllAssets() {
     try {
         await coachStrategyApi.downloadZip(props.drop.id);
     } catch (e) {
-        zipError.value = e?.response?.data?.message ?? 'Error al generar ZIP';
+        zipError.value = e?.response?.data?.message ?? t('coach_growth.strategy.hero_zip_error');
     } finally {
         downloadingZip.value = false;
     }
@@ -36,7 +39,7 @@ const progressPct = computed(() => {
 
 const weekNumberPadded = computed(() => String(props.drop.iso_week ?? 0).padStart(2, '0'));
 const weekLabel = computed(
-    () => `WC · ESTRATEGIA / SEMANA-${weekNumberPadded.value} / ${props.drop.iso_year}`,
+    () => t('coach_growth.strategy.hero_week_label', { week: weekNumberPadded.value, year: props.drop.iso_year }),
 );
 
 const briefTitle = computed(() => props.drop.content?.brief?.title ?? '');
@@ -110,7 +113,7 @@ const titleHtml = computed(() => {
                             </svg>
                             <div class="ring-labels">
                                 <span class="ring-num">{{ publishedPieces }}/<span>{{ totalPieces }}</span></span>
-                                <span class="ring-sub">PIEZAS</span>
+                                <span class="ring-sub">{{ t('coach_growth.strategy.hero_pieces_label') }}</span>
                             </div>
                         </div>
 
@@ -124,7 +127,7 @@ const titleHtml = computed(() => {
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                             </svg>
-                            {{ downloadingZip ? 'Generando ZIP...' : `Descargar todo (${assetCount})` }}
+                            {{ downloadingZip ? t('coach_growth.strategy.hero_zip_generating') : t('coach_growth.strategy.hero_zip_download', { count: assetCount }) }}
                         </button>
                         <span v-if="zipError" class="font-mono text-[10px] text-red-400">{{ zipError }}</span>
                     </div>

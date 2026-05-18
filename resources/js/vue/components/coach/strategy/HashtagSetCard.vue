@@ -1,5 +1,8 @@
 <script setup>
 import { ref, computed, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     hashtags: { type: Object, required: true },
@@ -50,7 +53,7 @@ onBeforeUnmount(() => {
 <template>
     <div v-if="!sets.length" class="card">
         <p style="text-align:center;color:var(--ink-3,#888);font-family:var(--font-mono,monospace);font-size:.85rem;padding:2rem 0;">
-            Sin sets de hashtags disponibles
+            {{ t('coach_growth.strategy.hash_empty') }}
         </p>
     </div>
 
@@ -59,7 +62,7 @@ onBeforeUnmount(() => {
             <span class="t-dot t-r"></span>
             <span class="t-dot t-y"></span>
             <span class="t-dot t-g"></span>
-            <span class="t-prompt">wellcore@coach:~/semana-{{ promptWeek }}/hashtags $</span>
+            <span class="t-prompt">{{ t('coach_growth.strategy.hash_prompt_label', { week: promptWeek }) }}</span>
         </div>
 
         <div class="htabs">
@@ -71,7 +74,7 @@ onBeforeUnmount(() => {
                 :class="{ active: activeTab === idx }"
                 @click="activeTab = idx"
             >
-                Set {{ setLabel(idx) }}<template v-if="set.name"> · {{ set.name }}</template>
+                {{ set.name ? t('coach_growth.strategy.hash_set_name', { letter: setLabel(idx), name: set.name }) : t('coach_growth.strategy.hash_set_label', { letter: setLabel(idx) }) }}
             </button>
         </div>
 
@@ -102,7 +105,7 @@ onBeforeUnmount(() => {
                             d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185"
                         />
                     </svg>
-                    <span class="copy-set-label">{{ copiedIdx === idx ? 'Copiado ✓' : 'Copiar set completo' }}</span>
+                    <span class="copy-set-label">{{ copiedIdx === idx ? t('coach_growth.strategy.hash_copied') : t('coach_growth.strategy.hash_copy') }}</span>
                 </button>
             </div>
         </div>

@@ -1,7 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ReelTimecodeTable from './ReelTimecodeTable.vue';
 import PieceMarkPublishedButton from './PieceMarkPublishedButton.vue';
+
+const { t } = useI18n();
 // import { coachStrategyApi } from '../../../api/coachStrategy';
 
 const props = defineProps({
@@ -71,7 +74,7 @@ const hookHtml = computed(() => {
     });
 });
 
-const igHandle = computed(() => props.drop?.coach?.handle ?? 'tu.coach');
+const igHandle = computed(() => props.drop?.coach?.handle ?? t('coach_growth.strategy.reel_default_handle'));
 const avatarInitial = computed(() => igHandle.value.charAt(0).toUpperCase());
 
 const captionPreview = computed(() => {
@@ -122,7 +125,7 @@ async function copyCaption() {
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
                         </svg>
                     </span>
-                    <span class="eyebrow">Hook de apertura</span>
+                    <span class="eyebrow">{{ t('coach_growth.strategy.reel_hook_eyebrow') }}</span>
                 </div>
                 <p class="hook-text" v-html="hookHtml"></p>
                 <p v-if="reel.hook?.rationale" class="hook-rationale">{{ reel.hook.rationale }}</p>
@@ -131,7 +134,7 @@ async function copyCaption() {
             <div v-if="reel.timecode_table?.length">
                 <div class="section-eyebrow">
                     <span class="ic ic-sky ic-sm"></span>
-                    <span class="eyebrow">Guion por escenas</span>
+                    <span class="eyebrow">{{ t('coach_growth.strategy.reel_scenes_eyebrow') }}</span>
                 </div>
                 <ReelTimecodeTable :rows="reel.timecode_table" />
             </div>
@@ -143,7 +146,7 @@ async function copyCaption() {
                         <span class="ig-handle">{{ igHandle }}</span>
                         <span class="ig-more">···</span>
                     </div>
-                    <div class="ig-img-ph">reel · 9:16</div>
+                    <div class="ig-img-ph">{{ t('coach_growth.strategy.reel_image_placeholder') }}</div>
                     <div class="ig-actions">
                         <svg class="ig-act-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
@@ -157,7 +160,7 @@ async function copyCaption() {
                     </div>
                     <div class="ig-body">
                         <p class="ig-cap-text">
-                            <strong>{{ igHandle }}</strong> {{ captionPreview }}<span style="color:#888"> más</span>
+                            <strong>{{ igHandle }}</strong> {{ captionPreview }}<span style="color:#888">{{ t('coach_growth.strategy.reel_more') }}</span>
                         </p>
                     </div>
                 </div>
@@ -165,7 +168,7 @@ async function copyCaption() {
                     <div class="caption-raw-head">
                         <div style="display:flex;align-items:center;gap:.5rem;">
                             <span class="ic ic-sky ic-sm"></span>
-                            <span class="eyebrow">Caption</span>
+                            <span class="eyebrow">{{ t('coach_growth.strategy.reel_caption_eyebrow') }}</span>
                         </div>
                         <button
                             type="button"
@@ -173,7 +176,7 @@ async function copyCaption() {
                             :class="{ copied: captionCopied }"
                             @click="copyCaption"
                         >
-                            {{ captionCopied ? 'Copiado ✓' : 'Copiar' }}
+                            {{ captionCopied ? t('coach_growth.strategy.reel_copied') : t('coach_growth.strategy.reel_copy') }}
                         </button>
                     </div>
                     <pre class="caption-raw">{{ reel.caption }}</pre>
@@ -187,14 +190,14 @@ async function copyCaption() {
                     </svg>
                 </span>
                 <span class="music-text">{{ reel.music_note }}</span>
-                <span v-if="reel.format_meta?.bpm_hint" class="bpm-badge">● {{ reel.format_meta.bpm_hint }} BPM</span>
+                <span v-if="reel.format_meta?.bpm_hint" class="bpm-badge">{{ t('coach_growth.strategy.reel_bpm', { bpm: reel.format_meta.bpm_hint }) }}</span>
             </div>
 
             <details v-if="reel.production_notes" class="prod-notes">
                 <summary>
                     <span class="prod-chev">▶</span>
                     <span class="ic ic-sky ic-sm" style="margin-left:.25rem"></span>
-                    Notas de producción
+                    {{ t('coach_growth.strategy.reel_prod_notes') }}
                 </summary>
                 <div class="prod-body">{{ reel.production_notes }}</div>
             </details>

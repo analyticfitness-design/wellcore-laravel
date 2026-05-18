@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { useRouter } from 'vue-router';
 import CoachLayout from '../../layouts/CoachLayout.vue';
@@ -7,6 +8,7 @@ import WcPageHeader from '../../components/WcPageHeader.vue';
 import AvatarConic from '../../components/coach/ios/AvatarConic.vue';
 import EmptyState from '../../components/coach/ios/EmptyState.vue';
 
+const { t, locale } = useI18n();
 const api = useApi();
 const router = useRouter();
 const loading = ref(true);
@@ -36,7 +38,7 @@ async function impersonateClient(client) {
     localStorage.setItem('wc_token',      data.token);
     localStorage.setItem('wc_user_type',  'client');
     localStorage.setItem('wc_user_id',    String(data.client_id));
-    localStorage.setItem('wc_user_name',  data.client_name || 'Cliente');
+    localStorage.setItem('wc_user_name',  data.client_name || t('coach_home.impersonate_client_default'));
     localStorage.setItem('wc_user_portal', '/client');
     localStorage.setItem('wc_impersonating_by_coach', '1');
     localStorage.setItem('wc_impersonating_token_key', data.token);
@@ -54,11 +56,19 @@ async function impersonateClient(client) {
 }
 
 const columns = ref({
-  nuevo:    { title: 'Nuevos',    clients: [] },
-  activo:   { title: 'Activos',   clients: [] },
-  riesgo:   { title: 'En Riesgo', clients: [] },
-  inactivo: { title: 'Inactivos', clients: [] },
+  nuevo:    { title: '', clients: [] },
+  activo:   { title: '', clients: [] },
+  riesgo:   { title: '', clients: [] },
+  inactivo: { title: '', clients: [] },
 });
+
+// Static column titles via i18n — backend may override per response
+const columnTitles = computed(() => ({
+  nuevo:    t('coach_home.kanban_col_new'),
+  activo:   t('coach_home.kanban_col_active'),
+  riesgo:   t('coach_home.kanban_col_risk'),
+  inactivo: t('coach_home.kanban_col_inactive'),
+}));
 
 const totalClients = computed(() => {
   return Object.values(columns.value).reduce((sum, col) => sum + col.clients.length, 0);
@@ -144,7 +154,14 @@ async function loadBoard() {
     if (search.value.trim()) params.search = search.value.trim();
     const { data } = await api.get('/api/v/coach/kanban', { params });
     if (data.columns) {
-      columns.value = data.columns;
+      // Override backend titles with locale-aware versions (backend always returns Spanish)
+      const next = { ...data.columns };
+      for (const key of Object.keys(next)) {
+        if (columnTitles.value[key]) {
+          next[key] = { ...next[key], title: columnTitles.value[key] };
+        }
+      }
+      columns.value = next;
     }
   } catch (e) {
     // silent
@@ -173,7 +190,14 @@ function closeDetail() {
 }
 
 function formatNumber(n) {
-  return n != null ? n.toLocaleString('es-CO') : '0';
+  const intlLocale = locale.value === 'en' ? 'en-US' : 'es-CO';
+  return n != null ? n.toLocaleString(intlLocale) : '0';
+}
+
+function pluralFromPipe(key, count, params = {}) {
+  const raw = t(key, params);
+  const parts = raw.split('|');
+  return count === 1 ? parts[0] : (parts[1] || parts[0]);
 }
 
 // Escape key handler
@@ -192,8 +216,8 @@ function activityColorClass(days) {
 
 function activityLabel(days) {
   if (days === null || days === undefined) return '--';
-  if (days === 0) return 'Hoy';
-  return days + 'd';
+  if (days === 0) return t('coach_home.kanban_activity_today');
+  return t('coach_home.kanban_activity_days', { n: days });
 }
 
 onMounted(() => {
@@ -211,7 +235,7 @@ onBeforeUnmount(() => {
   <CoachLayout>
     <div class="space-y-6">
 
-      <WcPageHeader contextLabel="MIS CLIENTES" title="KANBAN" :subtitle="`${totalClients} cliente${totalClients !== 1 ? 's' : ''} · Vista por actividad`">
+      <WcPageHeader :contextLabel="t('coach_home.kanban_context')" :title="t('coach_home.kanban_title')" :subtitle="pluralFromPipe('coach_home.kanban_subtitle', totalClients, { n: totalClients })">
         <template #actions>
           <div class="flex items-center gap-2">
             <div class="relative w-56">
@@ -221,14 +245,14 @@ onBeforeUnmount(() => {
               <input
                 v-model="search"
                 type="text"
-                placeholder="Buscar cliente..."
+                :placeholder="t('coach_home.kanban_search_placeholder')"
                 class="w-full rounded-button border border-wc-border bg-wc-bg-secondary py-2 pl-10 pr-4 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
               />
             </div>
             <RouterLink
               to="/coach/clients"
               class="flex h-9 w-9 items-center justify-center rounded-button border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text transition-colors"
-              title="Vista lista"
+              :title="t('coach_home.kanban_view_list')"
             >
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -237,7 +261,7 @@ onBeforeUnmount(() => {
             <button
               @click="loadBoard"
               class="flex h-9 w-9 items-center justify-center rounded-button border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text transition-colors"
-              title="Actualizar"
+              :title="t('coach_home.kanban_refresh')"
             >
               <svg class="h-4 w-4" :class="{ 'animate-spin': loading }" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
@@ -258,7 +282,7 @@ onBeforeUnmount(() => {
         >
           <span class="h-2 w-2 rounded-full shrink-0" :class="columnStyles[key]?.dot"></span>
           <span class="text-2xl font-bold font-data text-wc-text">{{ col.clients.length }}</span>
-          <span class="text-xs font-medium text-wc-text-secondary">{{ col.title }}</span>
+          <span class="text-xs font-medium text-wc-text-secondary">{{ col.title || columnTitles[key] }}</span>
         </div>
       </div>
 
@@ -288,7 +312,7 @@ onBeforeUnmount(() => {
           <div class="flex items-center justify-between border-b border-wc-border px-4 py-3">
             <div class="flex items-center gap-2">
               <span class="h-2 w-2 rounded-full" :class="columnStyles[colKey]?.dot"></span>
-              <h3 class="text-sm font-semibold text-wc-text">{{ col.title }}</h3>
+              <h3 class="text-sm font-semibold text-wc-text">{{ col.title || columnTitles[colKey] }}</h3>
             </div>
             <span
               class="inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold"
@@ -329,7 +353,7 @@ onBeforeUnmount(() => {
                 <!-- Activity info (matching blade: days_since_activity, last_checkin_date, last_training_date) -->
                 <div class="mt-2.5 flex items-center gap-3 text-[11px] text-wc-text-tertiary">
                   <!-- Days since activity -->
-                  <div class="flex items-center gap-1" title="Ultima actividad">
+                  <div class="flex items-center gap-1" :title="t('coach_home.kanban_tooltip_activity')">
                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
@@ -339,7 +363,7 @@ onBeforeUnmount(() => {
                   </div>
 
                   <!-- Last check-in -->
-                  <div v-if="client.last_checkin_date" class="flex items-center gap-1" title="Ultimo check-in">
+                  <div v-if="client.last_checkin_date" class="flex items-center gap-1" :title="t('coach_home.kanban_tooltip_checkin')">
                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
@@ -347,7 +371,7 @@ onBeforeUnmount(() => {
                   </div>
 
                   <!-- Last training -->
-                  <div v-if="client.last_training_date" class="flex items-center gap-1" title="Ultimo entrenamiento">
+                  <div v-if="client.last_training_date" class="flex items-center gap-1" :title="t('coach_home.kanban_tooltip_training')">
                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
                     </svg>
@@ -361,7 +385,7 @@ onBeforeUnmount(() => {
                     <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                     </svg>
-                    {{ client.pending_checkins }} check-in{{ client.pending_checkins > 1 ? 's' : '' }}
+                    {{ pluralFromPipe('coach_home.kanban_card_pending_checkin', client.pending_checkins, { n: client.pending_checkins }) }}
                   </span>
                   <span v-if="client.unread_messages > 0" class="inline-flex items-center gap-0.5 rounded-full bg-wc-accent/15 px-1.5 py-0.5 text-[10px] font-semibold text-wc-accent">
                     <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -380,13 +404,13 @@ onBeforeUnmount(() => {
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                   </svg>
-                  Ver detalle
+                  {{ t('coach_home.kanban_card_view_detail') }}
                 </button>
               </div>
             </template>
 
             <!-- Empty column -->
-            <EmptyState v-else kind="activity" title="Sin clientes" subtitle="Arrastra tarjetas aquí" />
+            <EmptyState v-else kind="activity" :title="t('coach_home.kanban_empty_col_title')" :subtitle="t('coach_home.kanban_empty_col_sub')" />
 
           </div>
         </div>
@@ -397,7 +421,7 @@ onBeforeUnmount(() => {
         <svg class="mr-1 inline h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
         </svg>
-        Arrastra las tarjetas entre columnas para reclasificar clientes
+        {{ t('coach_home.kanban_drag_hint') }}
       </p>
 
       <!-- ═══ Client Detail Modal ═══ -->
@@ -432,8 +456,8 @@ onBeforeUnmount(() => {
 
               <!-- Error state -->
               <div v-else-if="!detailClient" class="p-12 text-center">
-                <p class="text-sm text-wc-text-secondary">No se pudo cargar el detalle del cliente.</p>
-                <button @click="closeDetail" class="mt-3 text-xs text-wc-accent hover:underline">Cerrar</button>
+                <p class="text-sm text-wc-text-secondary">{{ t('coach_home.detail_load_fail') }}</p>
+                <button @click="closeDetail" class="mt-3 text-xs text-wc-accent hover:underline">{{ t('coach_home.detail_close') }}</button>
               </div>
 
               <!-- Detail content -->
@@ -459,42 +483,42 @@ onBeforeUnmount(() => {
                 <!-- Stats grid -->
                 <div class="mt-5 grid grid-cols-3 gap-3">
                   <div class="rounded-button bg-wc-bg-secondary p-3 text-center">
-                    <p class="text-lg font-bold font-data text-wc-text">Nv. {{ detailClient.xp_level }}</p>
-                    <p class="text-[10px] text-wc-text-tertiary">Nivel XP</p>
+                    <p class="text-lg font-bold font-data text-wc-text">{{ t('coach_home.list_level_short', { n: detailClient.xp_level }) }}</p>
+                    <p class="text-[10px] text-wc-text-tertiary">{{ t('coach_home.detail_xp_level') }}</p>
                   </div>
                   <div class="rounded-button bg-wc-bg-secondary p-3 text-center">
                     <p class="text-lg font-bold font-data text-wc-text">{{ formatNumber(detailClient.xp_total) }}</p>
-                    <p class="text-[10px] text-wc-text-tertiary">XP Total</p>
+                    <p class="text-[10px] text-wc-text-tertiary">{{ t('coach_home.detail_xp_total') }}</p>
                   </div>
                   <div class="rounded-button bg-wc-bg-secondary p-3 text-center">
                     <p class="text-lg font-bold font-data text-wc-text">{{ detailClient.streak_days }}</p>
-                    <p class="text-[10px] text-wc-text-tertiary">Racha (dias)</p>
+                    <p class="text-[10px] text-wc-text-tertiary">{{ t('coach_home.detail_streak') }}</p>
                   </div>
                 </div>
 
                 <!-- Info rows -->
                 <div class="mt-4 space-y-2">
                   <div class="flex items-center justify-between rounded-button bg-wc-bg-secondary/50 px-3 py-2">
-                    <span class="text-xs text-wc-text-tertiary">Fecha inicio</span>
+                    <span class="text-xs text-wc-text-tertiary">{{ t('coach_home.detail_start_date') }}</span>
                     <span class="text-xs font-medium text-wc-text">{{ detailClient.fecha_inicio }}</span>
                   </div>
                   <div class="flex items-center justify-between rounded-button bg-wc-bg-secondary/50 px-3 py-2">
-                    <span class="text-xs text-wc-text-tertiary">Ultimo check-in</span>
+                    <span class="text-xs text-wc-text-tertiary">{{ t('coach_home.detail_last_checkin') }}</span>
                     <span class="text-xs font-medium text-wc-text">{{ detailClient.last_checkin }}</span>
                   </div>
                   <div v-if="detailClient.last_checkin_bienestar" class="flex items-center justify-between rounded-lg bg-wc-bg-secondary/50 px-3 py-2">
-                    <span class="text-xs text-wc-text-tertiary">Bienestar</span>
+                    <span class="text-xs text-wc-text-tertiary">{{ t('coach_home.detail_wellbeing') }}</span>
                     <span class="text-xs font-medium text-wc-text">{{ detailClient.last_checkin_bienestar }}/10</span>
                   </div>
                   <div class="flex items-center justify-between rounded-button bg-wc-bg-secondary/50 px-3 py-2">
-                    <span class="text-xs text-wc-text-tertiary">Plan activo</span>
+                    <span class="text-xs text-wc-text-tertiary">{{ t('coach_home.detail_active_plan') }}</span>
                     <span class="text-xs font-medium text-wc-text capitalize">{{ detailClient.active_plan_type }}</span>
                   </div>
                 </div>
 
                 <!-- Recent notes -->
                 <div v-if="detailClient.recent_notes && detailClient.recent_notes.length > 0" class="mt-4">
-                  <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary mb-2">Notas recientes</p>
+                  <p class="text-[10px] font-semibold uppercase tracking-wider text-wc-text-tertiary mb-2">{{ t('coach_home.detail_recent_notes') }}</p>
                   <div class="space-y-1.5">
                     <div v-for="(note, idx) in detailClient.recent_notes" :key="idx" class="rounded-button border border-wc-border/50 bg-wc-bg-secondary/30 px-3 py-2">
                       <p class="text-xs text-wc-text">{{ note.note }}</p>
@@ -512,7 +536,7 @@ onBeforeUnmount(() => {
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
-                    Check-ins
+                    {{ t('coach_home.detail_action_checkins') }}
                   </RouterLink>
                   <RouterLink
                     to="/coach/messages"
@@ -521,7 +545,7 @@ onBeforeUnmount(() => {
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
                     </svg>
-                    Mensajes
+                    {{ t('coach_home.detail_action_messages') }}
                   </RouterLink>
                   <RouterLink
                     to="/coach/notes"
@@ -530,7 +554,7 @@ onBeforeUnmount(() => {
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
                     </svg>
-                    Notas
+                    {{ t('coach_home.detail_action_notes') }}
                   </RouterLink>
                 </div>
 
@@ -545,7 +569,7 @@ onBeforeUnmount(() => {
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                   </svg>
-                  {{ impersonating ? 'Entrando…' : 'Ver portal como cliente' }}
+                  {{ impersonating ? t('coach_home.detail_impersonate_loading') : t('coach_home.detail_impersonate') }}
                 </button>
               </div>
             </div>

@@ -1,6 +1,9 @@
 <script setup>
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { coachStrategyApi } from '../../../api/coachStrategy';
+
+const { t } = useI18n();
 
 const props = defineProps({
     dropId: { type: [Number, String], required: true },
@@ -90,7 +93,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 21l6.75-6.75 2.25 2.25 3-3L21 21M3.75 3h16.5M3.75 3v16.5"/>
                     </svg>
                 </span>
-                <span class="gal-label">Assets visuales · {{ sortedAssets.length }} pieza{{ sortedAssets.length === 1 ? '' : 's' }} · click para ampliar</span>
+                <span class="gal-label">{{ sortedAssets.length === 1 ? t('coach_growth.strategy.gallery_label_one', { count: sortedAssets.length }) : t('coach_growth.strategy.gallery_label_many', { count: sortedAssets.length }) }}</span>
             </div>
         </div>
 
@@ -133,7 +136,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                         class="asset-overlay-dl"
                         :disabled="downloadingId === asset.id"
                         @click.stop="downloadOne(asset)"
-                    >↓ Descargar</button>
+                    >{{ t('coach_growth.strategy.gallery_download') }}</button>
                 </div>
             </div>
         </div>
@@ -149,19 +152,19 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                     tabindex="0"
                     @click.self="closeLightbox"
                 >
-                    <button type="button" class="lb-close-btn" @click="closeLightbox">ESC · Cerrar</button>
+                    <button type="button" class="lb-close-btn" @click="closeLightbox">{{ t('coach_growth.strategy.gallery_lb_close') }}</button>
                     <button
                         v-if="sortedAssets.length > 1"
                         type="button"
                         class="lb-nav lb-prev"
-                        aria-label="Anterior"
+                        :aria-label="t('coach_growth.strategy.gallery_lb_prev')"
                         @click="prev"
                     >‹</button>
                     <button
                         v-if="sortedAssets.length > 1"
                         type="button"
                         class="lb-nav lb-next"
-                        aria-label="Siguiente"
+                        :aria-label="t('coach_growth.strategy.gallery_lb_next')"
                         @click="next"
                     >›</button>
 
@@ -201,7 +204,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                             <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
                             </svg>
-                            {{ downloadingId === currentAsset.id ? 'Descargando...' : 'Descargar' }}
+                            {{ downloadingId === currentAsset.id ? t('coach_growth.strategy.gallery_lb_downloading') : t('coach_growth.strategy.gallery_lb_download') }}
                         </button>
                     </div>
                 </div>

@@ -1,11 +1,13 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import CoachLayout from '../../layouts/CoachLayout.vue';
 import DeadlineBadge from '../../components/DeadlineBadge.vue';
 import PlanTicketComments from '../../components/PlanTicketComments.vue';
 
+const { t } = useI18n();
 const api = useApi();
 const route = useRoute();
 const router = useRouter();
@@ -34,13 +36,13 @@ const loadingAttachments = ref(false);
 const uploadingAttachment = ref(false);
 const attachmentCategory = ref('');
 const attachmentDragging = ref(false);
-const ATTACHMENT_CATEGORY_OPTIONS = [
-  { value: '', label: 'Sin categoria' },
-  { value: 'foto_progreso', label: 'Foto de progreso' },
-  { value: 'laboratorio', label: 'Laboratorio' },
-  { value: 'documento_medico', label: 'Documento medico' },
-  { value: 'otro', label: 'Otro' },
-];
+const ATTACHMENT_CATEGORY_OPTIONS = computed(() => [
+  { value: '', label: t('coach_ops.wizard_s8_category_none') },
+  { value: 'foto_progreso', label: t('coach_ops.wizard_s8_category_progress_photo') },
+  { value: 'laboratorio', label: t('coach_ops.wizard_s8_category_lab') },
+  { value: 'documento_medico', label: t('coach_ops.wizard_s8_category_medical') },
+  { value: 'otro', label: t('coach_ops.wizard_s8_category_other') },
+]);
 const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIMES = [
   'image/jpeg', 'image/png', 'image/webp', 'image/heic',
@@ -48,11 +50,11 @@ const ALLOWED_MIMES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ];
 
-const CATEGORY_META = {
-  plan_nuevo: { label: 'Plan nuevo', bg: 'bg-blue-500/10', text: 'text-blue-500' },
-  ajuste_plan: { label: 'Ajuste', bg: 'bg-purple-500/10', text: 'text-purple-500' },
-};
-function categoryMeta(c) { return CATEGORY_META[c] || CATEGORY_META.plan_nuevo; }
+const CATEGORY_META = computed(() => ({
+  plan_nuevo: { label: t('coach_ops.tickets_category_new_plan'), bg: 'bg-blue-500/10', text: 'text-blue-500' },
+  ajuste_plan: { label: t('coach_ops.tickets_category_adjustment'), bg: 'bg-purple-500/10', text: 'text-purple-500' },
+}));
+function categoryMeta(c) { return CATEGORY_META.value[c] || CATEGORY_META.value.plan_nuevo; }
 
 const ticketCategory = computed(() => ticket.value?.category || newForm.value.category || 'plan_nuevo');
 const isAjuste = computed(() => ticketCategory.value === 'ajuste_plan');
@@ -94,12 +96,12 @@ const planSuplementacion = ref({
   notas_coach: '',
 });
 
-const FRECUENCIA_SUPLEMENTO_OPTIONS = [
-  { value: 'diario', label: 'Diario' },
-  { value: 'dias_entrenamiento', label: 'Dias de entrenamiento' },
-  { value: '3_veces_semana', label: '3 veces por semana' },
-  { value: 'ciclico', label: 'Ciclico' },
-];
+const FRECUENCIA_SUPLEMENTO_OPTIONS = computed(() => [
+  { value: 'diario', label: t('coach_ops.wizard_s6_frequency_daily') },
+  { value: 'dias_entrenamiento', label: t('coach_ops.wizard_s6_frequency_training_days') },
+  { value: '3_veces_semana', label: t('coach_ops.wizard_s6_frequency_3x_week') },
+  { value: 'ciclico', label: t('coach_ops.wizard_s6_frequency_cyclic') },
+]);
 
 function emptySuplemento() {
   return { nombre: '', dosis: '', momento: '', frecuencia: '', notas: '' };
@@ -128,30 +130,30 @@ const GRUPOS_MUSCULARES = [
   'pecho', 'espalda', 'hombros', 'biceps', 'triceps', 'piernas',
   'gluteos', 'core', 'cardio', 'descanso',
 ];
-const DIAS_SEMANA = [
-  { key: 'lunes', label: 'Lunes' },
-  { key: 'martes', label: 'Martes' },
-  { key: 'miercoles', label: 'Miercoles' },
-  { key: 'jueves', label: 'Jueves' },
-  { key: 'viernes', label: 'Viernes' },
-  { key: 'sabado', label: 'Sabado' },
-  { key: 'domingo', label: 'Domingo' },
-];
-const NIVEL_ACTIVIDAD = [
-  { value: 'sedentario', label: 'Sedentario (trabajo de oficina, poco movimiento)' },
-  { value: 'ligero', label: 'Ligero (ejercicio 1-2x por semana)' },
-  { value: 'moderado', label: 'Moderado (ejercicio 3-4x por semana)' },
-  { value: 'activo', label: 'Activo (ejercicio 5-6x por semana)' },
-  { value: 'muy_activo', label: 'Muy activo (trabajo fisico + ejercicio)' },
-];
-const METODOLOGIAS = [
-  { value: 'deficit_calorico', label: 'Deficit calorico', desc: 'Perdida de grasa con deficit sostenible.' },
-  { value: 'flexible', label: 'Flexible / IIFYM', desc: 'Macros flexibles, preferencias libres.' },
-  { value: 'carb_cycling', label: 'Carb cycling', desc: 'Ciclado de carbohidratos alto/bajo.' },
-  { value: 'ayuno_intermitente', label: 'Ayuno intermitente', desc: 'Ventana de alimentacion (16:8 / 18:6).' },
-  { value: 'mantenimiento', label: 'Mantenimiento', desc: 'Calorias de mantenimiento para recomposicion.' },
-  { value: 'volumen_limpio', label: 'Volumen limpio', desc: 'Superavit calorico controlado.' },
-];
+const DIAS_SEMANA = computed(() => [
+  { key: 'lunes', label: t('coach_ops.wizard_day_monday') },
+  { key: 'martes', label: t('coach_ops.wizard_day_tuesday') },
+  { key: 'miercoles', label: t('coach_ops.wizard_day_wednesday') },
+  { key: 'jueves', label: t('coach_ops.wizard_day_thursday') },
+  { key: 'viernes', label: t('coach_ops.wizard_day_friday') },
+  { key: 'sabado', label: t('coach_ops.wizard_day_saturday') },
+  { key: 'domingo', label: t('coach_ops.wizard_day_sunday') },
+]);
+const NIVEL_ACTIVIDAD = computed(() => [
+  { value: 'sedentario', label: t('coach_ops.wizard_activity_sedentary') },
+  { value: 'ligero', label: t('coach_ops.wizard_activity_light') },
+  { value: 'moderado', label: t('coach_ops.wizard_activity_moderate') },
+  { value: 'activo', label: t('coach_ops.wizard_activity_active') },
+  { value: 'muy_activo', label: t('coach_ops.wizard_activity_very_active') },
+]);
+const METODOLOGIAS = computed(() => [
+  { value: 'deficit_calorico', label: t('coach_ops.wizard_method_deficit_label'), desc: t('coach_ops.wizard_method_deficit_desc') },
+  { value: 'flexible', label: t('coach_ops.wizard_method_flexible_label'), desc: t('coach_ops.wizard_method_flexible_desc') },
+  { value: 'carb_cycling', label: t('coach_ops.wizard_method_carb_cycling_label'), desc: t('coach_ops.wizard_method_carb_cycling_desc') },
+  { value: 'ayuno_intermitente', label: t('coach_ops.wizard_method_fasting_label'), desc: t('coach_ops.wizard_method_fasting_desc') },
+  { value: 'mantenimiento', label: t('coach_ops.wizard_method_maintenance_label'), desc: t('coach_ops.wizard_method_maintenance_desc') },
+  { value: 'volumen_limpio', label: t('coach_ops.wizard_method_lean_bulk_label'), desc: t('coach_ops.wizard_method_lean_bulk_desc') },
+]);
 const AREAS_FOCO_HABITOS = [
   'sueño', 'estres', 'hidratacion', 'mindfulness',
   'recuperacion_activa', 'rutina_matutina', 'rutina_nocturna',
@@ -185,16 +187,16 @@ const wasResubmitted = computed(() => {
 function formatDateTimeShort(d) {
   if (!d) return '';
   try {
-    return new Date(d).toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    return new Date(d).toLocaleString(undefined, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
   } catch { return d; }
 }
 
 const statusBannerMessage = computed(() => {
   if (!ticket.value) return null;
   const s = ticket.value.status;
-  if (s === 'en_revision') return 'Este ticket esta siendo revisado por el equipo WellCore. No se puede editar.';
-  if (s === 'completado') return 'Este ticket ya fue completado. El plan esta asignado al cliente.';
-  if (s === 'rechazado') return 'Este ticket fue rechazado por el equipo WellCore. Revisa los comentarios y crea un ticket nuevo si es necesario.';
+  if (s === 'en_revision') return t('coach_ops.wizard_banner_under_review');
+  if (s === 'completado') return t('coach_ops.wizard_banner_completed');
+  if (s === 'rechazado') return t('coach_ops.wizard_banner_rejected');
   return null;
 });
 
@@ -220,7 +222,7 @@ function isHighlighted(key) {
 async function autofillFromProfile() {
   const clientId = ticket.value?.client_id || newForm.value.client_id;
   if (!clientId) {
-    showToast('error', 'No hay cliente asociado al ticket.');
+    showToast('error', t('coach_ops.wizard_s2_autofill_no_client'));
     return;
   }
   autofillLoading.value = true;
@@ -250,13 +252,14 @@ async function autofillFromProfile() {
       if (changed) flashed.push(`pe.${key}`);
     }
     if (filledCount === 0) {
-      showToast('info', 'No hay datos previos para pre-llenar.');
+      showToast('info', t('coach_ops.wizard_s2_autofill_none'));
     } else {
       flashFields(flashed);
-      showToast('success', `${filledCount} campo${filledCount === 1 ? '' : 's'} rellenado${filledCount === 1 ? '' : 's'} desde el perfil.`);
+      const key = filledCount === 1 ? 'coach_ops.wizard_s2_autofill_filled_one' : 'coach_ops.wizard_s2_autofill_filled_other';
+      showToast('success', t(key, { n: filledCount }));
     }
   } catch (e) {
-    showToast('error', 'No se pudieron cargar los datos del perfil.');
+    showToast('error', t('coach_ops.wizard_s2_autofill_error'));
   } finally {
     autofillLoading.value = false;
   }
@@ -286,16 +289,16 @@ async function fetchPreviousTickets(clientId) {
 
 async function duplicateFromPrevious() {
   if (!selectedPrevTicketId.value) return;
-  if (!confirm('Crear un nuevo borrador duplicando este ticket previo?')) return;
+  if (!confirm(t('coach_ops.wizard_s1_dup_confirm'))) return;
   duplicatingPrev.value = true;
   try {
     const { data } = await api.post(`/api/v/coach/plan-tickets/${selectedPrevTicketId.value}/duplicate`);
     if (data?.ticket?.id) {
-      showToast('success', 'Ticket duplicado. Abriendo borrador...');
+      showToast('success', t('coach_ops.wizard_toast_dup_prev_success'));
       setTimeout(() => router.push(`/coach/plan-tickets/${data.ticket.id}`), 400);
     }
   } catch (e) {
-    showToast('error', 'No se pudo duplicar el ticket previo.');
+    showToast('error', t('coach_ops.wizard_toast_dup_prev_error'));
   } finally {
     duplicatingPrev.value = false;
   }
@@ -310,15 +313,15 @@ watch(() => newForm.value.client_id, (v) => {
 // Steps array built dynamically
 const steps = computed(() => {
   const list = [];
-  list.push({ key: 'cliente', label: 'Cliente y Plan' });
-  list.push({ key: 'datos', label: 'Datos Generales' });
-  list.push({ key: 'entrenamiento', label: 'Entrenamiento' });
-  list.push({ key: 'nutricion', label: 'Nutricion' });
-  list.push({ key: 'habitos', label: 'Habitos' });
-  list.push({ key: 'suplementacion', label: 'Suplementacion' });
-  if (isElite.value) list.push({ key: 'ciclo', label: 'Ciclo Hormonal' });
-  list.push({ key: 'adjuntos', label: 'Adjuntos' });
-  list.push({ key: 'revision', label: 'Revision y Envio' });
+  list.push({ key: 'cliente', label: t('coach_ops.wizard_step_client') });
+  list.push({ key: 'datos', label: t('coach_ops.wizard_step_general') });
+  list.push({ key: 'entrenamiento', label: t('coach_ops.wizard_step_training') });
+  list.push({ key: 'nutricion', label: t('coach_ops.wizard_step_nutrition') });
+  list.push({ key: 'habitos', label: t('coach_ops.wizard_step_habits') });
+  list.push({ key: 'suplementacion', label: t('coach_ops.wizard_step_supplements') });
+  if (isElite.value) list.push({ key: 'ciclo', label: t('coach_ops.wizard_step_cycle') });
+  list.push({ key: 'adjuntos', label: t('coach_ops.wizard_step_attachments') });
+  list.push({ key: 'revision', label: t('coach_ops.wizard_step_review') });
   return list;
 });
 
@@ -347,7 +350,7 @@ async function fetchTicket(id) {
     hydrate(data.ticket);
     fetchAttachments();
   } catch (e) {
-    showToast('error', 'No se pudo cargar el ticket.');
+    showToast('error', t('coach_ops.wizard_toast_load_error'));
     setTimeout(() => router.push('/coach/plan-tickets'), 2000);
   } finally {
     loading.value = false;
@@ -386,11 +389,11 @@ function mimeIcon(mime) {
 async function uploadAttachment(file) {
   if (!ticketId.value || !file) return;
   if (file.size > MAX_ATTACHMENT_SIZE) {
-    showToast('error', 'El archivo excede 10MB.');
+    showToast('error', t('coach_ops.wizard_s8_file_too_large'));
     return;
   }
   if (file.type && !ALLOWED_MIMES.includes(file.type)) {
-    showToast('error', 'Tipo de archivo no permitido.');
+    showToast('error', t('coach_ops.wizard_s8_file_type_not_allowed'));
     return;
   }
   uploadingAttachment.value = true;
@@ -399,10 +402,10 @@ async function uploadAttachment(file) {
     formData.append('file', file);
     if (attachmentCategory.value) formData.append('category', attachmentCategory.value);
     await api.post(`/api/v/coach/plan-tickets/${ticketId.value}/attachments`, formData);
-    showToast('success', 'Archivo subido');
+    showToast('success', t('coach_ops.wizard_s8_toast_uploaded'));
     await fetchAttachments();
   } catch (e) {
-    const msg = e?.response?.data?.message || 'No se pudo subir el archivo.';
+    const msg = e?.response?.data?.message || t('coach_ops.wizard_s8_toast_upload_error');
     showToast('error', msg);
   } finally {
     uploadingAttachment.value = false;
@@ -423,13 +426,13 @@ function onAttachmentDrop(e) {
 
 async function deleteAttachment(att) {
   if (!ticketId.value) return;
-  if (!confirm('¿Eliminar este archivo?')) return;
+  if (!confirm(t('coach_ops.wizard_s8_confirm_delete'))) return;
   try {
     await api.delete(`/api/v/coach/plan-tickets/${ticketId.value}/attachments/${att.id}`);
-    showToast('success', 'Archivo eliminado');
+    showToast('success', t('coach_ops.wizard_s8_toast_deleted'));
     await fetchAttachments();
   } catch (e) {
-    showToast('error', 'No se pudo eliminar.');
+    showToast('error', t('coach_ops.wizard_s8_toast_delete_error'));
   }
 }
 
@@ -438,60 +441,60 @@ function formatRelative(d) {
   try {
     const diffMs = Date.now() - new Date(d).getTime();
     const min = Math.floor(diffMs / 60000);
-    if (min < 1) return 'hace un momento';
-    if (min < 60) return `hace ${min} min`;
+    if (min < 1) return t('coach_ops.wizard_time_just_now');
+    if (min < 60) return t('coach_ops.wizard_time_minutes', { n: min });
     const hr = Math.floor(min / 60);
-    if (hr < 24) return `hace ${hr} h`;
+    if (hr < 24) return t('coach_ops.wizard_time_hours', { n: hr });
     const days = Math.floor(hr / 24);
-    if (days < 30) return `hace ${days} d`;
-    return new Date(d).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
+    if (days < 30) return t('coach_ops.wizard_time_days', { n: days });
+    return new Date(d).toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
   } catch { return d; }
 }
 
 let _hydrating = false;
 
-function hydrate(t) {
-  if (!t) return;
+function hydrate(payload) {
+  if (!payload) return;
   _hydrating = true;
-  if (t.datos_generales) Object.assign(datosGenerales.value, t.datos_generales);
-  if (t.plan_entrenamiento) {
-    const pe = { ...t.plan_entrenamiento };
+  if (payload.datos_generales) Object.assign(datosGenerales.value, payload.datos_generales);
+  if (payload.plan_entrenamiento) {
+    const pe = { ...payload.plan_entrenamiento };
     if (!pe.implementos) pe.implementos = [];
     if (!pe.modalidad_cardio) pe.modalidad_cardio = [];
     if (!pe.split) pe.split = planEntrenamiento.value.split;
     else {
       // ensure each day exists
-      for (const d of DIAS_SEMANA) {
+      for (const d of DIAS_SEMANA.value) {
         if (!pe.split[d.key]) pe.split[d.key] = { grupos: [], prioridad: '' };
         if (!pe.split[d.key].grupos) pe.split[d.key].grupos = [];
       }
     }
     planEntrenamiento.value = { ...planEntrenamiento.value, ...pe };
   }
-  if (t.plan_nutricional) {
-    const pn = { ...t.plan_nutricional };
+  if (payload.plan_nutricional) {
+    const pn = { ...payload.plan_nutricional };
     if (!pn.horarios) pn.horarios = [];
     planNutricional.value = { ...planNutricional.value, ...pn };
   }
-  if (t.plan_habitos) {
-    const ph = { ...t.plan_habitos };
+  if (payload.plan_habitos) {
+    const ph = { ...payload.plan_habitos };
     if (!ph.areas_foco) ph.areas_foco = [];
     planHabitos.value = { ...planHabitos.value, ...ph };
   }
-  if (t.plan_ciclo) {
-    planCiclo.value = { ...planCiclo.value, ...t.plan_ciclo };
+  if (payload.plan_ciclo) {
+    planCiclo.value = { ...planCiclo.value, ...payload.plan_ciclo };
   }
-  if (t.plan_suplementacion) {
-    const ps = { ...t.plan_suplementacion };
+  if (payload.plan_suplementacion) {
+    const ps = { ...payload.plan_suplementacion };
     if (!Array.isArray(ps.suplementos)) ps.suplementos = [];
     // Ensure each supplemento has all fields
     ps.suplementos = ps.suplementos.map(s => ({ ...emptySuplemento(), ...s }));
     planSuplementacion.value = { ...planSuplementacion.value, ...ps };
   }
-  if (t.datos_generales?.plan) {
+  if (payload.datos_generales?.plan) {
     // fine
-  } else if (t.plan_type) {
-    datosGenerales.value.plan = t.plan_type;
+  } else if (payload.plan_type) {
+    datosGenerales.value.plan = payload.plan_type;
   }
   nextTick(() => { _hydrating = false; });
 }
@@ -519,7 +522,7 @@ async function runSave(payload) {
     return true;
   } catch (e) {
     savingIndicator.value = '';
-    showToast('error', 'No se pudo guardar.');
+    showToast('error', t('coach_ops.wizard_toast_save_error'));
     return false;
   } finally {
     saving.value = false;
@@ -541,7 +544,7 @@ watch(planCiclo, (val) => {
 
 async function createTicket() {
   if (!newForm.value.client_id || !newForm.value.plan_type) {
-    showToast('error', 'Selecciona un cliente y un tipo de plan.');
+    showToast('error', t('coach_ops.wizard_toast_create_missing'));
     return;
   }
   loading.value = true;
@@ -557,9 +560,9 @@ async function createTicket() {
     // Replace URL to edit mode
     await router.replace(`/coach/plan-tickets/${data.ticket.id}`);
     step.value = 1;
-    showToast('success', 'Ticket creado. Completa el brief.');
+    showToast('success', t('coach_ops.wizard_toast_created'));
   } catch (e) {
-    showToast('error', 'No se pudo crear el ticket.');
+    showToast('error', t('coach_ops.wizard_toast_create_error'));
   } finally {
     loading.value = false;
   }
@@ -588,14 +591,14 @@ async function submitTicket() {
     }
     const { data } = await api.post(`/api/v/coach/plan-tickets/${ticketId.value}/submit`);
     ticket.value = data.ticket;
-    showToast('success', 'Ticket enviado al equipo WellCore.');
+    showToast('success', t('coach_ops.wizard_toast_submitted'));
     setTimeout(() => router.push('/coach/plan-tickets'), 800);
   } catch (e) {
     if (e.response?.status === 422) {
       missingFields.value = e.response.data?.missing || [];
-      showToast('error', 'Faltan campos para enviar el ticket.');
+      showToast('error', t('coach_ops.wizard_toast_submit_missing_fields'));
     } else {
-      showToast('error', 'No se pudo enviar el ticket.');
+      showToast('error', t('coach_ops.wizard_toast_submit_error'));
     }
   } finally {
     submitting.value = false;
@@ -604,14 +607,14 @@ async function submitTicket() {
 
 async function deleteDraft() {
   if (!ticketId.value) return;
-  if (!confirm('¿Eliminar este borrador? No se puede deshacer.')) return;
+  if (!confirm(t('coach_ops.wizard_confirm_delete_draft'))) return;
   deleting.value = true;
   try {
     await api.delete(`/api/v/coach/plan-tickets/${ticketId.value}`);
-    showToast('success', 'Borrador eliminado.');
+    showToast('success', t('coach_ops.wizard_toast_delete_success'));
     setTimeout(() => router.push('/coach/plan-tickets'), 500);
   } catch (e) {
-    showToast('error', 'No se pudo eliminar.');
+    showToast('error', t('coach_ops.wizard_toast_delete_error'));
   } finally {
     deleting.value = false;
   }
@@ -703,13 +706,13 @@ onBeforeUnmount(() => {
               <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
               </svg>
-              Volver al listado
+              {{ t('coach_ops.wizard_back_to_list') }}
             </button>
             <h1 class="font-display text-2xl tracking-wide text-wc-text sm:text-3xl">
-              {{ isNew ? 'NUEVO TICKET DE PLAN' : 'TICKET DE PLAN' }}
+              {{ isNew ? t('coach_ops.wizard_title_new') : t('coach_ops.wizard_title_edit') }}
             </h1>
             <p v-if="ticket" class="mt-1 text-sm text-wc-text-secondary">
-              {{ ticket.client_name || '...' }} · {{ humanLabel(ticket.plan_type) }}
+              {{ t('coach_ops.wizard_subtitle', { client: ticket.client_name || t('coach_ops.wizard_subtitle_placeholder_client'), plan: humanLabel(ticket.plan_type) }) }}
             </p>
             <div v-if="ticket" class="mt-2 flex flex-wrap items-center gap-2">
               <DeadlineBadge :deadline="ticket.deadline_at" :status="ticket.status" />
@@ -721,24 +724,24 @@ onBeforeUnmount(() => {
               <span
                 v-if="wasResubmitted"
                 class="inline-flex items-center gap-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-orange-400"
-                :title="'Reenviado ' + formatDateTimeShort(ticket.resubmitted_at)"
+                :title="t('coach_ops.wizard_resubmitted_title', { date: formatDateTimeShort(ticket.resubmitted_at) })"
               >
                 <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992V4.36M2.985 19.644v-4.992h4.992m0 0-3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.183m0-4.991v4.99" />
                 </svg>
-                Editado tras envio · {{ formatDateTimeShort(ticket.resubmitted_at) }}
+                {{ t('coach_ops.wizard_resubmitted_label', { date: formatDateTimeShort(ticket.resubmitted_at) }) }}
               </span>
             </div>
           </div>
           <div v-if="ticketId" class="text-xs text-wc-text-tertiary">
             <span v-if="savingIndicator === 'saving'" class="inline-flex items-center gap-1">
-              <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-wc-accent"></span> Guardando...
+              <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-wc-accent"></span> {{ t('coach_ops.wizard_saving') }}
             </span>
             <span v-else-if="savingIndicator === 'saved'" class="inline-flex items-center gap-1 text-emerald-500">
               <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
-              Guardado
+              {{ t('coach_ops.wizard_saved') }}
             </span>
           </div>
         </div>
@@ -749,7 +752,7 @@ onBeforeUnmount(() => {
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
           </svg>
           <div>
-            <p class="font-semibold">Ticket en estado <strong>{{ humanLabel(ticket.status) }}</strong> — solo lectura</p>
+            <p class="font-semibold">{{ t('coach_ops.wizard_readonly_title', { status: humanLabel(ticket.status) }) }}</p>
             <p class="mt-0.5 text-xs text-red-400/80">{{ statusBannerMessage }}</p>
           </div>
         </div>
@@ -757,7 +760,7 @@ onBeforeUnmount(() => {
         <!-- Step progress -->
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
           <div class="flex items-center justify-between text-xs mb-2">
-            <span class="font-semibold text-wc-text">Paso {{ step + 1 }} de {{ steps.length }} · {{ steps[step]?.label }}</span>
+            <span class="font-semibold text-wc-text">{{ t('coach_ops.wizard_step_label', { current: step + 1, total: steps.length, label: steps[step]?.label }) }}</span>
             <span class="text-wc-text-tertiary">{{ progressPct }}%</span>
           </div>
           <div class="h-1.5 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
@@ -786,27 +789,27 @@ onBeforeUnmount(() => {
 
         <!-- STEP: cliente -->
         <section v-if="currentStepKey === 'cliente'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
-          <h2 class="font-display text-xl tracking-wide text-wc-text">1. Cliente y tipo de plan</h2>
+          <h2 class="font-display text-xl tracking-wide text-wc-text">{{ t('coach_ops.wizard_s1_heading') }}</h2>
 
           <div v-if="isNew && !ticketId">
             <div class="space-y-4">
               <div>
-                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Cliente</label>
+                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s1_client_label') }}</label>
                 <select v-model="newForm.client_id" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-                  <option value="">Selecciona un cliente...</option>
+                  <option value="">{{ t('coach_ops.wizard_s1_client_placeholder') }}</option>
                   <option v-for="c in clients" :key="c.id" :value="c.id">{{ c.name || c.full_name || c.email }}</option>
                 </select>
-                <p v-if="loadingClients" class="mt-1 text-xs text-wc-text-tertiary">Cargando clientes...</p>
+                <p v-if="loadingClients" class="mt-1 text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s1_loading_clients') }}</p>
               </div>
 
               <div>
-                <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Tipo de plan</label>
+                <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s1_plan_type_label') }}</label>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <label
                     v-for="opt in [
-                      { value: 'esencial', label: 'Esencial', desc: 'Entrenamiento, nutricion, habitos y suplementacion.' },
-                      { value: 'metodo', label: 'Metodo', desc: 'Plan completo con seguimiento avanzado.' },
-                      { value: 'elite', label: 'Elite', desc: 'Plan completo + ciclo hormonal.' },
+                      { value: 'esencial', label: t('coach_ops.wizard_s1_plan_essential_label'), desc: t('coach_ops.wizard_s1_plan_essential_desc') },
+                      { value: 'metodo', label: t('coach_ops.wizard_s1_plan_method_label'), desc: t('coach_ops.wizard_s1_plan_method_desc') },
+                      { value: 'elite', label: t('coach_ops.wizard_s1_plan_elite_label'), desc: t('coach_ops.wizard_s1_plan_elite_desc') },
                     ]"
                     :key="opt.value"
                     class="cursor-pointer rounded-lg border-2 p-3 transition"
@@ -821,12 +824,12 @@ onBeforeUnmount(() => {
 
               <!-- Category radio -->
               <div>
-                <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Tipo de solicitud</label>
+                <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s1_category_label') }}</label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <label
                     v-for="opt in [
-                      { value: 'plan_nuevo', label: 'Plan nuevo', desc: 'Cliente nuevo o plan completo desde cero. Requiere todas las secciones.' },
-                      { value: 'ajuste_plan', label: 'Ajuste de plan', desc: 'Cliente existente que necesita ajustes. Solo llena las secciones que cambian.' },
+                      { value: 'plan_nuevo', label: t('coach_ops.wizard_s1_new_plan_label'), desc: t('coach_ops.wizard_s1_new_plan_desc') },
+                      { value: 'ajuste_plan', label: t('coach_ops.wizard_s1_adjustment_label'), desc: t('coach_ops.wizard_s1_adjustment_desc') },
                     ]"
                     :key="opt.value"
                     class="cursor-pointer rounded-lg border-2 p-3 transition"
@@ -843,18 +846,18 @@ onBeforeUnmount(() => {
 
           <div v-else class="space-y-2">
             <div class="rounded-lg bg-wc-bg-secondary p-3">
-              <p class="text-xs text-wc-text-tertiary">Cliente</p>
+              <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s1_summary_client') }}</p>
               <p class="text-sm font-semibold text-wc-text">{{ ticket?.client_name || '-' }}</p>
             </div>
             <div class="rounded-lg bg-wc-bg-secondary p-3">
-              <p class="text-xs text-wc-text-tertiary">Tipo de plan</p>
+              <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s1_summary_plan_type') }}</p>
               <p class="text-sm font-semibold text-wc-text">{{ humanLabel(ticket?.plan_type) }}</p>
             </div>
             <div class="rounded-lg bg-wc-bg-secondary p-3">
-              <p class="text-xs text-wc-text-tertiary">Tipo de solicitud</p>
+              <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s1_summary_category') }}</p>
               <p class="text-sm font-semibold text-wc-text">{{ categoryMeta(ticket?.category).label }}</p>
             </div>
-            <p class="text-xs text-wc-text-tertiary">El cliente y tipo de plan no se pueden modificar una vez creado el ticket.</p>
+            <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s1_lock_notice') }}</p>
           </div>
 
           <!-- Duplicar desde ticket previo (solo en creacion, cliente elegido, y hay tickets completados previos) -->
@@ -867,8 +870,8 @@ onBeforeUnmount(() => {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m0 0h5.625c.621 0 1.125.504 1.125 1.125v4.125M8.25 6.75h6" />
               </svg>
               <div class="flex-1">
-                <p class="text-sm font-semibold text-wc-text">Duplicar desde ticket previo</p>
-                <p class="text-xs text-wc-text-tertiary mt-0.5">Este cliente tiene planes previos. Puedes clonar uno para acelerar el brief.</p>
+                <p class="text-sm font-semibold text-wc-text">{{ t('coach_ops.wizard_s1_dup_title') }}</p>
+                <p class="text-xs text-wc-text-tertiary mt-0.5">{{ t('coach_ops.wizard_s1_dup_desc') }}</p>
               </div>
             </div>
             <div class="flex flex-col sm:flex-row gap-2">
@@ -876,9 +879,9 @@ onBeforeUnmount(() => {
                 v-model="selectedPrevTicketId"
                 class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
               >
-                <option value="">Selecciona un ticket previo completado...</option>
+                <option value="">{{ t('coach_ops.wizard_s1_dup_placeholder') }}</option>
                 <option v-for="p in previousTickets" :key="p.id" :value="p.id">
-                  #{{ p.id }} · {{ humanLabel(p.plan_type) }} · {{ p.submitted_at ? new Date(p.submitted_at).toLocaleDateString('es-MX') : 'sin fecha' }}
+                  #{{ p.id }} · {{ humanLabel(p.plan_type) }} · {{ p.submitted_at ? new Date(p.submitted_at).toLocaleDateString() : t('coach_ops.wizard_s1_dup_option_no_date') }}
                 </option>
               </select>
               <button
@@ -886,18 +889,18 @@ onBeforeUnmount(() => {
                 @click="duplicateFromPrevious"
                 :disabled="!selectedPrevTicketId || duplicatingPrev"
                 class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600 transition disabled:opacity-50"
-              >{{ duplicatingPrev ? 'Duplicando...' : 'Duplicar y editar' }}</button>
+              >{{ duplicatingPrev ? t('coach_ops.wizard_s1_dup_button_progress') : t('coach_ops.wizard_s1_dup_button') }}</button>
             </div>
           </div>
           <div v-else-if="isNew && !ticketId && newForm.client_id && loadingPrev" class="mt-3 text-xs text-wc-text-tertiary">
-            Buscando tickets previos del cliente...
+            {{ t('coach_ops.wizard_s1_dup_loading') }}
           </div>
         </section>
 
         <!-- STEP: datos_generales -->
         <section v-else-if="currentStepKey === 'datos'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h2 class="font-display text-xl tracking-wide text-wc-text">2. Datos generales</h2>
+            <h2 class="font-display text-xl tracking-wide text-wc-text">{{ t('coach_ops.wizard_s2_heading') }}</h2>
             <button
               v-if="isEditable && (ticket?.client_id || newForm.client_id)"
               type="button"
@@ -908,30 +911,30 @@ onBeforeUnmount(() => {
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" />
               </svg>
-              {{ autofillLoading ? 'Cargando...' : 'Pre-llenar desde el perfil del cliente' }}
+              {{ autofillLoading ? t('coach_ops.wizard_s2_autofill_btn_loading') : t('coach_ops.wizard_s2_autofill_btn') }}
             </button>
           </div>
           <fieldset :disabled="!isEditable" class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Nombre del cliente</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s2_field_name') }}</label>
                 <input v-model="datosGenerales.nombre" type="text" :class="['w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent', isHighlighted('dg.nombre') && 'autofill-highlight']" />
               </div>
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Plan</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s2_field_plan') }}</label>
                 <select v-model="datosGenerales.plan" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-                  <option value="">Selecciona...</option>
-                  <option value="esencial">Esencial</option>
-                  <option value="metodo">Metodo</option>
-                  <option value="elite">Elite</option>
+                  <option value="">{{ t('coach_ops.wizard_s2_field_plan_placeholder') }}</option>
+                  <option value="esencial">{{ t('coach_ops.tickets_plan_type_essential') }}</option>
+                  <option value="metodo">{{ t('coach_ops.tickets_plan_type_method') }}</option>
+                  <option value="elite">{{ t('coach_ops.tickets_plan_type_elite') }}</option>
                 </select>
               </div>
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Edad</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s2_field_age') }}</label>
                 <input v-model.number="datosGenerales.edad" type="number" min="15" max="99" :class="['w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent', isHighlighted('dg.edad') && 'autofill-highlight']" />
               </div>
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Genero</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s2_field_gender') }}</label>
                 <div class="flex gap-2">
                   <label v-for="g in ['masculino','femenino','otro']" :key="g" class="flex-1 cursor-pointer rounded-lg border-2 px-3 py-2 text-center text-sm font-medium transition"
                     :class="datosGenerales.genero === g ? 'border-wc-accent bg-wc-accent/5 text-wc-text' : 'border-wc-border bg-wc-bg-secondary text-wc-text-secondary'">
@@ -941,23 +944,23 @@ onBeforeUnmount(() => {
                 </div>
               </div>
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Peso (kg)</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s2_field_weight') }}</label>
                 <input v-model.number="datosGenerales.peso" type="number" step="0.1" :class="['w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent', isHighlighted('dg.peso') && 'autofill-highlight']" />
               </div>
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Estatura (cm)</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s2_field_height') }}</label>
                 <input v-model.number="datosGenerales.estatura" type="number" step="1" :class="['w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent', isHighlighted('dg.estatura') && 'autofill-highlight']" />
               </div>
               <div class="sm:col-span-2">
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Nivel de actividad diario</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s2_field_activity') }}</label>
                 <select v-model="datosGenerales.actividad_diaria" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-                  <option value="">Selecciona...</option>
+                  <option value="">{{ t('coach_ops.wizard_s2_field_activity_placeholder') }}</option>
                   <option v-for="n in NIVEL_ACTIVIDAD" :key="n.value" :value="n.value">{{ n.label }}</option>
                 </select>
               </div>
               <div class="sm:col-span-2">
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Objetivo principal</label>
-                <textarea v-model="datosGenerales.objetivo" rows="3" placeholder="Describe el objetivo del cliente en sus propias palabras..." :class="['w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent', isHighlighted('dg.objetivo') && 'autofill-highlight']"></textarea>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s2_field_goal') }}</label>
+                <textarea v-model="datosGenerales.objetivo" rows="3" :placeholder="t('coach_ops.wizard_s2_field_goal_placeholder')" :class="['w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent', isHighlighted('dg.objetivo') && 'autofill-highlight']"></textarea>
               </div>
             </div>
           </fieldset>
@@ -965,15 +968,15 @@ onBeforeUnmount(() => {
 
         <!-- STEP: entrenamiento -->
         <section v-else-if="currentStepKey === 'entrenamiento'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
-          <h2 class="font-display text-xl tracking-wide text-wc-text">3. Plan de entrenamiento</h2>
+          <h2 class="font-display text-xl tracking-wide text-wc-text">{{ t('coach_ops.wizard_s3_heading') }}</h2>
           <div v-if="isAjuste" class="rounded-lg border border-purple-500/30 bg-purple-500/5 p-3 text-xs text-purple-400">
-            Este es un ticket de ajuste. Solo llena esta seccion si hay algo que cambiar.
+            {{ t('coach_ops.wizard_s3_adjustment_notice') }}
           </div>
           <fieldset :disabled="!isEditable" class="space-y-5">
 
             <!-- Lugar -->
             <div>
-              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Lugar de entrenamiento</label>
+              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s3_place_label') }}</label>
               <div class="flex gap-2">
                 <label v-for="l in ['gym','casa']" :key="l" class="flex-1 cursor-pointer rounded-lg border-2 px-3 py-2 text-center text-sm font-medium transition"
                   :class="planEntrenamiento.lugar === l ? 'border-wc-accent bg-wc-accent/5 text-wc-text' : 'border-wc-border bg-wc-bg-secondary text-wc-text-secondary'">
@@ -985,7 +988,7 @@ onBeforeUnmount(() => {
 
             <!-- Implementos (si casa) -->
             <div v-if="planEntrenamiento.lugar === 'casa'">
-              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Implementos disponibles</label>
+              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s3_implements_label') }}</label>
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="imp in IMPLEMENTOS_OPTIONS"
@@ -1001,30 +1004,30 @@ onBeforeUnmount(() => {
             <!-- Dias + tiempos -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Dias por semana</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s3_days_label') }}</label>
                 <select v-model.number="planEntrenamiento.dias_semana" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-                  <option :value="null">Selecciona...</option>
-                  <option v-for="n in [3,4,5,6]" :key="n" :value="n">{{ n }} dias</option>
+                  <option :value="null">{{ t('coach_ops.wizard_s3_days_placeholder') }}</option>
+                  <option v-for="n in [3,4,5,6]" :key="n" :value="n">{{ t('coach_ops.wizard_s3_days_option', { n }) }}</option>
                 </select>
               </div>
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Tiempo pesas (min)</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s3_strength_time_label') }}</label>
                 <input v-model.number="planEntrenamiento.tiempo_pesas_min" type="number" min="0" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" />
               </div>
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Tiempo cardio (min)</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s3_cardio_time_label') }}</label>
                 <input v-model.number="planEntrenamiento.tiempo_cardio_min" type="number" min="0" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" />
               </div>
             </div>
 
             <!-- Preferencia + modalidad -->
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Preferencia de cardio</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s3_cardio_pref_label') }}</label>
               <textarea v-model="planEntrenamiento.preferencia_cardio" rows="2" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
             </div>
 
             <div>
-              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Modalidad de cardio</label>
+              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s3_cardio_modality_label') }}</label>
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="m in MODALIDAD_CARDIO_OPTIONS"
@@ -1039,13 +1042,13 @@ onBeforeUnmount(() => {
 
             <!-- Nivel -->
             <div>
-              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Nivel</label>
+              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s3_level_label') }}</label>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <label
                   v-for="n in [
-                    { value: 'principiante', desc: 'Menos de 6 meses entrenando.' },
-                    { value: 'intermedio', desc: '6-24 meses con tecnica solida.' },
-                    { value: 'avanzado', desc: 'Mas de 2 años, carga alta.' },
+                    { value: 'principiante', desc: t('coach_ops.wizard_s3_level_beginner_desc') },
+                    { value: 'intermedio', desc: t('coach_ops.wizard_s3_level_intermediate_desc') },
+                    { value: 'avanzado', desc: t('coach_ops.wizard_s3_level_advanced_desc') },
                   ]"
                   :key="n.value"
                   class="cursor-pointer rounded-lg border-2 p-3 transition"
@@ -1060,18 +1063,18 @@ onBeforeUnmount(() => {
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Lesiones</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s3_injuries_label') }}</label>
                 <textarea v-model="planEntrenamiento.lesiones" rows="3" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
               </div>
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Restricciones</label>
-                <textarea v-model="planEntrenamiento.restricciones" rows="3" placeholder="Ej: No incluir peso muerto, no caminadora." class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s3_restrictions_label') }}</label>
+                <textarea v-model="planEntrenamiento.restricciones" rows="3" :placeholder="t('coach_ops.wizard_s3_restrictions_placeholder')" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
               </div>
             </div>
 
             <!-- Split semanal -->
             <div>
-              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Split semanal</label>
+              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s3_split_label') }}</label>
               <div class="space-y-3">
                 <div v-for="d in DIAS_SEMANA" :key="d.key" class="rounded-lg border border-wc-border bg-wc-bg-secondary p-3">
                   <p class="mb-2 text-sm font-semibold text-wc-text">{{ d.label }}</p>
@@ -1088,7 +1091,7 @@ onBeforeUnmount(() => {
                   <input
                     v-model="planEntrenamiento.split[d.key].prioridad"
                     type="text"
-                    placeholder="Prioridad (opcional): ej. gluteo alto"
+                    :placeholder="t('coach_ops.wizard_s3_split_priority_placeholder')"
                     class="w-full rounded-md border border-wc-border bg-wc-bg-tertiary px-2 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none"
                   />
                 </div>
@@ -1100,25 +1103,25 @@ onBeforeUnmount(() => {
 
         <!-- STEP: nutricion -->
         <section v-else-if="currentStepKey === 'nutricion'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
-          <h2 class="font-display text-xl tracking-wide text-wc-text">4. Plan nutricional</h2>
+          <h2 class="font-display text-xl tracking-wide text-wc-text">{{ t('coach_ops.wizard_s4_heading') }}</h2>
           <div v-if="isAjuste" class="rounded-lg border border-purple-500/30 bg-purple-500/5 p-3 text-xs text-purple-400">
-            Este es un ticket de ajuste. Solo llena esta seccion si hay algo que cambiar.
+            {{ t('coach_ops.wizard_s4_adjustment_notice') }}
           </div>
           <fieldset :disabled="!isEditable" class="space-y-4">
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Objetivo nutricional</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s4_goal_label') }}</label>
               <textarea v-model="planNutricional.objetivo" rows="2" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Cuantas comidas al dia</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s4_meals_label') }}</label>
                 <input v-model.number="planNutricional.num_comidas" type="number" min="3" max="7" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" />
               </div>
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Metodologia</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s4_methodology_label') }}</label>
                 <select v-model="planNutricional.metodologia" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent">
-                  <option value="">Selecciona...</option>
+                  <option value="">{{ t('coach_ops.wizard_s4_methodology_placeholder') }}</option>
                   <option v-for="m in METODOLOGIAS" :key="m.value" :value="m.value">{{ m.label }}</option>
                 </select>
                 <p v-if="planNutricional.metodologia" class="mt-1 text-xs text-wc-text-tertiary">
@@ -1128,12 +1131,12 @@ onBeforeUnmount(() => {
             </div>
 
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Horarios de comida</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s4_times_label') }}</label>
               <div class="flex gap-2">
                 <input
                   v-model="newHorario"
                   type="text"
-                  placeholder="Ej: 7:00 am"
+                  :placeholder="t('coach_ops.wizard_s4_times_placeholder')"
                   @keyup.enter="addHorario"
                   class="flex-1 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
                 />
@@ -1141,7 +1144,7 @@ onBeforeUnmount(() => {
                   type="button"
                   @click="addHorario"
                   class="rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
-                >Agregar</button>
+                >{{ t('coach_ops.wizard_s4_times_add') }}</button>
               </div>
               <div class="mt-2 flex flex-wrap gap-2">
                 <span v-for="(h, i) in planNutricional.horarios" :key="i" class="inline-flex items-center gap-1.5 rounded-full bg-wc-accent/10 px-3 py-1 text-xs font-medium text-wc-accent">
@@ -1152,31 +1155,31 @@ onBeforeUnmount(() => {
             </div>
 
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Alimentos que NO incluir</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s4_excluded_foods_label') }}</label>
               <textarea v-model="planNutricional.alimentos_no_incluir" rows="2" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
             </div>
 
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Alimentos a priorizar</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s4_prioritize_foods_label') }}</label>
               <textarea v-model="planNutricional.alimentos_priorizar" rows="2" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
             </div>
 
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Descripcion y configuracion de comidas</label>
-              <textarea v-model="planNutricional.configuracion_comidas" rows="5" placeholder="Ej: desayuno con huevo y otras con avena; snack AM con frutas..." class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s4_meal_config_label') }}</label>
+              <textarea v-model="planNutricional.configuracion_comidas" rows="5" :placeholder="t('coach_ops.wizard_s4_meal_config_placeholder')" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
             </div>
           </fieldset>
         </section>
 
         <!-- STEP: habitos -->
         <section v-else-if="currentStepKey === 'habitos'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
-          <h2 class="font-display text-xl tracking-wide text-wc-text">5. Plan de habitos</h2>
+          <h2 class="font-display text-xl tracking-wide text-wc-text">{{ t('coach_ops.wizard_s5_heading') }}</h2>
           <div v-if="isAjuste" class="rounded-lg border border-purple-500/30 bg-purple-500/5 p-3 text-xs text-purple-400">
-            Este es un ticket de ajuste. Solo llena esta seccion si hay algo que cambiar.
+            {{ t('coach_ops.wizard_s5_adjustment_notice') }}
           </div>
           <fieldset :disabled="!isEditable" class="space-y-4">
             <div>
-              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Areas de foco</label>
+              <label class="mb-2 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s5_focus_label') }}</label>
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="a in AREAS_FOCO_HABITOS"
@@ -1189,15 +1192,15 @@ onBeforeUnmount(() => {
               </div>
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Rutina matutina</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s5_morning_label') }}</label>
               <textarea v-model="planHabitos.rutina_matutina" rows="3" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Rutina nocturna</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s5_night_label') }}</label>
               <textarea v-model="planHabitos.rutina_nocturna" rows="3" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Otros habitos</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s5_other_label') }}</label>
               <textarea v-model="planHabitos.otros" rows="3" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
             </div>
           </fieldset>
@@ -1205,30 +1208,30 @@ onBeforeUnmount(() => {
 
         <!-- STEP: suplementacion -->
         <section v-else-if="currentStepKey === 'suplementacion'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
-          <h2 class="font-display text-xl tracking-wide text-wc-text">Plan de suplementacion</h2>
+          <h2 class="font-display text-xl tracking-wide text-wc-text">{{ t('coach_ops.wizard_s6_heading') }}</h2>
           <div v-if="isAjuste" class="rounded-lg border border-purple-500/30 bg-purple-500/5 p-3 text-xs text-purple-400">
-            Este es un ticket de ajuste. Solo llena esta seccion si hay algo que cambiar.
+            {{ t('coach_ops.wizard_s6_adjustment_notice') }}
           </div>
           <fieldset :disabled="!isEditable" class="space-y-5">
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Objetivo del stack</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s6_goal_label') }}</label>
               <textarea
                 v-model="planSuplementacion.objetivo"
                 rows="2"
-                placeholder="Para que se optimiza — ej. Rendimiento base, Recomposicion, Recuperacion..."
+                :placeholder="t('coach_ops.wizard_s6_goal_placeholder')"
                 class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
               ></textarea>
             </div>
 
             <div>
               <div class="mb-2 flex items-center justify-between">
-                <label class="block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Suplementos</label>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s6_supplements_label') }}</label>
                 <button
                   type="button"
                   @click="addSuplemento"
                   class="inline-flex items-center gap-1 rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"
                 >
-                  <span class="text-base leading-none">+</span> Anadir suplemento
+                  <span class="text-base leading-none">+</span> {{ t('coach_ops.wizard_s6_add_supplement') }}
                 </button>
               </div>
 
@@ -1236,7 +1239,7 @@ onBeforeUnmount(() => {
                 v-if="!planSuplementacion.suplementos || planSuplementacion.suplementos.length === 0"
                 class="rounded-lg border-2 border-dashed border-red-500/30 bg-red-500/5 p-4 text-center text-xs text-red-400"
               >
-                Agrega al menos un suplemento.
+                {{ t('coach_ops.wizard_s6_empty_supplements') }}
               </div>
 
               <div v-else class="space-y-3">
@@ -1251,53 +1254,53 @@ onBeforeUnmount(() => {
                       type="button"
                       @click="removeSuplemento(idx)"
                       class="rounded-md border border-red-500/30 px-2 py-0.5 text-[11px] font-medium text-red-400 hover:bg-red-500/10"
-                    >Eliminar</button>
+                    >{{ t('coach_ops.wizard_s6_supplement_remove') }}</button>
                   </div>
 
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Nombre</label>
+                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s6_field_name') }}</label>
                       <input
                         v-model="sup.nombre"
                         type="text"
-                        placeholder="Ej: Proteina de Suero, Creatina Monohidrato"
+                        :placeholder="t('coach_ops.wizard_s6_field_name_placeholder')"
                         class="w-full rounded-md border border-wc-border bg-wc-bg-tertiary px-2 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Dosis</label>
+                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s6_field_dose') }}</label>
                       <input
                         v-model="sup.dosis"
                         type="text"
-                        placeholder="Ej: 30g, 5g"
+                        :placeholder="t('coach_ops.wizard_s6_field_dose_placeholder')"
                         class="w-full rounded-md border border-wc-border bg-wc-bg-tertiary px-2 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Momento</label>
+                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s6_field_timing') }}</label>
                       <input
                         v-model="sup.momento"
                         type="text"
-                        placeholder="Ej: Post-entrenamiento, Antes de dormir"
+                        :placeholder="t('coach_ops.wizard_s6_field_timing_placeholder')"
                         class="w-full rounded-md border border-wc-border bg-wc-bg-tertiary px-2 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Frecuencia</label>
+                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s6_field_frequency') }}</label>
                       <select
                         v-model="sup.frecuencia"
                         class="w-full rounded-md border border-wc-border bg-wc-bg-tertiary px-2 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none"
                       >
-                        <option value="">Selecciona...</option>
+                        <option value="">{{ t('coach_ops.wizard_s6_field_frequency_placeholder') }}</option>
                         <option v-for="f in FRECUENCIA_SUPLEMENTO_OPTIONS" :key="f.value" :value="f.value">{{ f.label }}</option>
                       </select>
                     </div>
                     <div class="sm:col-span-2">
-                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Notas (opcional)</label>
+                      <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s6_field_notes') }}</label>
                       <input
                         v-model="sup.notas"
                         type="text"
-                        placeholder="Ej: tomar con agua, evitar con cafeina"
+                        :placeholder="t('coach_ops.wizard_s6_field_notes_placeholder')"
                         class="w-full rounded-md border border-wc-border bg-wc-bg-tertiary px-2 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none"
                       />
                     </div>
@@ -1307,11 +1310,11 @@ onBeforeUnmount(() => {
             </div>
 
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Notas del coach para el stack (opcional)</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s6_coach_notes_label') }}</label>
               <textarea
                 v-model="planSuplementacion.notas_coach"
                 rows="3"
-                placeholder="Indicaciones generales, advertencias, periodo de ciclado..."
+                :placeholder="t('coach_ops.wizard_s6_coach_notes_placeholder')"
                 class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
               ></textarea>
             </div>
@@ -1320,28 +1323,28 @@ onBeforeUnmount(() => {
 
         <!-- STEP: ciclo -->
         <section v-else-if="currentStepKey === 'ciclo'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
-          <h2 class="font-display text-xl tracking-wide text-wc-text">6. Ciclo hormonal</h2>
+          <h2 class="font-display text-xl tracking-wide text-wc-text">{{ t('coach_ops.wizard_s7_heading') }}</h2>
           <fieldset :disabled="!isEditable" class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Fecha ultima menstruacion</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s7_last_period_label') }}</label>
                 <input v-model="planCiclo.fecha_ultima_menstruacion" type="date" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" />
               </div>
               <div>
-                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Duracion ciclo (dias)</label>
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s7_cycle_duration_label') }}</label>
                 <input v-model.number="planCiclo.duracion_ciclo_dias" type="number" min="15" max="60" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" />
               </div>
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Sintomas</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s7_symptoms_label') }}</label>
               <textarea v-model="planCiclo.sintomas" rows="3" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Anticonceptivo</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s7_contraceptive_label') }}</label>
               <input v-model="planCiclo.anticonceptivo" type="text" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent" />
             </div>
             <div>
-              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Notas adicionales</label>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s7_notes_label') }}</label>
               <textarea v-model="planCiclo.notas" rows="3" class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary p-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"></textarea>
             </div>
           </fieldset>
@@ -1350,14 +1353,14 @@ onBeforeUnmount(() => {
         <!-- STEP: adjuntos -->
         <section v-else-if="currentStepKey === 'adjuntos'" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-5">
           <div>
-            <h2 class="font-display text-xl tracking-wide text-wc-text">Adjuntos (opcional)</h2>
-            <p class="mt-1 text-sm text-wc-text-tertiary">Fotos de progreso, laboratorios, documentos medicos, etc. Max 10MB por archivo.</p>
+            <h2 class="font-display text-xl tracking-wide text-wc-text">{{ t('coach_ops.wizard_s8_heading') }}</h2>
+            <p class="mt-1 text-sm text-wc-text-tertiary">{{ t('coach_ops.wizard_s8_subtitle') }}</p>
           </div>
 
           <!-- Upload dropzone -->
           <div v-if="isEditable">
             <div class="mb-2 flex flex-col sm:flex-row sm:items-center gap-2">
-              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Categoria del archivo</label>
+              <label class="text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s8_category_label') }}</label>
               <select
                 v-model="attachmentCategory"
                 class="rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1.5 text-xs text-wc-text focus:border-wc-accent focus:outline-none focus:ring-1 focus:ring-wc-accent"
@@ -1383,17 +1386,17 @@ onBeforeUnmount(() => {
               <svg class="mx-auto h-10 w-10 text-wc-text-tertiary/60" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
               </svg>
-              <p class="mt-2 text-sm font-medium text-wc-text">{{ uploadingAttachment ? 'Subiendo...' : 'Arrastra un archivo o haz click para subir' }}</p>
-              <p class="mt-1 text-xs text-wc-text-tertiary">JPG, PNG, WEBP, HEIC, PDF o DOCX · max 10MB</p>
+              <p class="mt-2 text-sm font-medium text-wc-text">{{ uploadingAttachment ? t('coach_ops.wizard_s8_dropzone_uploading') : t('coach_ops.wizard_s8_dropzone_idle') }}</p>
+              <p class="mt-1 text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s8_dropzone_hint') }}</p>
             </div>
           </div>
 
           <!-- Attachments list -->
           <div>
-            <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Archivos ({{ attachments.length }})</p>
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_ops.wizard_s8_list_label', { n: attachments.length }) }}</p>
             <div v-if="loadingAttachments" class="animate-pulse rounded-lg border border-wc-border bg-wc-bg-secondary h-16"></div>
             <div v-else-if="attachments.length === 0" class="rounded-lg border border-wc-border bg-wc-bg-secondary p-4 text-center text-xs text-wc-text-tertiary">
-              Sin archivos adjuntos todavia.
+              {{ t('coach_ops.wizard_s8_empty_list') }}
             </div>
             <ul v-else class="space-y-2">
               <li
@@ -1417,7 +1420,7 @@ onBeforeUnmount(() => {
                   <p class="text-[11px] text-wc-text-tertiary">
                     {{ formatBytes(att.size_bytes) }}
                     <span v-if="att.category"> · {{ humanLabel(att.category) }}</span>
-                    · {{ att.uploaded_by_name || 'Coach' }} · {{ formatRelative(att.created_at) }}
+                    · {{ att.uploaded_by_name || t('coach_ops.wizard_s8_uploader_fallback') }} · {{ formatRelative(att.created_at) }}
                   </p>
                 </div>
                 <a
@@ -1425,13 +1428,13 @@ onBeforeUnmount(() => {
                   target="_blank"
                   rel="noopener"
                   class="rounded-md border border-wc-border bg-wc-bg-tertiary px-2.5 py-1 text-[11px] font-medium text-wc-text-secondary hover:border-wc-accent/40 hover:text-wc-text transition"
-                >Ver</a>
+                >{{ t('coach_ops.wizard_s8_action_view') }}</a>
                 <button
                   v-if="isEditable"
                   type="button"
                   @click="deleteAttachment(att)"
                   class="rounded-md border border-red-500/30 px-2 py-1 text-[11px] font-medium text-red-400 hover:bg-red-500/10 transition"
-                >Eliminar</button>
+                >{{ t('coach_ops.wizard_s8_action_delete') }}</button>
               </li>
             </ul>
           </div>
@@ -1440,50 +1443,50 @@ onBeforeUnmount(() => {
         <!-- STEP: revision -->
         <section v-else-if="currentStepKey === 'revision'" class="space-y-5">
           <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 space-y-4">
-            <h2 class="font-display text-xl tracking-wide text-wc-text">Revision final</h2>
+            <h2 class="font-display text-xl tracking-wide text-wc-text">{{ t('coach_ops.wizard_s9_heading') }}</h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               <div class="rounded-lg bg-wc-bg-secondary p-3">
-                <p class="text-xs text-wc-text-tertiary">Cliente</p>
+                <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s9_summary_client') }}</p>
                 <p class="font-medium text-wc-text">{{ datosGenerales.nombre || ticket?.client_name || '-' }}</p>
               </div>
               <div class="rounded-lg bg-wc-bg-secondary p-3">
-                <p class="text-xs text-wc-text-tertiary">Plan</p>
+                <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s9_summary_plan') }}</p>
                 <p class="font-medium text-wc-text">{{ humanLabel(planType) }}</p>
               </div>
               <div class="rounded-lg bg-wc-bg-secondary p-3">
-                <p class="text-xs text-wc-text-tertiary">Edad / Genero</p>
+                <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s9_summary_age_gender') }}</p>
                 <p class="font-medium text-wc-text">{{ datosGenerales.edad || '-' }} · {{ humanLabel(datosGenerales.genero) || '-' }}</p>
               </div>
               <div class="rounded-lg bg-wc-bg-secondary p-3">
-                <p class="text-xs text-wc-text-tertiary">Peso / Estatura</p>
-                <p class="font-medium text-wc-text">{{ datosGenerales.peso || '-' }} kg · {{ datosGenerales.estatura || '-' }} cm</p>
+                <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s9_summary_weight_height') }}</p>
+                <p class="font-medium text-wc-text">{{ t('coach_ops.wizard_s9_summary_weight_height_value', { weight: datosGenerales.peso || '-', height: datosGenerales.estatura || '-' }) }}</p>
               </div>
               <div class="rounded-lg bg-wc-bg-secondary p-3">
-                <p class="text-xs text-wc-text-tertiary">Lugar entrenamiento</p>
-                <p class="font-medium text-wc-text">{{ humanLabel(planEntrenamiento.lugar) || '-' }} · {{ planEntrenamiento.dias_semana || '-' }} dias</p>
+                <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s9_summary_place_days') }}</p>
+                <p class="font-medium text-wc-text">{{ t('coach_ops.wizard_s9_summary_place_days_value', { place: humanLabel(planEntrenamiento.lugar) || '-', days: planEntrenamiento.dias_semana || '-' }) }}</p>
               </div>
               <div class="rounded-lg bg-wc-bg-secondary p-3">
-                <p class="text-xs text-wc-text-tertiary">Nivel</p>
+                <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s9_summary_level') }}</p>
                 <p class="font-medium text-wc-text">{{ humanLabel(planEntrenamiento.nivel) || '-' }}</p>
               </div>
               <div class="rounded-lg bg-wc-bg-secondary p-3">
-                <p class="text-xs text-wc-text-tertiary">Nutricion</p>
-                <p class="font-medium text-wc-text">{{ planNutricional.num_comidas || '-' }} comidas · {{ humanLabel(planNutricional.metodologia) || 'sin metodologia' }}</p>
+                <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s9_summary_nutrition') }}</p>
+                <p class="font-medium text-wc-text">{{ t('coach_ops.wizard_s9_summary_nutrition_value', { meals: planNutricional.num_comidas || '-', methodology: humanLabel(planNutricional.metodologia) || t('coach_ops.wizard_s9_summary_no_methodology') }) }}</p>
               </div>
               <div class="rounded-lg bg-wc-bg-secondary p-3">
-                <p class="text-xs text-wc-text-tertiary">Habitos</p>
-                <p class="font-medium text-wc-text">{{ planHabitos.areas_foco?.length || 0 }} areas de foco</p>
+                <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s9_summary_habits') }}</p>
+                <p class="font-medium text-wc-text">{{ (planHabitos.areas_foco?.length || 0) === 1 ? t('coach_ops.wizard_s9_summary_habits_value_one', { n: 1 }) : t('coach_ops.wizard_s9_summary_habits_value_other', { n: planHabitos.areas_foco?.length || 0 }) }}</p>
               </div>
               <div class="rounded-lg bg-wc-bg-secondary p-3 sm:col-span-2">
-                <p class="text-xs text-wc-text-tertiary">Suplementacion</p>
+                <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s9_summary_supplements') }}</p>
                 <p class="font-medium text-wc-text">
-                  {{ planSuplementacion.suplementos?.length || 0 }} suplemento(s)
+                  {{ (planSuplementacion.suplementos?.length || 0) === 1 ? t('coach_ops.wizard_s9_summary_supplements_value_one', { n: 1 }) : t('coach_ops.wizard_s9_summary_supplements_value_other', { n: planSuplementacion.suplementos?.length || 0 }) }}
                   <span v-if="planSuplementacion.objetivo" class="text-wc-text-tertiary"> · {{ planSuplementacion.objetivo }}</span>
                 </p>
                 <ul v-if="planSuplementacion.suplementos?.length" class="mt-2 space-y-1 text-xs text-wc-text-secondary">
                   <li v-for="(s, i) in planSuplementacion.suplementos" :key="i" class="flex flex-wrap gap-x-2">
-                    <span class="font-semibold text-wc-text">{{ s.nombre || '(sin nombre)' }}</span>
+                    <span class="font-semibold text-wc-text">{{ s.nombre || t('coach_ops.wizard_s9_summary_supplement_name_empty') }}</span>
                     <span v-if="s.dosis">· {{ s.dosis }}</span>
                     <span v-if="s.momento">· {{ s.momento }}</span>
                     <span v-if="s.frecuencia">· {{ humanLabel(s.frecuencia) }}</span>
@@ -1491,9 +1494,9 @@ onBeforeUnmount(() => {
                 </ul>
               </div>
               <div v-if="isElite" class="rounded-lg bg-wc-bg-secondary p-3 sm:col-span-2">
-                <p class="text-xs text-wc-text-tertiary">Ciclo hormonal</p>
+                <p class="text-xs text-wc-text-tertiary">{{ t('coach_ops.wizard_s9_summary_cycle') }}</p>
                 <p class="font-medium text-wc-text">
-                  {{ planCiclo.fecha_ultima_menstruacion || '-' }} · {{ planCiclo.duracion_ciclo_dias || '-' }} dias
+                  {{ t('coach_ops.wizard_s9_summary_cycle_value', { date: planCiclo.fecha_ultima_menstruacion || '-', days: planCiclo.duracion_ciclo_dias || '-' }) }}
                 </p>
               </div>
             </div>
@@ -1508,7 +1511,7 @@ onBeforeUnmount(() => {
 
           <!-- Missing fields list -->
           <div v-if="missingFields.length > 0" class="rounded-xl border border-red-500/30 bg-red-500/5 p-5">
-            <p class="mb-2 font-semibold text-red-400">Campos faltantes:</p>
+            <p class="mb-2 font-semibold text-red-400">{{ t('coach_ops.wizard_s9_missing_fields_title') }}</p>
             <ul class="list-disc pl-5 text-sm text-red-400 space-y-1">
               <li v-for="(m, i) in missingFields" :key="i">{{ m }}</li>
             </ul>
@@ -1516,15 +1519,15 @@ onBeforeUnmount(() => {
 
           <!-- Coach responsibility message -->
           <div class="rounded-xl border border-wc-accent/40 bg-wc-bg-tertiary p-5">
-            <p class="mb-3 font-display text-base tracking-wide text-wc-accent">ANTES DE ENVIAR ESTE TICKET</p>
-            <p v-if="isAjuste" class="mb-2 text-sm text-purple-400 font-medium">Describe con claridad que ajuste necesita el cliente.</p>
+            <p class="mb-3 font-display text-base tracking-wide text-wc-accent">{{ t('coach_ops.wizard_s9_responsibility_title') }}</p>
+            <p v-if="isAjuste" class="mb-2 text-sm text-purple-400 font-medium">{{ t('coach_ops.wizard_s9_responsibility_adjustment') }}</p>
             <div class="space-y-2 text-sm text-wc-text-secondary">
-              <p><span class="text-wc-accent">✓</span> Lo que tu escribes aqui define directamente la calidad del plan que recibira tu cliente.</p>
-              <p><span class="text-wc-accent">✓</span> Esta validacion 1-a-1 con el cliente es una responsabilidad clave del coach — <strong class="text-wc-text">conversa de manera humana, cercana y analiza sus respuestas</strong> para darnos contexto real.</p>
-              <p><span class="text-wc-accent">✓</span> Cuanto mas detalle y contexto brindes, mas personalizado y efectivo sera el plan.</p>
-              <p><span class="text-wc-accent">✓</span> Es tu responsabilidad ante la empresa hacer esto bien. Tu trabajo aqui es el primer filtro que determina el exito del asesorado.</p>
+              <p><span class="text-wc-accent">✓</span> {{ t('coach_ops.wizard_s9_responsibility_bullet1') }}</p>
+              <p><span class="text-wc-accent">✓</span> {{ t('coach_ops.wizard_s9_responsibility_bullet2_pre') }} <strong class="text-wc-text">{{ t('coach_ops.wizard_s9_responsibility_bullet2_strong') }}</strong> {{ t('coach_ops.wizard_s9_responsibility_bullet2_post') }}</p>
+              <p><span class="text-wc-accent">✓</span> {{ t('coach_ops.wizard_s9_responsibility_bullet3') }}</p>
+              <p><span class="text-wc-accent">✓</span> {{ t('coach_ops.wizard_s9_responsibility_bullet4') }}</p>
               <p class="mt-3 border-t border-wc-border pt-3 text-wc-text">
-                <strong>Lo que esperamos de ti:</strong> que seas excelente haciendolo. Los asesorados confian en tu profesionalismo — que ese sea el estandar que reflejen estos tickets.
+                <strong>{{ t('coach_ops.wizard_s9_responsibility_close_strong') }}</strong> {{ t('coach_ops.wizard_s9_responsibility_close_text') }}
               </p>
             </div>
           </div>
@@ -1544,11 +1547,11 @@ onBeforeUnmount(() => {
                 @click="deleteDraft"
                 :disabled="deleting"
                 class="rounded-lg border border-red-500/30 px-4 py-2 text-sm font-semibold text-red-400 hover:bg-red-500/5 transition disabled:opacity-50"
-              >{{ deleting ? 'Eliminando...' : 'Eliminar borrador' }}</button>
+              >{{ deleting ? t('coach_ops.wizard_delete_draft_progress') : t('coach_ops.wizard_delete_draft') }}</button>
               <button
                 @click="router.push('/coach/plan-tickets')"
                 class="rounded-lg border border-wc-border px-4 py-2 text-sm font-semibold text-wc-text-secondary hover:bg-wc-bg-tertiary transition"
-              >Guardar como borrador</button>
+              >{{ t('coach_ops.wizard_save_as_draft') }}</button>
             </div>
             <button
               @click="submitTicket"
@@ -1562,7 +1565,7 @@ onBeforeUnmount(() => {
               <svg v-else class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
               </svg>
-              {{ submitting ? 'Enviando...' : 'Enviar ticket' }}
+              {{ submitting ? t('coach_ops.wizard_submit_ticket_progress') : t('coach_ops.wizard_submit_ticket') }}
             </button>
           </div>
         </section>
@@ -1577,7 +1580,7 @@ onBeforeUnmount(() => {
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
             </svg>
-            Anterior
+            {{ t('coach_ops.wizard_nav_prev') }}
           </button>
           <button
             v-if="currentStepKey !== 'revision'"
@@ -1585,7 +1588,7 @@ onBeforeUnmount(() => {
             :disabled="(isNew && step === 0 && loading) || (!ticketId && step > 0)"
             class="inline-flex items-center gap-1 rounded-lg bg-wc-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition disabled:opacity-50"
           >
-            {{ isNew && step === 0 && !ticketId ? 'Crear y continuar' : 'Siguiente' }}
+            {{ isNew && step === 0 && !ticketId ? t('coach_ops.wizard_nav_create_and_continue') : t('coach_ops.wizard_nav_next') }}
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
             </svg>

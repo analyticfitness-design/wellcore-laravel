@@ -1,7 +1,10 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import PieceMarkPublishedButton from './PieceMarkPublishedButton.vue';
 import { coachStrategyApi } from '../../../api/coachStrategy';
+
+const { t } = useI18n();
 
 const props = defineProps({
     story: { type: Object, required: true },
@@ -22,11 +25,15 @@ const dayColors = {
 };
 const dayKey = computed(() => dayColors[props.story.day] ?? 'lun');
 
-const dayFullName = {
-    LUN: 'Lunes', MAR: 'Martes', MIE: 'Miércoles', JUE: 'Jueves',
-    VIE: 'Viernes', SAB: 'Sábado', DOM: 'Domingo',
+const dayKeyMap = {
+    LUN: 'story_day_full_lun', MAR: 'story_day_full_mar', MIE: 'story_day_full_mie',
+    JUE: 'story_day_full_jue', VIE: 'story_day_full_vie', SAB: 'story_day_full_sab',
+    DOM: 'story_day_full_dom',
 };
-const dayFull = computed(() => dayFullName[props.story.day] ?? props.story.day);
+const dayFull = computed(() => {
+    const key = dayKeyMap[props.story.day];
+    return key ? t(`coach_growth.strategy.${key}`) : props.story.day;
+});
 
 const pieceKey = computed(() => `story_${(props.story.day ?? '').toLowerCase()}`);
 const stateValue = computed(() => props.pieceState?.state ?? 'pending');
@@ -92,11 +99,11 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                 <div class="sd-header-stripe"></div>
                 <div class="sd-header-inner">
                     <div class="sd-header-left">
-                        <span class="sd-day-mono">DÍA · {{ dayFull.toUpperCase() }}</span>
+                        <span class="sd-day-mono">{{ t('coach_growth.strategy.story_day_label', { day: dayFull.toUpperCase() }) }}</span>
                         <h3 class="sd-day-big">{{ story.day }}</h3>
                         <span v-if="story.pillar" class="sd-pillar-pill">{{ story.pillar }}</span>
                     </div>
-                    <button type="button" class="sd-close-btn" @click="emit('close')" aria-label="Cerrar">
+                    <button type="button" class="sd-close-btn" @click="emit('close')" :aria-label="t('coach_growth.strategy.story_close')">
                         ESC ·
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -115,7 +122,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                         :class="['sd-slide-tab', { active: activeIdx === idx }]"
                         :aria-selected="activeIdx === idx"
                     >
-                        SLIDE {{ String(idx + 1).padStart(2, '0') }}
+                        {{ t('coach_growth.strategy.story_slide_label', { num: String(idx + 1).padStart(2, '0') }) }}
                     </button>
                 </nav>
 
@@ -132,13 +139,13 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                     </div>
                     <p class="sd-slide-text">{{ activeSlide.text }}</p>
                     <div v-if="activeSlide.visual_hint" class="sd-visual-hint">
-                        <span class="sd-visual-label">VISUAL</span>
+                        <span class="sd-visual-label">{{ t('coach_growth.strategy.story_visual_label') }}</span>
                         <p>{{ activeSlide.visual_hint }}</p>
                     </div>
                 </article>
 
                 <section v-if="hasAssets" class="sd-assets">
-                    <span class="sd-section-label">Imágenes vinculadas · {{ linkedAssets.length }}</span>
+                    <span class="sd-section-label">{{ t('coach_growth.strategy.story_assets_label', { count: linkedAssets.length }) }}</span>
                     <div class="sd-assets-grid">
                         <div
                             v-for="(asset, idx) in linkedAssets"
@@ -153,7 +160,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                                     :alt="asset.filename"
                                     loading="lazy"
                                 />
-                                <div v-else class="sd-asset-fallback">VIDEO · {{ asset.filename }}</div>
+                                <div v-else class="sd-asset-fallback">{{ t('coach_growth.strategy.story_video_fallback', { filename: asset.filename }) }}</div>
                             </div>
                             <button
                                 type="button"
@@ -161,24 +168,24 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                                 :disabled="downloading"
                                 class="sd-asset-dl"
                             >
-                                ↓ Descargar
+                                {{ t('coach_growth.strategy.story_dl') }}
                             </button>
                         </div>
                     </div>
                 </section>
 
                 <aside v-if="dmHint" class="sd-dm-block">
-                    <span class="sd-dm-label">DM follow-up</span>
+                    <span class="sd-dm-label">{{ t('coach_growth.strategy.story_dm_label') }}</span>
                     <p class="sd-dm-text">{{ dmHint }}</p>
                 </aside>
             </div>
 
             <footer class="sd-footer">
-                <button type="button" class="sd-close-mobile" @click="emit('close')" aria-label="Cerrar">
+                <button type="button" class="sd-close-mobile" @click="emit('close')" :aria-label="t('coach_growth.strategy.story_close')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    Cerrar
+                    {{ t('coach_growth.strategy.story_close') }}
                 </button>
                 <button
                     type="button"
@@ -188,7 +195,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
-                    {{ copied ? 'Copiado ✓' : 'Copiar texto' }}
+                    {{ copied ? t('coach_growth.strategy.story_copied') : t('coach_growth.strategy.story_copy') }}
                 </button>
                 <div class="sd-footer-spacer"></div>
                 <PieceMarkPublishedButton :drop-id="dropId" :piece-key="pieceKey" :state="stateValue" />

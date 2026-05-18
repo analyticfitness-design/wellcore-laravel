@@ -1,37 +1,39 @@
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useInvitationsStore } from '../../../stores/invitationsStore';
 import InvitationStatusBadge from './InvitationStatusBadge.vue';
 import EmptyState from '../../../components/coach/ios/EmptyState.vue';
 import AvatarConic from '../../../components/coach/ios/AvatarConic.vue';
 
+const { t } = useI18n();
 const emit = defineEmits(['new-invitation']);
 
 const store = useInvitationsStore();
 
-const PLAN_LABELS = {
-    esencial: 'Esencial',
-    metodo:   'Metodo',
-    elite:    'Elite',
-};
+const PLAN_LABELS = computed(() => ({
+    esencial: t('coach_growth.invitations.plan_esencial'),
+    metodo:   t('coach_growth.invitations.plan_metodo'),
+    elite:    t('coach_growth.invitations.plan_elite'),
+}));
 
-const STATUS_OPTIONS = [
-    { value: '',             label: 'Todos los estados' },
-    { value: 'sent',         label: 'Enviadas' },
-    { value: 'opened',       label: 'Abiertas' },
-    { value: 'link_clicked', label: 'Link visitado' },
-    { value: 'paid',         label: 'Pagadas' },
-    { value: 'expired',      label: 'Expiradas' },
-    { value: 'cancelled',    label: 'Canceladas' },
-    { value: 'failed',       label: 'Fallidas' },
-];
+const STATUS_OPTIONS = computed(() => [
+    { value: '',             label: t('coach_growth.invitations.filter_status_all') },
+    { value: 'sent',         label: t('coach_growth.invitations.filter_status_sent') },
+    { value: 'opened',       label: t('coach_growth.invitations.filter_status_opened') },
+    { value: 'link_clicked', label: t('coach_growth.invitations.filter_status_link_clicked') },
+    { value: 'paid',         label: t('coach_growth.invitations.filter_status_paid') },
+    { value: 'expired',      label: t('coach_growth.invitations.filter_status_expired') },
+    { value: 'cancelled',    label: t('coach_growth.invitations.filter_status_cancelled') },
+    { value: 'failed',       label: t('coach_growth.invitations.filter_status_failed') },
+]);
 
-const PLAN_OPTIONS = [
-    { value: '',         label: 'Todos los planes' },
-    { value: 'esencial', label: 'Esencial' },
-    { value: 'metodo',   label: 'Metodo' },
-    { value: 'elite',    label: 'Elite' },
-];
+const PLAN_OPTIONS = computed(() => [
+    { value: '',         label: t('coach_growth.invitations.filter_plan_all') },
+    { value: 'esencial', label: t('coach_growth.invitations.plan_esencial') },
+    { value: 'metodo',   label: t('coach_growth.invitations.plan_metodo') },
+    { value: 'elite',    label: t('coach_growth.invitations.plan_elite') },
+]);
 
 const TERMINAL_STATUSES = ['paid', 'expired', 'cancelled', 'failed'];
 
@@ -44,7 +46,7 @@ function canResend(inv) {
 }
 
 function formatDate(dateStr) {
-    if (!dateStr) return '—';
+    if (!dateStr) return t('coach_growth.invitations.no_date');
     return new Date(dateStr).toLocaleDateString('es-CO', {
         day: '2-digit',
         month: 'short',
@@ -53,7 +55,7 @@ function formatDate(dateStr) {
 }
 
 function formatAmount(amount) {
-    if (!amount) return '—';
+    if (!amount) return t('coach_growth.invitations.no_amount');
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(amount);
 }
 
@@ -66,7 +68,7 @@ async function handleResend(inv) {
 }
 
 async function handleCancel(inv) {
-    if (!confirm(`Cancelar la invitacion de ${inv.email}? Esta accion no se puede deshacer.`)) return;
+    if (!confirm(t('coach_growth.invitations.cancel_confirm', { email: inv.email }))) return;
     try {
         await store.cancelInvitation(inv.id);
     } catch {
@@ -109,22 +111,22 @@ const hasPrevPage = computed(() => store.filters.page > 1);
     <!-- Stats row -->
     <div class="flex flex-wrap items-center gap-2">
       <span class="rounded-full bg-zinc-700 px-3 py-1 text-xs font-semibold text-zinc-300">
-        Enviadas: <span class="font-data ml-1">{{ store.stats.sent }}</span>
+        {{ t('coach_growth.invitations.stats_sent') }} <span class="font-data ml-1">{{ store.stats.sent }}</span>
       </span>
       <span class="rounded-full bg-blue-900/50 px-3 py-1 text-xs font-semibold text-blue-300">
-        Abiertas: <span class="font-data ml-1">{{ store.stats.opened }}</span>
+        {{ t('coach_growth.invitations.stats_opened') }} <span class="font-data ml-1">{{ store.stats.opened }}</span>
       </span>
       <span class="rounded-full bg-amber-900/50 px-3 py-1 text-xs font-semibold text-amber-300">
-        Link visitado: <span class="font-data ml-1">{{ store.stats.linkClicked }}</span>
+        {{ t('coach_growth.invitations.stats_link_clicked') }} <span class="font-data ml-1">{{ store.stats.linkClicked }}</span>
       </span>
       <span class="rounded-full bg-green-900/50 px-3 py-1 text-xs font-semibold text-green-300">
-        Pagadas: <span class="font-data ml-1">{{ store.stats.paid }}</span>
+        {{ t('coach_growth.invitations.stats_paid') }} <span class="font-data ml-1">{{ store.stats.paid }}</span>
       </span>
       <span class="rounded-full bg-red-900/50 px-3 py-1 text-xs font-semibold text-red-300">
-        Expiradas: <span class="font-data ml-1">{{ store.stats.expired }}</span>
+        {{ t('coach_growth.invitations.stats_expired') }} <span class="font-data ml-1">{{ store.stats.expired }}</span>
       </span>
       <span class="rounded-full bg-zinc-800 px-3 py-1 text-xs font-semibold text-zinc-500">
-        Canceladas: <span class="font-data ml-1">{{ store.stats.cancelled }}</span>
+        {{ t('coach_growth.invitations.stats_cancelled') }} <span class="font-data ml-1">{{ store.stats.cancelled }}</span>
       </span>
     </div>
 
@@ -153,7 +155,7 @@ const hasPrevPage = computed(() => store.filters.page > 1);
         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
-        Nueva invitacion
+        {{ t('coach_growth.invitations.new_btn') }}
       </button>
     </div>
 
@@ -170,8 +172,8 @@ const hasPrevPage = computed(() => store.filters.page > 1);
     <EmptyState
       v-else-if="!store.loading && store.invitations.length === 0"
       kind="messages"
-      title="Aun no has enviado invitaciones"
-      subtitle='Envia tu primera invitacion haciendo clic en "Nueva invitacion".'
+      :title="t('coach_growth.invitations.empty_title')"
+      :subtitle="t('coach_growth.invitations.empty_subtitle')"
     />
 
     <!-- Table -->
@@ -184,12 +186,12 @@ const hasPrevPage = computed(() => store.filters.page > 1);
         <table class="w-full text-left text-sm">
           <thead class="border-b border-wc-border bg-wc-bg-tertiary">
             <tr>
-              <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Correo / Nombre</th>
-              <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Plan</th>
-              <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Estado</th>
-              <th class="hidden px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary md:table-cell">Expira</th>
-              <th class="hidden px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary lg:table-cell">Enviada</th>
-              <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">Acciones</th>
+              <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_growth.invitations.th_email') }}</th>
+              <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_growth.invitations.th_plan') }}</th>
+              <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_growth.invitations.th_status') }}</th>
+              <th class="hidden px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary md:table-cell">{{ t('coach_growth.invitations.th_expires') }}</th>
+              <th class="hidden px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary lg:table-cell">{{ t('coach_growth.invitations.th_sent') }}</th>
+              <th class="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('coach_growth.invitations.th_actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-wc-border bg-wc-bg-secondary">
@@ -223,7 +225,7 @@ const hasPrevPage = computed(() => store.filters.page > 1);
               <td class="px-4 py-3">
                 <InvitationStatusBadge :status="inv.status" />
                 <p v-if="inv.resend_count > 0" class="mt-1 text-[10px] text-wc-text-tertiary">
-                  Reenviada {{ inv.resend_count }}x
+                  {{ t('coach_growth.invitations.resend_count', { n: inv.resend_count }) }}
                 </p>
               </td>
 
@@ -244,7 +246,7 @@ const hasPrevPage = computed(() => store.filters.page > 1);
                   <button
                     v-if="canResend(inv)"
                     @click="handleResend(inv)"
-                    title="Reenviar invitacion"
+                    :title="t('coach_growth.invitations.resend_title')"
                     class="flex h-8 w-8 items-center justify-center rounded-lg text-wc-text-tertiary hover:bg-wc-bg-tertiary hover:text-wc-text transition-colors"
                   >
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -256,7 +258,7 @@ const hasPrevPage = computed(() => store.filters.page > 1);
                   <button
                     v-if="!isTerminal(inv.status)"
                     @click="handleCancel(inv)"
-                    title="Cancelar invitacion"
+                    :title="t('coach_growth.invitations.cancel_title')"
                     class="flex h-8 w-8 items-center justify-center rounded-lg text-wc-text-tertiary hover:bg-red-500/10 hover:text-red-400 transition-colors"
                   >
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -274,9 +276,9 @@ const hasPrevPage = computed(() => store.filters.page > 1);
     <!-- Pagination -->
     <div v-if="!store.loading && store.pagination && store.invitations.length > 0" class="flex items-center justify-between">
       <p class="text-xs text-wc-text-tertiary">
-        Pagina <span class="font-data font-semibold text-wc-text">{{ store.filters.page }}</span>
+        {{ t('coach_growth.invitations.page_label') }} <span class="font-data font-semibold text-wc-text">{{ store.filters.page }}</span>
         <template v-if="store.pagination.last_page ?? store.pagination.total_pages">
-          de <span class="font-data font-semibold text-wc-text">{{ store.pagination.last_page ?? store.pagination.total_pages }}</span>
+          {{ t('coach_growth.invitations.page_of') }} <span class="font-data font-semibold text-wc-text">{{ store.pagination.last_page ?? store.pagination.total_pages }}</span>
         </template>
       </p>
       <div class="flex items-center gap-2">
@@ -285,14 +287,14 @@ const hasPrevPage = computed(() => store.filters.page > 1);
           :disabled="!hasPrevPage"
           class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-1.5 text-xs font-medium text-wc-text hover:bg-zinc-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          Anterior
+          {{ t('coach_growth.invitations.prev') }}
         </button>
         <button
           @click="nextPage"
           :disabled="!hasNextPage"
           class="rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-1.5 text-xs font-medium text-wc-text hover:bg-zinc-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          Siguiente
+          {{ t('coach_growth.invitations.next') }}
         </button>
       </div>
     </div>

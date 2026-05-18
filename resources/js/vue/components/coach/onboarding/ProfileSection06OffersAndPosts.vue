@@ -1,5 +1,8 @@
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     modelValue: { type: Object, required: true },
@@ -51,18 +54,18 @@ function updatePostField(idx, field, value) {
 <template>
   <section class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-8 space-y-10">
     <header>
-      <p class="font-mono text-xs uppercase tracking-[0.15em] text-wc-accent">06 / OFERTAS Y CONTENIDO TOP</p>
-      <h2 class="mt-2 font-display text-3xl uppercase tracking-tight text-wc-text">Que vendes y que funciona</h2>
-      <p class="mt-2 font-editorial italic text-base text-wc-text-secondary">Que vendes y que te ha funcionado.</p>
+      <p class="font-mono text-xs uppercase tracking-[0.15em] text-wc-accent">{{ t('coach_growth.onboarding_form.s6_eyebrow') }}</p>
+      <h2 class="mt-2 font-display text-3xl uppercase tracking-tight text-wc-text">{{ t('coach_growth.onboarding_form.s6_title') }}</h2>
+      <p class="mt-2 font-editorial italic text-base text-wc-text-secondary">{{ t('coach_growth.onboarding_form.s6_subtitle') }}</p>
     </header>
 
     <div>
       <div class="flex items-baseline justify-between">
         <label class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-          Ofertas activas (1-3)
+          {{ t('coach_growth.onboarding_form.s6_offers_label') }}
         </label>
         <span class="font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-          {{ offers.length }}/3
+          {{ t('coach_growth.onboarding_form.s6_offers_count', { n: offers.length }) }}
         </span>
       </div>
 
@@ -74,14 +77,14 @@ function updatePostField(idx, field, value) {
         >
           <div class="flex justify-between">
             <p class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-              Oferta {{ idx + 1 }}
+              {{ t('coach_growth.onboarding_form.s6_offer_n', { n: idx + 1 }) }}
             </p>
             <button
               type="button"
               class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary hover:text-wc-accent"
               @click="removeOffer(idx)"
             >
-              Eliminar
+              {{ t('coach_growth.onboarding_form.remove_btn') }}
             </button>
           </div>
 
@@ -90,7 +93,7 @@ function updatePostField(idx, field, value) {
             :value="offer.name"
             @input="updateOfferField(idx, 'name', $event.target.value)"
             maxlength="80"
-            placeholder="Nombre de la oferta"
+            :placeholder="t('coach_growth.onboarding_form.s6_offer_name_placeholder')"
             class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
           />
 
@@ -101,7 +104,7 @@ function updatePostField(idx, field, value) {
               step="any"
               :value="offer.price"
               @input="updateOfferField(idx, 'price', Number($event.target.value) || 0)"
-              placeholder="Precio"
+              :placeholder="t('coach_growth.onboarding_form.s6_offer_price_placeholder')"
               class="col-span-2 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
             />
             <select
@@ -118,7 +121,7 @@ function updatePostField(idx, field, value) {
             :value="offer.promo ?? ''"
             @input="updateOfferField(idx, 'promo', $event.target.value || null)"
             maxlength="200"
-            placeholder="Promo activa (opcional)"
+            :placeholder="t('coach_growth.onboarding_form.s6_offer_promo_placeholder')"
             class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
           />
         </div>
@@ -130,17 +133,17 @@ function updatePostField(idx, field, value) {
         class="mt-3 w-full rounded-lg border border-dashed border-wc-border bg-wc-bg px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] text-wc-text-secondary hover:border-wc-accent hover:text-wc-text"
         @click="addOffer"
       >
-        + Agregar oferta
+        {{ t('coach_growth.onboarding_form.add_offer_btn') }}
       </button>
     </div>
 
     <div>
       <div class="flex items-baseline justify-between">
         <label class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-          Posts que mas te han funcionado (opcional, max 3)
+          {{ t('coach_growth.onboarding_form.s6_posts_label') }}
         </label>
         <span class="font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-          {{ posts.length }}/3
+          {{ t('coach_growth.onboarding_form.s6_posts_count', { n: posts.length }) }}
         </span>
       </div>
 
@@ -152,14 +155,14 @@ function updatePostField(idx, field, value) {
         >
           <div class="flex justify-between">
             <p class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-              Post {{ idx + 1 }}
+              {{ t('coach_growth.onboarding_form.s6_post_n', { n: idx + 1 }) }}
             </p>
             <button
               type="button"
               class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary hover:text-wc-accent"
               @click="removePost(idx)"
             >
-              Eliminar
+              {{ t('coach_growth.onboarding_form.remove_btn') }}
             </button>
           </div>
 
@@ -167,7 +170,7 @@ function updatePostField(idx, field, value) {
             type="url"
             :value="post.url"
             @input="updatePostField(idx, 'url', $event.target.value)"
-            placeholder="URL del post"
+            :placeholder="t('coach_growth.onboarding_form.s6_post_url_placeholder')"
             class="w-full rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
           />
 
@@ -176,7 +179,7 @@ function updatePostField(idx, field, value) {
             @input="updatePostField(idx, 'why_worked', $event.target.value)"
             rows="3"
             maxlength="300"
-            placeholder="Por que crees que funciono?"
+            :placeholder="t('coach_growth.onboarding_form.s6_post_why_placeholder')"
             class="w-full resize-none rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
           ></textarea>
         </div>
@@ -188,7 +191,7 @@ function updatePostField(idx, field, value) {
         class="mt-3 w-full rounded-lg border border-dashed border-wc-border bg-wc-bg px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] text-wc-text-secondary hover:border-wc-accent hover:text-wc-text"
         @click="addPost"
       >
-        + Agregar post
+        {{ t('coach_growth.onboarding_form.add_post_btn') }}
       </button>
     </div>
   </section>

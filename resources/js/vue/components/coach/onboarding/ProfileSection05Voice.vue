@@ -1,5 +1,8 @@
 <script setup>
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     modelValue: { type: Object, required: true },
@@ -53,18 +56,18 @@ function updateSampleField(idx, field, value) {
 <template>
   <section class="rounded-2xl border border-wc-border bg-wc-bg-secondary p-8 space-y-8">
     <header>
-      <p class="font-mono text-xs uppercase tracking-[0.15em] text-wc-accent">05 / VOZ Y TONO</p>
-      <h2 class="mt-2 font-display text-3xl uppercase tracking-tight text-wc-text">Como suena tu marca</h2>
-      <p class="mt-2 font-editorial italic text-base text-wc-text-secondary">Como suena tu marca cuando habla.</p>
+      <p class="font-mono text-xs uppercase tracking-[0.15em] text-wc-accent">{{ t('coach_growth.onboarding_form.s5_eyebrow') }}</p>
+      <h2 class="mt-2 font-display text-3xl uppercase tracking-tight text-wc-text">{{ t('coach_growth.onboarding_form.s5_title') }}</h2>
+      <p class="mt-2 font-editorial italic text-base text-wc-text-secondary">{{ t('coach_growth.onboarding_form.s5_subtitle') }}</p>
     </header>
 
     <div>
       <div class="flex items-baseline justify-between">
         <label class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-          3 adjetivos que la describen
+          {{ t('coach_growth.onboarding_form.s5_adj_label') }}
         </label>
         <span class="font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-          {{ adjectives.length }}/3
+          {{ t('coach_growth.onboarding_form.s5_adj_count', { n: adjectives.length }) }}
         </span>
       </div>
 
@@ -85,7 +88,7 @@ function updateSampleField(idx, field, value) {
           type="text"
           maxlength="30"
           :disabled="adjectivesFull"
-          :placeholder="adjectivesFull ? 'Maximo alcanzado' : 'Ej. Directa'"
+          :placeholder="adjectivesFull ? t('coach_growth.onboarding_form.s5_adj_full') : t('coach_growth.onboarding_form.s5_adj_placeholder')"
           class="flex-1 rounded-lg border border-wc-border bg-wc-bg px-4 py-2 text-sm text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30 disabled:opacity-50"
           @keydown.enter.prevent="addAdjective"
         />
@@ -95,7 +98,7 @@ function updateSampleField(idx, field, value) {
           class="rounded-lg border border-wc-border bg-wc-bg px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-wc-text-secondary hover:border-wc-accent hover:text-wc-text disabled:opacity-50"
           @click="addAdjective"
         >
-          Agregar
+          {{ t('coach_growth.onboarding_form.add_btn') }}
         </button>
       </div>
     </div>
@@ -103,10 +106,10 @@ function updateSampleField(idx, field, value) {
     <div>
       <div class="flex items-baseline justify-between">
         <label class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-          Muestras de tu voz (opcional, max 3)
+          {{ t('coach_growth.onboarding_form.s5_samples_label') }}
         </label>
         <span class="font-mono text-[10px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-          {{ samples.length }}/3
+          {{ t('coach_growth.onboarding_form.s5_samples_count', { n: samples.length }) }}
         </span>
       </div>
 
@@ -118,10 +121,10 @@ function updateSampleField(idx, field, value) {
         >
           <div class="flex justify-between">
             <p class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary">
-              Muestra {{ idx + 1 }}
+              {{ t('coach_growth.onboarding_form.s5_sample_n', { n: idx + 1 }) }}
             </p>
             <button type="button" class="font-mono text-[11px] uppercase tracking-[0.15em] text-wc-text-tertiary hover:text-wc-accent" @click="removeSample(idx)">
-              Eliminar
+              {{ t('coach_growth.onboarding_form.remove_btn') }}
             </button>
           </div>
 
@@ -130,7 +133,7 @@ function updateSampleField(idx, field, value) {
             @input="updateSampleField(idx, 'caption', $event.target.value)"
             rows="3"
             maxlength="2200"
-            placeholder="Pega aqui un caption tuyo que sienta autentico..."
+            :placeholder="t('coach_growth.onboarding_form.s5_sample_caption_placeholder')"
             class="w-full resize-none rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
           ></textarea>
 
@@ -139,7 +142,7 @@ function updateSampleField(idx, field, value) {
               type="url"
               :value="sample.source_url ?? ''"
               @input="updateSampleField(idx, 'source_url', $event.target.value || null)"
-              placeholder="URL fuente (opcional)"
+              :placeholder="t('coach_growth.onboarding_form.s5_sample_url_placeholder')"
               class="rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
             />
             <input
@@ -147,7 +150,7 @@ function updateSampleField(idx, field, value) {
               :value="sample.note ?? ''"
               @input="updateSampleField(idx, 'note', $event.target.value || null)"
               maxlength="200"
-              placeholder="Nota corta (opcional)"
+              :placeholder="t('coach_growth.onboarding_form.s5_sample_note_placeholder')"
               class="rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2 text-sm text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
             />
           </div>
@@ -160,7 +163,7 @@ function updateSampleField(idx, field, value) {
         class="mt-3 rounded-lg border border-dashed border-wc-border bg-wc-bg px-4 py-3 w-full font-mono text-xs uppercase tracking-[0.15em] text-wc-text-secondary hover:border-wc-accent hover:text-wc-text"
         @click="addSample"
       >
-        + Agregar muestra
+        {{ t('coach_growth.onboarding_form.add_sample_btn') }}
       </button>
     </div>
   </section>

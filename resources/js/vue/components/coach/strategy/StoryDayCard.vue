@@ -1,6 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import StoryDrawer from './StoryDrawer.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     story: { type: Object, required: true },
@@ -64,10 +67,10 @@ const drawerOpen = ref(false);
                 >{{ story.pillar }}</span>
                 <p class="story-preview">{{ previewText }}</p>
                 <div class="story-footer">
-                    <span class="story-slides">{{ story.slides?.length ?? 0 }} slide{{ story.slides?.length === 1 ? '' : 's' }}</span>
-                    <span v-if="linkedCount > 0" class="story-img-badge">{{ linkedCount }} img</span>
-                    <span v-if="pieceState?.state === 'published'" class="story-state">✓</span>
-                    <span v-else-if="pieceState?.state === 'skipped'" class="story-state-skip">✕</span>
+                    <span class="story-slides">{{ (story.slides?.length ?? 0) === 1 ? t('coach_growth.strategy.story_slides_one', { n: story.slides?.length ?? 0 }) : t('coach_growth.strategy.story_slides_many', { n: story.slides?.length ?? 0 }) }}</span>
+                    <span v-if="linkedCount > 0" class="story-img-badge">{{ t('coach_growth.strategy.story_img_badge', { n: linkedCount }) }}</span>
+                    <span v-if="pieceState?.state === 'published'" class="story-state">{{ t('coach_growth.strategy.story_published_mark') }}</span>
+                    <span v-else-if="pieceState?.state === 'skipped'" class="story-state-skip">{{ t('coach_growth.strategy.story_skipped_mark') }}</span>
                 </div>
             </div>
             <div v-if="dmHint" class="story-dm-hint">

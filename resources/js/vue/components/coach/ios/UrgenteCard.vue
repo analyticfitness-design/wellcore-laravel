@@ -1,16 +1,21 @@
 <script setup>
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import AvatarConic from './AvatarConic.vue';
 
-defineProps({
+const props = defineProps({
   clientName: { type: String, required: true },
   clientInitial: { type: String, default: '' },
   subText: { type: String, default: '' },
   etaLabel: { type: String, default: '' },
-  ctaLabel: { type: String, default: 'Responder' },
+  ctaLabel: { type: String, default: '' },
   imageUrl: { type: String, default: '' },
 });
 
 const emit = defineEmits(['click', 'cta-click']);
+const { t } = useI18n();
+
+const resolvedCtaLabel = computed(() => props.ctaLabel || t('coach_home.urgent_card_cta'));
 </script>
 
 <template>
@@ -48,10 +53,10 @@ const emit = defineEmits(['click', 'cta-click']);
         </span>
         <button
           class="action-pill h-7 text-[11px] px-3"
-          :aria-label="ctaLabel"
+          :aria-label="resolvedCtaLabel"
           @click.stop="emit('cta-click')"
         >
-          {{ ctaLabel }}
+          {{ resolvedCtaLabel }}
           <svg class="h-2.5 w-2.5 stroke-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
           </svg>

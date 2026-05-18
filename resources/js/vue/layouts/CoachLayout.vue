@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onUnmounted, onMounted } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../stores/auth';
 import { useCoachIosShell } from '../composables/useCoachIosShell';
 import NotificationBell from '../components/NotificationBell.vue';
@@ -19,6 +20,7 @@ const props = defineProps({
     urgentCount: { type: Number, default: 0 }
 });
 
+const { t, tm } = useI18n();
 const authStore = useAuthStore();
 const route = useRoute();
 const router = useRouter();
@@ -39,8 +41,8 @@ const userInitial = computed(() => (userName.value || 'C').charAt(0).toUpperCase
 
 const todayDateLabel = computed(() => {
     const d = new Date();
-    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const dias = tm('coach_nav.date_weekdays');
+    const meses = tm('coach_nav.date_months');
     return `${dias[d.getDay()]}, ${d.getDate()} ${meses[d.getMonth()]}.`;
 });
 
@@ -81,56 +83,56 @@ const unwatch = router.afterEach(() => {
 });
 onUnmounted(() => { if (unwatch) unwatch(); });
 
-// Navigation sections (preservado idéntico)
-const navSections = [
+// Navigation sections — labels reactivos via i18n
+const navSections = computed(() => [
     {
-        label: 'Aprendizaje',
+        label: t('coach_nav.sec_aprendizaje'),
         items: [
-            { name: 'Onboarding', to: '/coach/onboarding', icon: 'compass', routeName: 'coach-onboarding', isNew: true },
+            { name: t('coach_nav.onboarding'), to: '/coach/onboarding', icon: 'compass', routeName: 'coach-onboarding', isNew: true },
         ],
     },
     {
-        label: 'Principal',
+        label: t('coach_nav.sec_principal'),
         items: [
-            { name: 'Inicio', to: '/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
-            { name: 'Clientes', to: '/coach/clients', icon: 'clients', routeName: 'coach-clients' },
-            { name: 'Check-ins', to: '/coach/checkins', icon: 'checkins', routeName: 'coach-checkins', badge: 'pendingCheckins' },
-            { name: 'Fotos de Comida', to: '/coach/food-photos', icon: 'checkins', routeName: 'coach-food-photos' },
-            { name: 'Mensajes', to: '/coach/messages', icon: 'messages', routeName: 'coach-messages', badge: 'unreadMessages' },
+            { name: t('coach_nav.home'), to: '/coach', icon: 'dashboard', routeName: 'coach-dashboard' },
+            { name: t('coach_nav.clients'), to: '/coach/clients', icon: 'clients', routeName: 'coach-clients' },
+            { name: t('coach_nav.checkins'), to: '/coach/checkins', icon: 'checkins', routeName: 'coach-checkins', badge: 'pendingCheckins' },
+            { name: t('coach_nav.food_photos'), to: '/coach/food-photos', icon: 'checkins', routeName: 'coach-food-photos' },
+            { name: t('coach_nav.messages'), to: '/coach/messages', icon: 'messages', routeName: 'coach-messages', badge: 'unreadMessages' },
         ],
     },
     {
-        label: 'Comunidad',
+        label: t('coach_nav.sec_comunidad'),
         items: [
-            { name: 'Comunidad', to: '/coach/community', icon: 'community', routeName: 'coach-community', isNew: true },
+            { name: t('coach_nav.community'), to: '/coach/community', icon: 'community', routeName: 'coach-community', isNew: true },
         ],
     },
     {
-        label: 'Gestión',
+        label: t('coach_nav.sec_gestion'),
         items: [
-            { name: 'Tickets', to: '/coach/plan-tickets', icon: 'plans', routeName: 'coach-plan-tickets' },
-            { name: 'Planes', to: '/coach/plans', icon: 'plans', routeName: 'coach-plans' },
-            { name: 'Kanban', to: '/coach/kanban', icon: 'kanban', routeName: 'coach-kanban' },
-            { name: 'Comprobantes', to: '/coach/comprobantes', icon: 'receipt', routeName: 'coach-comprobantes' },
+            { name: t('coach_nav.tickets'), to: '/coach/plan-tickets', icon: 'plans', routeName: 'coach-plan-tickets' },
+            { name: t('coach_nav.plans'), to: '/coach/plans', icon: 'plans', routeName: 'coach-plans' },
+            { name: t('coach_nav.kanban'), to: '/coach/kanban', icon: 'kanban', routeName: 'coach-kanban' },
+            { name: t('coach_nav.comprobantes'), to: '/coach/comprobantes', icon: 'receipt', routeName: 'coach-comprobantes' },
         ],
     },
     {
-        label: 'Crecimiento',
+        label: t('coach_nav.sec_crecimiento'),
         items: [
-            { name: 'Estrategia', to: '/coach/strategy', icon: 'strategy', routeName: 'coach-strategy', isNew: true },
-            { name: 'Broadcast', to: '/coach/broadcast', icon: 'broadcast', routeName: 'coach-broadcast' },
-            { name: 'Invitaciones', to: '/coach/invitations', icon: 'envelope', routeName: 'coach-invitations' },
-            { name: 'Analítica', to: '/coach/analytics', icon: 'analytics', routeName: 'coach-analytics' },
+            { name: t('coach_nav.strategy'), to: '/coach/strategy', icon: 'strategy', routeName: 'coach-strategy', isNew: true },
+            { name: t('coach_nav.broadcast'), to: '/coach/broadcast', icon: 'broadcast', routeName: 'coach-broadcast' },
+            { name: t('coach_nav.invitations'), to: '/coach/invitations', icon: 'envelope', routeName: 'coach-invitations' },
+            { name: t('coach_nav.analytics'), to: '/coach/analytics', icon: 'analytics', routeName: 'coach-analytics' },
         ],
     },
     {
-        label: 'Personal',
+        label: t('coach_nav.sec_personal'),
         items: [
-            { name: 'Notas', to: '/coach/notes', icon: 'notes', routeName: 'coach-notes' },
-            { name: 'Notificaciones', to: '/coach/notifications', icon: 'bell', routeName: 'coach-notifications' },
+            { name: t('coach_nav.notes'), to: '/coach/notes', icon: 'notes', routeName: 'coach-notes' },
+            { name: t('coach_nav.notifications'), to: '/coach/notifications', icon: 'bell', routeName: 'coach-notifications' },
         ],
     },
-];
+]);
 
 function isActive(routeName) { return route.name === routeName; }
 
@@ -146,72 +148,72 @@ function tourAttr(routeName) { return TOUR_MAP[routeName] || null; }
 // Bottom nav iOS — 4 tabs reales (sin FAB spacer)
 const bottomTabs = computed(() => [
     {
-        routeName: 'coach-dashboard', to: '/coach', label: 'Inicio',
+        routeName: 'coach-dashboard', to: '/coach', label: t('coach_nav.tab_home'),
         iconSvgPath: '<path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>',
     },
     {
-        routeName: 'coach-clients', to: '/coach/clients', label: 'Clientes',
+        routeName: 'coach-clients', to: '/coach/clients', label: t('coach_nav.tab_clients'),
         iconSvgPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>',
     },
     {
-        routeName: 'coach-checkins', to: '/coach/checkins', label: 'Check-ins',
+        routeName: 'coach-checkins', to: '/coach/checkins', label: t('coach_nav.tab_checkins'),
         iconSvgPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>',
         badge: props.urgentCount > 0 ? props.urgentCount : null,
     },
     {
-        routeName: 'coach-messages', to: '/coach/messages', label: 'Mensajes',
+        routeName: 'coach-messages', to: '/coach/messages', label: t('coach_nav.tab_messages'),
         iconSvgPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/>',
     },
 ]);
 
-// Action sheet items (reemplaza el FAB sheet)
-const actionSheetItems = [
+// Action sheet items (reemplaza el FAB sheet) — reactivos a i18n
+const actionSheetItems = computed(() => [
     {
-        id: 'announce', label: 'Mensaje al equipo',
+        id: 'announce', label: t('coach_nav.action_announce'),
         iconColor: '#DC2626', iconStrokeColor: '#f87171',
         iconSvgPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M3 11l18-5v12L3 13v-2zm0 0v3a2 2 0 002 2h3"/>',
         onClick: () => window.dispatchEvent(new CustomEvent('coach-community:open-announce')),
     },
     {
-        id: 'crear-checkin', label: 'Crear check-in',
+        id: 'crear-checkin', label: t('coach_nav.action_create_checkin'),
         iconColor: '#10B981', iconStrokeColor: '#34d399',
         iconSvgPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>',
         onClick: () => router.push('/coach/checkins'),
     },
     {
-        id: 'enviar-broadcast', label: 'Enviar broadcast',
+        id: 'enviar-broadcast', label: t('coach_nav.action_broadcast'),
         iconColor: '#3B82F6', iconStrokeColor: '#60a5fa',
         iconSvgPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',
         onClick: () => router.push('/coach/broadcast'),
     },
     {
-        id: 'invitar', label: 'Invitar cliente',
+        id: 'invitar', label: t('coach_nav.action_invite_client'),
         iconColor: '#F59E0B', iconStrokeColor: '#fbbf24',
         iconSvgPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z"/>',
         onClick: () => router.push('/coach/invitations'),
     },
     {
-        id: 'crear-ticket', label: 'Crear ticket',
+        id: 'crear-ticket', label: t('coach_nav.action_create_ticket'),
         iconColor: '#A78BFA', iconStrokeColor: '#A78BFA',
         iconSvgPath: '<path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75a3.75 3.75 0 0 1-7.5 0V6m-2.25 6H5.625c-.621 0-1.125.504-1.125 1.125v3.75c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-3.75c0-.621-.504-1.125-1.125-1.125H18.375"/>',
         onClick: () => router.push('/coach/plan-tickets/nuevo'),
     },
-];
+]);
 
 // Cmd+K palette sections (desktop)
 const cmdPaletteSections = computed(() => [
     {
-        label: 'Acciones rápidas',
-        items: actionSheetItems.map((a, i) => ({
+        label: t('coach_nav.palette_actions'),
+        items: actionSheetItems.value.map((a, i) => ({
             ...a,
             kbd: ['M', 'C', 'B', 'I', 'T'][i] || undefined,
         })),
     },
     {
-        label: 'Navegación',
-        items: navSections.flatMap(g => g.items.map(it => ({
+        label: t('coach_nav.palette_navigation'),
+        items: navSections.value.flatMap(g => g.items.map(it => ({
             id: `nav-${it.routeName}`,
-            label: `Ir a ${it.name}`,
+            label: t('coach_nav.palette_goto', { name: it.name }),
             to: it.to,
         }))),
     },
@@ -321,7 +323,7 @@ const cmdPaletteSections = computed(() => [
                   <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                 </svg>
                 <span :class="sidebarCollapsed ? 'lg:hidden' : ''" class="truncate">{{ item.name }}</span>
-                <span v-if="item.isNew" :class="sidebarCollapsed ? 'lg:hidden' : ''" class="nav-badge-nuevo">Nuevo</span>
+                <span v-if="item.isNew" :class="sidebarCollapsed ? 'lg:hidden' : ''" class="nav-badge-nuevo">{{ t('coach_nav.badge_new') }}</span>
               </RouterLink>
             </li>
           </ul>
@@ -339,7 +341,7 @@ const cmdPaletteSections = computed(() => [
           <svg class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
           </svg>
-          <span :class="sidebarCollapsed ? 'lg:hidden' : ''">{{ loggingOut ? 'Cerrando...' : 'Cerrar sesión' }}</span>
+          <span :class="sidebarCollapsed ? 'lg:hidden' : ''">{{ loggingOut ? t('coach_nav.logging_out') : t('coach_nav.logout') }}</span>
         </button>
       </div>
 
@@ -347,7 +349,7 @@ const cmdPaletteSections = computed(() => [
       <div class="hidden lg:block border-t border-wc-border p-3">
         <button @click="toggleSidebarCollapse()" class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-wc-text-tertiary hover:bg-wc-bg-tertiary transition-colors text-sm">
           <svg class="w-4 h-4 transition-transform shrink-0" :class="sidebarCollapsed ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>
-          <span v-if="!sidebarCollapsed" class="text-xs font-medium">Colapsar</span>
+          <span v-if="!sidebarCollapsed" class="text-xs font-medium">{{ t('coach_nav.collapse') }}</span>
         </button>
       </div>
     </aside>
@@ -416,7 +418,7 @@ const cmdPaletteSections = computed(() => [
     <!-- ACTION SHEET (reemplaza FAB) -->
     <ActionSheet
       v-model:open="shell.actionSheetOpen.value"
-      title="Acciones rápidas"
+      :title="t('coach_nav.quick_actions')"
       :actions="actionSheetItems"
     />
 
