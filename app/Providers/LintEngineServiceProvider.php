@@ -15,6 +15,7 @@ use App\Services\LintEngine\JsonPath\JsonPathResolver;
 use App\Services\LintEngine\JsonPath\PathMutator;
 use App\Services\LintEngine\LintEngine;
 use App\Services\LintEngine\Validators\AllowedValuesValidator;
+use App\Services\LintEngine\Validators\AntiAILeakValidator;
 use App\Services\LintEngine\Validators\ArrayNonEmptyValidator;
 use App\Services\LintEngine\Validators\ArrayOfStringsValidator;
 use App\Services\LintEngine\Validators\CardioMinPerSessionValidator;
@@ -105,6 +106,7 @@ final class LintEngineServiceProvider extends ServiceProvider
             $registry->register(new WarmupMinDurationValidator($resolver));
             $registry->register(new UnilateralBalanceValidator($resolver));
             $registry->register(new ExerciseGifFromV2RepoValidator($resolver));
+            $registry->register(new AntiAILeakValidator($resolver));
 
             return $registry;
         });

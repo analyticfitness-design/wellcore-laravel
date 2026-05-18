@@ -161,33 +161,111 @@ final class ExerciseNotesBuilder
     }
 
     /**
-     * Resuelve la primera variación canónica del ejercicio si existe.
+     * Resuelve una variación para el ejercicio. SIEMPRE devuelve algo si hay catálogo.
+     *
+     * Cascada (primer hit gana):
+     *   1. variations[0] declarada en BD (si existe + tiene gif_url)
+     *   2. Mismo muscle_primary + mismo compound_isolation + equipment distinto
+     *   3. Mismo movement_pattern + mismo muscle_primary
+     *   4. Cualquier otro del mismo muscle_primary (último recurso)
      *
      * @return array{nombre: string, gif_url: string, motivo: string|null}|null
      */
     public function resolveFirstVariation(ExerciseMetadata $exercise): ?array
     {
+        // Cache por request — el composer llama 30+ veces por plan.
+        if (isset($this->variationCache[$exercise->id])) {
+            return $this->variationCache[$exercise->id] ?: null;
+        }
+
+        // Nivel 1: variación declarada en BD
         $variations = is_array($exercise->variations) ? $exercise->variations : [];
-        if ($variations === []) {
-            return null;
+        foreach ($variations as $entry) {
+            $alias = is_array($entry) ? ($entry['alias'] ?? null) : null;
+            if (! $alias) {
+                continue;
+            }
+            $model = ExerciseMetadata::where('alias', $alias)->whereNotNull('gif_filename')->where('gif_filename', '!=', '')->first();
+            if ($model) {
+                $reason = is_array($entry) ? ($entry['reason'] ?? null) : null;
+                return $this->cacheAndReturn($exercise->id, [
+                    'nombre' => $model->name_canonical,
+                    'gif_url' => $model->gifUrl(),
+                    'motivo' => $reason ?: 'Si te gusta cambiar la mecánica o variar el estímulo',
+                ]);
+            }
         }
 
-        $first = $variations[0];
-        $alias = is_array($first) ? ($first['alias'] ?? null) : null;
-        if (! $alias) {
-            return null;
+        // Nivel 2: mismo muscle_primary + mismo tipo, equipment distinto
+        $candidate = ExerciseMetadata::query()
+            ->where('muscle_primary', $exercise->muscle_primary)
+            ->where('compound_isolation', $exercise->compound_isolation)
+            ->where('id', '!=', $exercise->id)
+            ->whereNotNull('gif_filename')
+            ->where('gif_filename', '!=', '')
+            ->whereNotIn('gif_url_status', ['broken', 'missing'])
+            ->orderByRaw("CASE WHEN equipment_required != ? THEN 0 ELSE 1 END", [json_encode($exercise->equipment_required ?? [])])
+            ->orderBy('id')
+            ->first();
+        if ($candidate) {
+            return $this->cacheAndReturn($exercise->id, [
+                'nombre' => $candidate->name_canonical,
+                'gif_url' => $candidate->gifUrl(),
+                'motivo' => 'Misma mecánica, distinto ejercicio — para variar estímulo o por preferencia',
+            ]);
         }
 
-        $variationModel = ExerciseMetadata::where('alias', $alias)->first();
-        if (! $variationModel || ! $variationModel->gif_filename) {
-            return null;
+        // Nivel 3: mismo movement_pattern + muscle_primary
+        if (! empty($exercise->movement_pattern)) {
+            $candidate = ExerciseMetadata::query()
+                ->where('movement_pattern', $exercise->movement_pattern)
+                ->where('muscle_primary', $exercise->muscle_primary)
+                ->where('id', '!=', $exercise->id)
+                ->whereNotNull('gif_filename')
+                ->where('gif_filename', '!=', '')
+                ->whereNotIn('gif_url_status', ['broken', 'missing'])
+                ->orderBy('id')
+                ->first();
+            if ($candidate) {
+                return $this->cacheAndReturn($exercise->id, [
+                    'nombre' => $candidate->name_canonical,
+                    'gif_url' => $candidate->gifUrl(),
+                    'motivo' => 'Mismo patrón de movimiento, otro ejercicio — para variar',
+                ]);
+            }
         }
 
-        return [
-            'nombre' => $variationModel->name_canonical,
-            'gif_url' => $variationModel->gifUrl(),
-            'motivo' => is_array($first) ? ($first['reason'] ?? null) : null,
-        ];
+        // Nivel 4: cualquier otro del mismo muscle_primary (último recurso)
+        $candidate = ExerciseMetadata::query()
+            ->where('muscle_primary', $exercise->muscle_primary)
+            ->where('id', '!=', $exercise->id)
+            ->whereNotNull('gif_filename')
+            ->where('gif_filename', '!=', '')
+            ->whereNotIn('gif_url_status', ['broken', 'missing'])
+            ->orderBy('id')
+            ->first();
+        if ($candidate) {
+            return $this->cacheAndReturn($exercise->id, [
+                'nombre' => $candidate->name_canonical,
+                'gif_url' => $candidate->gifUrl(),
+                'motivo' => 'Alternativa para el mismo músculo si no podés hacer el original (lesión, equipo o gusto)',
+            ]);
+        }
+
+        return $this->cacheAndReturn($exercise->id, null);
+    }
+
+    /** @var array<int, array<string,mixed>|null> */
+    private array $variationCache = [];
+
+    /**
+     * @param array<string,mixed>|null $value
+     * @return array<string,mixed>|null
+     */
+    private function cacheAndReturn(int $id, ?array $value): ?array
+    {
+        $this->variationCache[$id] = $value;
+        return $value;
     }
 
     /**

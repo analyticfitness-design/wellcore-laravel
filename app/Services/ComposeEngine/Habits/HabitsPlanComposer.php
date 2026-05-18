@@ -56,7 +56,7 @@ final class HabitsPlanComposer
         $planJson = [
             'plan_type' => 'habitos',
             'titulo' => $this->buildTitle($ctx),
-            'objetivo' => 'Consolidar pilares de recuperación y consistencia (sueño, hidratación, registro). Los hábitos básicos sostenidos valen más que cualquier suplemento o táctica avanzada.',
+            'objetivo' => 'Vamos a fijar los hábitos que sostienen todo lo demás: dormir bien, tomar agua, anotar lo que hacés en el gym. Sin esto, el plan de entreno y nutrición no rinde.',
             'metodologia' => (string) $ctx->methodology->name,
             'duracion_semanas' => 4,
             'fecha_inicio' => $ctx->fechaInicio,
@@ -83,68 +83,78 @@ final class HabitsPlanComposer
 
         $habitos = [
             [
-                'nombre' => 'Sueño 7-9h consistente',
+                'id' => 'sueno',
+                'nombre' => 'Dormir entre 7 y 9 horas',
                 'categoria' => 'sueño',
-                'objetivo' => '7.5 horas promedio semanal · mismo horario ±30 min entre semana y fin de semana',
-                'tracking_method' => 'app WellCore — campo horas_sueño (registrar cada mañana)',
-                'por_que_importa' => 'El pico de hormona de crecimiento (GH) y la recuperación muscular ocurren en sueño profundo. Dormir <6h reduce ~50% de las ganancias de entrenamiento.',
+                'objetivo_diario' => '7.5 horas promedio · mismo horario entre semana y fin de semana (±30 min)',
+                'objetivo' => '7.5 horas promedio · mismo horario entre semana y fin de semana (±30 min)',
+                'tracking_method' => 'Registrá tus horas de sueño cada mañana en la app',
+                'por_que_importa' => 'Mientras dormís profundo, el cuerpo libera la hormona que reconstruye el músculo. Dormís menos de 6 horas, perdés hasta la mitad de lo que ganaste en el gym.',
                 'tips' => [
-                    'Sin pantallas 1 hora antes de dormir',
-                    'Habitación fresca (18-20°C) y oscura',
-                    'Si trabajás de noche, hablalo con el coach para ajustar el plan',
+                    'Apagá las pantallas una hora antes de dormir',
+                    'Habitación fresca (entre 18 y 20°C) y oscura',
+                    'Si trabajás de noche, escribime y vemos cómo ajustamos esto',
                 ],
             ],
             [
-                'nombre' => "Hidratación mínima {$hidratacionLitros} L/día",
+                'id' => 'agua',
+                'nombre' => "Tomar {$hidratacionLitros} L de agua al día",
                 'categoria' => 'hidratacion',
-                'objetivo' => "{$hidratacionLitros} L diarios base + 500 ml por hora de entrenamiento",
-                'tracking_method' => 'Botella de 1L visible — meta de N botellas/día',
-                'por_que_importa' => 'Deshidratación leve (-2% peso corporal en líquidos) reduce fuerza, resistencia y enfoque cognitivo. Cuando sentís sed ya estás deshidratado.',
+                'objetivo_diario' => "{$hidratacionLitros} L diarios + 500 ml extra por hora de entreno",
+                'objetivo' => "{$hidratacionLitros} L diarios + 500 ml extra por hora de entreno",
+                'tracking_method' => 'Una botella de 1L a la vista — apuntá a vaciarla N veces al día',
+                'por_que_importa' => 'Si perdés apenas 2% de tu peso en agua, ya te baja la fuerza, el aguante y la concentración. Cuando sentís sed, ya estás corto.',
                 'tips' => [
-                    "Tu mínimo: peso × 0.035 = {$hidratacionLitros} L (peso aproximado " . round($weightKg) . " kg)",
-                    'Sumá 500 ml extra los días de entreno (durante + post)',
-                    'Café y té cuentan parcialmente (60%), bebidas con azúcar no',
+                    "Tu mínimo te lo calculo así: tu peso (" . round($weightKg) . " kg) × 0.035 = {$hidratacionLitros} L",
+                    'Los días que entrenás, sumá 500 ml extra (durante y después)',
+                    'Café y té cuentan parcialmente (60%); bebidas con azúcar no cuentan',
                 ],
             ],
             [
-                'nombre' => 'Registro de entrenamiento',
+                'id' => 'entrenamiento',
+                'nombre' => 'Anotar cada serie del entreno',
                 'categoria' => 'registro',
-                'objetivo' => 'Anotar peso, reps y RIR de cada serie ANTES de salir del gym',
-                'tracking_method' => 'app WellCore — registro post-ejercicio en tiempo real',
-                'por_que_importa' => 'Sin registro, no hay sobrecarga progresiva real, solo recuerdo selectivo. El que anota sabe exactamente cuándo subir, cuándo está estancado, cuándo deload.',
+                'objetivo_diario' => 'Peso, reps y RIR de cada serie, antes de salir del gym',
+                'objetivo' => 'Peso, reps y RIR de cada serie, antes de salir del gym',
+                'tracking_method' => 'Registralo en la app apenas terminás cada ejercicio',
+                'por_que_importa' => 'Si no anotás, no podés saber cuándo subir peso, cuándo te estancaste o cuándo te toca una semana más liviana. La memoria juega malas pasadas — lo escrito gana.',
                 'tips' => [
                     'Anotá en el momento, no al final del día',
-                    '80% de adherencia sostenida vale más que 100% del primer mes',
-                    'Si la app falla, libreta funciona igual — lo importante es la consistencia',
+                    'Es mejor que lo hagas el 80% siempre y no el 100% solo los primeros días',
+                    'Si la app falla, libreta de papel funciona igual — lo importante es que anotes, no en qué',
                 ],
             ],
             [
+                'id' => 'nutricion',
                 'nombre' => 'Check-in semanal',
                 'categoria' => 'tracking',
-                'objetivo' => 'Peso (ayunas, 1× semana) + medidas (cintura/cadera, 1× semana) + 2 fotos (frente/lateral)',
-                'tracking_method' => 'app WellCore — sección Check-in los domingos en la mañana',
-                'por_que_importa' => 'El peso diario tiene mucha varianza (agua, comida). El promedio semanal es la métrica real. Las fotos detectan cambios que el peso no.',
+                'objetivo_diario' => 'Pesate una vez por semana en ayunas + medidas cintura/cadera + 2 fotos (frente y costado)',
+                'objetivo' => 'Pesate una vez por semana en ayunas + medidas cintura/cadera + 2 fotos (frente y costado)',
+                'tracking_method' => 'En la app, sección Check-in. Domingos en la mañana funciona bien',
+                'por_que_importa' => 'El peso diario varía mucho (agua, comida, hora del día). Lo que importa es el promedio de la semana. Las fotos te muestran cambios que la balanza esconde.',
                 'tips' => [
-                    'Mismo día y hora cada semana (domingos en ayunas funciona)',
+                    'Mismo día y hora cada semana (domingos en ayunas funciona bien)',
                     'Mismas condiciones para las fotos (luz, ángulo, ropa)',
-                    'No mires el peso de la balanza diariamente — eso aumenta ansiedad sin info útil',
+                    'No te peses todos los días — solo te genera ansiedad sin darte información que sirva',
                 ],
             ],
         ];
 
-        // Hábito 5 condicional: solo para mujeres (tracking de ciclo).
+        // Hábito condicional: tracking del ciclo (solo para mujeres).
         $isFemenino = $this->isFemenino($profile->gender);
         if ($isFemenino) {
             $habitos[] = [
+                'id' => 'suplementos',
                 'nombre' => 'Tracking del ciclo menstrual',
                 'categoria' => 'ciclo',
-                'objetivo' => 'Registrar día 1 del ciclo + duración promedio + síntomas relevantes',
-                'tracking_method' => 'app WellCore — sección Ciclo o app dedicada (Flo, Clue)',
-                'por_que_importa' => 'El ciclo modula recuperación, fuerza y respuesta a déficit calórico. Conocer en qué fase estás permite ajustar el entreno (más volumen folicular, más recuperación lútea).',
+                'objetivo_diario' => 'Día 1 del ciclo + duración promedio + síntomas relevantes',
+                'objetivo' => 'Día 1 del ciclo + duración promedio + síntomas relevantes',
+                'tracking_method' => 'En la app sección Ciclo, o en una app dedicada como Flo o Clue',
+                'por_que_importa' => 'Tu ciclo afecta cómo te recuperás, qué tan fuerte estás y cómo respondés a comer menos. Saber en qué fase estás te ayuda a ajustar: en la primera mitad del ciclo podés meterle más; en la segunda, priorizá recuperación.',
                 'tips' => [
-                    'No es para "explicar" malos días — es info para ajustar carga',
-                    'Si el ciclo se interrumpe o cambia drásticamente, avisá al coach',
-                    'La fase lútea tardía puede pedir más calorías; está bien',
+                    'No es para justificar días malos — es información para acomodar tu entreno',
+                    'Si el ciclo se interrumpe o cambia mucho, escribime',
+                    'Los últimos 5-7 días antes del periodo, tu cuerpo te pide más calorías — eso es normal',
                 ],
             ];
         }
@@ -160,8 +170,11 @@ final class HabitsPlanComposer
 
     private function buildNotasCoach(ComposeContext $ctx): string
     {
-        $coach = $ctx->coachName ?? 'tu coach';
-        return "Los hábitos son la base de todo. El plan de entreno y nutrición rinde 3× cuando estos pilares están sostenidos. No tenés que cumplir el 100% — apuntá a 80% sostenido durante las 4 semanas y el resultado se nota. — $coach";
+        $coach = $this->resolveFirstName($ctx->coachName) ?: 'tu coach';
+        $p1 = 'Los hábitos son la base de todo. Con esto firme, el resto del plan rinde el triple. Sin esto, el mejor entreno y la mejor nutrición no sirven.';
+        $p2 = 'No te pongas la meta del 100% — apuntá al 80% todas las semanas y vas a ver el cambio. Si fallás un día, retomá al siguiente. No compensés con esfuerzo extra (eso desgasta).';
+        $p3 = "Si algo no te encaja con tus tiempos o tu situación, escribime y lo ajustamos. — {$coach}";
+        return implode("\n\n", [$p1, $p2, $p3]);
     }
 
     /**
@@ -170,11 +183,20 @@ final class HabitsPlanComposer
     private function buildTips(): array
     {
         return [
-            'Empezá por el hábito que más te cueste sostener — ese es el que más valor agrega',
-            'Si fallás un día, retomá al siguiente — no compenses con extra esfuerzo (eso desgasta)',
-            '4 semanas es suficiente para que el hábito automatice — no necesitás motivación constante',
-            'Si un hábito no te encaja, hablalo con el coach antes de abandonarlo',
+            'Arrancá por el hábito que más te cuesta — ese es el que más te va a mover la aguja',
+            'Si fallás un día, retomá al siguiente. No compensés con esfuerzo extra (eso desgasta)',
+            'En 4 semanas el hábito se te vuelve automático y ya no necesitás estar motivada todos los días',
+            'Si un hábito no te encaja, escribime antes de abandonarlo',
         ];
+    }
+
+    private function resolveFirstName(?string $fullName): string
+    {
+        if ($fullName === null || trim($fullName) === '') {
+            return '';
+        }
+        $parts = explode(' ', trim($fullName));
+        return $parts[0];
     }
 
     private function isFemenino(?string $g): bool

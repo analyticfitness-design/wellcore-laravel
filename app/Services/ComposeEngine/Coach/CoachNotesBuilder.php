@@ -7,27 +7,19 @@ namespace App\Services\ComposeEngine\Coach;
 use App\Services\DecisionEngine\Data\ClientProfile;
 
 /**
- * Genera el bloque `notas_coach` y `objetivo` largos, personalizados al cliente.
+ * Genera notas del coach personalizadas.
  *
- * Reemplaza los strings genéricos del PlanComposer (35 palabras boilerplate) por
- * 3-4 párrafos con:
- *   1. Conexión personal (nombre, edad, peso, objetivo del cliente)
- *   2. Estrategia (qué metodología, por qué, parámetros calculados)
- *   3. Qué esperar (sensaciones por semana, semanas 1→4)
- *   4. Cierre con acción concreta
- *
- * Voz: voseo colombiano neutro amable. Sin "vale", "che", "parcero".
- * No menciona IA ni Claude (regla autoritativa).
+ * Reglas de voz (autoritativa Daniel 2026-05-18):
+ * - 2da persona voseo colombiano neutro amable
+ * - Firma del coach al final, NUNCA "tu coach" en 3ra persona
+ * - Cliente jamás puede notar que un programa/sistema arma el plan
+ * - PROHIBIDO: "este plan está armado", "generado", "según tu perfil",
+ *   "el motor", "el sistema", "compounds/isolations" (inglés técnico),
+ *   "TDEE/BMR" sin explicar, "macros ±5%", "déficit calórico" sin contexto,
+ *   "stack", "evidence-based", "deload", "peak", "batch cooking", "cheat meal"
  */
 final class CoachNotesBuilder
 {
-    /**
-     * @param ClientProfile $profile El perfil del cliente
-     * @param string $clientName Nombre del cliente para personalización ("Karen", "Daniel")
-     * @param string $coachName Coach que firma ("Héctor", "Anderson")
-     * @param string $methodologyName Nombre legible ("Upper / Lower 4 días")
-     * @param int $duracionSemanas Default 4
-     */
     public function buildForEntrenamiento(
         ClientProfile $profile,
         ?string $clientName,
@@ -36,26 +28,22 @@ final class CoachNotesBuilder
         int $duracionSemanas = 4,
     ): string {
         $nombre = $this->resolveFirstName($clientName);
-        $coach = $coachName ?? 'tu coach';
+        $coach = $this->resolveFirstName($coachName) ?: 'tu coach';
         $objetivoLabel = $this->goalLabel($profile->goal);
-        $diasLabel = $profile->days ? "{$profile->days} días/semana" : 'tus días disponibles';
-        $nivelLabel = $profile->level ?? 'tu nivel';
+        $diasLabel = $profile->days ? "{$profile->days} días por semana" : 'tus días disponibles';
+        $nivelLabel = $profile->level ?? 'tu nivel actual';
 
-        // 4 párrafos
-        $p1 = "{$nombre}, este plan está armado para tu objetivo de {$objetivoLabel} con {$diasLabel}. La metodología elegida es {$methodologyName} porque encaja con tu nivel {$nivelLabel} y el split que tu coach validó.";
+        $p1 = "{$nombre}, te armé este plan pensando en lo que estamos buscando: {$objetivoLabel} entrenando {$diasLabel}. Vamos con {$methodologyName} porque para tu nivel {$nivelLabel} es lo que mejor te va a funcionar.";
 
-        $p2 = "La estructura sube intensidad cada semana: empezás con RIR 3 (3 reps en reserva) y vas bajando hasta RIR 0 en la semana 4. Las series y rangos de repeticiones cambian entre fases — compounds llevan más series y menos reps, isolations lo opuesto. No es 3×12 lineal — cada ejercicio tiene su prescripción.";
+        $p2 = "Vamos a subir intensidad semana a semana: arrancás con RIR 3 (te tienen que quedar 3 reps en el tanque al terminar la serie) y vamos bajando hasta RIR 0 en la semana 4. En los ejercicios grandes (sentadilla, peso muerto, press) hacés más series con menos reps; en los de aislación es al revés. Cada ejercicio tiene su propia cuenta — no es el típico 3×12 para todo.";
 
         $p3 = $this->buildExpectationsParagraph($profile->goal);
 
-        $p4 = "Empezás mañana. Anotá peso y RIR de cada serie apenas terminás — sin registro no hay progresión real. Si una semana no llegás al RIR objetivo, te quedás en el peso y ajustás técnica primero. Cualquier dolor articular (no fatiga muscular), parás y me avisás. — {$coach}";
+        $p4 = "Arrancás mañana. Anotá peso y RIR de cada serie apenas la terminás — si no anotás, no sabemos qué subir la próxima semana. Si una semana no llegás al RIR que te pongo, te quedás con el mismo peso y limpiá técnica primero. Cualquier dolor articular (no fatiga normal, dolor que pincha), parás y me escribís de una. — {$coach}";
 
         return $this->joinParagraphs([$p1, $p2, $p3, $p4]);
     }
 
-    /**
-     * Notas coach para nutrición con TDEE/BMR/proteína g/kg explícitos.
-     */
     public function buildForNutricion(
         ClientProfile $profile,
         ?string $clientName,
@@ -64,32 +52,31 @@ final class CoachNotesBuilder
         int $numComidas,
     ): string {
         $nombre = $this->resolveFirstName($clientName);
-        $coach = $coachName ?? 'tu coach';
+        $coach = $this->resolveFirstName($coachName) ?: 'tu coach';
         $objetivoLabel = $this->goalLabel($profile->goal);
         $tdee = (int) ($macroPlan['tdee'] ?? 0);
-        $bmr = (int) ($macroPlan['bmr'] ?? 0);
         $objetivoCal = (int) ($macroPlan['objetivo_cal'] ?? 0);
         $proteinaG = (int) ($macroPlan['macros']['proteina_g'] ?? 0);
         $weight = $profile->weightKg ?? 0;
         $proteinaPorKg = $weight > 0 ? round($proteinaG / $weight, 1) : 0;
-        $deltaKcal = $tdee - $objetivoCal;
-        $deltaDirection = $deltaKcal > 0 ? 'déficit' : ($deltaKcal < 0 ? 'superávit' : 'mantenimiento');
-        $deltaAbs = abs($deltaKcal);
+        $delta = $tdee - $objetivoCal;
+        $deltaText = match (true) {
+            $delta > 50 => "comiendo {$delta} kcal menos de lo que tu cuerpo gasta normalmente",
+            $delta < -50 => "comiendo " . abs($delta) . " kcal de más para subir músculo",
+            default => 'manteniendo lo que tu cuerpo gasta',
+        };
 
-        $p1 = "{$nombre}, tu plan nutricional tiene {$objetivoCal} kcal/día con {$proteinaG}g de proteína ({$proteinaPorKg} g/kg). Esto es un {$deltaDirection} de {$deltaAbs} kcal sobre tu TDEE calculado ({$tdee} kcal) — pensado para {$objetivoLabel}.";
+        $p1 = "{$nombre}, te dejo {$objetivoCal} kcal por día con {$proteinaG}g de proteína ({$proteinaPorKg} g por cada kilo tuyo). Vamos a estar {$deltaText} — esto es lo que necesitás para {$objetivoLabel}.";
 
-        $p2 = "El reparto en {$numComidas} comidas mantiene proteína constante todo el día. Cada comida tiene 3 opciones equivalentes en macros (±5%) para que no te aburras y puedas cambiar según lo que tengas en casa. Pesá la primera semana en crudo — después calculás a ojo.";
+        $p2 = "Te lo partí en {$numComidas} comidas para que tengas proteína repartida todo el día. Cada comida te dejé 3 opciones que cumplen lo mismo — elegís según lo que tengas en la cocina o lo que se te antoje. La primera semana pesá los alimentos en crudo; ya después le agarrás el ojo.";
 
         $p3 = $this->buildNutritionExpectationsParagraph($profile->goal);
 
-        $p4 = "Empezás mañana. Si llegás tarde a una comida, no te la saltes — sumá su proteína a la siguiente. Hidratate bien (mínimo 35 ml × peso en kg/día). Cualquier antojo nocturno se cubre con té + canela o agua caliente con miel. — {$coach}";
+        $p4 = "Arrancás mañana. Si llegás tarde a una comida, no te la saltés — sumale la proteína a la próxima. Tomá agua (mínimo 35 ml por cada kilo tuyo al día). Si te ataca el antojo de noche, agua caliente con miel o un té con canela lo apagan. — {$coach}";
 
         return $this->joinParagraphs([$p1, $p2, $p3, $p4]);
     }
 
-    /**
-     * Notas coach para suplementación: stack info + por qué este orden + costos.
-     */
     public function buildForSuplementacion(
         ClientProfile $profile,
         ?string $clientName,
@@ -98,80 +85,98 @@ final class CoachNotesBuilder
         int $totalItems,
     ): string {
         $nombre = $this->resolveFirstName($clientName);
-        $coach = $coachName ?? 'tu coach';
+        $coach = $this->resolveFirstName($coachName) ?: 'tu coach';
         $objetivoLabel = $this->goalLabel($profile->goal);
-        $stackName = $stackInfo['stack_nombre'] ?? 'stack básico';
         $costo = $stackInfo['costo_mensual_estimado_cop'] ?? null;
 
-        $p1 = "{$nombre}, este stack ({$stackName}) está pensado para {$objetivoLabel} en tu nivel actual. Son {$totalItems} suplementos con evidencia respaldada — no es upselling, es lo que mueve la aguja.";
+        $p1 = "{$nombre}, te seleccioné estos {$totalItems} suplementos para {$objetivoLabel} en tu momento actual. Son los que tienen ciencia detrás — nada de polvitos de moda. Lo que de verdad mueve la aguja.";
 
-        $p2 = "Tomá cada uno en el momento indicado (timing matters: pre-entreno vs post-entreno vs con comida). La constancia importa más que la dosis exacta — mejor 80% sostenido durante 4 semanas que 100% sólo la primera semana.";
+        $p2 = "Tomá cada uno en el momento que te marco — el cuándo importa tanto como el qué (pre-entreno, post-entreno, con comida). Y constancia: mejor que los tomes el 80% del mes y no que los tomes a tope la primera semana y los abandones.";
 
-        $p3 = "Si el coach prescribió suplementos específicos, esos van primero — yo agregué los evidence-based que faltaban. Si tenés contraindicación renal/hepática o estás embarazada, parate y avisame antes de empezar.";
+        $p3 = "Si tenés algo de riñones, hígado, presión, o estás embarazada, parame ahí y hablamos antes de que compres nada.";
 
-        $p4Cost = $costo ? " El costo mensual aproximado es de COP \${$this->formatCop((int) $costo)} (referencial, varía 2-3× por marca y país)." : '';
-        $p4 = "Si no podés comprar todos, priorizá los marcados como esenciales primero.{$p4Cost} — {$coach}";
+        $p4Cost = $costo ? ' El costo mensual aproximado es de COP $' . $this->formatCop((int) $costo) . ' (referencial, varía 2-3× por marca y país).' : '';
+        $p4 = "Si no te alcanza para todos este mes, arrancá por los que te marqué como esenciales — los demás los sumás cuando puedas.{$p4Cost} — {$coach}";
 
         return $this->joinParagraphs([$p1, $p2, $p3, $p4]);
     }
 
     /**
-     * Objetivo largo para entrenamiento (reemplaza el match() corto).
+     * Notas coach para hábitos — voz personalizada.
      */
+    public function buildForHabitos(
+        ClientProfile $profile,
+        ?string $clientName,
+        ?string $coachName,
+    ): string {
+        $nombre = $this->resolveFirstName($clientName);
+        $coach = $this->resolveFirstName($coachName) ?: 'tu coach';
+
+        $p1 = "{$nombre}, estos hábitos son la base de todo. Con esto firme, el resto del plan rinde el triple. Sin esto, el mejor entreno y la mejor nutrición no sirven.";
+
+        $p2 = 'No te pongas la meta del 100% — apuntá al 80% todas las semanas y vas a ver el cambio. Si fallás un día, retomá al siguiente. No compensés con esfuerzo extra (eso desgasta).';
+
+        $p3 = 'Arrancá por el hábito que más te cuesta — ese es el que más te va a mover la aguja. En 4 semanas el hábito se te vuelve automático y ya no necesitás estar motivada todos los días.';
+
+        $p4 = "Si algo no te encaja con tus tiempos o tu situación, escribime y lo ajustamos. — {$coach}";
+
+        return $this->joinParagraphs([$p1, $p2, $p3, $p4]);
+    }
+
     public function buildObjetivoEntrenamiento(ClientProfile $profile, string $methodologyName): string
     {
         return match ($profile->goal) {
-            'hipertrofia' => "Ganar masa muscular con foco en hipertrofia progresiva. {$methodologyName} con periodización RIR 3→0 en 4 semanas para crear estímulo sin sobreentreno.",
-            'fuerza' => "Aumentar fuerza máxima en compuestos principales. {$methodologyName} con cargas pesadas, descansos largos y técnica perfecta.",
-            'perdida_grasa' => "Pérdida de grasa con preservación de masa muscular. {$methodologyName} con énfasis en mantener intensidad alta mientras el déficit calórico hace el trabajo.",
-            'recomposicion' => "Recomposición corporal: bajar grasa y ganar/preservar músculo simultáneamente. {$methodologyName} con periodización progresiva.",
-            'mantenimiento' => "Mantener masa muscular, fuerza y rendimiento. {$methodologyName} con volumen moderado y técnica como prioridad.",
-            'performance' => "Mejorar rendimiento deportivo y capacidad de trabajo. {$methodologyName} con foco en fuerza-resistencia y potencia.",
-            default => "Mejorar composición corporal y rendimiento. {$methodologyName} con periodización progresiva en 4 semanas.",
+            'hipertrofia' => "Te voy a ayudar a ganar masa muscular real, subiendo intensidad mes a mes. {$methodologyName}, 4 semanas, RIR bajando de 3 a 0 (cada vez te quedan menos reps en el tanque). El plan está calibrado para que crezcas sin pasarte.",
+            'fuerza' => "Vamos a subir fuerza máxima en los ejercicios grandes. {$methodologyName} con cargas pesadas, descansos largos y técnica como prioridad.",
+            'perdida_grasa' => "Vas a bajar grasa preservando músculo. {$methodologyName} con intensidad sostenida — el déficit calórico hace el trabajo de bajar grasa; el gym hace el trabajo de mantener el músculo.",
+            'recomposicion' => "Vamos a bajar grasa y subir/preservar músculo al mismo tiempo. {$methodologyName} con periodización progresiva.",
+            'mantenimiento' => "Vamos a mantener masa muscular y rendimiento. {$methodologyName} con volumen moderado y técnica como prioridad.",
+            'performance' => "Vamos a mejorar tu rendimiento y capacidad de trabajo. {$methodologyName} con foco en fuerza-resistencia y potencia.",
+            default => "Vamos a mejorar tu composición corporal y rendimiento. {$methodologyName} con periodización progresiva en 4 semanas.",
         };
     }
 
     private function buildExpectationsParagraph(?string $goal): string
     {
         return match ($goal) {
-            'perdida_grasa' => 'Las primeras 2 semanas pueden sentirse pesadas — el cuerpo está en déficit calórico. Si tenés baja energía, mové la carga +5kg cada semana solo si llegás al RIR objetivo. A partir de la semana 3 empezás a ver cambios reales en espejo y medidas.',
-            'hipertrofia' => 'La semana 1 es de adaptación — vas a sentir agujetas fuertes, normal. Semana 2-3 es donde se acumula volumen real y empezás a sentirte más fuerte. La semana 4 es peak — tu mejor sesión del mes va acá. Después un deload o cambio de plan.',
-            'recomposicion' => 'Recomposición es más lenta que solo perder o solo ganar — esperá ~1kg/mes en cualquier dirección. Lo importante es que la balanza no cambie mucho pero el espejo sí. Fotos cada 2 semanas en las mismas condiciones.',
-            'fuerza' => 'En fuerza el progreso se mide en kg en la barra, no en la balanza. Esperá +2.5-5kg/semana en compuestos principales si la técnica está sólida. Si te estancás, hablamos de cambiar variante o descanso.',
-            default => 'Las primeras 2 semanas son de adaptación — tu cuerpo se acostumbra al nuevo volumen. Semana 3-4 es donde rendís al máximo. Anotá todo, así medimos progreso real.',
+            'perdida_grasa' => 'Las primeras dos semanas las vas a sentir pesadas — estás comiendo menos de lo que gastás, es normal. Si te baja la energía, no fuerces — quedate con el mismo peso. Recién subís +5kg cuando llegás al RIR que te puse. A partir de la tercera semana ya empezás a notar cambios en el espejo y en las medidas.',
+            'hipertrofia' => 'La primera semana van a aparecer agujetas fuertes, no te asustés. En la segunda y tercera ya te empezás a sentir más fuerte. La semana 4 es la dura — tu mejor entreno del mes lo querés ahí. Después armamos el siguiente bloque.',
+            'recomposicion' => 'Bajar grasa y subir músculo al mismo tiempo es más lento que solo hacer una cosa — esperá moverte como mucho 1 kilo al mes en cualquier dirección. Lo importante: la balanza casi no se mueve pero el espejo cambia. Sacate foto cada 2 semanas, misma luz, mismo ángulo.',
+            'fuerza' => 'El progreso se mide en kg en la barra, no en la balanza. Esperá +2.5-5kg por semana en los ejercicios grandes si la técnica está sólida. Si te estancás, hablamos de cambiar variante o descanso.',
+            default => 'Las primeras dos semanas son de adaptación — tu cuerpo se acostumbra al volumen. En la tercera y cuarta semana rendís al máximo. Anotá todo, así medimos progreso real.',
         };
     }
 
     private function buildNutritionExpectationsParagraph(?string $goal): string
     {
         return match ($goal) {
-            'perdida_grasa' => 'Las primeras 2 semanas vas a sentir hambre — es normal, tu cuerpo se ajusta al nuevo aporte calórico. Tomá agua + masticá despacio (20 masticadas por bocado) ayuda. Esperá perder 0.5-1 kg/semana después de la semana 2. Si bajás más rápido, es agua o músculo — avisame y ajustamos.',
-            'hipertrofia' => 'En superávit calórico esperá ganar ~0.3-0.5 kg/semana después de la semana 2. Si subís más rápido, es probablemente grasa — avisame. Si no subís nada, sumamos 100-150 kcal extra.',
-            'recomposicion' => 'En recomposición los cambios son sutiles — la balanza puede no moverse pero el espejo sí. Fotos cada 2 semanas en mismas condiciones (mismo día, hora, ropa, luz) para detectar cambios que el peso no muestra.',
-            default => 'Las primeras 2 semanas son de ajuste — tu cuerpo se acostumbra al nuevo aporte y horarios. Si tenés hambre extrema o energía muy baja, avisame para ajustar.',
+            'perdida_grasa' => 'Las primeras dos semanas vas a tener hambre — es normal, tu cuerpo se está acomodando. Tomá más agua, masticá despacio (intentá 20 masticadas por bocado), y se te va apagando. De la semana 2 en adelante esperá bajar entre medio y un kilo por semana. Si bajás más rápido, no es grasa — escribime y ajustamos.',
+            'hipertrofia' => 'Vas a subir entre 300 y 500 gramos por semana después de la semana 2. Si subís más rápido, probablemente sea grasa — escribime. Si no subís nada, sumamos 100-150 kcal extra.',
+            'recomposicion' => 'En recomposición los cambios son sutiles — la balanza puede no moverse pero el espejo sí. Sacate foto cada 2 semanas en las mismas condiciones (mismo día, hora, ropa, luz) — eso te muestra cambios que el peso esconde.',
+            default => 'Las primeras dos semanas son de ajuste — tu cuerpo se acostumbra al nuevo aporte y horarios. Si tenés hambre extrema o energía muy baja, escribime para ajustar.',
         };
     }
 
     private function goalLabel(?string $goal): string
     {
         return match ($goal) {
-            'hipertrofia' => 'ganancia de masa muscular',
-            'fuerza' => 'aumento de fuerza',
-            'perdida_grasa' => 'pérdida de grasa',
-            'recomposicion' => 'recomposición corporal',
-            'mantenimiento' => 'mantenimiento',
-            'performance' => 'mejorar rendimiento',
-            default => 'mejorar composición corporal',
+            'hipertrofia' => 'ganar masa muscular',
+            'fuerza' => 'aumentar fuerza',
+            'perdida_grasa' => 'bajar grasa',
+            'recomposicion' => 'bajar grasa y mantener músculo',
+            'mantenimiento' => 'mantener forma física',
+            'performance' => 'mejorar tu rendimiento',
+            default => 'mejorar tu composición corporal',
         };
     }
 
     private function resolveFirstName(?string $fullName): string
     {
-        if ($fullName === null || $fullName === '') {
-            return 'Hola';
+        if ($fullName === null || trim($fullName) === '') {
+            return '';
         }
         $parts = explode(' ', trim($fullName));
-        return $parts[0] !== '' ? $parts[0] : 'Hola';
+        return $parts[0];
     }
 
     /**

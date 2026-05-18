@@ -7,21 +7,13 @@ namespace App\Services\ComposeEngine\Nutrition;
 /**
  * Catálogo de patrones nutricionales por meal slot.
  *
- * Cada pattern define:
- *   - protein_categories: qué tipo de proteína (animal magra para almuerzo,
- *     láctea/suplemento para snack, magra simple para pre-entreno)
- *   - carb_categories: qué tipo de carbo (grano integral en almuerzo, fruta
- *     simple en desayuno/pre-entreno, ninguno en algunos snacks)
- *   - include_fat: si la comida debería incluir grasa adicional
- *   - include_vegetable: si va vegetal de acompañamiento
- *   - include_fruit: si va fruta
- *
- * Reglas nutricionales aplicadas:
- *   - Pre-entreno: SIN grasas (retrasan digestión 60-90 min antes del entreno).
- *     Carbos simples (fruta) + proteína magra (whey o pollo).
- *   - Snack AM: liviano. Lácteo o suplemento + nuez o fruta.
- *   - Desayuno: completo con fruta para vitaminas matutinas.
- *   - Almuerzo/Cena: comidas principales con vegetal de acompañamiento.
+ * Reglas LATAM:
+ *   - Omnívoros (default): priorizar proteína animal en almuerzo/cena.
+ *     Proteína vegetal solo si el cliente es vegano o vegetariano.
+ *   - Desayuno LATAM clásico: huevos, arepa, queso bajo, fruta · O whey/avena/banano.
+ *   - Almuerzo LATAM: pollo/pescado/carne + arroz/papa/yuca + ensalada + 1 cda aceite.
+ *   - Cena LATAM: pescado/pollo + verdura + carbo pequeño (papa cocida, quinoa).
+ *   - Pre-entreno: sin grasas (retrasan digestión 60-90 min antes del entreno).
  */
 final class MealPatterns
 {
@@ -32,45 +24,69 @@ final class MealPatterns
      *   include_fat: bool,
      *   include_vegetable: bool,
      *   include_fruit: bool,
+     *   prefer_animal_protein: bool,
      * }
      */
     public static function forSlot(string $slotName): array
     {
-        return match ($slotName) {
-            'Desayuno' => [
+        $name = mb_strtolower($slotName, 'UTF-8');
+        return match (true) {
+            str_contains($name, 'desayuno') => [
                 'protein_categories' => ['proteina_animal', 'proteina_lactea', 'proteina_suplemento'],
-                'carb_categories' => ['carbohidrato_grano'], // avena, granola
+                'carb_categories' => ['carbohidrato_grano', 'carbohidrato_latam'], // avena, arepa, pan integral
                 'include_fat' => true,
                 'include_vegetable' => false,
-                'include_fruit' => true,  // ← fruta de mañana
+                'include_fruit' => true,
+                'prefer_animal_protein' => true,
             ],
-            'Snack AM' => [
-                'protein_categories' => ['proteina_lactea', 'proteina_suplemento', 'proteina_vegetal'],
-                'carb_categories' => ['fruta'],  // fruta como carbo (banano + yogur clásico)
-                'include_fat' => true,           // pequeña porción de nueces ok
+            str_contains($name, 'snack am'), str_contains($name, 'media manana') => [
+                'protein_categories' => ['proteina_lactea', 'proteina_animal', 'proteina_suplemento'],
+                'carb_categories' => ['fruta'],
+                'include_fat' => false, // snack ligero — sin nueces obligatorias
                 'include_vegetable' => false,
-                'include_fruit' => false,         // fruta ya cubierta via carb_categories
+                'include_fruit' => false,
+                'prefer_animal_protein' => true,
             ],
-            'Almuerzo' => [
-                'protein_categories' => ['proteina_animal', 'proteina_vegetal'],
+            str_contains($name, 'almuerzo') => [
+                // Omnívoros: solo animal. Vegano lo activamos vía dietary_restriction.
+                'protein_categories' => ['proteina_animal'],
                 'carb_categories' => ['carbohidrato_grano', 'carbohidrato_tuberculo', 'carbohidrato_latam'],
                 'include_fat' => true,
                 'include_vegetable' => true,
                 'include_fruit' => false,
+                'prefer_animal_protein' => true,
             ],
-            'Pre-entreno' => [
-                'protein_categories' => ['proteina_suplemento', 'proteina_animal'], // magras
-                'carb_categories' => ['fruta', 'carbohidrato_grano'], // carbos simples/rápidos
-                'include_fat' => false,  // ← SIN grasas, retrasan digestión
+            str_contains($name, 'merienda') => [
+                'protein_categories' => ['proteina_lactea', 'proteina_suplemento', 'proteina_animal'],
+                'carb_categories' => ['fruta', 'carbohidrato_grano'],
+                'include_fat' => false,
                 'include_vegetable' => false,
-                'include_fruit' => false, // cubierta en carbs si aplica
+                'include_fruit' => false,
+                'prefer_animal_protein' => true,
             ],
-            'Cena' => [
-                'protein_categories' => ['proteina_animal', 'proteina_vegetal'],
+            str_contains($name, 'pre-entreno'), str_contains($name, 'pre entreno') => [
+                'protein_categories' => ['proteina_suplemento', 'proteina_animal'],
+                'carb_categories' => ['fruta', 'carbohidrato_grano', 'carbohidrato_latam'],
+                'include_fat' => false, // sin grasas — retrasan digestión
+                'include_vegetable' => false,
+                'include_fruit' => false,
+                'prefer_animal_protein' => true,
+            ],
+            str_contains($name, 'cena') => [
+                'protein_categories' => ['proteina_animal'],
                 'carb_categories' => ['carbohidrato_tuberculo', 'carbohidrato_grano'],
                 'include_fat' => true,
-                'include_vegetable' => true,  // ← cena con verde
+                'include_vegetable' => true,
                 'include_fruit' => false,
+                'prefer_animal_protein' => true,
+            ],
+            str_contains($name, 'post-entreno'), str_contains($name, 'post entreno') => [
+                'protein_categories' => ['proteina_suplemento', 'proteina_animal'],
+                'carb_categories' => ['fruta', 'carbohidrato_grano'],
+                'include_fat' => false,
+                'include_vegetable' => false,
+                'include_fruit' => false,
+                'prefer_animal_protein' => true,
             ],
             default => [
                 'protein_categories' => ['proteina_animal', 'proteina_lactea'],
@@ -78,6 +94,7 @@ final class MealPatterns
                 'include_fat' => true,
                 'include_vegetable' => false,
                 'include_fruit' => false,
+                'prefer_animal_protein' => true,
             ],
         };
     }

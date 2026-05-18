@@ -187,6 +187,15 @@ final class LintRulesSeeder extends Seeder
             'Reemplazar el ejercicio por un alias que SÍ exista en exercise_metadata, o agregar el GIF al repo + correr `php artisan kb:import-exercise-catalog`. NO inventar gif_url.',
             false, $now);
 
+        // LEY DURA voz (autoritativa Daniel · 2026-05-18):
+        // Ningún string visible al cliente puede delatar IA/sistema/automatización.
+        // Validator escanea todos los strings del plan recursivamente.
+        $r[] = $this->rule('hard_no_ai_leak_in_strings', null, 'error', 'heuristic',
+            'Texto del plan delata IA / sistema / automatización al cliente (LEY DURA voz)',
+            ['rule' => 'anti_ai_leak'],
+            'Reformular el texto en 2da persona voseo colombiano amable, como si lo escribiera el coach humano. Eliminar metarreferencias al plan/sistema/motor/IA. Eliminar jerga técnica en inglés.',
+            false, $now);
+
         $r[] = $this->rule('heur_supl_creatina_missing', 'suplementacion', 'warning', 'heuristic',
             'Plan de suplementación SIN creatina monohidrato — el suplemento con mejor evidencia costo/beneficio',
             ['rule' => 'creatina_missing'],

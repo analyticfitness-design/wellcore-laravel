@@ -148,7 +148,7 @@ final class PlanComposer
                     'nombre' => "{$day->dayName} — {$day->groupLabel}",
                     'duracion_estimada_min' => $this->estimateDayDuration($ejercicios, $setRepsCompound, $setRepsIsolation),
                     'calentamiento' => $this->buildWarmupForDay($day),
-                    'vuelta_calma' => 'Estiramiento 3-5 min de los grupos trabajados + 5 min caminata suave',
+                    'vuelta_calma' => 'Estirá 3-5 min los grupos que trabajaste y cerrá con 5 min de caminata suave. Bajá pulsaciones antes de irte.',
                     'ejercicios' => $ejerciciosJson,
                 ];
             }
@@ -257,11 +257,11 @@ final class PlanComposer
     private function describeWeek(string $fase, int $weekNumber, int $rir): string
     {
         return match (true) {
-            $weekNumber === 1 => "Semana de adaptación. RIR {$rir} — quedate con 3 reps en reserva, prioridad técnica sobre carga. Sentí los músculos trabajando.",
-            $weekNumber === 2 => "Acumulación de volumen. RIR {$rir} — subí carga si la técnica está sólida, te quedan 2 reps en el tanque al terminar la serie.",
-            $weekNumber === 3 => "Intensificación. RIR {$rir} — pesos cercanos al máximo, descanso completo entre series. Acá viene la mayor sobrecarga del bloque.",
-            $weekNumber === 4 => "Peak del bloque. RIR {$rir} — máximo esfuerzo controlado. Si no llegás al RIR objetivo, mantené peso y mejorá ejecución.",
-            default => "Fase {$fase}, RIR {$rir}.",
+            $weekNumber === 1 => "Semana de adaptación. RIR {$rir} — quedate con {$rir} reps en el tanque al terminar cada serie. Esta semana la técnica manda sobre el peso. Andá sintiendo cómo trabaja cada músculo.",
+            $weekNumber === 2 => "Acá ya estás más enchufado. Si la técnica te sale sólida, subí peso — todavía te tienen que quedar {$rir} reps en el tanque al terminar la serie.",
+            $weekNumber === 3 => "Esta semana le metés en serio. Pesos cercanos al tope, descanso completo entre series. RIR {$rir}. Es la semana más dura del mes — vas a sentirlo.",
+            $weekNumber === 4 => "Última semana del bloque, dale todo lo que tenés con técnica intacta. RIR {$rir}. Si no llegás, mantené el peso y mejorá la ejecución.",
+            default => "Semana {$weekNumber} — RIR {$rir}.",
         };
     }
 
@@ -274,25 +274,25 @@ final class PlanComposer
     {
         $base = [
             'Calentá siempre 5-10 min antes de la primera serie',
-            'Compounds primero, isolations al final del día',
+            'Empezá por los ejercicios grandes (sentadilla, peso muerto, press) y dejá los de aislación al final',
             'Anotá peso y RIR de cada serie apenas terminás el ejercicio',
-            'Si una articulación duele (no fatiga muscular), parás y avisás',
-            'Hidratate durante el entreno (mínimo 500 ml/hora)',
-            'Dormí 7-9h — la recuperación es parte del plan',
+            'Si te duele una articulación (no fatiga muscular, dolor que pincha), parás y me escribís',
+            'Tomá agua durante el entreno — mínimo 500 ml por hora',
+            'Dormí entre 7 y 9 horas. El músculo se construye durmiendo, no en el gym',
         ];
 
         return match ($profile->goal) {
             'perdida_grasa' => array_merge($base, [
-                'Cardio post-pesas, no antes (no robés energía a la musculación)',
-                'Si energía baja, una taza de café 30 min antes ayuda',
+                'Si hacés cardio, va después de las pesas, no antes — no robés energía al trabajo de fuerza',
+                'Si te baja la energía, una taza de café 30 min antes ayuda',
             ]),
             'hipertrofia' => array_merge($base, [
-                'Última serie de cada ejercicio: llegá al RIR objetivo, no menos',
-                'Snack post-entreno con proteína + carbo en los primeros 60 min',
+                'La última serie de cada ejercicio llegá al RIR que te pongo, no menos',
+                'Apenas terminás el entreno, comé algo con proteína y carbohidrato en la primera hora',
             ]),
             'fuerza' => array_merge($base, [
-                'Descanso completo entre series — 2-3 min en compuestos',
-                'Si no podés mantener la técnica, bajás peso. La técnica gana',
+                'Descanso completo entre series — 2-3 min en los ejercicios grandes',
+                'Si no podés mantener la técnica, bajás peso. La técnica gana siempre',
             ]),
             default => $base,
         };
@@ -305,9 +305,9 @@ final class PlanComposer
     {
         return [
             'Anotá peso, reps y RIR de cada serie apenas terminás el ejercicio',
-            'Hidratate durante el entreno (mínimo 500 ml por hora de gym)',
-            'Dormí al menos 7 horas — la recuperación es parte del plan',
-            'Si una articulación duele (no fatiga muscular), parás el ejercicio y avisás al coach',
+            'Tomá agua durante el entreno (mínimo 500 ml por hora)',
+            'Dormí al menos 7 horas. El músculo se construye durmiendo, no en el gym',
+            'Si te duele una articulación (no fatiga muscular, dolor que pincha), parás y me escribís',
         ];
     }
 }

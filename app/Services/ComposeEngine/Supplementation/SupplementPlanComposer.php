@@ -108,7 +108,7 @@ final class SupplementPlanComposer
             'tips' => array_merge($this->buildTips(), $extraTips),
             'principios_aplicados' => $injectedPrinciples->pluck('slug')->toArray(),
             'suplementos' => $suplementos,
-            'advertencia_legal' => $stack->legal_advertencia ?? 'Estos suplementos son ayudas ergogénicas, no medicamentos. Consultá con tu médico si tomás otros tratamientos. NO sustituyen una alimentación adecuada.',
+            'advertencia_legal' => $stack->legal_advertencia ?? 'Estos suplementos son ayudas, no medicamentos. Si estás en tratamiento médico, consultá con tu doctor antes de empezar. No reemplazan una alimentación bien hecha.',
         ];
 
         return new ComposeResult(
@@ -191,7 +191,7 @@ final class SupplementPlanComposer
                     'dosis' => 'Consultá dosis con tu coach',
                     'momento' => 'Consultá momento con tu coach',
                     'frecuencia' => 'Según prescripción del coach',
-                    'notas' => 'Suplemento prescrito por el coach, fuera del stack evidence-based canónico. Confirmá dosis y respaldo con el coach antes de comprar.',
+                    'notas' => 'Te lo recomendé personalmente. Confirmame dosis y marca antes de comprarlo, así nos aseguramos.',
                 ];
             }
         }
@@ -250,24 +250,28 @@ final class SupplementPlanComposer
         }
 
         return match ($ctx->profile->goal) {
-            'perdida_grasa' => 'Apoyar la pérdida de grasa con suplementos basales (proteína, creatina, multivitamínico).',
-            'hipertrofia' => 'Apoyar la ganancia de masa muscular con suplementos basales + ergogénicos validados.',
-            'recomposicion' => 'Apoyar la recomposición corporal (perder grasa preservando músculo).',
-            default => 'Soporte basal con suplementos de alta evidencia científica.',
+            'perdida_grasa' => 'Suplementos que te ayudan a bajar grasa sin perder músculo — proteína, creatina, multivitamínico.',
+            'hipertrofia' => 'Suplementos para ganar masa muscular — proteína, creatina, y los que tienen ciencia detrás para apoyar el entreno.',
+            'recomposicion' => 'Suplementos que apoyan bajar grasa y mantener músculo al mismo tiempo.',
+            default => 'Suplementos básicos con respaldo científico para apoyar tu plan.',
         };
     }
 
     private function buildNotasCoach(ComposeContext $ctx, ?\App\Models\Kb\SupplementStack $stack): string
     {
-        $coach = $ctx->coachName ?? 'tu coach';
-        $base = "El stack está pensado para tu objetivo y nivel actual. Tomá los suplementos en el momento y frecuencia indicados — la consistencia importa más que la dosis exacta.";
+        $coach = $this->resolveFirstName($ctx->coachName) ?: 'tu coach';
+        $p1 = 'Tomá cada suplemento en el momento que te marco — el cuándo importa tanto como el qué. Y constancia: mejor que los tomes el 80% del mes y no que los tomes a tope la primera semana y los abandones.';
+        $p2 = 'Si tenés algo de riñones, hígado, presión, o estás embarazada, parame ahí y hablamos antes de que compres nada.';
 
+        $costoNota = '';
         if ($stack !== null && $stack->approximate_monthly_cost_cop !== null) {
             $costo = number_format($stack->approximate_monthly_cost_cop, 0, ',', '.');
-            $base .= " El costo mensual aproximado es de COP \${$costo}.";
+            $costoNota = " El costo mensual aproximado es de COP \${$costo} (referencial, varía 2-3× por marca y país).";
         }
 
-        return $base . " — $coach";
+        $p3 = "Si no te alcanza para todos este mes, arrancá por los que te marqué como esenciales — los demás los sumás cuando puedas.{$costoNota} — {$coach}";
+
+        return implode("\n\n", [$p1, $p2, $p3]);
     }
 
     /**
@@ -276,12 +280,21 @@ final class SupplementPlanComposer
     private function buildTips(): array
     {
         return [
-            'La creatina NO necesita fase de carga — 5g diarios desde el día 1 son suficientes',
-            'La proteína whey es opcional si llegás a tu target diario con alimentos enteros',
-            'Si te saltás un día de creatina, no pasa nada — el efecto es por saturación acumulada',
-            'NO mezcles más de un pre-entreno con cafeína al día (riesgo cardiovascular)',
-            'Suspendé cualquier suplemento si aparecen síntomas adversos y avisá al coach',
+            'La creatina no necesita "fase de carga" como dicen por ahí — 5g diarios desde el día 1 alcanzan',
+            'La proteína whey es opcional si ya llegás a la proteína del día comiendo alimentos enteros',
+            'Si te saltás un día de creatina, no pasa nada — el efecto se construye con el tiempo, no con una sola toma',
+            'No mezclés más de un pre-entreno con cafeína al día — te puede tirar el corazón',
+            'Si algún suplemento te cae mal o te sentís raro, parate y escribime',
         ];
+    }
+
+    private function resolveFirstName(?string $fullName): string
+    {
+        if ($fullName === null || trim($fullName) === '') {
+            return '';
+        }
+        $parts = explode(' ', trim($fullName));
+        return $parts[0];
     }
 
     private function humanizeSlug(string $slug): string

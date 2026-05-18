@@ -183,8 +183,53 @@ final class FoodSelector
             return $this->buildItemForPortion($food, 100);
         }
         $portion = (int) round(($targetGrams / $macroPer100) * 100);
-        $portion = max(20, min(400, $portion));
+
+        // Cap inteligente por portion_typical: si el alimento define una porción típica máxima realista
+        // (ej. claras=150g, tofu=200g, almendras=30g), respetar ese tope para evitar gramajes absurdos.
+        $maxRealistic = $this->resolveMaxRealisticPortion($food);
+        $portion = max(20, min($maxRealistic, $portion));
+
         return $this->buildItemForPortion($food, $portion);
+    }
+
+    /**
+     * Resuelve el peso máximo realista para una porción según portion_typical del catálogo.
+     * Si el food no define portion_typical o no se puede parsear, cae a 400g (cap legacy).
+     */
+    private function resolveMaxRealisticPortion(NutritionFood $food): int
+    {
+        $pt = $food->portion_typical;
+        $portionTypical = is_array($pt) ? $pt : null;
+        if (! $portionTypical) {
+            return 400;
+        }
+
+        // Buscar claves canónicas: porcion_grande, max, comun (en orden de preferencia para hard cap).
+        // porcion_grande es el techo real; comun es el promedio (no usamos como techo).
+        $candidates = [
+            $portionTypical['porcion_grande'] ?? null,
+            $portionTypical['max'] ?? null,
+            $portionTypical['grande'] ?? null,
+        ];
+
+        foreach ($candidates as $raw) {
+            if (! is_string($raw) || $raw === '') {
+                continue;
+            }
+            // Parsear gramos del string. Acepta "150g", "~150g", "120-200g", "200g (~150g cocido)"
+            if (preg_match('/(\d{2,4})\s*g/u', $raw, $m)) {
+                $grams = (int) $m[1];
+                // Si hay rango "120-200g" tomar el max
+                if (preg_match('/(\d{2,4})\s*-\s*(\d{2,4})\s*g/u', $raw, $range)) {
+                    $grams = max((int) $range[1], (int) $range[2]);
+                }
+                if ($grams >= 30 && $grams <= 500) {
+                    return $grams;
+                }
+            }
+        }
+
+        return 400;
     }
 
     private function buildItemForPortion(NutritionFood $food, int $portionG): FoodItem

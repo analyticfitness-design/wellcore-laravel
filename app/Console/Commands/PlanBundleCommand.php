@@ -596,6 +596,24 @@ final class PlanBundleCommand extends Command
             $defaults['excluded_foods_csv'] = $excluded;
         }
 
+        // ─── Alimentos priorizar → meal_protein por slot (coach_brief.plan_nutricional.alimentos_priorizar) ───
+        // El coach escribe texto libre como "Pechuga y huevo". Lo distribuimos a meal_protein por slot:
+        //   - "huevo*" / "claras*" → Desayuno, Snack AM
+        //   - "pechuga*" / "pollo*" / "pescado*" / "atún*" / "carne*" / "lomo*" → Almuerzo, Cena
+        //   - "whey*" / "proteina*" → Pre-entreno, Merienda
+        // Esto resuelve el bug crítico donde FoodSelector ignora los alimentos preferidos del coach.
+        $priorizar = $nutri['alimentos_priorizar'] ?? null;
+        if (is_string($priorizar) && trim($priorizar) !== '') {
+            $mealProtein = $this->parseAlimentosPriorizar($priorizar);
+            if ($mealProtein !== []) {
+                $pairs = [];
+                foreach ($mealProtein as $slot => $keyword) {
+                    $pairs[] = "{$slot}:{$keyword}";
+                }
+                $defaults['meal_protein_csv'] = implode(',', $pairs);
+            }
+        }
+
         // ─── Suplementos prescritos por el coach ───
         $coachSupps = $supl['suplementos'] ?? null;
         if (is_array($coachSupps) && $coachSupps !== []) {
@@ -606,6 +624,73 @@ final class PlanBundleCommand extends Command
         }
 
         return $defaults;
+    }
+
+    /**
+     * Parsea "alimentos_priorizar" texto libre y distribuye proteínas por slot.
+     *
+     * Heurística: detecta keywords clave en el texto y los asigna a slots LATAM-idiomáticos.
+     * - huevo/clara → desayuno + snack am
+     * - pechuga/pollo/pescado/atun/carne/lomo/tilapia/salmón → almuerzo + cena
+     * - whey/proteina-polvo → pre-entreno + merienda
+     *
+     * Ejemplo: "Pechuga y huevo" → {desayuno: huevo, snack am: huevo, almuerzo: pechuga, cena: pechuga}
+     *
+     * @return array<string,string> map slot→keyword
+     */
+    private function parseAlimentosPriorizar(string $raw): array
+    {
+        $text = mb_strtolower($raw, 'UTF-8');
+        $text = strtr($text, ['á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ñ'=>'n']);
+
+        $protAm = []; // mañana: desayuno + snack am
+        $protPm = []; // mediodía/noche: almuerzo + cena
+        $protGym = []; // pre-entreno + merienda
+
+        // Detección de keywords (orden importa — primero match gana por slot)
+        $keywordMap = [
+            ['keyword' => 'huevo',    'slot' => 'am'],
+            ['keyword' => 'clara',    'slot' => 'am'],
+            ['keyword' => 'pechuga',  'slot' => 'pm'],
+            ['keyword' => 'pollo',    'slot' => 'pm'],
+            ['keyword' => 'pescado',  'slot' => 'pm'],
+            ['keyword' => 'atun',     'slot' => 'pm'],
+            ['keyword' => 'tilapia',  'slot' => 'pm'],
+            ['keyword' => 'salmon',   'slot' => 'pm'],
+            ['keyword' => 'lomo',     'slot' => 'pm'],
+            ['keyword' => 'carne',    'slot' => 'pm'],
+            ['keyword' => 'res',      'slot' => 'pm'],
+            ['keyword' => 'cerdo',    'slot' => 'pm'],
+            ['keyword' => 'whey',     'slot' => 'gym'],
+            ['keyword' => 'proteina', 'slot' => 'gym'],
+        ];
+
+        foreach ($keywordMap as $entry) {
+            if (str_contains($text, $entry['keyword'])) {
+                match ($entry['slot']) {
+                    'am' => $protAm[] = $entry['keyword'],
+                    'pm' => $protPm[] = $entry['keyword'],
+                    'gym' => $protGym[] = $entry['keyword'],
+                };
+            }
+        }
+
+        // Distribuir a slots concretos (orden de prioridad por keyword detectada)
+        $result = [];
+        if ($protAm !== []) {
+            $result['desayuno'] = $protAm[0];
+            $result['snack am'] = $protAm[0];
+        }
+        if ($protPm !== []) {
+            $result['almuerzo'] = $protPm[0];
+            $result['cena'] = isset($protPm[1]) ? $protPm[1] : $protPm[0];
+        }
+        if ($protGym !== []) {
+            $result['pre-entreno'] = $protGym[0];
+            $result['merienda'] = $protGym[0];
+        }
+
+        return $result;
     }
 
     /**

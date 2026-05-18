@@ -162,32 +162,32 @@ final class NutritionPlanComposer
     {
         $name = mb_strtolower($slotName, 'UTF-8');
         return match (true) {
-            str_contains($name, 'desayuno') => 'Proteína completa + carbo medio + 1 fruta',
-            str_contains($name, 'snack am'), str_contains($name, 'media manana') => 'Proteína magra + grasa saludable o fruta',
-            str_contains($name, 'almuerzo') => 'Comida principal — proteína + carbo + verdura',
-            str_contains($name, 'merienda') => 'Snack proteico + fruta',
-            str_contains($name, 'pre-entreno'), str_contains($name, 'pre entreno') => 'Carbo rápido + proteína magra · sin grasa · 30-45 min antes',
-            str_contains($name, 'cena') => 'Proteína + verdura · ligero · 2-3h antes de dormir',
-            str_contains($name, 'post-entreno'), str_contains($name, 'post entreno') => 'Ventana anabólica · proteína + carbo · dentro de los 30 min',
+            str_contains($name, 'desayuno') => 'Proteína + carbohidrato + fruta',
+            str_contains($name, 'snack am'), str_contains($name, 'media manana') => 'Algo proteico ligero con grasa buena o fruta',
+            str_contains($name, 'almuerzo') => 'Tu comida más fuerte del día: proteína, carbohidrato y verdura',
+            str_contains($name, 'merienda') => 'Snack proteico de la tarde',
+            str_contains($name, 'pre-entreno'), str_contains($name, 'pre entreno') => 'Energía rápida (fruta o pan) + proteína liviana, sin grasa',
+            str_contains($name, 'cena') => 'Proteína con verdura, ligero, 2-3h antes de dormir',
+            str_contains($name, 'post-entreno'), str_contains($name, 'post entreno') => 'Proteína + carbohidrato en la primera media hora post-entreno',
             default => 'Comida balanceada',
         };
     }
 
     /**
-     * Notas "POR QUÉ" por slot — explicación humana al cliente.
+     * Notas "POR QUÉ" por slot — voz personal del coach.
      */
     private function buildMealNotas(string $slotName): string
     {
         $name = mb_strtolower($slotName, 'UTF-8');
         return match (true) {
-            str_contains($name, 'desayuno') => 'La proteína del desayuno la cocinás sin aceite — usá sartén antiadherente o spray. El carbo y la fruta te dan energía para arrancar el día y entrenar 2-3 horas después.',
-            str_contains($name, 'snack am'), str_contains($name, 'media manana') => 'Snack pequeño para mantener proteína constante. Si no tenés hambre, sumá esta proteína al desayuno o almuerzo — no te la saltés del todo.',
-            str_contains($name, 'almuerzo') => 'Comida más grande del día. Usá aceite de oliva en frío (1 cda) para la ensalada o aguacate, no para freír. La proteína a la plancha, horno o hervida — sin frituras.',
-            str_contains($name, 'merienda') => 'Snack de mitad de tarde. Si entrenás de noche, podés moverlo a pre-entreno (1 hora antes).',
-            str_contains($name, 'pre-entreno'), str_contains($name, 'pre entreno') => 'Tomá esta comida 30-45 min antes de entrenar. Sin grasas (retrasan digestión). Carbo rápido (banano, arepa, arroz) para tener energía y proteína magra (claras, pechuga).',
-            str_contains($name, 'cena') => 'Si llegás tarde y con sueño, come solo proteína + verdura — la cena es la comida más flexible. Evitá carbos pesados si dormís dentro de 2h.',
-            str_contains($name, 'post-entreno'), str_contains($name, 'post entreno') => 'Dentro de los 30 min después del entreno. Si no entrenás hoy, sáltate esta comida (sumá la proteína a la próxima).',
-            default => 'Las 3 opciones son equivalentes en macros (±5%) — elegí la que más te guste o tengas en casa.',
+            str_contains($name, 'desayuno') => 'La proteína la cocinás sin aceite — usá sartén antiadherente o spray en aerosol. El carbohidrato y la fruta te dan la energía para arrancar el día y entrenar 2-3 horas después.',
+            str_contains($name, 'snack am'), str_contains($name, 'media manana') => 'Snack pequeño para mantener proteína repartida. Si no tenés hambre, sumá esta proteína al desayuno o almuerzo — no te la saltés del todo.',
+            str_contains($name, 'almuerzo') => 'Es la comida más grande del día. El aceite de oliva en frío (una cucharada) va para la ensalada o el aguacate, no para freír. La proteína la hacés a la plancha, al horno o hervida — nada de frito.',
+            str_contains($name, 'merienda') => 'Snack de mitad de tarde. Si entrenás de noche, movélo a pre-entreno (una hora antes).',
+            str_contains($name, 'pre-entreno'), str_contains($name, 'pre entreno') => 'Algo con energía rápida (fruta o pan) + proteína liviana. Sin aceite ni grasas — para que digiera rápido y entrenes ligero. 30-45 min antes del gym.',
+            str_contains($name, 'cena') => 'Si llegás tarde y con sueño, comé solo proteína + verdura — la cena es la comida más flexible. Evitá carbohidratos pesados si dormís dentro de 2 horas.',
+            str_contains($name, 'post-entreno'), str_contains($name, 'post entreno') => 'Apenas terminás el entreno tenés 30 min. Si hoy no vas al gym, saltátela y sumale la proteína a la próxima comida.',
+            default => 'Las 3 opciones tienen lo mismo nutricionalmente — elegí la que más se te antoje o la que tengas a mano.',
         };
     }
 
@@ -229,39 +229,33 @@ final class NutritionPlanComposer
         $proteina = $macroPlan['macros']['proteina_g'];
 
         return [
-            "Tomá mínimo " . round(($ctx->profile->weightKg ?? 70) * 0.035, 1) . " L de agua al día (35 ml/kg)",
-            "Si entrenás, tomá la comida pre-entreno 60-90 min antes",
-            "Anotá el peso 1 vez por semana en ayunas, no diario (mucha varianza)",
-            "Las gramaturas son crudo/seco — pesá antes de cocinar",
-            "Si te saltás una comida, sumá su proteína (~" . round($proteina / 5) . "g) a la siguiente",
+            "Tomá mínimo " . round(($ctx->profile->weightKg ?? 70) * 0.035, 1) . " L de agua al día (tu peso en kilos × 35 ml = tu mínimo)",
+            "Si entrenás, comé la comida pre-entreno entre 60 y 90 min antes",
+            "Pesate 1 vez por semana en ayunas. Diario te vuelve loca con números que no significan nada — varía mucho por agua y comida",
+            "Los gramos que te pongo son del alimento crudo o seco — pesalo antes de cocinarlo",
+            "Si te saltás una comida, sumale la proteína (~" . round($proteina / 5) . "g) a la siguiente",
         ];
     }
 
     /**
-     * Objetivo enriquecido — texto largo razonado con TDEE/déficit/proteína g/kg.
+     * Objetivo enriquecido — texto largo razonado, voz directa al cliente.
      */
     private function buildObjetivoEnriquecido(ComposeContext $ctx, array $macroPlan): string
     {
         $goal = $ctx->profile->goal;
         $kcal = (int) $macroPlan['objetivo_cal'];
         $tdee = (int) ($macroPlan['tdee'] ?? 0);
-        $bmr = (int) ($macroPlan['bmr'] ?? 0);
         $proteinaG = (int) ($macroPlan['macros']['proteina_g'] ?? 0);
         $weight = $ctx->profile->weightKg ?? 0;
         $proteinaPorKg = $weight > 0 ? round($proteinaG / $weight, 1) : 0;
         $delta = $tdee - $kcal;
-        $deltaText = match (true) {
-            $delta > 0 => "déficit moderado de {$delta} kcal sobre tu TDEE ({$tdee} kcal/día)",
-            $delta < 0 => "superávit ligero de " . abs($delta) . " kcal sobre tu TDEE ({$tdee} kcal/día)",
-            default => "mantenimiento sobre tu TDEE ({$tdee} kcal/día)",
-        };
 
         return match ($goal) {
-            'perdida_grasa' => "Pérdida de grasa con preservación muscular — {$deltaText}. Vas a comer {$kcal} kcal/día con proteína alta ({$proteinaPorKg} g/kg = {$proteinaG}g) para mantener masa magra. Meta: bajar 0.5-1 kg/semana después de la semana 2.",
-            'recomposicion' => "Recomposición corporal — {$deltaText}. Comerás {$kcal} kcal/día con proteína alta ({$proteinaPorKg} g/kg = {$proteinaG}g). La balanza puede no cambiar mucho pero el espejo sí.",
-            'mantenimiento' => "Mantenimiento de masa magra y rendimiento — {$deltaText}. {$kcal} kcal/día con proteína {$proteinaPorKg} g/kg = {$proteinaG}g.",
-            'hipertrofia' => "Ganancia de masa muscular — {$deltaText}. {$kcal} kcal/día con proteína {$proteinaPorKg} g/kg = {$proteinaG}g. Meta: subir ~0.3-0.5 kg/semana después de la semana 2.",
-            default => "{$kcal} kcal/día con proteína {$proteinaG}g ({$proteinaPorKg} g/kg). {$deltaText}.",
+            'perdida_grasa' => "Vas a bajar grasa sin perder músculo. Comés {$kcal} kcal por día con proteína alta ({$proteinaPorKg} g por cada kilo tuyo = {$proteinaG}g total) para que el cuerpo conserve el músculo. Meta: bajar entre medio y un kilo por semana, de la semana 2 en adelante.",
+            'recomposicion' => "Vas a bajar grasa y mantener músculo al mismo tiempo. Comés {$kcal} kcal por día con proteína alta ({$proteinaPorKg} g por cada kilo tuyo = {$proteinaG}g total). La balanza casi no se mueve pero el espejo cambia.",
+            'mantenimiento' => "Mantenés tu forma física actual. {$kcal} kcal por día con proteína {$proteinaPorKg} g por cada kilo tuyo = {$proteinaG}g total.",
+            'hipertrofia' => "Vas a ganar masa muscular. Comés {$kcal} kcal por día con proteína {$proteinaPorKg} g por cada kilo tuyo = {$proteinaG}g total. Meta: subir entre 300 y 500 gramos por semana, de la semana 2 en adelante.",
+            default => "{$kcal} kcal por día con {$proteinaG}g de proteína ({$proteinaPorKg} g por cada kilo tuyo).",
         };
     }
 
@@ -276,9 +270,9 @@ final class NutritionPlanComposer
             'agua_minima_litros' => $litrosBase,
             'agua_total_dia_entreno_litros' => round($litrosBase + 0.5, 1),
             'electrolitos' => $profile->goal === 'perdida_grasa'
-                ? 'En déficit, sumá una pizca de sal en agua si entrenás >45 min o tomás cardio extra. Ayuda a evitar bajón energético.'
-                : 'Pizca de sal y limón en 1 vaso al levantarte ayuda a la hidratación + sodio para entreno.',
-            'notas' => "Tu peso × 0.035 = {$litrosBase} L mínimo diario. Sumá 500 ml extra los días de entreno.",
+                ? 'Si estás comiendo menos calorías y entrenás más de 45 min o sumás cardio, agregale una pizca de sal al agua. Te evita el bajón.'
+                : 'Una pizca de sal con limón en un vaso de agua al levantarte ayuda a la hidratación y al entreno.',
+            'notas' => "Tu peso en kilos × 35 ml te da el mínimo diario: {$litrosBase} L. Sumá 500 ml extra los días que entrenás.",
         ];
     }
 
@@ -291,13 +285,13 @@ final class NutritionPlanComposer
         $kcalDescanso = max($kcalNormal - 150, 1200); // 150 kcal menos en día sin entreno
 
         return [
-            'descripcion' => 'En días de descanso (sin entreno) ajustás levemente las calorías porque no quemás extra. Mantenés proteína y bajás un poco los carbos.',
+            'descripcion' => 'Los días que no entrenás bajás un poco las calorías porque no quemás extra. La proteína se mantiene igual; bajás un poco los carbohidratos.',
             'calorias_objetivo' => $kcalDescanso,
             'ajustes' => [
-                "Reducí ~30g de arroz o pasta en el almuerzo (cambia ~120 kcal)",
-                "Mantené la proteína igual — el músculo se construye también en descanso",
-                "Si tenés snack pre-entreno, sáltalo (esa comida es para tener energía de gym)",
-                "Hidratate igual: el descanso es cuando el cuerpo procesa todo lo trabajado",
+                'Reducí ~30g de arroz o pasta en el almuerzo (te queda ~120 kcal menos)',
+                'Mantené la proteína igual — el músculo también se construye en descanso',
+                'Si tenés snack pre-entreno, saltátelo (esa comida es para tener energía en el gym)',
+                'Hidratate igual: el descanso es cuando el cuerpo procesa todo lo trabajado',
             ],
         ];
     }
@@ -312,25 +306,25 @@ final class NutritionPlanComposer
         $weight = $profile->weightKg ?? 70;
         $litrosBase = round($weight * 0.035, 1);
         $base = [
-            'Proteína primero: si cumplís el target diario, el día sigue siendo productivo',
-            'Las 3 opciones por comida son intercambiables — macros equivalentes',
-            'Cocina sin aceite (plancha, horno, vapor). Spray o sartén antiadherente',
-            'Verduras de ensalada = libres. Llenate el plato',
-            'Batch cooking dominical te salva la semana',
-            "{$litrosBase} L de agua mínimo. El hambre muchas veces es sed",
+            'La proteína no se negocia: si llegás al total del día, el día está hecho',
+            'Las 3 opciones de cada comida valen lo mismo — cambialas como quieras',
+            'Cociná sin aceite — plancha, horno o vapor. Si necesitás, spray en aerosol o sartén antiadherente',
+            'Verduras de ensalada = libres. Llenate el plato sin contar gramos',
+            'Cocinar para varios días el domingo te salva la semana',
+            "{$litrosBase} L de agua mínimo al día. El hambre muchas veces es sed",
             'Café y té libres, sin azúcar',
-            'Antojo nocturno: té con canela o agua caliente con miel (1 cdita)',
+            'Si te ataca el antojo de noche: té con canela o agua caliente con una cucharadita de miel',
         ];
 
         return match ($profile->goal) {
             'perdida_grasa' => array_merge($base, [
-                'En días de entreno: 50 kcal extra carbos. Descanso: -50 kcal',
-                'Cheat meal: 1 comida/semana (no día entero)',
-                'Si el peso no baja 2 semanas seguidas, avisame — ajustamos',
+                'Días que entrenás, sumá 50 kcal de carbohidratos. Días sin entreno, restalas',
+                'Una comida libre por semana — UNA comida, no todo el día',
+                'Si el peso no baja 2 semanas seguidas, escribime y ajustamos',
             ]),
             'hipertrofia' => array_merge($base, [
-                'En días de entreno: +100-150 kcal extra carbos pre y post',
-                'Snack post-entreno con proteína dentro de los 30-45 min',
+                'Días que entrenás, sumá entre 100 y 150 kcal de carbohidratos (pre y post entreno)',
+                'Apenas terminás el entreno, comé algo con proteína en la primera media hora',
             ]),
             default => $base,
         };
