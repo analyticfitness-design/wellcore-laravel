@@ -1,4 +1,6 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 defineProps({
   composition: { type: Object, default: null },
   // { grasa, musculo, agua, date, measurements: { chest, waist, hip, thigh, arm } }
@@ -8,8 +10,8 @@ defineProps({
 <template>
   <div class="comp-panel">
     <div class="comp-hd">
-      <p class="comp-label">Composición Corporal</p>
-      <p class="comp-sub">Última medición<template v-if="composition?.date"> · {{ composition.date }}</template></p>
+      <p class="comp-label">{{ t('client_progress.metrics_composition_title') }}</p>
+      <p class="comp-sub">{{ t('client_progress.metrics_composition_last_prefix') }}<template v-if="composition?.date"> · {{ composition.date }}</template></p>
     </div>
 
     <template v-if="composition">
@@ -17,7 +19,7 @@ defineProps({
       <div class="comp-rows">
         <!-- Músculo -->
         <div class="comp-row">
-          <span class="comp-name">Músculo</span>
+          <span class="comp-name">{{ t('client_progress.metrics_composition_muscle') }}</span>
           <div class="comp-bar">
             <div class="comp-fill comp-fill--musc" :style="{ width: composition.musculo + '%' }"></div>
           </div>
@@ -25,7 +27,7 @@ defineProps({
         </div>
         <!-- Grasa -->
         <div class="comp-row">
-          <span class="comp-name">Grasa</span>
+          <span class="comp-name">{{ t('client_progress.metrics_composition_fat') }}</span>
           <div class="comp-bar">
             <div class="comp-fill comp-fill--grasa" :style="{ width: composition.grasa + '%' }"></div>
           </div>
@@ -33,7 +35,7 @@ defineProps({
         </div>
         <!-- Agua -->
         <div class="comp-row">
-          <span class="comp-name">Agua</span>
+          <span class="comp-name">{{ t('client_progress.metrics_composition_water') }}</span>
           <div class="comp-bar">
             <div class="comp-fill comp-fill--agua" :style="{ width: composition.agua + '%' }"></div>
           </div>
@@ -44,29 +46,29 @@ defineProps({
       <!-- Measurements grid (if available) -->
       <div v-if="composition.measurements && Object.values(composition.measurements).some(v => v)" class="meas-grid">
         <div v-if="composition.measurements.chest" class="meas-item">
-          <p class="meas-lbl">Pecho</p>
+          <p class="meas-lbl">{{ t('client_progress.metrics_chest') }}</p>
           <p class="meas-num tnum">{{ composition.measurements.chest }}<small>cm</small></p>
         </div>
         <div v-if="composition.measurements.waist" class="meas-item">
-          <p class="meas-lbl">Cintura</p>
+          <p class="meas-lbl">{{ t('client_progress.metrics_waist') }}</p>
           <p class="meas-num tnum">{{ composition.measurements.waist }}<small>cm</small></p>
         </div>
         <div v-if="composition.measurements.hip" class="meas-item">
-          <p class="meas-lbl">Cadera</p>
+          <p class="meas-lbl">{{ t('client_progress.metrics_hip') }}</p>
           <p class="meas-num tnum">{{ composition.measurements.hip }}<small>cm</small></p>
         </div>
         <div v-if="composition.measurements.thigh" class="meas-item">
-          <p class="meas-lbl">Muslo</p>
+          <p class="meas-lbl">{{ t('client_progress.metrics_thigh') }}</p>
           <p class="meas-num tnum">{{ composition.measurements.thigh }}<small>cm</small></p>
         </div>
         <div v-if="composition.measurements.arm" class="meas-item">
-          <p class="meas-lbl">Brazo</p>
+          <p class="meas-lbl">{{ t('client_progress.metrics_arm') }}</p>
           <p class="meas-num tnum">{{ composition.measurements.arm }}<small>cm</small></p>
         </div>
       </div>
     </template>
 
-    <p v-else class="comp-empty">Sin datos de composición</p>
+    <p v-else class="comp-empty">{{ t('client_progress.metrics_composition_empty') }}</p>
   </div>
 </template>
 

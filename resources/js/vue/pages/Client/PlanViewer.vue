@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, reactive, watch, onMounted, onBeforeUnmount, inject } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import { usePlanLock } from '../../composables/usePlanLock';
@@ -51,18 +52,20 @@ function getBloodworkStatusStyle(status) {
     badgeClass: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
   };
 }
-function getBloodworkStatusLabel(status) {
-  const s = (status || '').toLowerCase();
-  if (s === 'high' || s === 'alto' || s === 'flag') return 'Alto';
-  if (s === 'low' || s === 'bajo') return 'Bajo';
-  return 'Normal';
-}
 
 const api = useApi();
 const router = useRouter();
 const route = useRoute();
 const toast = useToast();
 const { isLocked } = usePlanLock();
+const { t, locale } = useI18n();
+
+function getBloodworkStatusLabel(status) {
+  const s = (status || '').toLowerCase();
+  if (s === 'high' || s === 'alto' || s === 'flag') return t('client_plan.bloodwork_status_high');
+  if (s === 'low' || s === 'bajo') return t('client_plan.bloodwork_status_low');
+  return t('client_plan.bloodwork_status_normal');
+}
 
 // Feature flag para el redesign V2 del tab Entrenamiento.
 // Default OFF: evaluado server-side via window.__WC_FEATURES.plan_viewer_v2 (incluye pct gate).
@@ -163,14 +166,14 @@ const bwFormOpen = ref(false);
 let bwSuccessTimer = null;
 
 // Tabs definition (matching blade order)
-const tabs = [
-  { key: 'entrenamiento', label: 'Entrenamiento' },
-  { key: 'habitos', label: 'Habitos' },
-  { key: 'nutricion', label: 'Nutricion' },
-  { key: 'suplementacion', label: 'Suplementos' },
-  { key: 'ciclo', label: 'Ciclo' },
-  { key: 'bloodwork', label: 'Bloodwork' },
-];
+const tabs = computed(() => [
+  { key: 'entrenamiento', label: t('client_plan.tab_training') },
+  { key: 'habitos', label: t('client_plan.tab_habits') },
+  { key: 'nutricion', label: t('client_plan.tab_nutrition') },
+  { key: 'suplementacion', label: t('client_plan.tab_supplements') },
+  { key: 'ciclo', label: t('client_plan.tab_cycle') },
+  { key: 'bloodwork', label: t('client_plan.tab_bloodwork') },
+]);
 
 // Acceso por tab según clients.plan (matriz oficial — ver spec planes-entreno-nutricion §6.4.1)
 const canAccessEntrenamiento = computed(() => {
@@ -216,37 +219,36 @@ function setTab(key) {
 
 // TabLockUpsell — copy contextual por tab + plan actual
 function tabLockTitle(key) {
-  const titles = {
-    entrenamiento: 'Tu plan no incluye entrenamiento',
-    nutricion: 'Tu plan no incluye nutrición',
-    habitos: 'Tu plan no incluye hábitos',
-    suplementacion: 'Tu plan no incluye suplementación',
-    ciclo: 'Disponible solo en Plan Elite',
-    bloodwork: 'Disponible solo en Plan Elite',
+  const titleKeys = {
+    entrenamiento: 'client_plan.tab_lock_title_training',
+    nutricion: 'client_plan.tab_lock_title_nutrition',
+    habitos: 'client_plan.tab_lock_title_habits',
+    suplementacion: 'client_plan.tab_lock_title_supplements',
+    ciclo: 'client_plan.tab_lock_title_cycle',
+    bloodwork: 'client_plan.tab_lock_title_bloodwork',
   };
-  return titles[key] || 'Sección no disponible';
+  return t(titleKeys[key] || 'client_plan.tab_lock_title_default');
 }
 
 function tabLockBody(key) {
-  const planLabel = planTypeLabel.value || 'actual';
-  const upsell = ' Súmalo con Plan Esencial desde $84.000/mes más.';
+  const planLabel = planTypeLabel.value || t('client_plan.tab_lock_plan_default_label');
 
   if (key === 'entrenamiento') {
-    return `Tu plan ${planLabel} se enfoca en nutrición. Suma entrenamiento personalizado con un plan completo desde $84.000/mes más con Plan Esencial.`;
+    return t('client_plan.tab_lock_body_training', { plan: planLabel });
   }
   if (key === 'nutricion') {
-    return `Tu plan ${planLabel} se enfoca en entrenamiento. Suma nutrición con macros y plan de comidas con un plan completo desde $84.000/mes más con Plan Esencial.`;
+    return t('client_plan.tab_lock_body_nutrition', { plan: planLabel });
   }
   if (key === 'habitos') {
-    return `Tu plan ${planLabel} no incluye seguimiento de hábitos.${upsell}`;
+    return t('client_plan.tab_lock_body_habits', { plan: planLabel });
   }
   if (key === 'suplementacion') {
-    return `El protocolo de suplementación con horarios viene en Plan Esencial.${upsell}`;
+    return t('client_plan.tab_lock_body_supplements', { plan: planLabel });
   }
   if (key === 'ciclo' || key === 'bloodwork') {
-    return 'Esta sección está disponible solo en Plan Elite — el más completo de la suite WellCore.';
+    return t('client_plan.tab_lock_body_elite');
   }
-  return 'Esta sección no está disponible en tu plan actual.';
+  return t('client_plan.tab_lock_body_default');
 }
 
 // Training computed
@@ -267,19 +269,20 @@ const planObjetivo = computed(() => {
 
 // Header: plan type label (capitalized). "basico" → "Esencial" (brand mapping).
 const planTypeLabel = computed(() => {
-  const t = (clientPlanType.value || '').toLowerCase();
-  const map = {
-    basico: 'Esencial',
-    esencial: 'Esencial',
-    metodo: 'Método',
-    elite: 'Elite',
-    rise: 'RISE',
-    presencial: 'Presencial',
-    trial: 'Trial',
-    entreno_solo: 'Entreno',
-    nutricion_solo: 'Nutrición',
+  const slug = (clientPlanType.value || '').toLowerCase();
+  const keyMap = {
+    basico: 'client_plan.plan_type_esencial',
+    esencial: 'client_plan.plan_type_esencial',
+    metodo: 'client_plan.plan_type_metodo',
+    elite: 'client_plan.plan_type_elite',
+    rise: 'client_plan.plan_type_rise',
+    presencial: 'client_plan.plan_type_presencial',
+    trial: 'client_plan.plan_type_trial',
+    entreno_solo: 'client_plan.plan_type_entreno',
+    nutricion_solo: 'client_plan.plan_type_nutricion',
   };
-  return map[t] || (t ? t.charAt(0).toUpperCase() + t.slice(1) : '');
+  if (keyMap[slug]) return t(keyMap[slug]);
+  return slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : '';
 });
 
 // Header: current phase name. Prefer semanas[currentWeek-1].fase, fallback to plan.phase or blank.
@@ -567,14 +570,14 @@ const cicloPhaseKey = computed(() => {
   return 'lutea';
 });
 
-const cicloPhaseMap = {
-  menstrual:  { name: 'Menstrual',  emoji: '\u{1F311}', ring: '#f87171', bg: 'bg-red-500/10',    border: 'border-red-500/25',    text: 'text-red-400',    train: 'Ejercicio de baja intensidad: yoga, caminata ligera, estiramientos. Reduce cargas y escucha tu cuerpo.', nutrition: 'Aumenta hierro y magnesio. Prioriza alimentos anti-inflamatorios: salmon, nueces, verduras de hoja.', energy: 3 },
-  folicular:  { name: 'Folicular',  emoji: '\u{1F331}', ring: '#4ade80', bg: 'bg-green-500/10',  border: 'border-green-500/25',  text: 'text-green-400',  train: 'Tu energia aumenta. Ideal para fuerza, HIIT y aumentar cargas. Aprovecha la ventana anabolica.', nutrition: 'Soporta la sintesis de estrogeno con zinc y B6. Proteina moderada-alta para soportar el volumen.', energy: 7 },
-  ovulatoria: { name: 'Ovulatoria', emoji: '\u{2728}',  ring: '#fbbf24', bg: 'bg-amber-500/10',  border: 'border-amber-500/25',  text: 'text-amber-400',  train: 'Pico maximo de energia y fuerza. Momento ideal para PRs, sesiones de alta intensidad y nuevos records.', nutrition: 'Mantiene proteina alta. Antioxidantes para reducir inflamacion post-esfuerzo. Hidratacion optima.', energy: 10 },
-  lutea:      { name: 'Lutea',      emoji: '\u{1F319}', ring: '#c084fc', bg: 'bg-purple-500/10', border: 'border-purple-500/25', text: 'text-purple-400', train: 'Energia moderada. Enfocate en tecnica, estabilidad y recuperacion activa. Reduce intensidad al final.', nutrition: 'Sube el apetito, es normal. Prioriza fibra, magnesio y calcio para reducir sintomas de SPM.', energy: 6 },
-};
+const cicloPhaseMap = computed(() => ({
+  menstrual:  { name: t('client_plan.cycle_phase_menstrual'),  emoji: '\u{1F311}', ring: '#f87171', bg: 'bg-red-500/10',    border: 'border-red-500/25',    text: 'text-red-400',    train: t('client_plan.cycle_phase_full_train_menstrual'),  nutrition: t('client_plan.cycle_phase_full_nutr_menstrual'),  energy: 3 },
+  folicular:  { name: t('client_plan.cycle_phase_follicular'), emoji: '\u{1F331}', ring: '#4ade80', bg: 'bg-green-500/10',  border: 'border-green-500/25',  text: 'text-green-400',  train: t('client_plan.cycle_phase_full_train_follicular'), nutrition: t('client_plan.cycle_phase_full_nutr_follicular'), energy: 7 },
+  ovulatoria: { name: t('client_plan.cycle_phase_ovulatory'),  emoji: '\u{2728}',  ring: '#fbbf24', bg: 'bg-amber-500/10',  border: 'border-amber-500/25',  text: 'text-amber-400',  train: t('client_plan.cycle_phase_full_train_ovulatory'), nutrition: t('client_plan.cycle_phase_full_nutr_ovulatory'),  energy: 10 },
+  lutea:      { name: t('client_plan.cycle_phase_luteal'),     emoji: '\u{1F319}', ring: '#c084fc', bg: 'bg-purple-500/10', border: 'border-purple-500/25', text: 'text-purple-400', train: t('client_plan.cycle_phase_full_train_luteal'),     nutrition: t('client_plan.cycle_phase_full_nutr_luteal'),     energy: 6 },
+}));
 
-const cicloPhaseData = computed(() => cicloPhaseMap[cicloPhaseKey.value] || null);
+const cicloPhaseData = computed(() => cicloPhaseMap.value[cicloPhaseKey.value] || null);
 
 const cicloDaysUntilNext = computed(() => {
   if (!cicloCurrentDay.value) return null;
@@ -609,12 +612,12 @@ const cicloDotOffset = computed(() => {
 });
 
 // Phase reference cards for feminine cycle
-const phaseCards = [
-  { dot: 'bg-red-400',    text: 'text-red-400',    border: 'border-red-500/25',    bgF: 'bg-red-500/10',    bgB: 'bg-red-500/20',    name: 'Menstrual',  days: '1\u20135',  sub: 'Descanso activo',    train: 'Yoga, caminata, movilidad. Reduce cargas. Recuperacion activa prioritaria.', nutr: 'Hierro, magnesio, omega-3 y alimentos anti-inflamatorios.' },
-  { dot: 'bg-green-400',  text: 'text-green-400',  border: 'border-green-500/25',  bgF: 'bg-green-500/10',  bgB: 'bg-green-500/20',  name: 'Folicular',  days: '6\u201313', sub: 'Fuerza e intensidad',  train: 'Fuerza maxima, HIIT, aumentar cargas. Ventana anabolica optima.', nutr: 'Proteina alta, zinc, vitamina B6 para sintesis de estrogeno.' },
-  { dot: 'bg-amber-400',  text: 'text-amber-400',  border: 'border-amber-500/25',  bgF: 'bg-amber-500/10',  bgB: 'bg-amber-500/20',  name: 'Ovulatoria', days: '14\u201316', sub: 'Pico de rendimiento', train: 'Pico de fuerza y energia. Ideal para PRs y nuevos records.', nutr: 'Antioxidantes, proteina alta, hidratacion optima.' },
-  { dot: 'bg-purple-400', text: 'text-purple-400', border: 'border-purple-500/25', bgF: 'bg-purple-500/10', bgB: 'bg-purple-500/20', name: 'Lutea',      days: '17\u201328', sub: 'Tecnica y estabilidad', train: 'Tecnica, estabilidad, recuperacion activa. Reduce intensidad al final.', nutr: 'Fibra, magnesio y calcio. El apetito sube \u2014 es normal.' },
-];
+const phaseCards = computed(() => [
+  { dot: 'bg-red-400',    text: 'text-red-400',    border: 'border-red-500/25',    bgF: 'bg-red-500/10',    bgB: 'bg-red-500/20',    name: t('client_plan.cycle_phase_menstrual'),  days: '1\u20135',  sub: t('client_plan.cycle_phase_card_sub_menstrual'),  train: t('client_plan.cycle_phase_train_menstrual'),  nutr: t('client_plan.cycle_phase_nutr_menstrual') },
+  { dot: 'bg-green-400',  text: 'text-green-400',  border: 'border-green-500/25',  bgF: 'bg-green-500/10',  bgB: 'bg-green-500/20',  name: t('client_plan.cycle_phase_follicular'), days: '6\u201313', sub: t('client_plan.cycle_phase_card_sub_follicular'), train: t('client_plan.cycle_phase_train_follicular'), nutr: t('client_plan.cycle_phase_nutr_follicular') },
+  { dot: 'bg-amber-400',  text: 'text-amber-400',  border: 'border-amber-500/25',  bgF: 'bg-amber-500/10',  bgB: 'bg-amber-500/20',  name: t('client_plan.cycle_phase_ovulatory'),  days: '14\u201316', sub: t('client_plan.cycle_phase_card_sub_ovulatory'), train: t('client_plan.cycle_phase_train_ovulatory'), nutr: t('client_plan.cycle_phase_nutr_ovulatory') },
+  { dot: 'bg-purple-400', text: 'text-purple-400', border: 'border-purple-500/25', bgF: 'bg-purple-500/10', bgB: 'bg-purple-500/20', name: t('client_plan.cycle_phase_luteal'),     days: '17\u201328', sub: t('client_plan.cycle_phase_card_sub_luteal'),    train: t('client_plan.cycle_phase_train_luteal'),     nutr: t('client_plan.cycle_phase_nutr_luteal') },
+]);
 
 // Ciclo efectos accordion
 const openEfecto = ref(null);
@@ -623,14 +626,16 @@ function toggleEfecto(idx) {
 }
 
 // Bloodwork test options (matches blade select)
-const bwTestOptions = [
-  { group: 'Metabolismo', tests: ['Glucosa', 'HbA1c', 'Insulina'] },
-  { group: 'Lipidos', tests: ['Colesterol Total', 'HDL', 'LDL', 'Trigliceridos'] },
-  { group: 'Hormonas', tests: ['Testosterona', 'TSH', 'T3 Libre', 'T4 Libre', 'Cortisol', 'DHEA-S'] },
-  { group: 'Hematologia', tests: ['Hemoglobina', 'Hematocrito', 'Ferritina', 'Hierro'] },
-  { group: 'Vitaminas y Minerales', tests: ['Vitamina D', 'Vitamina B12', 'Zinc', 'Magnesio'] },
-  { group: 'Funcion Renal/Hepatica', tests: ['Creatinina', 'ALT/TGP', 'AST/TGO'] },
-];
+// Group labels are translated; test names stay as-is (they're medical/lab terms
+// that the backend persists in this exact form).
+const bwTestOptions = computed(() => [
+  { group: t('client_plan.bw_group_metabolism'), tests: ['Glucosa', 'HbA1c', 'Insulina'] },
+  { group: t('client_plan.bw_group_lipids'), tests: ['Colesterol Total', 'HDL', 'LDL', 'Trigliceridos'] },
+  { group: t('client_plan.bw_group_hormones'), tests: ['Testosterona', 'TSH', 'T3 Libre', 'T4 Libre', 'Cortisol', 'DHEA-S'] },
+  { group: t('client_plan.bw_group_hematology'), tests: ['Hemoglobina', 'Hematocrito', 'Ferritina', 'Hierro'] },
+  { group: t('client_plan.bw_group_vitamins_minerals'), tests: ['Vitamina D', 'Vitamina B12', 'Zinc', 'Magnesio'] },
+  { group: t('client_plan.bw_group_renal_hepatic'), tests: ['Creatinina', 'ALT/TGP', 'AST/TGO'] },
+]);
 
 // Fetch
 // Estrategia de recuperación en PWA:
@@ -692,7 +697,7 @@ async function fetchPlan(manual = false) {
     }
 
     // El servidor respondió (plan lock, 500, etc.) → mostrar mensaje
-    error.value = err.response?.data?.message || 'Error al cargar el plan';
+    error.value = err.response?.data?.message || t('client_plan.error_loading');
   } finally {
     loading.value = false;
   }
@@ -733,7 +738,7 @@ async function doToggleHabit(habitType) {
       }
     }
   } catch {
-    toast.show('No se pudo guardar. Intenta de nuevo.', 'error');
+    toast.show(t('client_plan.habits_toggle_error'), 'error');
   } finally {
     habitsToggling.value[habitType] = false;
   }
@@ -811,9 +816,9 @@ async function confirmDeleteBloodwork() {
   try {
     await api.delete(`/api/v/client/bloodwork/${id}`);
     bloodworkResults.value = bloodworkResults.value.filter(r => r.id !== id);
-    toast.success('Resultado eliminado.');
+    toast.success(t('client_plan.bloodwork_delete_success'));
   } catch (err) {
-    toast.apiError(err, 'No pudimos eliminar el resultado.');
+    toast.apiError(err, t('client_plan.bloodwork_delete_error'));
   } finally {
     bwPendingDeleteId.value = null;
   }
@@ -823,8 +828,21 @@ async function confirmDeleteBloodwork() {
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr);
-  const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-  return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  const monthKeys = [
+    'client_plan.month_short_jan',
+    'client_plan.month_short_feb',
+    'client_plan.month_short_mar',
+    'client_plan.month_short_apr',
+    'client_plan.month_short_may',
+    'client_plan.month_short_jun',
+    'client_plan.month_short_jul',
+    'client_plan.month_short_aug',
+    'client_plan.month_short_sep',
+    'client_plan.month_short_oct',
+    'client_plan.month_short_nov',
+    'client_plan.month_short_dec',
+  ];
+  return `${String(d.getDate()).padStart(2, '0')} ${t(monthKeys[d.getMonth()])} ${d.getFullYear()}`;
 }
 
 function formatDateShort(dateStr) {
@@ -859,7 +877,7 @@ onBeforeUnmount(() => {
     <div class="space-y-6" style="grid-column:span 12">
       <!-- PlanHero — wc-shell header section -->
       <PlanHero
-        :plan-name="planTypeLabel ? 'Plan ' + planTypeLabel : 'Mi Plan'"
+        :plan-name="planTypeLabel ? t('client_plan.page_subtitle_plan_prefix', { plan: planTypeLabel }) : t('client_plan.plan_default_name')"
         :current-week="currentWeek || 1"
         :total-weeks="trainingPlan?.weeks?.length || 12"
         :adherence="habitCompliance || 0"
@@ -867,12 +885,12 @@ onBeforeUnmount(() => {
 
       <!-- Header: todos los planes son mensuales renovables — no hay "N semanas" ni navegador -->
       <div class="mb-8">
-        <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">MI PLAN</h1>
+        <h1 class="font-display text-3xl tracking-wide text-wc-text sm:text-4xl">{{ t('client_plan.page_title') }}</h1>
         <p v-if="planTypeLabel || currentPhaseName" class="mt-1 text-sm text-wc-text-secondary">
-          <template v-if="planTypeLabel">Plan {{ planTypeLabel }}</template>
-          <template v-if="currentPhaseName"><span class="mx-1.5 text-wc-text-tertiary">·</span>Fase {{ currentPhaseName }}</template>
+          <template v-if="planTypeLabel">{{ t('client_plan.page_subtitle_plan_prefix', { plan: planTypeLabel }) }}</template>
+          <template v-if="currentPhaseName"><span class="mx-1.5 text-wc-text-tertiary">·</span>{{ t('client_plan.page_subtitle_phase_prefix', { phase: currentPhaseName }) }}</template>
         </p>
-        <p v-else class="mt-1 text-sm text-wc-text-secondary">Tu programacion personalizada, disenada por tu coach</p>
+        <p v-else class="mt-1 text-sm text-wc-text-secondary">{{ t('client_plan.page_subtitle_default') }}</p>
       </div>
 
       <!-- Loading skeleton -->
@@ -892,14 +910,14 @@ onBeforeUnmount(() => {
         </svg>
         <p class="mt-3 text-sm text-red-400">{{ error }}</p>
         <button @click="fetchPlan(true)" class="wc-btn-primary mt-4">
-          Reintentar
+          {{ t('client_plan.retry') }}
         </button>
       </div>
 
       <!-- Content -->
       <template v-else>
         <!-- Tabs -->
-        <div class="wc-glass mb-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-1" role="tablist" aria-label="Secciones del plan">
+        <div class="wc-glass mb-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-1" role="tablist" :aria-label="t('client_plan.tabs_aria_label')">
           <div class="flex gap-1 overflow-x-auto scrollbar-none pb-0.5" style="-webkit-overflow-scrolling:touch;">
             <button
               v-for="tab in tabs"
@@ -952,12 +970,12 @@ onBeforeUnmount(() => {
                     <div class="flex items-center gap-2">
                       <span class="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-wc-accent/15 to-red-400/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-wc-accent">
                         <svg class="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                        Plan {{ clientPlanType.charAt(0).toUpperCase() + clientPlanType.slice(1) }}
+                        {{ t('client_plan.workout_plan_badge_prefix', { plan: clientPlanType.charAt(0).toUpperCase() + clientPlanType.slice(1) }) }}
                       </span>
-                      <span class="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Activo</span>
+                      <span class="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-400">{{ t('client_plan.workout_plan_status_active') }}</span>
                     </div>
 
-                    <p v-if="planStartDate" class="mt-2 text-sm text-wc-text-secondary">Inicio: {{ planStartDate }}</p>
+                    <p v-if="planStartDate" class="mt-2 text-sm text-wc-text-secondary">{{ t('client_plan.workout_start_date', { date: planStartDate }) }}</p>
 
                     <!-- Attributes -->
                     <div class="mt-3 flex flex-wrap gap-2">
@@ -978,14 +996,14 @@ onBeforeUnmount(() => {
                       <span class="font-data text-4xl font-bold tabular-nums text-wc-accent">{{ currentWeek }}</span>
                       <span class="text-sm text-wc-text-tertiary">/ {{ totalWeeks }}</span>
                     </div>
-                    <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Semana actual</p>
+                    <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">{{ t('client_plan.workout_current_week_label') }}</p>
                   </div>
                 </div>
 
                 <!-- Progress bar -->
                 <div v-if="totalWeeks > 1" class="mt-5">
                   <div class="flex items-center justify-between text-sm text-wc-text-tertiary mb-1.5">
-                    <span>Progreso del programa</span>
+                    <span>{{ t('client_plan.workout_progress_label') }}</span>
                     <span class="font-data font-semibold text-wc-accent">{{ Math.round(progressPct) }}%</span>
                   </div>
                   <div class="h-2 w-full overflow-hidden rounded-full bg-wc-bg-secondary">
@@ -1004,7 +1022,7 @@ onBeforeUnmount(() => {
                   </svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <p class="mb-1.5 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">Notas de tu coach</p>
+                  <p class="mb-1.5 text-xs font-semibold tracking-widest uppercase text-wc-text-secondary">{{ t('client_plan.workout_coach_notes_title') }}</p>
                   <p class="text-base leading-relaxed text-wc-text-secondary">{{ trainingPlan.notas_coach }}</p>
                 </div>
               </div>
@@ -1016,14 +1034,14 @@ onBeforeUnmount(() => {
                 <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" /></svg>
               </div>
               <div>
-                <p class="text-sm font-semibold uppercase tracking-wider text-wc-accent/70">Objetivo del plan</p>
+                <p class="text-sm font-semibold uppercase tracking-wider text-wc-accent/70">{{ t('client_plan.workout_objective_label') }}</p>
                 <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ planObjetivo }}</p>
               </div>
             </div>
 
             <!-- Weekly overview (split/dias_semana — always shown when available) -->
             <div v-if="weeklySchedule.length > 0" class="mb-5 space-y-3">
-              <h3 class="font-display text-base tracking-widest uppercase text-wc-text-secondary">Horario semanal</h3>
+              <h3 class="font-display text-base tracking-widest uppercase text-wc-text-secondary">{{ t('client_plan.workout_weekly_schedule_title') }}</h3>
               <div class="grid gap-3 sm:grid-cols-2">
                 <div
                   v-for="(entry, idx) in weeklySchedule"
@@ -1066,15 +1084,15 @@ onBeforeUnmount(() => {
                     </div>
                     <div>
                       <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-lg font-semibold text-wc-text">Semana {{ semana.numero || sIdx + 1 }}</span>
+                        <span class="text-lg font-semibold text-wc-text">{{ t('client_plan.workout_week_label', { n: semana.numero || sIdx + 1 }) }}</span>
                         <span
                           v-if="(semana.numero || sIdx + 1) === currentWeek"
                           class="rounded-full bg-wc-accent px-2 py-0.5 text-xs font-semibold tracking-widest uppercase text-white"
-                        >Semana actual</span>
+                        >{{ t('client_plan.workout_week_current_chip') }}</span>
                         <span v-if="semana.fase" class="rounded-full bg-wc-bg-secondary px-2 py-0.5 text-[10px] font-medium text-wc-text-tertiary">{{ semana.fase }}</span>
                       </div>
                       <p v-if="(semana.dias || []).length > 0" class="mt-0.5 text-sm text-wc-text-secondary">
-                        {{ (semana.dias || []).length }} dia{{ (semana.dias || []).length !== 1 ? 's' : '' }} de entrenamiento
+                        {{ (semana.dias || []).length === 1 ? t('client_plan.workout_days_one') : t('client_plan.workout_days_other', { count: (semana.dias || []).length }) }}
                       </p>
                     </div>
                   </div>
@@ -1100,9 +1118,9 @@ onBeforeUnmount(() => {
                             <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 0a1.5 1.5 0 0 1-1.5-1.5v-3a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v3m-4.5 0a1.5 1.5 0 0 0-1.5 1.5v3a1.5 1.5 0 0 0 1.5 1.5h1.5a1.5 1.5 0 0 0 1.5-1.5v-3m12-4.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5m3 0a1.5 1.5 0 0 1-1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-1.5a1.5 1.5 0 0 1-1.5-1.5v-3m0-4.5a1.5 1.5 0 0 0-1.5-1.5h-1.5a1.5 1.5 0 0 0-1.5 1.5v3" /></svg>
                           </div>
                           <div class="min-w-0">
-                            <p class="truncate text-base font-semibold text-wc-text">{{ dia.nombre || dia.name || dia.dia || ('Dia ' + (dIdx + 1)) }}</p>
+                            <p class="truncate text-base font-semibold text-wc-text">{{ dia.nombre || dia.name || dia.dia || t('client_plan.workout_day_default_name', { n: dIdx + 1 }) }}</p>
                             <p v-if="(dia.ejercicios || []).length > 0" class="text-sm text-wc-text-secondary">
-                              {{ (dia.ejercicios || []).length }} ejercicio{{ (dia.ejercicios || []).length !== 1 ? 's' : '' }}
+                              {{ (dia.ejercicios || []).length === 1 ? t('client_plan.workout_exercises_one') : t('client_plan.workout_exercises_other', { count: (dia.ejercicios || []).length }) }}
                             </p>
                           </div>
                         </div>
@@ -1117,7 +1135,7 @@ onBeforeUnmount(() => {
                             class="hidden rounded-full bg-wc-bg-tertiary px-2.5 py-1 text-[10px] font-medium text-wc-text-tertiary sm:inline-flex items-center gap-1"
                           >
                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                            {{ dia.duracion || ('~' + Math.max((dia.ejercicios || []).length * 6, 15) + ' min') }}
+                            {{ dia.duracion || t('client_plan.workout_duration_estimated', { minutes: Math.max((dia.ejercicios || []).length * 6, 15) }) }}
                           </span>
                         </div>
                       </div>
@@ -1128,7 +1146,7 @@ onBeforeUnmount(() => {
                           <svg class="h-3.5 w-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" /></svg>
                         </div>
                         <div>
-                          <p class="text-xs font-semibold tracking-widest uppercase text-amber-400">Calentamiento</p>
+                          <p class="text-xs font-semibold tracking-widest uppercase text-amber-400">{{ t('client_plan.workout_warmup_label') }}</p>
                           <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ dia.calentamiento || dia.warmup }}</p>
                         </div>
                       </div>
@@ -1140,7 +1158,7 @@ onBeforeUnmount(() => {
                           class="wc-btn-primary btn-ripple btn-press w-full justify-center"
                         >
                           <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"/></svg>
-                          Entrenar este dia
+                          {{ t('client_plan.workout_train_day_cta') }}
                         </button>
                       </div>
 
@@ -1160,13 +1178,13 @@ onBeforeUnmount(() => {
                               <p class="text-base font-medium text-wc-text">
                                 {{ isVariationActive(dIdx, eIdx) && typeof ejercicio === 'object' && ejercicio.variacion?.nombre
                                   ? ejercicio.variacion.nombre
-                                  : (typeof ejercicio === 'string' ? ejercicio : (ejercicio.nombre || ejercicio.name || ejercicio.ejercicio || 'Ejercicio'))
+                                  : (typeof ejercicio === 'string' ? ejercicio : (ejercicio.nombre || ejercicio.name || ejercicio.ejercicio || t('client_plan.workout_exercise_default_name')))
                                 }}
                               </p>
                               <!-- Variation active indicator -->
                               <span v-if="isVariationActive(dIdx, eIdx) && typeof ejercicio === 'object' && ejercicio.variacion" class="mt-0.5 inline-flex items-center gap-1 text-[10px] font-medium text-wc-accent/80">
                                 <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
-                                Usando variacion
+                                {{ t('client_plan.workout_using_variation_chip') }}
                               </span>
                               <div v-if="typeof ejercicio === 'object'" class="mt-1.5 flex flex-wrap gap-1.5">
                                 <span
@@ -1174,10 +1192,10 @@ onBeforeUnmount(() => {
                                   class="rounded-full bg-wc-bg-tertiary px-2 py-0.5 text-sm font-medium text-wc-text-secondary"
                                 >
                                   <template v-if="(ejercicio.series || ejercicio.sets) && (ejercicio.repeticiones || ejercicio.reps)">
-                                    {{ ejercicio.series || ejercicio.sets }} x {{ ejercicio.repeticiones || ejercicio.reps }}
+                                    {{ t('client_plan.workout_sets_x_reps', { sets: ejercicio.series || ejercicio.sets, reps: ejercicio.repeticiones || ejercicio.reps }) }}
                                   </template>
-                                  <template v-else-if="ejercicio.series || ejercicio.sets">{{ ejercicio.series || ejercicio.sets }} series</template>
-                                  <template v-else>{{ ejercicio.repeticiones || ejercicio.reps }} reps</template>
+                                  <template v-else-if="ejercicio.series || ejercicio.sets">{{ t('client_plan.workout_sets_only', { sets: ejercicio.series || ejercicio.sets }) }}</template>
+                                  <template v-else>{{ t('client_plan.workout_reps_only', { reps: ejercicio.repeticiones || ejercicio.reps }) }}</template>
                                 </span>
                                 <span
                                   v-if="ejercicio.descanso || ejercicio.rest || ejercicio.rest_seconds"
@@ -1190,7 +1208,7 @@ onBeforeUnmount(() => {
                                   v-if="ejercicio.rir !== undefined && ejercicio.rir !== null"
                                   class="rounded-full px-2 py-0.5 text-[10px] font-black"
                                   :class="rirClass(ejercicio.rir)"
-                                >RIR{{ ejercicio.rir }}</span>
+                                >{{ t('client_plan.workout_rir_label', { rir: ejercicio.rir }) }}</span>
                               </div>
                               <p v-if="typeof ejercicio === 'object' && (ejercicio.notas || ejercicio.notes)" class="mt-1.5 text-base leading-relaxed text-wc-text-secondary">{{ ejercicio.notas || ejercicio.notes }}</p>
                             </div>
@@ -1205,7 +1223,7 @@ onBeforeUnmount(() => {
                               : 'border-wc-border bg-wc-bg-secondary text-wc-text-tertiary hover:border-wc-accent/30 hover:text-wc-accent/70'"
                           >
                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
-                            {{ isVariationActive(dIdx, eIdx) ? 'Volver al original' : 'Variacion' }}
+                            {{ isVariationActive(dIdx, eIdx) ? t('client_plan.workout_variation_back_to_original') : t('client_plan.workout_variation_use') }}
                           </button>
                         </div>
                       </div>
@@ -1216,14 +1234,14 @@ onBeforeUnmount(() => {
                           <svg class="h-3.5 w-3.5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" /></svg>
                         </div>
                         <div>
-                          <p class="text-xs font-semibold tracking-widest uppercase text-sky-400">Vuelta a la calma</p>
+                          <p class="text-xs font-semibold tracking-widest uppercase text-sky-400">{{ t('client_plan.workout_cooldown_label') }}</p>
                           <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ dia.vuelta_calma || dia.cooldown }}</p>
                         </div>
                       </div>
                     </div>
 
                     <div v-if="(semana.dias || []).length === 0" class="rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-6 text-center">
-                      <p class="text-sm text-wc-text-tertiary">Sin dias asignados esta semana.</p>
+                      <p class="text-sm text-wc-text-tertiary">{{ t('client_plan.workout_week_empty') }}</p>
                     </div>
                   </div>
                 </div>
@@ -1236,8 +1254,8 @@ onBeforeUnmount(() => {
             <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-wc-bg-secondary">
               <svg class="h-8 w-8 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" /></svg>
             </div>
-            <h2 class="mt-5 font-display text-xl tracking-wide text-wc-text">PLAN EN PREPARACION</h2>
-            <p class="mt-2 text-sm text-wc-text-secondary">Tu coach esta disenando tu plan de entrenamiento.</p>
+            <h2 class="mt-5 font-display text-xl tracking-wide text-wc-text">{{ t('client_plan.workout_empty_title') }}</h2>
+            <p class="mt-2 text-sm text-wc-text-secondary">{{ t('client_plan.workout_empty_body') }}</p>
           </div>
           </template>
         </div>
@@ -1251,8 +1269,8 @@ onBeforeUnmount(() => {
               <div class="pointer-events-none absolute -right-2 -top-2 h-12 w-12 rounded-full bg-wc-accent/10"></div>
               <div class="relative flex items-center justify-between">
                 <div>
-                  <h3 class="font-display text-lg tracking-wide text-wc-text">CUMPLIMIENTO MENSUAL</h3>
-                  <p class="mt-0.5 text-sm text-wc-text-secondary">Dias con al menos 1 habito registrado este mes</p>
+                  <h3 class="font-display text-lg tracking-wide text-wc-text">{{ t('client_plan.habits_compliance_title') }}</h3>
+                  <p class="mt-0.5 text-sm text-wc-text-secondary">{{ t('client_plan.habits_compliance_subtitle') }}</p>
                 </div>
                 <span class="font-data text-4xl font-bold tabular-nums text-wc-accent">{{ habitCompliance }}%</span>
               </div>
@@ -1292,9 +1310,9 @@ onBeforeUnmount(() => {
                     <div class="min-w-0">
                       <h4 class="font-display text-base tracking-wide text-wc-text leading-tight">{{ (habit.label || '').toUpperCase() }}</h4>
                       <p class="mt-0.5 text-sm text-wc-text-tertiary">
-                        Racha: <span class="font-data font-semibold" :class="getHabitAccent(habit.type).text">{{ habit.streak }} dias</span>
+                        {{ t('client_plan.habits_streak_label') }} <span class="font-data font-semibold" :class="getHabitAccent(habit.type).text">{{ t('client_plan.habits_streak_days', { n: habit.streak }) }}</span>
                         <span class="mx-1 text-wc-border">·</span>
-                        Cumplimiento: <span class="font-data font-semibold text-wc-text">{{ habit.average }}%</span>
+                        {{ t('client_plan.habits_compliance_label') }} <span class="font-data font-semibold text-wc-text">{{ habit.average }}%</span>
                       </p>
                     </div>
                   </div>
@@ -1315,7 +1333,7 @@ onBeforeUnmount(() => {
                   >
                     <svg v-if="habitsToggling[habit.type]" class="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
                     <svg v-else class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                    Registrar hoy
+                    {{ t('client_plan.habits_check_in_today') }}
                   </button>
 
                   <!-- Completed badge -->
@@ -1325,7 +1343,7 @@ onBeforeUnmount(() => {
                     :class="[getHabitAccent(habit.type).bg, getHabitAccent(habit.type).text]"
                   >
                     <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    Hecho hoy
+                    {{ t('client_plan.habits_done_today') }}
                   </div>
                 </div>
 
@@ -1336,8 +1354,8 @@ onBeforeUnmount(() => {
 
             <!-- Empty state -->
             <div v-else-if="!habitsLoading" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-8 text-center">
-              <p class="text-sm text-wc-text-secondary">Aun no tienes habitos configurados en tu plan.</p>
-              <p class="mt-1 text-sm text-wc-text-tertiary">Tu coach activara los habitos cuando asigne tu plan.</p>
+              <p class="text-sm text-wc-text-secondary">{{ t('client_plan.habits_empty_title') }}</p>
+              <p class="mt-1 text-sm text-wc-text-tertiary">{{ t('client_plan.habits_empty_subtitle') }}</p>
             </div>
           </div>
         </div>
@@ -1358,13 +1376,13 @@ onBeforeUnmount(() => {
           </template>
 
           <div v-else-if="!canAccessNutricion" class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
-            <p class="font-display text-xl text-wc-text">Nutricion Premium</p>
-            <p class="mt-2 text-sm text-wc-text-secondary">Disponible en planes Metodo y Elite.</p>
-            <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade</a>
+            <p class="font-display text-xl text-wc-text">{{ t('client_plan.nutrition_premium_title') }}</p>
+            <p class="mt-2 text-sm text-wc-text-secondary">{{ t('client_plan.nutrition_premium_body') }}</p>
+            <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">{{ t('client_plan.nutrition_upgrade_cta') }}</a>
           </div>
 
           <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
-            <p class="text-sm text-wc-text-secondary">Tu coach esta preparando tu plan de nutricion.</p>
+            <p class="text-sm text-wc-text-secondary">{{ t('client_plan.nutrition_preparing') }}</p>
           </div>
 
           <!-- AI Food Estimator panel -->
@@ -1382,13 +1400,13 @@ onBeforeUnmount(() => {
                     <component :is="Pill" :size="20" :stroke-width="1.75" class="text-wc-accent" />
                   </div>
                   <div class="min-w-0">
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">Stack Personalizado</p>
-                    <h2 class="font-display text-2xl tracking-wide text-wc-text uppercase leading-none">Suplementación</h2>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">{{ t('client_plan.supplements_eyebrow') }}</p>
+                    <h2 class="font-display text-2xl tracking-wide text-wc-text uppercase leading-none">{{ t('client_plan.supplements_title') }}</h2>
                   </div>
                 </div>
                 <div v-if="totalSups > 0" class="flex shrink-0 items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-tertiary px-3 py-1.5">
                   <span class="font-data text-sm font-bold text-wc-accent tabular-nums">{{ totalSups }}</span>
-                  <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">items</span>
+                  <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">{{ t('client_plan.supplements_count_label') }}</span>
                 </div>
               </div>
 
@@ -1413,7 +1431,7 @@ onBeforeUnmount(() => {
                     <!-- Category header -->
                     <div class="mb-3 flex items-center gap-3 px-1">
                       <span class="text-2xl">{{ getCatStyle(cat.nombre || '').icon }}</span>
-                      <h3 class="font-display text-xl tracking-wider" :class="getCatStyle(cat.nombre || '').color">{{ (cat.nombre || 'Suplementos').toUpperCase() }}</h3>
+                      <h3 class="font-display text-xl tracking-wider" :class="getCatStyle(cat.nombre || '').color">{{ (cat.nombre || t('client_plan.supplements_default_category')).toUpperCase() }}</h3>
                       <div class="h-px flex-1" :class="getCatStyle(cat.nombre || '').bg"></div>
                       <span class="rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-bold text-wc-text-tertiary">
                         {{ (cat.suplementos || []).length }}
@@ -1432,7 +1450,7 @@ onBeforeUnmount(() => {
                             <component :is="supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name))" :size="20" :stroke-width="1.75" class="text-wc-accent" />
                           </div>
                           <div class="min-w-0 flex-1">
-                            <h4 class="font-display text-base tracking-wide text-wc-text uppercase truncate pr-8">{{ (typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento')) }}</h4>
+                            <h4 class="font-display text-base tracking-wide text-wc-text uppercase truncate pr-8">{{ (typeof sup === 'string' ? sup : (sup.nombre || sup.name || t('client_plan.supplements_default_name'))) }}</h4>
                             <p v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="mt-1 font-data text-lg font-bold text-wc-accent tabular-nums">
                               {{ sup.dosis || sup.dose }}
                             </p>
@@ -1471,7 +1489,7 @@ onBeforeUnmount(() => {
                         <component :is="supplementIcon(typeof sup === 'string' ? sup : (sup.nombre || sup.name))" :size="20" :stroke-width="1.75" class="text-wc-accent" />
                       </div>
                       <div class="min-w-0 flex-1">
-                        <h4 class="font-display text-base tracking-wide text-wc-text uppercase truncate pr-8">{{ (typeof sup === 'string' ? sup : (sup.nombre || sup.name || 'Suplemento')) }}</h4>
+                        <h4 class="font-display text-base tracking-wide text-wc-text uppercase truncate pr-8">{{ (typeof sup === 'string' ? sup : (sup.nombre || sup.name || t('client_plan.supplements_default_name'))) }}</h4>
                         <p v-if="typeof sup === 'object' && (sup.dosis || sup.dose)" class="mt-1 font-data text-lg font-bold text-wc-accent tabular-nums">
                           {{ sup.dosis || sup.dose }}
                         </p>
@@ -1495,13 +1513,13 @@ onBeforeUnmount(() => {
               </template>
 
               <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
-                <p class="text-sm text-wc-text-secondary">Tu coach esta preparando tu protocolo de suplementacion.</p>
+                <p class="text-sm text-wc-text-secondary">{{ t('client_plan.supplements_preparing') }}</p>
               </div>
 
               <!-- Timing Diario (timing_diario[]) -->
               <div v-if="supplementPlan.timing_diario && supplementPlan.timing_diario.length > 0" class="overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
                 <div class="border-b border-wc-border px-5 py-4">
-                  <h3 class="font-display text-sm tracking-wider text-wc-text">PROTOCOLO DIARIO</h3>
+                  <h3 class="font-display text-sm tracking-wider text-wc-text">{{ t('client_plan.supplements_daily_protocol_title') }}</h3>
                 </div>
                 <div class="divide-y divide-wc-border">
                   <div v-for="(momento, mIdx) in supplementPlan.timing_diario" :key="mIdx" class="flex items-start gap-4 px-5 py-3.5">
@@ -1516,7 +1534,7 @@ onBeforeUnmount(() => {
 
               <!-- Timing Groups (old format: timing or horarios) -->
               <div v-if="(supplementPlan.timing || supplementPlan.horarios) && typeof (supplementPlan.timing || supplementPlan.horarios) === 'object' && !Array.isArray(supplementPlan.timing || supplementPlan.horarios)" class="space-y-3">
-                <h3 class="font-display text-sm tracking-wider text-wc-text-tertiary uppercase px-1">PROTOCOLO POR MOMENTO</h3>
+                <h3 class="font-display text-sm tracking-wider text-wc-text-tertiary uppercase px-1">{{ t('client_plan.supplements_timing_groups_title') }}</h3>
                 <div v-for="(items, moment) in (supplementPlan.timing || supplementPlan.horarios)" :key="moment" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
                   <p class="mb-3 font-display text-sm tracking-wide text-wc-text">{{ getTimingIcon(moment) }} {{ moment.toUpperCase() }}</p>
                   <ul class="space-y-1.5">
@@ -1531,7 +1549,7 @@ onBeforeUnmount(() => {
               <!-- Sinergias -->
               <div v-if="supplementPlan.sinergias && supplementPlan.sinergias.length > 0" class="overflow-hidden rounded-xl border border-sky-500/20 bg-sky-500/5">
                 <div class="border-b border-sky-500/20 px-5 py-3">
-                  <h3 class="font-display text-sm tracking-wider text-sky-400">SINERGIAS CLAVE</h3>
+                  <h3 class="font-display text-sm tracking-wider text-sky-400">{{ t('client_plan.supplements_synergies_title') }}</h3>
                 </div>
                 <div class="divide-y divide-sky-500/10">
                   <div v-for="(sinergia, sIdx) in supplementPlan.sinergias" :key="sIdx" class="px-5 py-4">
@@ -1543,7 +1561,7 @@ onBeforeUnmount(() => {
 
               <!-- Coach notes -->
               <div v-if="supplementPlan.notas_coach || supplementPlan.coach_notes || supplementPlan.notas" class="rounded-xl border-l-4 border-wc-accent bg-wc-bg-tertiary p-5">
-                <p class="mb-2 text-sm font-semibold uppercase tracking-wider text-wc-accent">Notas del coach</p>
+                <p class="mb-2 text-sm font-semibold uppercase tracking-wider text-wc-accent">{{ t('client_plan.supplements_coach_notes_title') }}</p>
                 <p class="text-sm leading-relaxed text-wc-text-secondary">{{ supplementPlan.notas_coach || supplementPlan.coach_notes || supplementPlan.notas }}</p>
                 <p v-if="supplementPlan.mensaje_final" class="mt-3 text-sm italic text-wc-text-tertiary">{{ supplementPlan.mensaje_final }}</p>
               </div>
@@ -1551,13 +1569,13 @@ onBeforeUnmount(() => {
           </template>
 
           <div v-else-if="!canAccessNutricion" class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
-            <p class="font-display text-xl text-wc-text">Suplementacion Premium</p>
-            <p class="mt-2 text-sm text-wc-text-secondary">Disponible en planes Metodo y Elite.</p>
-            <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade</a>
+            <p class="font-display text-xl text-wc-text">{{ t('client_plan.supplements_premium_title') }}</p>
+            <p class="mt-2 text-sm text-wc-text-secondary">{{ t('client_plan.supplements_premium_body') }}</p>
+            <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">{{ t('client_plan.supplements_upgrade_cta') }}</a>
           </div>
 
           <div v-else class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center">
-            <p class="text-sm text-wc-text-secondary">Tu coach esta preparando tu protocolo de suplementacion.</p>
+            <p class="text-sm text-wc-text-secondary">{{ t('client_plan.supplements_preparing') }}</p>
           </div>
         </div>
 
@@ -1565,9 +1583,9 @@ onBeforeUnmount(() => {
         <div v-else-if="activeTab === 'ciclo'">
           <!-- Locked -->
           <div v-if="!canAccessElite" class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
-            <p class="font-display text-xl text-wc-text">Ciclo Hormonal Personalizado</p>
-            <p class="mt-2 text-sm text-wc-text-secondary">Disponible exclusivamente en el plan Elite.</p>
-            <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade a Elite</a>
+            <p class="font-display text-xl text-wc-text">{{ t('client_plan.cycle_locked_title') }}</p>
+            <p class="mt-2 text-sm text-wc-text-secondary">{{ t('client_plan.cycle_locked_body') }}</p>
+            <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">{{ t('client_plan.cycle_locked_cta') }}</a>
           </div>
 
           <!-- Masculine: Steroid/AE Protocol -->
@@ -1580,8 +1598,8 @@ onBeforeUnmount(() => {
                     <Syringe :size="20" :stroke-width="1.75" class="text-wc-accent" />
                   </div>
                   <div>
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">Protocolo Activo</p>
-                    <h2 class="font-display text-2xl tracking-wide text-wc-text uppercase">{{ cicloPlan.name || cicloPlan.nombre || 'Ciclo' }}</h2>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">{{ t('client_plan.cycle_eyebrow') }}</p>
+                    <h2 class="font-display text-2xl tracking-wide text-wc-text uppercase">{{ cicloPlan.name || cicloPlan.nombre || t('client_plan.cycle_default_name') }}</h2>
                   </div>
                 </div>
                 <div v-if="cicloPlan.duration || cicloPlan.duracion" class="flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-tertiary px-3 py-1.5">
@@ -1597,22 +1615,22 @@ onBeforeUnmount(() => {
                 <div v-if="cicloPlan.metricas.duracion" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
                   <Calendar :size="18" :stroke-width="1.75" class="mx-auto mb-1 text-wc-accent" />
                   <p class="font-data text-xl font-black text-wc-accent tabular-nums">{{ cicloPlan.metricas.duracion }}</p>
-                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">Duración</p>
+                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">{{ t('client_plan.cycle_metric_duration') }}</p>
                 </div>
                 <div v-if="cicloPlan.metricas.compuestos" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
                   <FlaskConical :size="18" :stroke-width="1.75" class="mx-auto mb-1 text-wc-accent" />
                   <p class="font-data text-xl font-black text-wc-accent tabular-nums">{{ cicloPlan.metricas.compuestos }}</p>
-                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">Compuestos</p>
+                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">{{ t('client_plan.cycle_metric_compounds') }}</p>
                 </div>
                 <div v-if="cicloPlan.metricas.fases" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
                   <Layers :size="18" :stroke-width="1.75" class="mx-auto mb-1 text-wc-accent" />
                   <p class="font-data text-xl font-black text-wc-accent tabular-nums">{{ cicloPlan.metricas.fases }}</p>
-                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">Fases</p>
+                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">{{ t('client_plan.cycle_metric_phases') }}</p>
                 </div>
                 <div v-if="cicloPlan.metricas.labs_requeridos" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-4 text-center">
                   <TestTube2 :size="18" :stroke-width="1.75" class="mx-auto mb-1 text-wc-accent" />
                   <p class="font-data text-xl font-black text-wc-accent tabular-nums">{{ cicloPlan.metricas.labs_requeridos }}</p>
-                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">Labs</p>
+                  <p class="mt-0.5 text-[9px] uppercase tracking-wider text-wc-text-tertiary">{{ t('client_plan.cycle_metric_labs') }}</p>
                 </div>
               </div>
 
@@ -1624,7 +1642,7 @@ onBeforeUnmount(() => {
 
               <!-- Compuestos -->
               <div v-if="cicloPlan.compounds && cicloPlan.compounds.length" class="mb-6">
-                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">Compuestos</h3>
+                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">{{ t('client_plan.cycle_compounds_title') }}</h3>
                 <div class="grid gap-3 sm:grid-cols-2">
                   <div v-for="(comp, i) in cicloPlan.compounds" :key="i" class="group relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5 wc-lift transition-all hover:border-wc-accent/40">
                     <div class="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-wc-accent/0 blur-2xl transition-all group-hover:bg-wc-accent/10"></div>
@@ -1641,7 +1659,7 @@ onBeforeUnmount(() => {
                             {{ comp.frecuencia || comp.frequency }}
                           </span>
                           <span v-if="typeof comp === 'object' && comp.via" class="inline-flex items-center rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-text-secondary">{{ comp.via }}</span>
-                          <span v-if="typeof comp === 'object' && (comp.semanas || comp.weeks)" class="inline-flex items-center rounded-full border border-wc-accent/30 bg-wc-accent/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent">Sem {{ comp.semanas || comp.weeks }}</span>
+                          <span v-if="typeof comp === 'object' && (comp.semanas || comp.weeks)" class="inline-flex items-center rounded-full border border-wc-accent/30 bg-wc-accent/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent">{{ t('client_plan.cycle_compound_weeks_prefix', { weeks: comp.semanas || comp.weeks }) }}</span>
                         </div>
                         <p v-if="typeof comp === 'object' && (comp.notas || comp.notes)" class="mt-2.5 text-xs leading-relaxed text-wc-text-tertiary">{{ comp.notas || comp.notes }}</p>
                       </div>
@@ -1653,14 +1671,14 @@ onBeforeUnmount(() => {
 
               <!-- Fases -->
               <div v-if="(cicloPlan.phases || cicloPlan.fases || []).length > 0" class="mb-6">
-                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">Fases del Protocolo</h3>
+                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">{{ t('client_plan.cycle_phases_title') }}</h3>
                 <div class="space-y-2">
                   <div v-for="(fase, i) in (cicloPlan.phases || cicloPlan.fases)" :key="i" class="relative flex items-start gap-4 rounded-xl border border-wc-border bg-wc-bg-tertiary p-4">
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-wc-accent/10 font-data text-base font-black text-wc-accent">{{ i + 1 }}</div>
                     <div class="flex-1 min-w-0">
                       <div class="flex items-center justify-between gap-3">
                         <p class="font-display text-sm tracking-wide text-wc-text uppercase">{{ typeof fase === 'object' ? (fase.nombre || fase.name) : fase }}</p>
-                        <span v-if="typeof fase === 'object' && (fase.semanas || fase.weeks)" class="text-[10px] font-semibold text-wc-text-tertiary uppercase tracking-wider">Sem {{ fase.semanas || fase.weeks }}</span>
+                        <span v-if="typeof fase === 'object' && (fase.semanas || fase.weeks)" class="text-[10px] font-semibold text-wc-text-tertiary uppercase tracking-wider">{{ t('client_plan.cycle_phase_weeks_prefix', { weeks: fase.semanas || fase.weeks }) }}</span>
                       </div>
                       <p v-if="typeof fase === 'object' && (fase.descripcion || fase.description)" class="mt-1 text-xs text-wc-text-secondary leading-relaxed">{{ fase.descripcion || fase.description }}</p>
                     </div>
@@ -1670,7 +1688,7 @@ onBeforeUnmount(() => {
 
               <!-- PCT -->
               <div v-if="(cicloPlan.pct || []).length > 0" class="mb-6">
-                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">Post Cycle Therapy</h3>
+                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">{{ t('client_plan.cycle_pct_title') }}</h3>
                 <div class="grid gap-3 sm:grid-cols-2">
                   <div v-for="(pct, i) in cicloPlan.pct" :key="i" class="group relative overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-tertiary p-5 wc-lift transition-all hover:border-wc-accent/40">
                     <div class="relative flex items-start gap-4">
@@ -1685,7 +1703,7 @@ onBeforeUnmount(() => {
                             <Clock :size="10" :stroke-width="2.5" />
                             {{ pct.frecuencia || pct.frequency }}
                           </span>
-                          <span v-if="typeof pct === 'object' && (pct.semanas || pct.weeks)" class="inline-flex items-center rounded-full border border-wc-accent/30 bg-wc-accent/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent">Sem {{ pct.semanas || pct.weeks }}</span>
+                          <span v-if="typeof pct === 'object' && (pct.semanas || pct.weeks)" class="inline-flex items-center rounded-full border border-wc-accent/30 bg-wc-accent/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wc-accent">{{ t('client_plan.cycle_phase_weeks_prefix', { weeks: pct.semanas || pct.weeks }) }}</span>
                         </div>
                       </div>
                       <div class="absolute top-0 right-0 flex h-6 w-6 items-center justify-center rounded-bl-xl rounded-tr-2xl bg-wc-accent/10 font-data text-[10px] font-bold text-wc-accent">{{ i + 1 }}</div>
@@ -1698,7 +1716,7 @@ onBeforeUnmount(() => {
               <div v-if="(cicloPlan.labs || []).length > 0" class="mb-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                 <div class="mb-3 flex items-center gap-2">
                   <TestTube2 :size="18" :stroke-width="1.75" class="text-wc-accent" />
-                  <h3 class="font-display text-base tracking-wide text-wc-text uppercase">Labs Requeridos</h3>
+                  <h3 class="font-display text-base tracking-wide text-wc-text uppercase">{{ t('client_plan.cycle_labs_title') }}</h3>
                 </div>
                 <ul class="space-y-2">
                   <li v-for="(lab, i) in cicloPlan.labs" :key="i" class="flex items-center justify-between gap-3 border-b border-wc-border/50 pb-2 last:border-0 last:pb-0">
@@ -1712,7 +1730,7 @@ onBeforeUnmount(() => {
               <div v-if="(cicloPlan.monitoreo_diario || []).length > 0" class="mb-6 rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                 <div class="mb-3 flex items-center gap-2">
                   <Activity :size="18" :stroke-width="1.75" class="text-wc-accent" />
-                  <h3 class="font-display text-base tracking-wide text-wc-text uppercase">Monitoreo Diario</h3>
+                  <h3 class="font-display text-base tracking-wide text-wc-text uppercase">{{ t('client_plan.cycle_monitoring_title') }}</h3>
                 </div>
                 <ul class="space-y-2">
                   <li v-for="(item, i) in cicloPlan.monitoreo_diario" :key="i" class="flex items-start gap-2 border-b border-wc-border/50 pb-2 last:border-0 last:pb-0">
@@ -1729,7 +1747,7 @@ onBeforeUnmount(() => {
               <div v-if="(cicloPlan.efectos_secundarios || []).length > 0" class="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/[0.06] p-5">
                 <div class="mb-3 flex items-center gap-2">
                   <AlertCircle :size="18" :stroke-width="1.75" class="text-amber-400" />
-                  <h3 class="font-display text-base tracking-wide text-amber-300 uppercase">Efectos Secundarios</h3>
+                  <h3 class="font-display text-base tracking-wide text-amber-300 uppercase">{{ t('client_plan.cycle_side_effects_title') }}</h3>
                 </div>
                 <div class="space-y-2">
                   <div v-for="(efecto, eIdx) in cicloPlan.efectos_secundarios" :key="eIdx" class="rounded-lg border border-amber-500/20 bg-wc-bg-tertiary/40 overflow-hidden">
@@ -1750,7 +1768,7 @@ onBeforeUnmount(() => {
               <div v-if="(cicloPlan.emergencia || []).length > 0" class="mb-6 rounded-xl border border-red-500/40 bg-red-500/[0.07] p-5">
                 <div class="mb-3 flex items-center gap-2">
                   <AlertOctagon :size="18" :stroke-width="2" class="text-red-400" />
-                  <h3 class="font-display text-base tracking-wide text-red-300 uppercase">Señales de Emergencia</h3>
+                  <h3 class="font-display text-base tracking-wide text-red-300 uppercase">{{ t('client_plan.cycle_emergency_title') }}</h3>
                 </div>
                 <ul class="space-y-2">
                   <li v-for="(emerg, i) in cicloPlan.emergencia" :key="i" class="border-b border-red-500/15 pb-2 last:border-0 last:pb-0">
@@ -1764,7 +1782,7 @@ onBeforeUnmount(() => {
               <div v-if="cicloPlan.notas_coach" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                 <div class="mb-2 flex items-center gap-2">
                   <MessageCircle :size="18" :stroke-width="1.75" class="text-wc-accent" />
-                  <h3 class="font-display text-base tracking-wide text-wc-text uppercase">Notas del Coach</h3>
+                  <h3 class="font-display text-base tracking-wide text-wc-text uppercase">{{ t('client_plan.cycle_coach_notes_title') }}</h3>
                 </div>
                 <p class="text-sm leading-relaxed text-wc-text-secondary">{{ cicloPlan.notas_coach }}</p>
               </div>
@@ -1805,16 +1823,16 @@ onBeforeUnmount(() => {
                       <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
                         <span class="text-2xl">{{ cicloPhaseData.emoji }}</span>
                         <span class="font-data text-2xl font-black leading-none" :class="cicloPhaseData.text">{{ cicloCurrentDay }}</span>
-                        <span class="text-sm text-wc-text-tertiary font-medium uppercase tracking-wide">dia</span>
+                        <span class="text-sm text-wc-text-tertiary font-medium uppercase tracking-wide">{{ t('client_plan.cycle_female_day_label') }}</span>
                       </div>
                     </div>
                     <div class="mt-4 sm:mt-0 text-center sm:text-left flex-1">
-                      <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary mb-1">Fase actual</p>
+                      <p class="text-xs font-semibold tracking-widest uppercase text-wc-text-secondary mb-1">{{ t('client_plan.cycle_female_current_phase') }}</p>
                       <h2 class="font-display text-4xl tracking-wide leading-none" :class="cicloPhaseData.text">{{ cicloPhaseData.name }}</h2>
-                      <p class="mt-2 font-data text-sm text-wc-text-secondary">Dia <span class="font-bold text-wc-text">{{ cicloCurrentDay }}</span> de {{ cicloCycleLength }}</p>
-                      <p class="mt-1 text-sm text-wc-text-tertiary">Proximo ciclo en <span class="font-semibold text-wc-text-secondary">{{ cicloDaysUntilNext }}</span> dias</p>
+                      <p class="mt-2 font-data text-sm text-wc-text-secondary">{{ t('client_plan.cycle_female_day_of', { current: cicloCurrentDay, total: cicloCycleLength }) }}</p>
+                      <p class="mt-1 text-sm text-wc-text-tertiary">{{ t('client_plan.cycle_female_next_in', { n: cicloDaysUntilNext }) }}</p>
                       <div class="mt-3 flex items-center gap-1.5">
-                        <span class="text-sm font-medium text-wc-text-tertiary uppercase tracking-wider">Energia</span>
+                        <span class="text-sm font-medium text-wc-text-tertiary uppercase tracking-wider">{{ t('client_plan.cycle_female_energy') }}</span>
                         <div class="flex gap-0.5">
                           <div
                             v-for="i in 10"
@@ -1826,7 +1844,7 @@ onBeforeUnmount(() => {
                       </div>
                       <button @click="cicloShowConfig = !cicloShowConfig" class="mt-3 text-[11px] text-wc-text-tertiary hover:text-wc-text-secondary transition-colors flex items-center gap-1">
                         <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
-                        Ajustar configuracion
+                        {{ t('client_plan.cycle_female_adjust_settings') }}
                       </button>
                     </div>
                   </div>
@@ -1837,8 +1855,8 @@ onBeforeUnmount(() => {
                     <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary">
                       <svg class="h-7 w-7 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
                     </div>
-                    <p class="font-display text-lg tracking-wide text-wc-text">CONFIGURA TU CICLO</p>
-                    <p class="mt-1 text-sm text-wc-text-secondary">Ingresa la fecha del inicio de tu ultimo ciclo para ver tu fase actual.</p>
+                    <p class="font-display text-lg tracking-wide text-wc-text">{{ t('client_plan.cycle_female_setup_title') }}</p>
+                    <p class="mt-1 text-sm text-wc-text-secondary">{{ t('client_plan.cycle_female_setup_body') }}</p>
                   </div>
                 </template>
               </div>
@@ -1846,20 +1864,20 @@ onBeforeUnmount(() => {
               <!-- Config form -->
               <Transition name="fade">
                 <div v-if="cicloShowConfig" class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                  <h3 class="font-display text-base tracking-wide text-wc-text mb-4">CONFIGURACION DEL CICLO</h3>
+                  <h3 class="font-display text-base tracking-wide text-wc-text mb-4">{{ t('client_plan.cycle_female_config_title') }}</h3>
                   <div class="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F4C5; Fecha de inicio del ultimo ciclo</label>
+                      <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">{{ t('client_plan.cycle_female_config_start_date') }}</label>
                       <input type="date" v-model="cicloStartDate" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"/>
                     </div>
                     <div>
-                      <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F504; Duracion del ciclo (dias)</label>
+                      <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">{{ t('client_plan.cycle_female_config_length') }}</label>
                       <input type="number" v-model.number="cicloCycleLength" min="21" max="40" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none"/>
                     </div>
                   </div>
                   <div class="mt-4 flex items-center gap-3">
-                    <button @click="saveCicloConfig" class="rounded-lg bg-wc-accent px-5 py-2 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors">Guardar</button>
-                    <p class="text-sm text-wc-text-tertiary">Los datos se guardan localmente en tu dispositivo.</p>
+                    <button @click="saveCicloConfig" class="rounded-lg bg-wc-accent px-5 py-2 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors">{{ t('client_plan.cycle_female_save') }}</button>
+                    <p class="text-sm text-wc-text-tertiary">{{ t('client_plan.cycle_female_save_hint') }}</p>
                   </div>
                 </div>
               </Transition>
@@ -1870,14 +1888,14 @@ onBeforeUnmount(() => {
                   <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                     <div class="flex items-center gap-2 mb-3">
                       <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg" :class="cicloPhaseData.bg">&#x1F3CB;&#xFE0F;</span>
-                      <h4 class="font-display text-sm tracking-wide text-wc-text">ENTRENAMIENTO</h4>
+                      <h4 class="font-display text-sm tracking-wide text-wc-text">{{ t('client_plan.cycle_female_training') }}</h4>
                     </div>
                     <p class="text-sm leading-relaxed text-wc-text-secondary">{{ cicloPhaseData.train }}</p>
                   </div>
                   <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                     <div class="flex items-center gap-2 mb-3">
                       <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg" :class="cicloPhaseData.bg">&#x1F957;</span>
-                      <h4 class="font-display text-sm tracking-wide text-wc-text">NUTRICION</h4>
+                      <h4 class="font-display text-sm tracking-wide text-wc-text">{{ t('client_plan.cycle_female_nutrition') }}</h4>
                     </div>
                     <p class="text-sm leading-relaxed text-wc-text-secondary">{{ cicloPhaseData.nutrition }}</p>
                   </div>
@@ -1886,7 +1904,7 @@ onBeforeUnmount(() => {
 
               <!-- Phase timeline reference -->
               <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
-                <h3 class="font-display text-sm tracking-wide text-wc-text mb-4">FASES DEL CICLO</h3>
+                <h3 class="font-display text-sm tracking-wide text-wc-text mb-4">{{ t('client_plan.cycle_female_phases_title') }}</h3>
                 <div class="mb-4 flex h-3 w-full overflow-hidden rounded-full">
                   <div class="h-full transition-all" style="width: 18%; background:#f87171;"></div>
                   <div class="h-full transition-all" style="width: 32%; background:#4ade80;"></div>
@@ -1907,14 +1925,14 @@ onBeforeUnmount(() => {
                     >
                       <div class="absolute inset-0 rounded-xl p-3" :class="[pc.border, pc.bgF]" style="backface-visibility:hidden;">
                         <div class="flex items-center gap-1.5 mb-1.5"><div class="h-2 w-2 shrink-0 rounded-full" :class="pc.dot"></div><p class="text-sm font-semibold" :class="pc.text">{{ pc.name }}</p></div>
-                        <p class="text-sm text-wc-text-tertiary">Dias {{ pc.days }}</p>
+                        <p class="text-sm text-wc-text-tertiary">{{ t('client_plan.cycle_phase_card_days_prefix', { range: pc.days }) }}</p>
                         <p class="text-sm text-wc-text-tertiary mt-0.5">{{ pc.sub }}</p>
                       </div>
                       <div class="absolute inset-0 overflow-y-auto rounded-xl p-3" :class="[pc.border, pc.bgB]" style="backface-visibility:hidden; transform:rotateY(180deg);">
-                        <p class="text-sm font-bold mb-1" :class="pc.text">&#x1F3CB;&#xFE0F; Entreno</p>
+                        <p class="text-sm font-bold mb-1" :class="pc.text">{{ t('client_plan.cycle_phase_card_train_label') }}</p>
                         <p class="text-sm text-wc-text-secondary leading-relaxed">{{ pc.train }}</p>
                         <div class="mt-2 border-t pt-2" :class="pc.border">
-                          <p class="text-sm font-bold mb-1" :class="pc.text">&#x1F957; Nutricion</p>
+                          <p class="text-sm font-bold mb-1" :class="pc.text">{{ t('client_plan.cycle_phase_card_nutrition_label') }}</p>
                           <p class="text-sm text-wc-text-secondary leading-relaxed">{{ pc.nutr }}</p>
                         </div>
                       </div>
@@ -1930,9 +1948,9 @@ onBeforeUnmount(() => {
         <div v-else-if="activeTab === 'bloodwork'">
           <!-- Locked -->
           <div v-if="!canAccessElite" class="rounded-xl border border-wc-accent/20 bg-wc-accent/5 p-8 text-center">
-            <p class="font-display text-xl text-wc-text">Bloodwork &amp; Analisis Laboratorio</p>
-            <p class="mt-2 text-sm text-wc-text-secondary">Disponible exclusivamente en el plan Elite.</p>
-            <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">Upgrade a Elite</a>
+            <p class="font-display text-xl text-wc-text">{{ t('client_plan.bloodwork_locked_title') }}</p>
+            <p class="mt-2 text-sm text-wc-text-secondary">{{ t('client_plan.bloodwork_locked_body') }}</p>
+            <a href="/planes" class="mt-4 inline-block rounded-full bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white">{{ t('client_plan.bloodwork_locked_cta') }}</a>
           </div>
 
           <template v-else>
@@ -1944,19 +1962,19 @@ onBeforeUnmount(() => {
                     <Droplets :size="20" :stroke-width="1.75" class="text-wc-accent" />
                   </div>
                   <div>
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">Análisis de Sangre</p>
-                    <h2 class="font-display text-2xl tracking-wide text-wc-text uppercase">Bloodwork</h2>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-wc-accent">{{ t('client_plan.bloodwork_eyebrow') }}</p>
+                    <h2 class="font-display text-2xl tracking-wide text-wc-text uppercase">{{ t('client_plan.bloodwork_title') }}</h2>
                   </div>
                 </div>
                 <div v-if="bloodworkResults && bloodworkResults.length" class="flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-tertiary px-3 py-1.5">
                   <span class="font-data text-sm font-bold text-wc-accent tabular-nums">{{ bloodworkResults.length }}</span>
-                  <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">tests</span>
+                  <span class="text-[10px] uppercase tracking-wider text-wc-text-tertiary">{{ t('client_plan.bloodwork_count_label') }}</span>
                 </div>
               </div>
 
               <!-- Latest values cards -->
               <div v-if="Object.keys(latestByTest).length > 0" class="mb-6">
-                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">Últimos Valores</h3>
+                <h3 class="mb-3 font-display text-lg tracking-wide text-wc-text uppercase">{{ t('client_plan.bloodwork_latest_title') }}</h3>
                 <div class="grid gap-3 sm:grid-cols-2">
                   <div
                     v-for="(r, testName, i) in latestByTest"
@@ -1976,9 +1994,9 @@ onBeforeUnmount(() => {
                         </div>
                         <div class="mt-2 flex flex-wrap items-center gap-1.5">
                           <span class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider" :class="getBloodworkStatusStyle(bwStatus(r) === 'flag' ? 'high' : (bwStatus(r) === 'ok' ? 'normal' : '')).badgeClass">
-                            {{ bwStatus(r) === 'flag' ? 'Fuera de rango' : (bwStatus(r) === 'ok' ? 'Normal' : 'Sin ref') }}
+                            {{ bwStatus(r) === 'flag' ? t('client_plan.bloodwork_status_out_of_range') : (bwStatus(r) === 'ok' ? t('client_plan.bloodwork_status_normal') : t('client_plan.bloodwork_status_no_ref')) }}
                           </span>
-                          <span v-if="r.reference_range" class="text-[10px] text-wc-text-tertiary">Ref: {{ r.reference_range }}</span>
+                          <span v-if="r.reference_range" class="text-[10px] text-wc-text-tertiary">{{ t('client_plan.bloodwork_reference_prefix', { range: r.reference_range }) }}</span>
                         </div>
                         <p class="mt-2 text-[10px] text-wc-text-tertiary">{{ formatDateShort(r.test_date) }}</p>
                       </div>
@@ -1990,14 +2008,14 @@ onBeforeUnmount(() => {
 
               <div v-else class="mb-6 rounded-2xl border border-wc-border bg-wc-bg-tertiary p-10 text-center">
                 <Droplets :size="48" :stroke-width="1.5" class="mx-auto mb-3 text-wc-text-tertiary/40" />
-                <h3 class="font-display text-lg uppercase tracking-wide text-wc-text">Sin resultados aún</h3>
-                <p class="mt-2 text-sm text-wc-text-tertiary">Agrega tu primer análisis usando el formulario.</p>
+                <h3 class="font-display text-lg uppercase tracking-wide text-wc-text">{{ t('client_plan.bloodwork_empty_title') }}</h3>
+                <p class="mt-2 text-sm text-wc-text-tertiary">{{ t('client_plan.bloodwork_empty_body') }}</p>
               </div>
 
               <!-- Add result form -->
               <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-5">
                 <button @click="bwFormOpen = !bwFormOpen" class="flex w-full items-center justify-between">
-                  <h3 class="font-display text-base tracking-wide text-wc-text">AGREGAR RESULTADO</h3>
+                  <h3 class="font-display text-base tracking-wide text-wc-text">{{ t('client_plan.bloodwork_form_title') }}</h3>
                   <svg class="h-5 w-5 text-wc-text-tertiary transition-transform" :class="bwFormOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
                 </button>
 
@@ -2006,16 +2024,16 @@ onBeforeUnmount(() => {
                   <Transition name="fade">
                     <div v-if="bwShowSuccess" class="mt-4 flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-400">
                       <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
-                      Resultado guardado correctamente.
+                      {{ t('client_plan.bloodwork_form_success') }}
                     </div>
                   </Transition>
 
                   <form @submit.prevent="saveBloodwork" class="mt-4 space-y-4">
                     <div class="grid gap-4 sm:grid-cols-2">
                       <div>
-                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F9EA; Prueba</label>
+                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">{{ t('client_plan.bloodwork_form_test_label') }}</label>
                         <select v-model="bwForm.testName" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none">
-                          <option value="">Seleccionar prueba...</option>
+                          <option value="">{{ t('client_plan.bloodwork_form_test_placeholder') }}</option>
                           <optgroup v-for="group in bwTestOptions" :key="group.group" :label="group.group">
                             <option v-for="test in group.tests" :key="test" :value="test">{{ test }}</option>
                           </optgroup>
@@ -2024,26 +2042,26 @@ onBeforeUnmount(() => {
                       </div>
 
                       <div>
-                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F4C5; Fecha</label>
+                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">{{ t('client_plan.bloodwork_form_date_label') }}</label>
                         <input type="date" v-model="bwForm.testDate" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
                         <span v-if="bwErrors.test_date" class="mt-1 block text-sm text-red-400">{{ bwErrors.test_date[0] }}</span>
                       </div>
 
                       <div>
-                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F4CA; Valor</label>
-                        <input type="number" step="0.01" v-model.number="bwForm.value" placeholder="ej: 95.5" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
+                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">{{ t('client_plan.bloodwork_form_value_label') }}</label>
+                        <input type="number" step="0.01" v-model.number="bwForm.value" :placeholder="t('client_plan.bloodwork_form_value_placeholder')" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
                         <span v-if="bwErrors.value" class="mt-1 block text-sm text-red-400">{{ bwErrors.value[0] }}</span>
                       </div>
 
                       <div>
-                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F52C; Unidad</label>
-                        <input type="text" v-model="bwForm.unit" placeholder="ej: mg/dL" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
+                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">{{ t('client_plan.bloodwork_form_unit_label') }}</label>
+                        <input type="text" v-model="bwForm.unit" :placeholder="t('client_plan.bloodwork_form_unit_placeholder')" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
                         <span v-if="bwErrors.unit" class="mt-1 block text-sm text-red-400">{{ bwErrors.unit[0] }}</span>
                       </div>
 
                       <div class="sm:col-span-2">
-                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">&#x1F4CB; Rango de referencia <span class="font-normal text-wc-text-tertiary">(opcional - ej: 70-100)</span></label>
-                        <input type="text" v-model="bwForm.referenceRange" placeholder="ej: 70-100 mg/dL" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
+                        <label class="block text-sm font-medium text-wc-text-tertiary mb-1.5">{{ t('client_plan.bloodwork_form_range_label') }} <span class="font-normal text-wc-text-tertiary">{{ t('client_plan.bloodwork_form_range_optional') }}</span></label>
+                        <input type="text" v-model="bwForm.referenceRange" :placeholder="t('client_plan.bloodwork_form_range_placeholder')" class="w-full rounded-lg border border-wc-border bg-wc-bg py-2.5 px-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none" />
                       </div>
                     </div>
 
@@ -2052,10 +2070,10 @@ onBeforeUnmount(() => {
                       :disabled="bwSaving"
                       class="rounded-xl bg-wc-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-wc-accent/90 transition-colors disabled:opacity-50"
                     >
-                      <span v-if="!bwSaving">Guardar Resultado</span>
+                      <span v-if="!bwSaving">{{ t('client_plan.bloodwork_form_save') }}</span>
                       <span v-else class="inline-flex items-center gap-2">
                         <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                        Guardando...
+                        {{ t('client_plan.bloodwork_form_saving') }}
                       </span>
                     </button>
                   </form>
@@ -2065,9 +2083,9 @@ onBeforeUnmount(() => {
               <!-- Results history -->
               <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary overflow-hidden">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-wc-border">
-                  <h3 class="font-display text-base tracking-wide text-wc-text">HISTORIAL</h3>
+                  <h3 class="font-display text-base tracking-wide text-wc-text">{{ t('client_plan.bloodwork_history_title') }}</h3>
                   <span v-if="bloodworkResults.length > 0" class="rounded-full bg-wc-bg-secondary px-2.5 py-0.5 text-xs font-medium text-wc-text-secondary">
-                    {{ bloodworkResults.length }} registros
+                    {{ t('client_plan.bloodwork_history_count', { n: bloodworkResults.length }) }}
                   </span>
                 </div>
 
@@ -2107,7 +2125,7 @@ onBeforeUnmount(() => {
                       <button
                         @click="deleteBloodwork(result.id)"
                         class="shrink-0 flex h-7 w-7 items-center justify-center rounded-lg text-wc-text-tertiary hover:bg-red-500/10 hover:text-red-400 transition-colors"
-                        title="Eliminar"
+                        :title="t('client_plan.bloodwork_delete_aria')"
                       >
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
                       </button>
@@ -2127,8 +2145,8 @@ onBeforeUnmount(() => {
                   <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-wc-bg-secondary">
                     <svg class="h-7 w-7 text-wc-text-tertiary" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 1-6.23-.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>
                   </div>
-                  <p class="font-display text-base tracking-wide text-wc-text">SIN RESULTADOS AUN</p>
-                  <p class="mt-1 text-sm text-wc-text-secondary">Agrega tus resultados de laboratorio para llevar un seguimiento de tu salud.</p>
+                  <p class="font-display text-base tracking-wide text-wc-text">{{ t('client_plan.bloodwork_history_empty_title') }}</p>
+                  <p class="mt-1 text-sm text-wc-text-secondary">{{ t('client_plan.bloodwork_history_empty_body') }}</p>
                 </div>
               </div>
             </div>
@@ -2140,7 +2158,7 @@ onBeforeUnmount(() => {
           <div class="tab-lock-upsell-icon" aria-hidden="true">&#x1F512;</div>
           <h3 class="tab-lock-upsell-title">{{ tabLockTitle(activeTab) }}</h3>
           <p class="tab-lock-upsell-body">{{ tabLockBody(activeTab) }}</p>
-          <a href="/planes#tier-cards" class="tab-lock-upsell-cta">Ver Plan Esencial</a>
+          <a href="/planes#tier-cards" class="tab-lock-upsell-cta">{{ t('client_plan.tab_lock_cta') }}</a>
         </div>
       </template>
     </div>
@@ -2163,8 +2181,8 @@ onBeforeUnmount(() => {
               </svg>
             </div>
             <div class="flex-1">
-              <h3 class="font-display text-lg tracking-wide text-wc-text">Eliminar resultado</h3>
-              <p class="mt-1 text-sm text-wc-text-secondary">Esta acción no se puede deshacer.</p>
+              <h3 class="font-display text-lg tracking-wide text-wc-text">{{ t('client_plan.bloodwork_delete_title') }}</h3>
+              <p class="mt-1 text-sm text-wc-text-secondary">{{ t('client_plan.bloodwork_delete_body') }}</p>
             </div>
           </div>
           <div class="flex gap-2">
@@ -2173,14 +2191,14 @@ onBeforeUnmount(() => {
               @click="cancelDeleteBloodwork"
               class="flex-1 rounded-xl border border-wc-border bg-wc-bg-tertiary py-2.5 text-sm font-medium text-wc-text-secondary hover:text-wc-text"
             >
-              Cancelar
+              {{ t('client_plan.bloodwork_delete_cancel') }}
             </button>
             <button
               type="button"
               @click="confirmDeleteBloodwork"
               class="wc-btn-primary flex-1 justify-center"
             >
-              Eliminar
+              {{ t('client_plan.bloodwork_delete_confirm') }}
             </button>
           </div>
         </div>

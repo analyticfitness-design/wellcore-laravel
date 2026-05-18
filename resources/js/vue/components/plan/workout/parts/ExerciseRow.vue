@@ -30,15 +30,15 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
           </svg>
-          Usando variación
+          {{ t('client_plan.v2_exercise_using_variation') }}
         </span>
       </div>
 
       <div v-if="!isCardio" class="chips">
-        <span v-if="series" class="metric"><span class="k">Series</span><span class="v">{{ series }}</span></span>
-        <span v-if="reps" class="metric"><span class="k">Reps</span><span class="v">{{ reps }}</span></span>
-        <span v-if="rest" class="metric rest"><span class="k">Rest</span><span class="v">{{ rest }}</span></span>
-        <span v-if="rir" class="metric" :class="rirClass"><span class="k">RIR</span><span class="v">{{ rir }}</span></span>
+        <span v-if="series" class="metric"><span class="k">{{ t('client_plan.v2_exercise_set') }}</span><span class="v">{{ series }}</span></span>
+        <span v-if="reps" class="metric"><span class="k">{{ t('client_plan.v2_exercise_reps') }}</span><span class="v">{{ reps }}</span></span>
+        <span v-if="rest" class="metric rest"><span class="k">{{ t('client_plan.v2_exercise_rest') }}</span><span class="v">{{ rest }}</span></span>
+        <span v-if="rir" class="metric" :class="rirClass"><span class="k">{{ t('client_plan.v2_exercise_rir') }}</span><span class="v">{{ rir }}</span></span>
       </div>
 
       <ExerciseCardioChips
@@ -57,12 +57,12 @@
         type="button"
         class="ex-collapsed-note"
         @click="coachNoteExpanded = true"
-        :aria-label="`Ver nota del coach para ${effectiveName}`"
+        :aria-label="t('client_plan.v2_exercise_coach_note_aria', { name: effectiveName })"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379"/>
         </svg>
-        Nota del coach
+        {{ t('client_plan.v2_exercise_coach_note_chip') }}
       </button>
 
       <!-- Variation toggle/selector — SIEMPRE visible bajo cada ejercicio (paridad V1).
@@ -70,7 +70,7 @@
       <div class="variation-controls">
         <!-- Selector múltiple A/B/C cuando hay opciones (>1 variación) -->
         <div v-if="hasMultipleOpciones" class="variation-selector" data-testid="variation-selector">
-          <span class="variation-selector__label">Opciones</span>
+          <span class="variation-selector__label">{{ t('client_plan.v2_variation_options_label') }}</span>
           <div class="variation-selector__options">
             <button
               v-for="(opt, i) in opcionesList"
@@ -109,9 +109,12 @@
 //  - series/reps/rest/RIR NO se recalculan: render literal.
 //  - coach_note NO se modifica: solo se muestra.
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ExerciseVariationToggle from './ExerciseVariationToggle.vue';
 import ExerciseCardioChips from './ExerciseCardioChips.vue';
 import { usePlanViewer } from '@/composables/usePlanViewer';
+
+const { t } = useI18n();
 
 const props = defineProps({
   ejercicio: { type: Object, required: true },
@@ -172,7 +175,7 @@ const effectiveGifUrl = computed(() => {
 
 const effectiveName = computed(() => {
   if (isUsingVariant.value && variantName.value) return variantName.value;
-  return props.ejercicio?.nombre || 'Ejercicio sin nombre';
+  return props.ejercicio?.nombre || t('client_plan.v2_exercise_unnamed');
 });
 
 const formattedNumero = computed(() => {

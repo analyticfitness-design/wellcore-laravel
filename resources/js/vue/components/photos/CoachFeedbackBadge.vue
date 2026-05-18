@@ -9,6 +9,9 @@
  *   compact: bool    smaller text for dense layouts
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   status: { type: String, default: 'pending' },
@@ -20,17 +23,17 @@ const meta = computed(() => {
   switch (props.status) {
     case 'reviewed':
       return {
-        label: 'Revisada',
+        label: t('client_progress.photos_badge_reviewed'),
         cls: 'border-emerald-400/30 bg-emerald-500/10 text-emerald-400',
       };
     case 'notes':
       return {
-        label: props.count > 0 ? `Notas · ${props.count}` : 'Notas',
+        label: props.count > 0 ? t('client_progress.photos_badge_notes_count', { n: props.count }) : t('client_progress.photos_badge_notes'),
         cls: 'border-red-400/30 bg-red-500/10 text-red-400',
       };
     default:
       return {
-        label: 'Pendiente',
+        label: t('client_progress.photos_badge_pending'),
         cls: 'border-amber-400/30 bg-amber-500/10 text-amber-400',
       };
   }

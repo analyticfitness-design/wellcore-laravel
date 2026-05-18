@@ -1,4 +1,6 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 defineProps({
   interpretation: {
     type: Object,
@@ -19,7 +21,7 @@ defineProps({
       <!-- Header -->
       <div class="coach-hd">
         <span class="coach-who">{{ interpretation.coach_name }}</span>
-        <span class="coach-role">Coach</span>
+        <span class="coach-role">{{ t('client_progress.metrics_coach_role') }}</span>
         <span class="coach-time">{{ interpretation.date }}</span>
       </div>
 
@@ -28,7 +30,7 @@ defineProps({
 
       <!-- CTAs -->
       <div class="coach-cta">
-        <a href="/client/checkin" class="cta-btn cta-btn--ghost">Ver check-in</a>
+        <a href="/client/checkin" class="cta-btn cta-btn--ghost">{{ t('client_progress.metrics_coach_view_checkin') }}</a>
       </div>
     </div>
   </div>

@@ -19,20 +19,24 @@
  *   update:modelValue
  */
 import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { localDateStr } from '../../composables/useDate';
+
+const { t, locale } = useI18n();
 
 const props = defineProps({
   modelValue: { type: String, default: '' },
   min: { type: String, default: '' },
   max: { type: String, default: '' },
-  label: { type: String, default: 'Fecha' },
+  label: { type: String, default: '' },
   id: { type: String, default: '' },
 });
 
 const emit = defineEmits(['update:modelValue']);
 
 const open = ref(false);
-const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+const MESES_ES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+const MESES_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const today = localDateStr();
 const value = computed({
@@ -40,12 +44,15 @@ const value = computed({
   set: (v) => emit('update:modelValue', v),
 });
 
+const resolvedLabel = computed(() => props.label || t('client_progress.photos_datefield_label_default'));
+
 const display = computed(() => {
   const v = value.value;
   if (!v) return '—';
   const [y, m, d] = v.split('-').map(Number);
   if (!y || !m || !d) return v;
-  return `${String(d).padStart(2, '0')} ${MESES[m - 1]?.toUpperCase() || ''} ${y}`;
+  const arr = locale.value === 'en' ? MESES_EN : MESES_ES;
+  return `${String(d).padStart(2, '0')} ${arr[m - 1]?.toUpperCase() || ''} ${y}`;
 });
 
 // Picker uses a hidden native input fallback for now to guarantee correctness;
@@ -72,7 +79,7 @@ watch(() => value.value, () => { open.value = false; });
       :for="id || 'wc-date-field'"
       class="font-mono text-[10px] uppercase tracking-widest text-wc-text-tertiary"
     >
-      {{ label }}
+      {{ resolvedLabel }}
     </label>
 
     <button
@@ -80,7 +87,7 @@ watch(() => value.value, () => { open.value = false; });
       :id="id || 'wc-date-field'"
       class="group inline-flex min-h-[44px] items-center justify-between gap-3 rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-left transition-colors hover:border-wc-accent/50 focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
       @click="openPicker"
-      :aria-label="`${label}: ${display}`"
+      :aria-label="`${resolvedLabel}: ${display}`"
     >
       <span class="font-display text-base uppercase tracking-wider text-wc-text">
         {{ display }}

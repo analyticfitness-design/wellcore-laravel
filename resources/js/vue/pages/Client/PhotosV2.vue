@@ -20,12 +20,15 @@
  * localStorage.wc_force_photos_v2='1'). El switch vive en ProgressPhotos.vue.
  */
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import { useMedals } from '../../composables/useMedals';
 import { useToast } from '../../composables/useToast';
 import { useApi } from '../../composables/useApi';
 import { localDateStr } from '../../composables/useDate';
 import { useAuthStore } from '../../stores/auth';
+
+const { t, locale } = useI18n();
 
 import PhotosHero from '../../components/photos/PhotosHero.vue';
 import PrivacyReassurance from '../../components/photos/PrivacyReassurance.vue';
@@ -52,7 +55,7 @@ const authStore = useAuthStore();
 // de lo contrario usa fallback genérico (el store no expone el nombre del coach asignado al cliente).
 const coachDisplayName = computed(() => {
   const session = window.__WC_SESSION;
-  return (session && session.coachName) || 'Tu coach';
+  return (session && session.coachName) || t('client_progress.photos_feedback_coach_fallback');
 });
 
 // --- Composables de dominio ---
@@ -115,12 +118,19 @@ const nextSuggested = computed(() => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const diffDays = Math.ceil((d.getTime() - today.getTime()) / (24 * 3600 * 1000));
-  const DOW = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-  const MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  const human = `${DOW[d.getDay()]} ${String(d.getDate()).padStart(2,'0')} ${MES[d.getMonth()]}`;
-  if (diffDays <= 0) return `hoy — ${human}`;
-  if (diffDays === 1) return `mañana — ${human}`;
-  return `en ${diffDays} días — ${human}`;
+  const isEn = locale.value === 'en';
+  const DOW = isEn
+    ? ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    : ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const MES = isEn
+    ? ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    : ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const human = isEn
+    ? `${DOW[d.getDay()]} ${MES[d.getMonth()]} ${String(d.getDate()).padStart(2,'0')}`
+    : `${DOW[d.getDay()]} ${String(d.getDate()).padStart(2,'0')} ${MES[d.getMonth()]}`;
+  if (diffDays <= 0) return t('client_progress.photos_next_today_prefix') + human;
+  if (diffDays === 1) return t('client_progress.photos_next_tomorrow_prefix') + human;
+  return t('client_progress.photos_next_in_days', { n: diffDays, date: human });
 });
 
 // --- Validation chips (recalcular cuando cambia un archivo) ---
@@ -237,7 +247,7 @@ async function confirmDeletePhoto() {
     }
     await photosStore.refetch();
   } catch (err) {
-    toast.apiError(err, 'No pudimos eliminar la foto. Intenta de nuevo.');
+    toast.apiError(err, t('client_progress.photos_delete_failed'));
   } finally {
     deletingId.value = null;
   }
@@ -314,20 +324,20 @@ onMounted(() => {
                 <div class="relative z-10 p-8">
                   <span class="wc-emoji-bounce block text-6xl mb-4" aria-hidden="true">📸</span>
                   <div class="mb-3 flex items-center justify-center gap-2">
-                    <span class="font-display text-xl tracking-[0.25em] text-white/90">WELLCORE</span>
+                    <span class="font-display text-xl tracking-[0.25em] text-white/90">{{ t('client_progress.photos_success_brand') }}</span>
                     <span class="h-2 w-2 rounded-full bg-white/30" aria-hidden="true"></span>
                   </div>
-                  <h2 id="photos-success-title" class="font-sans text-2xl font-bold text-white mb-2">Sesión guardada!</h2>
+                  <h2 id="photos-success-title" class="font-sans text-2xl font-bold text-white mb-2">{{ t('client_progress.photos_success_title') }}</h2>
                   <div class="my-5 rounded-xl border border-white/10 bg-white/[0.06] px-5 py-4">
                     <p class="font-data text-3xl font-bold text-white">+{{ upload.uploadedCount() || 3 }}</p>
-                    <p class="mt-0.5 text-xs text-white/50">ángulos registrados</p>
+                    <p class="mt-0.5 text-xs text-white/50">{{ t('client_progress.photos_success_angles') }}</p>
                   </div>
-                  <p class="mb-6 text-sm text-white/70">Tu progreso queda registrado. La constancia transforma!</p>
+                  <p class="mb-6 text-sm text-white/70">{{ t('client_progress.photos_success_body') }}</p>
                   <button
                     @click="dismissSuccess"
                     class="w-full rounded-xl bg-wc-accent px-6 py-3 font-display text-lg tracking-wider text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-black"
                   >
-                    LISTO!
+                    {{ t('client_progress.photos_success_dismiss') }}
                   </button>
                 </div>
               </div>
@@ -359,10 +369,10 @@ onMounted(() => {
           >
             <div class="w-full max-w-sm overflow-hidden rounded-2xl border border-wc-border bg-wc-bg-secondary p-6">
               <h3 id="delete-confirm-title" class="font-display text-lg uppercase tracking-wider text-wc-text">
-                ¿Eliminar foto?
+                {{ t('client_progress.photos_delete_confirm_title') }}
               </h3>
               <p class="mt-2 text-sm text-wc-text-secondary">
-                Esta acción no se puede deshacer. La foto se borra para siempre.
+                {{ t('client_progress.photos_delete_confirm_body') }}
               </p>
               <div class="mt-5 flex gap-2">
                 <button
@@ -370,14 +380,14 @@ onMounted(() => {
                   class="flex-1 min-h-[44px] rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 text-sm font-semibold text-wc-text transition-colors hover:border-wc-accent/40"
                   @click="cancelDeletePhoto"
                 >
-                  Cancelar
+                  {{ t('client_progress.photos_delete_cancel') }}
                 </button>
                 <button
                   type="button"
                   class="flex-1 min-h-[44px] rounded-xl bg-red-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/50"
                   @click="confirmDeletePhoto"
                 >
-                  Eliminar
+                  {{ t('client_progress.photos_delete_confirm') }}
                 </button>
               </div>
             </div>
@@ -408,13 +418,13 @@ onMounted(() => {
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
           </svg>
         </div>
-        <h2 class="mt-4 font-display text-xl tracking-wide text-wc-text">ERROR AL CARGAR</h2>
+        <h2 class="mt-4 font-display text-xl tracking-wide text-wc-text">{{ t('client_progress.photos_error_title').toUpperCase() }}</h2>
         <p class="mt-2 text-sm text-wc-text-secondary">{{ photosStore.error.value }}</p>
         <button
           @click="photosStore.refetch()"
           class="mt-6 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-wc-accent px-5 text-sm font-semibold text-white transition-colors hover:bg-red-700"
         >
-          Reintentar
+          {{ t('client_progress.photos_error_retry') }}
         </button>
       </div>
 
@@ -427,10 +437,11 @@ onMounted(() => {
           :week-count="weekCount"
           :latest-date="latestSession?.date || ''"
           :next-suggested="nextSuggested"
+          :coach-name="coachDisplayName"
         />
 
         <!-- Privacy reassurance -->
-        <PrivacyReassurance />
+        <PrivacyReassurance :coach-name="coachDisplayName" />
 
         <!-- Guía de fotos -->
         <div ref="guideSectionRef">
@@ -484,7 +495,7 @@ onMounted(() => {
           <!-- Toggle compare mode -->
           <div class="flex items-center justify-between">
             <h2 class="font-display text-lg uppercase tracking-wider text-wc-text">
-              Tu historia
+              {{ t('client_progress.photos_history_title') }}
             </h2>
             <button
               v-if="sortedDates.length >= 2"
@@ -498,7 +509,7 @@ onMounted(() => {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5" aria-hidden="true">
                 <path d="M8 3v18M16 3v18M3 8h5M16 8h5M3 16h5M16 16h5" />
               </svg>
-              {{ compareMode ? 'Cerrar comparación' : 'Comparar' }}
+              {{ compareMode ? t('client_progress.photos_compare_close') : t('client_progress.photos_compare_open') }}
             </button>
           </div>
 

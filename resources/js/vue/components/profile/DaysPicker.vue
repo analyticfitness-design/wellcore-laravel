@@ -12,23 +12,28 @@
  *         (réplica del HTML v2 — `.day-pill:has(input:checked)`).
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
-    legend: { type: String, default: 'Días disponibles' },
+    legend: { type: String, default: '' },
     hint:   { type: String, default: '' },
 });
 
 const model = defineModel({ default: () => [] });
 
-const DAYS = [
-    { value: 'lunes',     short: 'LUN', num: 1 },
-    { value: 'martes',    short: 'MAR', num: 2 },
-    { value: 'miercoles', short: 'MIE', num: 3 },
-    { value: 'jueves',    short: 'JUE', num: 4 },
-    { value: 'viernes',   short: 'VIE', num: 5 },
-    { value: 'sabado',    short: 'SAB', num: 6 },
-    { value: 'domingo',   short: 'DOM', num: 7 },
-];
+const legendText = computed(() => props.legend || t('client_account.profile_field_days'));
+
+const DAYS = computed(() => [
+    { value: 'lunes',     short: t('client_account.profile_day_monday_short'),    num: 1 },
+    { value: 'martes',    short: t('client_account.profile_day_tuesday_short'),   num: 2 },
+    { value: 'miercoles', short: t('client_account.profile_day_wednesday_short'), num: 3 },
+    { value: 'jueves',    short: t('client_account.profile_day_thursday_short'),  num: 4 },
+    { value: 'viernes',   short: t('client_account.profile_day_friday_short'),    num: 5 },
+    { value: 'sabado',    short: t('client_account.profile_day_saturday_short'),  num: 6 },
+    { value: 'domingo',   short: t('client_account.profile_day_sunday_short'),    num: 7 },
+]);
 
 const selected = computed(() => Array.isArray(model.value) ? model.value : []);
 const count = computed(() => selected.value.length);
@@ -54,11 +59,11 @@ function onKey(e, value) {
 </script>
 
 <template>
-  <fieldset class="days-fieldset" role="group" :aria-label="legend">
+  <fieldset class="days-fieldset" role="group" :aria-label="legendText">
     <div class="days-head">
-      <legend class="days-legend">{{ legend }}</legend>
+      <legend class="days-legend">{{ legendText }}</legend>
       <span class="days-counter font-display tabular-nums" aria-live="polite">
-        {{ count }} {{ count === 1 ? 'día' : 'días' }}/semana
+        {{ count }} {{ count === 1 ? t('client_account.profile_field_days_singular') : t('client_account.profile_field_days_plural') }}{{ t('client_account.profile_field_days_per_week') }}
       </span>
     </div>
 

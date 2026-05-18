@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import MetricsHero from '../../components/metrics/MetricsHero.vue';
@@ -17,6 +18,7 @@ import { useMeasurementsForm } from '../../composables/metrics/useMeasurementsFo
 import { useCoachInterpretation } from '../../composables/metrics/useCoachInterpretation.js';
 
 const api = useApi();
+const { t } = useI18n();
 
 // ─── Data ───────────────────────────────────────────────────────────────────
 const {
@@ -118,7 +120,7 @@ async function handleQuickSubmit() {
   quickError.value = '';
   const val = parseFloat(quickPeso.value);
   if (!quickPeso.value || isNaN(val) || val < 20 || val > 300) {
-    quickError.value = 'Ingresa un peso válido (20–300 kg)';
+    quickError.value = t('client_progress.metrics_err_quick_invalid');
     return;
   }
   saving.value = true;
@@ -126,9 +128,9 @@ async function handleQuickSubmit() {
     await api.post('/api/v/client/metrics', { peso: val });
     quickPeso.value = '';
     await refresh();
-    triggerAchievement('¡Peso registrado!');
+    triggerAchievement(t('client_progress.metrics_ach_weight_logged'));
   } catch (e) {
-    quickError.value = 'Error al guardar. Intenta de nuevo.';
+    quickError.value = t('client_progress.metrics_err_save');
   } finally {
     saving.value = false;
   }
@@ -138,7 +140,7 @@ async function handleFullSubmit() {
   const ok = await submitFullForm();
   if (ok) {
     await refresh();
-    triggerAchievement('¡Registro completo guardado!');
+    triggerAchievement(t('client_progress.metrics_ach_full_logged'));
     setQuick();
   }
 }
@@ -159,28 +161,28 @@ function triggerAchievement(message) {
   <div class="mv2">
     <!-- Tutorial overlay (first-time, no data) -->
     <Transition name="overlay">
-      <div v-if="showTutorial" class="tutorial-overlay" role="dialog" aria-modal="true" aria-label="Bienvenida a Métricas">
+      <div v-if="showTutorial" class="tutorial-overlay" role="dialog" aria-modal="true" :aria-label="t('client_progress.metrics_tutorial_aria')">
         <div class="tutorial-card">
           <div class="tutorial-icon">📊</div>
           <template v-if="tutorialStep === 0">
-            <h2 class="tutorial-h">Bienvenido a Métricas</h2>
-            <p class="tutorial-p">Registra tu peso y medidas para visualizar tu progreso a lo largo del tiempo.</p>
+            <h2 class="tutorial-h">{{ t('client_progress.metrics_tutorial_step1_title') }}</h2>
+            <p class="tutorial-p">{{ t('client_progress.metrics_tutorial_step1_body') }}</p>
           </template>
           <template v-else-if="tutorialStep === 1">
-            <h2 class="tutorial-h">Modo rápido vs. completo</h2>
-            <p class="tutorial-p">Usa el modo rápido para registrar solo el peso. El modo completo incluye medidas corporales y composición.</p>
+            <h2 class="tutorial-h">{{ t('client_progress.metrics_tutorial_step2_title') }}</h2>
+            <p class="tutorial-p">{{ t('client_progress.metrics_tutorial_step2_body') }}</p>
           </template>
           <template v-else>
-            <h2 class="tutorial-h">Consistencia = resultados</h2>
-            <p class="tutorial-p">Registra al menos una vez por semana, en ayunas y en las mismas condiciones, para obtener datos precisos.</p>
+            <h2 class="tutorial-h">{{ t('client_progress.metrics_tutorial_step3_title') }}</h2>
+            <p class="tutorial-p">{{ t('client_progress.metrics_tutorial_step3_body') }}</p>
           </template>
           <div class="tutorial-dots">
             <span v-for="i in 3" :key="i" class="tutorial-dot" :class="{ 'tutorial-dot--active': tutorialStep === i - 1 }"></span>
           </div>
           <div class="tutorial-actions">
-            <button v-if="tutorialStep < 2" class="tutorial-btn tutorial-btn--primary" @click="tutorialStep++">Siguiente</button>
-            <button v-else class="tutorial-btn tutorial-btn--primary" @click="dismissTutorial">Comenzar</button>
-            <button class="tutorial-btn tutorial-btn--ghost" @click="dismissTutorial">Saltar</button>
+            <button v-if="tutorialStep < 2" class="tutorial-btn tutorial-btn--primary" @click="tutorialStep++">{{ t('client_progress.metrics_tutorial_next') }}</button>
+            <button v-else class="tutorial-btn tutorial-btn--primary" @click="dismissTutorial">{{ t('client_progress.metrics_tutorial_start') }}</button>
+            <button class="tutorial-btn tutorial-btn--ghost" @click="dismissTutorial">{{ t('client_progress.metrics_tutorial_skip') }}</button>
           </div>
         </div>
       </div>
@@ -205,7 +207,7 @@ function triggerAchievement(message) {
 
     <div v-else-if="error" class="flex flex-col items-center gap-3 py-8">
       <p class="text-sm text-wc-accent">{{ error }}</p>
-      <button @click="refresh()" class="text-xs underline text-wc-text-secondary">Reintentar</button>
+      <button @click="refresh()" class="text-xs underline text-wc-text-secondary">{{ t('client_progress.metrics_retry') }}</button>
     </div>
 
     <template v-else>
@@ -220,25 +222,25 @@ function triggerAchievement(message) {
       <!-- Stat cards row (4 cards) -->
       <div class="mv2-stat-row">
         <StatCard
-          label="Peso actual"
+          :label="t('client_progress.metrics_current_weight')"
           :value="currentWeight ? Number(currentWeight).toFixed(1) : null"
           unit="kg"
           variant="hero"
           :delta="weightChange"
         />
         <StatCard
-          label="Cambio mensual"
+          :label="t('client_progress.metrics_monthly_change')"
           :value="weightChange !== null ? weightChange : null"
           unit="kg"
           :delta="weightChange"
         />
         <StatCard
-          label="Objetivo"
+          :label="t('client_progress.metrics_goal')"
           :value="latestEntry?.objetivo ?? null"
           unit="kg"
         />
         <StatCard
-          label="Registros"
+          :label="t('client_progress.metrics_records')"
           :value="recordsCount"
           variant="counter"
         />

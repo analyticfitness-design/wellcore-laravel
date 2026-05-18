@@ -21,9 +21,12 @@
  *   - none — todo via v-model bidireccional sobre state.
  */
 import { computed, toRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 import InputField from './InputField.vue';
 import BioField from './BioField.vue';
 import CommunityPreview from './CommunityPreview.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     state:     { type: Object, required: true },
@@ -59,20 +62,20 @@ const bioModel        = bind('bio');
   <section class="section" aria-labelledby="section-personal-title">
     <header class="section-head">
       <div class="section-head__l">
-        <span class="section-num font-display">01 · IDENTIDAD</span>
-        <h2 id="section-personal-title" class="section-title font-display">DATOS PERSONALES</h2>
+        <span class="section-num font-display">{{ t('client_account.profile_section_personal_num') }}</span>
+        <h2 id="section-personal-title" class="section-title font-display">{{ t('client_account.profile_section_personal_title') }}</h2>
       </div>
-      <p class="section-sub">Información básica de tu cuenta. Esto aparece en tu perfil de comunidad.</p>
+      <p class="section-sub">{{ t('client_account.profile_section_personal_sub') }}</p>
     </header>
 
     <div class="field-grid field-grid--2">
       <InputField
         id="profile-name"
         v-model="nameModel.value"
-        label="Nombre completo"
+        :label="t('client_account.profile_field_name')"
         type="text"
         autocomplete="name"
-        placeholder="Tu nombre"
+        :placeholder="t('client_account.profile_field_name_placeholder')"
         :error="err('name')"
         required
       />
@@ -80,11 +83,11 @@ const bioModel        = bind('bio');
       <InputField
         id="profile-email"
         v-model="emailModel.value"
-        label="Email"
+        :label="t('client_account.profile_field_email')"
         type="email"
         autocomplete="email"
         inputmode="email"
-        placeholder="tu@email.com"
+        :placeholder="t('client_account.profile_field_email_placeholder')"
         :error="err('email')"
         required
       />
@@ -92,17 +95,17 @@ const bioModel        = bind('bio');
       <InputField
         id="profile-city"
         v-model="cityModel.value"
-        label="Ciudad"
+        :label="t('client_account.profile_field_city')"
         type="text"
         autocomplete="address-level2"
-        placeholder="Tu ciudad"
+        :placeholder="t('client_account.profile_field_city_placeholder')"
         :error="err('city')"
       />
 
       <InputField
         id="profile-birthDate"
         v-model="birthDateModel.value"
-        label="Fecha de nacimiento"
+        :label="t('client_account.profile_field_birthdate')"
         type="date"
         autocomplete="bday"
         :error="err('birth_date') || err('birthDate')"
@@ -111,11 +114,11 @@ const bioModel        = bind('bio');
       <InputField
         id="profile-whatsapp"
         v-model="whatsappModel.value"
-        label="WhatsApp"
+        :label="t('client_account.profile_field_whatsapp')"
         type="tel"
         inputmode="tel"
         autocomplete="tel"
-        placeholder="300 123 4567"
+        :placeholder="t('client_account.profile_field_whatsapp_placeholder')"
         :error="err('whatsapp')"
         class="field-grid--span-2"
       >

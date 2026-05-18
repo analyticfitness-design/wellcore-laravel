@@ -1,9 +1,11 @@
 <script setup>
 import { ref, computed, onBeforeUnmount, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
+const { t } = useI18n();
 const api = useApi();
 const toast = useToast();
 
@@ -39,7 +41,17 @@ const form = ref({
 });
 const formErrors = ref({});
 
-const diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+// Día display labels (las claves internas se mantienen en español lowercase para
+// no romper el contrato con el backend `dias_disponibles`).
+const diasSemana = computed(() => [
+    { key: 'lunes',     label: t('client_account.profile_day_monday_short') },
+    { key: 'martes',    label: t('client_account.profile_day_tuesday_short') },
+    { key: 'miercoles', label: t('client_account.profile_day_wednesday_short') },
+    { key: 'jueves',    label: t('client_account.profile_day_thursday_short') },
+    { key: 'viernes',   label: t('client_account.profile_day_friday_short') },
+    { key: 'sabado',    label: t('client_account.profile_day_saturday_short') },
+    { key: 'domingo',   label: t('client_account.profile_day_sunday_short') },
+]);
 
 // Completitud
 const completionColor = computed(() => {
@@ -58,7 +70,7 @@ function onAvatarChange(e) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-        toast.warn('La foto debe ser menor a 5 MB.');
+        toast.warn(t('client_account.profile_avatar_too_large'));
         return;
     }
     avatarFile.value = file;
@@ -76,11 +88,11 @@ async function uploadAvatar() {
         const res = await api.post('/api/v/client/avatar', formData);
         avatarUrl.value = res.data.avatar_url;
         avatarFile.value = null;
-        toast.success('Foto de perfil actualizada.');
+        toast.success(t('client_account.profile_avatar_success'));
         // Refresh completion
         await fetchCompletion();
     } catch (err) {
-        toast.apiError(err, 'No pudimos subir tu foto. Intenta de nuevo.');
+        toast.apiError(err, t('client_account.profile_avatar_error'));
     } finally {
         uploadingAvatar.value = false;
     }
@@ -119,7 +131,7 @@ async function fetchProfile() {
         completion.value = d.completion ?? { score: 0, missing: [] };
         if (d.name) localStorage.setItem('wc_user_name', d.name);
     } catch (err) {
-        error.value = err.response?.data?.message || 'Error al cargar el perfil';
+        error.value = err.response?.data?.message || t('client_account.settings_profile_load_error');
     } finally {
         loading.value = false;
     }
@@ -154,25 +166,24 @@ async function saveProfile() {
         if (err.response?.status === 422) {
             formErrors.value = err.response.data.errors || {};
         } else {
-            toast.apiError(err, 'No pudimos guardar tu perfil. Intenta de nuevo.');
+            toast.apiError(err, t('client_account.settings_profile_save_error'));
         }
     } finally {
         saving.value = false;
     }
 }
 
-function toggleDia(dia) {
-    const val = dia.toLowerCase();
-    const idx = form.value.diasDisponibles.indexOf(val);
+function toggleDia(key) {
+    const idx = form.value.diasDisponibles.indexOf(key);
     if (idx >= 0) {
         form.value.diasDisponibles.splice(idx, 1);
     } else {
-        form.value.diasDisponibles.push(val);
+        form.value.diasDisponibles.push(key);
     }
 }
 
-function isDiaSelected(dia) {
-    return form.value.diasDisponibles.includes(dia.toLowerCase());
+function isDiaSelected(key) {
+    return form.value.diasDisponibles.includes(key);
 }
 
 onMounted(fetchProfile);
@@ -201,14 +212,14 @@ onBeforeUnmount(() => {
         <svg class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
         </svg>
-        <span class="text-sm font-medium text-green-400">Perfil actualizado correctamente</span>
+        <span class="text-sm font-medium text-green-400">{{ t('client_account.profile_saved') }}</span>
       </div>
     </Transition>
 
     <!-- Header -->
     <div class="mb-6">
-      <h1 class="font-display text-3xl tracking-wide text-wc-text">MI PERFIL</h1>
-      <p class="mt-1 text-sm text-wc-text-secondary">Actualiza tu informacion personal y datos de entrenamiento</p>
+      <h1 class="font-display text-3xl tracking-wide text-wc-text">{{ t('client_account.profile_title_legacy') }}</h1>
+      <p class="mt-1 text-sm text-wc-text-secondary">{{ t('client_account.profile_subtitle_legacy') }}</p>
     </div>
 
     <!-- Avatar + Completitud (no skeleton: se muestran siempre) -->
@@ -222,7 +233,7 @@ onBeforeUnmount(() => {
               <img
                 v-if="avatarPreview || avatarUrl"
                 :src="avatarPreview || avatarUrl"
-                alt="Tu foto de perfil"
+                :alt="t('client_account.profile_avatar_alt')"
                 class="h-full w-full object-cover"
               />
               <span v-else class="font-display text-3xl text-wc-accent">{{ getInitials(form.name) }}</span>
@@ -248,7 +259,7 @@ onBeforeUnmount(() => {
               for="avatar-input"
               class="cursor-pointer rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-1.5 text-xs font-medium text-wc-text-secondary transition-colors hover:border-wc-accent/40 hover:text-wc-text"
             >
-              {{ avatarUrl ? 'Cambiar foto' : 'Subir foto' }}
+              {{ avatarUrl ? t('client_account.profile_change_avatar') : t('client_account.profile_avatar_upload') }}
             </label>
             <button
               v-if="avatarFile"
@@ -261,16 +272,16 @@ onBeforeUnmount(() => {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
               </svg>
-              {{ uploadingAvatar ? 'Subiendo...' : 'Guardar foto' }}
+              {{ uploadingAvatar ? t('client_account.profile_avatar_uploading') : t('client_account.profile_avatar_save') }}
             </button>
           </div>
-          <p class="text-center text-[10px] text-wc-text-tertiary">JPG, PNG o WebP · máx 5 MB<br>Se muestra en la comunidad</p>
+          <p class="text-center text-[10px] text-wc-text-tertiary">{{ t('client_account.profile_avatar_hint') }}<br>{{ t('client_account.profile_avatar_hint_community') }}</p>
         </div>
 
         <!-- Barra de completitud -->
         <div class="flex-1 min-w-0 w-full">
           <div class="mb-2 flex items-center justify-between gap-2">
-            <p class="text-sm font-semibold text-wc-text">Completitud del perfil</p>
+            <p class="text-sm font-semibold text-wc-text">{{ t('client_account.profile_completion_label') }}</p>
             <span class="font-data text-lg font-bold" :style="{ color: completionColor }">{{ completion.score }}%</span>
           </div>
 
@@ -284,10 +295,10 @@ onBeforeUnmount(() => {
 
           <!-- Mensaje según score -->
           <p v-if="completion.score >= 80" class="mb-3 text-xs text-emerald-400 font-medium">
-            Perfil completo — apareces con toda tu info en la comunidad.
+            {{ t('client_account.profile_completion_complete_legacy') }}
           </p>
           <p v-else class="mb-3 text-xs text-wc-text-tertiary">
-            Un perfil completo te hace destacar en la comunidad. Faltan:
+            {{ t('client_account.profile_completion_missing_intro_legacy') }}
           </p>
 
           <!-- Tags de campos faltantes -->
@@ -321,7 +332,7 @@ onBeforeUnmount(() => {
       </div>
       <p class="mt-4 text-sm text-wc-text-secondary">{{ error }}</p>
       <button @click="fetchProfile" class="wc-btn-primary mt-4">
-        Reintentar
+        {{ t('client_account.profile_retry') }}
       </button>
     </div>
 
@@ -339,54 +350,54 @@ onBeforeUnmount(() => {
               </svg>
             </div>
             <div>
-              <h2 class="text-lg font-semibold text-wc-text">DATOS PERSONALES</h2>
-              <p class="text-sm text-wc-text-tertiary">Informacion basica de tu cuenta</p>
+              <h2 class="text-lg font-semibold text-wc-text">{{ t('client_account.profile_section_personal_title') }}</h2>
+              <p class="text-sm text-wc-text-tertiary">{{ t('client_account.profile_section_personal_sub_legacy') }}</p>
             </div>
           </div>
 
           <div class="space-y-4">
             <!-- Name -->
             <div>
-              <label for="name" class="mb-1.5 block text-sm font-medium text-wc-text">Nombre completo</label>
+              <label for="name" class="mb-1.5 block text-sm font-medium text-wc-text">{{ t('client_account.profile_field_name') }}</label>
               <input
                 v-model="form.name"
                 type="text"
                 id="name"
                 class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                placeholder="Tu nombre"
+                :placeholder="t('client_account.profile_field_name_placeholder')"
               >
               <p v-if="formErrors.name" class="mt-1 text-xs text-red-500">{{ formErrors.name[0] }}</p>
             </div>
 
             <!-- Email -->
             <div>
-              <label for="email" class="mb-1.5 block text-sm font-medium text-wc-text">Email</label>
+              <label for="email" class="mb-1.5 block text-sm font-medium text-wc-text">{{ t('client_account.profile_field_email') }}</label>
               <input
                 v-model="form.email"
                 type="email"
                 id="email"
                 class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                placeholder="tu@email.com"
+                :placeholder="t('client_account.profile_field_email_placeholder')"
               >
               <p v-if="formErrors.email" class="mt-1 text-xs text-red-500">{{ formErrors.email[0] }}</p>
             </div>
 
             <!-- City -->
             <div>
-              <label for="city" class="mb-1.5 block text-sm font-medium text-wc-text">Ciudad</label>
+              <label for="city" class="mb-1.5 block text-sm font-medium text-wc-text">{{ t('client_account.profile_field_city') }}</label>
               <input
                 v-model="form.city"
                 type="text"
                 id="city"
                 class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                placeholder="Tu ciudad"
+                :placeholder="t('client_account.profile_field_city_placeholder')"
               >
               <p v-if="formErrors.city" class="mt-1 text-xs text-red-500">{{ formErrors.city[0] }}</p>
             </div>
 
             <!-- Birth Date -->
             <div>
-              <label for="birthDate" class="mb-1.5 block text-sm font-medium text-wc-text">Fecha de nacimiento</label>
+              <label for="birthDate" class="mb-1.5 block text-sm font-medium text-wc-text">{{ t('client_account.profile_field_birthdate') }}</label>
               <input
                 v-model="form.birthDate"
                 type="date"
@@ -398,13 +409,13 @@ onBeforeUnmount(() => {
 
             <!-- WhatsApp -->
             <div>
-              <label for="whatsapp" class="mb-1.5 block text-sm font-medium text-wc-text">WhatsApp</label>
+              <label for="whatsapp" class="mb-1.5 block text-sm font-medium text-wc-text">{{ t('client_account.profile_field_whatsapp') }}</label>
               <input
                 v-model="form.whatsapp"
                 type="text"
                 id="whatsapp"
                 class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                placeholder="+52 123 456 7890"
+                :placeholder="t('client_account.profile_field_whatsapp_placeholder_legacy')"
               >
               <p v-if="formErrors.whatsapp" class="mt-1 text-xs text-red-500">{{ formErrors.whatsapp[0] }}</p>
             </div>
@@ -413,8 +424,8 @@ onBeforeUnmount(() => {
             <div>
               <div class="mb-1.5 flex items-center justify-between gap-2">
                 <label for="bio" class="text-sm font-medium text-wc-text">
-                  Bio
-                  <span class="ml-1 text-xs font-normal text-wc-text-tertiary">visible en la comunidad</span>
+                  {{ t('client_account.profile_field_bio') }}
+                  <span class="ml-1 text-xs font-normal text-wc-text-tertiary">{{ t('client_account.profile_field_bio_hint') }}</span>
                 </label>
                 <span class="font-data text-xs tabular-nums" :class="(form.bio || '').length > 140 ? 'text-amber-400' : 'text-wc-text-tertiary'">
                   {{ (form.bio || '').length }}/160
@@ -426,7 +437,7 @@ onBeforeUnmount(() => {
                 rows="3"
                 maxlength="160"
                 class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                placeholder="Ej: 28 años · Medellín · Entreno para competir en 2026. Método desde hace 3 meses."
+                :placeholder="t('client_account.profile_field_bio_placeholder_legacy')"
               ></textarea>
               <p v-if="formErrors.bio" class="mt-1 text-xs text-red-500">{{ formErrors.bio[0] }}</p>
             </div>
@@ -442,8 +453,8 @@ onBeforeUnmount(() => {
               </svg>
             </div>
             <div>
-              <h2 class="text-lg font-semibold text-wc-text">DATOS FITNESS</h2>
-              <p class="text-sm text-wc-text-tertiary">Tu informacion de entrenamiento</p>
+              <h2 class="text-lg font-semibold text-wc-text">{{ t('client_account.profile_section_fitness_title_legacy') }}</h2>
+              <p class="text-sm text-wc-text-tertiary">{{ t('client_account.profile_section_fitness_sub_legacy') }}</p>
             </div>
           </div>
 
@@ -451,26 +462,26 @@ onBeforeUnmount(() => {
             <!-- Peso + Altura (inline) -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label for="peso" class="mb-1.5 block text-sm font-medium text-wc-text">Peso (kg)</label>
+                <label for="peso" class="mb-1.5 block text-sm font-medium text-wc-text">{{ t('client_account.profile_field_weight_legacy') }}</label>
                 <input
                   v-model.number="form.peso"
                   type="number"
                   step="0.1"
                   id="peso"
                   class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                  placeholder="75.0"
+                  :placeholder="t('client_account.profile_field_weight_placeholder')"
                 >
                 <p v-if="formErrors.peso" class="mt-1 text-xs text-red-500">{{ formErrors.peso[0] }}</p>
               </div>
               <div>
-                <label for="altura" class="mb-1.5 block text-sm font-medium text-wc-text">Altura (cm)</label>
+                <label for="altura" class="mb-1.5 block text-sm font-medium text-wc-text">{{ t('client_account.profile_field_height_legacy') }}</label>
                 <input
                   v-model.number="form.altura"
                   type="number"
                   step="0.1"
                   id="altura"
                   class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 font-data text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                  placeholder="175.0"
+                  :placeholder="t('client_account.profile_field_height_placeholder_legacy')"
                 >
                 <p v-if="formErrors.altura" class="mt-1 text-xs text-red-500">{{ formErrors.altura[0] }}</p>
               </div>
@@ -478,84 +489,84 @@ onBeforeUnmount(() => {
 
             <!-- Objetivo -->
             <div>
-              <label for="objetivo" class="mb-1.5 block text-sm font-medium text-wc-text">Objetivo</label>
+              <label for="objetivo" class="mb-1.5 block text-sm font-medium text-wc-text">{{ t('client_account.profile_field_goal') }}</label>
               <input
                 v-model="form.objetivo"
                 type="text"
                 id="objetivo"
                 class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                placeholder="Ej: Perder grasa, ganar musculo..."
+                :placeholder="t('client_account.profile_field_goal_placeholder_legacy')"
               >
               <p v-if="formErrors.objetivo" class="mt-1 text-xs text-red-500">{{ formErrors.objetivo[0] }}</p>
             </div>
 
             <!-- Nivel -->
             <div>
-              <label for="nivel" class="mb-1.5 block text-sm font-medium text-wc-text">Nivel</label>
+              <label for="nivel" class="mb-1.5 block text-sm font-medium text-wc-text">{{ t('client_account.profile_field_level') }}</label>
               <select
                 v-model="form.nivel"
                 id="nivel"
                 class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
               >
-                <option value="">Selecciona tu nivel</option>
-                <option value="principiante">Principiante</option>
-                <option value="intermedio">Intermedio</option>
-                <option value="avanzado">Avanzado</option>
+                <option value="">{{ t('client_account.profile_field_level_placeholder') }}</option>
+                <option value="principiante">{{ t('client_account.profile_field_level_beginner') }}</option>
+                <option value="intermedio">{{ t('client_account.profile_field_level_intermediate') }}</option>
+                <option value="avanzado">{{ t('client_account.profile_field_level_advanced') }}</option>
               </select>
               <p v-if="formErrors.nivel" class="mt-1 text-xs text-red-500">{{ formErrors.nivel[0] }}</p>
             </div>
 
             <!-- Lugar de Entreno -->
             <div>
-              <label for="lugarEntreno" class="mb-1.5 block text-sm font-medium text-wc-text">Lugar de entrenamiento</label>
+              <label for="lugarEntreno" class="mb-1.5 block text-sm font-medium text-wc-text">{{ t('client_account.profile_field_place') }}</label>
               <select
                 v-model="form.lugarEntreno"
                 id="lugarEntreno"
                 class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
               >
-                <option value="">Selecciona lugar</option>
-                <option value="gym">Gimnasio</option>
-                <option value="casa">Casa</option>
-                <option value="ambos">Ambos</option>
+                <option value="">{{ t('client_account.profile_field_place_placeholder_legacy') }}</option>
+                <option value="gym">{{ t('client_account.profile_field_place_gym') }}</option>
+                <option value="casa">{{ t('client_account.profile_field_place_home') }}</option>
+                <option value="ambos">{{ t('client_account.profile_field_place_both') }}</option>
               </select>
               <p v-if="formErrors.lugar_entreno" class="mt-1 text-xs text-red-500">{{ formErrors.lugar_entreno[0] }}</p>
             </div>
 
             <!-- Dias Disponibles -->
             <fieldset>
-              <legend class="sr-only">Dias disponibles para entrenar</legend>
-              <p class="mb-2 text-sm font-medium text-wc-text-secondary" aria-hidden="true">Dias disponibles</p>
+              <legend class="sr-only">{{ t('client_account.profile_field_days_sr') }}</legend>
+              <p class="mb-2 text-sm font-medium text-wc-text-secondary" aria-hidden="true">{{ t('client_account.profile_field_days') }}</p>
               <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
                 <label
                   v-for="dia in diasSemana"
-                  :key="dia"
+                  :key="dia.key"
                   :class="[
                     'flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors',
-                    isDiaSelected(dia)
+                    isDiaSelected(dia.key)
                       ? 'border-wc-accent/50 bg-wc-accent/10'
                       : 'border-wc-border bg-wc-bg-secondary hover:border-wc-accent/50'
                   ]"
                 >
                   <input
                     type="checkbox"
-                    :checked="isDiaSelected(dia)"
-                    @change="toggleDia(dia)"
+                    :checked="isDiaSelected(dia.key)"
+                    @change="toggleDia(dia.key)"
                     class="h-4 w-4 rounded border-wc-border bg-wc-bg-secondary text-wc-accent focus:ring-wc-accent/30"
                   >
-                  <span class="text-wc-text-secondary">{{ dia }}</span>
+                  <span class="text-wc-text-secondary">{{ dia.label }}</span>
                 </label>
               </div>
             </fieldset>
 
             <!-- Restricciones -->
             <div>
-              <label for="restricciones" class="mb-1.5 block text-sm font-medium text-wc-text">Restricciones o lesiones</label>
+              <label for="restricciones" class="mb-1.5 block text-sm font-medium text-wc-text">{{ t('client_account.profile_field_restrictions') }}</label>
               <textarea
                 v-model="form.restricciones"
                 id="restricciones"
                 rows="3"
                 class="block w-full rounded-xl border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
-                placeholder="Ej: Lesion en rodilla derecha, alergia al gluten..."
+                :placeholder="t('client_account.profile_field_restrictions_placeholder_legacy')"
               ></textarea>
               <p v-if="formErrors.restricciones" class="mt-1 text-xs text-red-500">{{ formErrors.restricciones[0] }}</p>
             </div>
@@ -574,8 +585,8 @@ onBeforeUnmount(() => {
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <span v-if="!saving">Guardar Cambios</span>
-          <span v-else>Guardando...</span>
+          <span v-if="!saving">{{ t('client_account.profile_save_legacy') }}</span>
+          <span v-else>{{ t('client_account.profile_saving_legacy') }}</span>
         </button>
       </div>
       </fieldset>

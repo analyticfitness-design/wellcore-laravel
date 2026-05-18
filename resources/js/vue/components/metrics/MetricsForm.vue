@@ -1,6 +1,9 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
 import QuickLogInput from './QuickLogInput.vue';
 import MeasurementsForm from './MeasurementsForm.vue';
+
+const { t } = useI18n();
 
 defineProps({
   mode: { type: String, default: 'quick' }, // 'quick' | 'full'
@@ -26,8 +29,8 @@ const emit = defineEmits([
   <section class="mform" id="log">
     <div class="mform-hd">
       <div class="mform-hd-left">
-        <p class="mform-title">Nuevo registro</p>
-        <p class="mform-sub">Idealmente en ayunas, mismo día y hora cada semana.</p>
+        <p class="mform-title">{{ t('client_progress.metrics_form_title') }}</p>
+        <p class="mform-sub">{{ t('client_progress.metrics_form_sub') }}</p>
       </div>
       <!-- Mode toggle pills -->
       <div class="mform-mode" role="tablist">
@@ -38,7 +41,7 @@ const emit = defineEmits([
           :class="{ 'mform-mode-btn--active': mode === 'quick' }"
           :aria-selected="mode === 'quick'"
           @click="emit('collapse')"
-        >Rápido</button>
+        >{{ t('client_progress.metrics_form_mode_quick') }}</button>
         <button
           type="button"
           role="tab"
@@ -46,7 +49,7 @@ const emit = defineEmits([
           :class="{ 'mform-mode-btn--active': mode === 'full' }"
           :aria-selected="mode === 'full'"
           @click="emit('expand')"
-        >Completo</button>
+        >{{ t('client_progress.metrics_form_mode_full') }}</button>
       </div>
     </div>
 

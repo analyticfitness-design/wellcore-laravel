@@ -19,6 +19,9 @@
  * para hacer scroll al campo y disparar flash effect.
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     name:           { type: String, default: '' },
@@ -42,8 +45,9 @@ const tierColor = computed(() => {
 const safeMessage = computed(() => {
     if (props.completionMessage) return props.completionMessage;
     const n = (props.missing ?? []).length;
-    if (n === 0) return 'Tu perfil está completo y visible en la comunidad.';
-    return `Faltan ${n} dato${n === 1 ? '' : 's'} para completar tu perfil.`;
+    if (n === 0) return t('client_account.profile_completion_complete');
+    if (n === 1) return t('client_account.profile_completion_missing_one');
+    return t('client_account.profile_completion_missing_many', { n });
 });
 
 const handleText = computed(() => {
@@ -66,12 +70,12 @@ function onChipClick(item) {
 
     <div class="identity__meta">
       <h2 id="identity-name" class="id-name font-display">
-        {{ name || 'Sin nombre' }}
+        {{ name || t('client_account.profile_no_name') }}
       </h2>
       <p v-if="handleText" class="id-handle">{{ handleText }}</p>
 
       <div class="id-progress-row">
-        <span class="id-progress-label">Completitud del perfil</span>
+        <span class="id-progress-label">{{ t('client_account.profile_completion_label') }}</span>
         <span
           class="id-progress-value font-display tabular-nums"
           :style="{ color: tierColor }"
@@ -81,7 +85,7 @@ function onChipClick(item) {
 
       <p class="id-help">{{ safeMessage }}</p>
 
-      <ul v-if="missing && missing.length" class="id-chips" aria-label="Campos pendientes">
+      <ul v-if="missing && missing.length" class="id-chips" :aria-label="t('client_account.profile_completion_pending_label')">
         <li
           v-for="item in missing"
           :key="item.key || item.label"

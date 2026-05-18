@@ -37,6 +37,9 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   proteinG: { type: Number, required: true },
@@ -58,7 +61,7 @@ function pct(grams, coef) {
 const macros = computed(() => [
   {
     key: 'protein',
-    label: 'Proteína',
+    label: t('client_plan.macros_protein_label'),
     grams: props.proteinG,
     kcal: props.proteinG * 4,
     percent: pct(props.proteinG, 4),
@@ -67,7 +70,7 @@ const macros = computed(() => [
   },
   {
     key: 'carbs',
-    label: 'Carbos',
+    label: t('client_plan.macros_carbs_label'),
     grams: props.carbsG,
     kcal: props.carbsG * 4,
     percent: pct(props.carbsG, 4),
@@ -76,7 +79,7 @@ const macros = computed(() => [
   },
   {
     key: 'fat',
-    label: 'Grasas',
+    label: t('client_plan.macros_fat_label'),
     grams: props.fatG,
     kcal: props.fatG * 9,
     percent: pct(props.fatG, 9),

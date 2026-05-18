@@ -9,6 +9,8 @@
  *
  * Voice: tuteo neutro, NO mention of AI/ML/Claude. Coach is human.
  */
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 defineProps({
   coachName: { type: String, default: 'Marina Pérez' },
   compact: { type: Boolean, default: false },
@@ -35,13 +37,13 @@ defineProps({
         class="font-display font-semibold uppercase tracking-[0.08em] text-wc-text"
         :class="compact ? 'text-[11px]' : 'text-[13px]'"
       >
-        Solo tu coach ve estas fotos
+        {{ t('client_progress.photos_privacy_title') }}
       </h4>
       <p
         v-if="!compact"
         class="mt-0.5 text-[13px] leading-snug text-wc-text-secondary"
       >
-        Encriptadas en tránsito y en reposo. Nunca aparecen en tu perfil público ni se comparten con la comunidad.
+        {{ t('client_progress.photos_privacy_body') }}
       </p>
       <div
         class="flex flex-wrap gap-2"
@@ -52,14 +54,14 @@ defineProps({
             <circle cx="12" cy="12" r="10" />
             <path d="M12 8v4M12 16h.01" />
           </svg>
-          Solo {{ coachName }}
+          {{ t('client_progress.photos_privacy_only_coach', { coachName }) }}
         </span>
         <span class="inline-flex items-center gap-1.5 rounded-full border border-wc-border bg-wc-bg-secondary px-2.5 py-1 text-[11px] font-medium text-wc-text-secondary">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-2.5 w-2.5 opacity-70" aria-hidden="true">
             <rect x="4" y="11" width="16" height="10" rx="2" />
             <path d="M8 11V7a4 4 0 0 1 8 0v4" />
           </svg>
-          AES-256
+          {{ t('client_progress.photos_aes_encrypt') }}
         </span>
         <a
           href="/privacy"
@@ -68,7 +70,7 @@ defineProps({
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-2.5 w-2.5 opacity-70" aria-hidden="true">
             <path d="M3 12h18M12 3v18" />
           </svg>
-          Política
+          {{ t('client_progress.photos_privacy_policy') }}
         </a>
       </div>
     </div>

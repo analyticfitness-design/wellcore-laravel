@@ -11,24 +11,27 @@
  * Pure presentational — no interaction. Lives inside PhotoGuide.
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import AngleSilhouette from './AngleSilhouette.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
   genero: { type: String, default: '' }, // 'mujer' | 'hombre' | ''
 });
 
-const ANGLES = [
-  { num: '01', variant: 'front', file: 'frontal', label: 'Frente',  desc: 'Mirando directo a la cámara, brazos relajados al lado del cuerpo. Pies separados al ancho de cadera.' },
-  { num: '02', variant: 'side',  file: 'perfil',  label: 'Perfil',  desc: 'De lado izquierdo, exactamente 90° a la cámara. Mira al horizonte, brazos sueltos.' },
-  { num: '03', variant: 'back',  file: 'espalda', label: 'Espalda', desc: 'De espaldas a la cámara, brazos al lado del cuerpo. Hombros relajados, mirada al frente.' },
-];
+const ANGLES = computed(() => [
+  { num: '01', variant: 'front', file: 'frontal', label: t('client_progress.photos_front'),  desc: t('client_progress.photos_front_desc') },
+  { num: '02', variant: 'side',  file: 'perfil',  label: t('client_progress.photos_side'),   desc: t('client_progress.photos_side_desc') },
+  { num: '03', variant: 'back',  file: 'espalda', label: t('client_progress.photos_back'),   desc: t('client_progress.photos_back_desc') },
+]);
 
 const useCharacters = computed(() => props.genero === 'mujer' || props.genero === 'hombre');
 const characterBase = computed(() => props.genero === 'mujer' ? '/images/characters/silvia' : '/images/characters/dann');
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4" role="list" aria-label="Ángulos requeridos">
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4" role="list" :aria-label="t('client_progress.photos_angles_aria')">
     <article
       v-for="angle in ANGLES"
       :key="angle.num"
@@ -39,7 +42,7 @@ const characterBase = computed(() => props.genero === 'mujer' ? '/images/charact
         {{ angle.num }} / 03
       </span>
       <span class="absolute right-4 top-4 inline-flex items-center rounded-full border border-wc-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-wc-text-tertiary">
-        Req
+        {{ t('client_progress.photos_angle_req_short') }}
       </span>
 
       <div class="absolute inset-0 flex items-center justify-center">

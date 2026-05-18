@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, onUnmounted, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
@@ -17,6 +18,7 @@ import ReportPostMenu from '../../components/community/ReportPostMenu.vue';
 import CoachBadge from '../../components/community/CoachBadge.vue';
 import OfficialBadge from '../../components/community/OfficialBadge.vue';
 
+const { t } = useI18n();
 const api = useApi();
 const authStore = useAuthStore();
 const toast = useToast();
@@ -54,11 +56,11 @@ function handlePostMediaSelect(e) {
   e.target.value = '';
   if (!file) return;
   if (!POST_MEDIA_MIMES.includes(file.type)) {
-    toast.error('Formato no válido. Usa JPG, PNG o WebP.');
+    toast.error(t('client_social.error_invalid_format'));
     return;
   }
   if (file.size > POST_MEDIA_MAX_BYTES) {
-    toast.error('La imagen excede 10 MB.');
+    toast.error(t('client_social.error_image_too_large'));
     return;
   }
   if (postMediaPreview.value) {
@@ -126,25 +128,25 @@ function dismissTour() {
 }
 
 // ── Constants (module-level, non-reactive) ───────────────────────────
-const REACTION_TYPES = [
-  { type: 'like',   emoji: '\uD83D\uDC4D', label: 'Genial' },
-  { type: 'fire',   emoji: '\uD83D\uDD25', label: 'Fuego' },
-  { type: 'muscle', emoji: '\uD83D\uDCAA', label: 'Fuerza' },
-  { type: 'clap',   emoji: '\uD83D\uDC4F', label: 'Bravo' },
-];
+const REACTION_TYPES = computed(() => [
+  { type: 'like',   emoji: '\uD83D\uDC4D', label: t('client_social.reaction_like')   },
+  { type: 'fire',   emoji: '\uD83D\uDD25', label: t('client_social.reaction_fire')   },
+  { type: 'muscle', emoji: '\uD83D\uDCAA', label: t('client_social.reaction_muscle') },
+  { type: 'clap',   emoji: '\uD83D\uDC4F', label: t('client_social.reaction_clap')   },
+]);
 
-const POST_TYPE_COLORS = {
-  achievement: { border: 'border-yellow-500/30', text: 'text-yellow-500', bg: 'bg-yellow-500/10', gradient: 'from-yellow-500 to-yellow-500/20', emoji: '\uD83C\uDFC6', label: 'Logro' },
-  pr:          { border: 'border-green-500/30',  text: 'text-green-500',  bg: 'bg-green-500/10',  gradient: 'from-green-500 to-green-500/20',  emoji: '\uD83D\uDCAA', label: 'PR' },
-  photo:       { border: 'border-blue-500/30',   text: 'text-blue-400',   bg: 'bg-blue-500/10',   gradient: 'from-blue-500 to-blue-500/20',   emoji: '\uD83D\uDCF8', label: 'Foto' },
+const POST_TYPE_COLORS = computed(() => ({
+  achievement: { border: 'border-yellow-500/30', text: 'text-yellow-500', bg: 'bg-yellow-500/10', gradient: 'from-yellow-500 to-yellow-500/20', emoji: '\uD83C\uDFC6', label: t('client_social.badge_achievement') },
+  pr:          { border: 'border-green-500/30',  text: 'text-green-500',  bg: 'bg-green-500/10',  gradient: 'from-green-500 to-green-500/20',  emoji: '\uD83D\uDCAA', label: t('client_social.badge_pr') },
+  photo:       { border: 'border-blue-500/30',   text: 'text-blue-400',   bg: 'bg-blue-500/10',   gradient: 'from-blue-500 to-blue-500/20',   emoji: '\uD83D\uDCF8', label: t('client_social.badge_photo') },
   text:        { border: '',                      text: '',                bg: '',                  gradient: '',                                emoji: '',              label: '' },
-};
+}));
 
-const POST_TYPE_TABS = [
-  { key: 'text',        label: 'Post',     borderColor: 'border-wc-accent',   textColor: 'text-wc-text', bgColor: 'bg-wc-accent/5',    icon: 'chat' },
-  { key: 'achievement', label: 'Logro',    borderColor: 'border-yellow-500',  textColor: 'text-yellow-500', bgColor: 'bg-yellow-500/5', icon: 'trophy' },
-  { key: 'pr',          label: 'Nuevo PR', borderColor: 'border-green-500',   textColor: 'text-green-500',  bgColor: 'bg-green-500/5',  icon: 'muscle' },
-];
+const POST_TYPE_TABS = computed(() => [
+  { key: 'text',        label: t('client_social.create_tab_text'),        borderColor: 'border-wc-accent',  textColor: 'text-wc-text',    bgColor: 'bg-wc-accent/5',  icon: 'chat' },
+  { key: 'achievement', label: t('client_social.create_tab_achievement'), borderColor: 'border-yellow-500', textColor: 'text-yellow-500', bgColor: 'bg-yellow-500/5', icon: 'trophy' },
+  { key: 'pr',          label: t('client_social.create_tab_pr'),          borderColor: 'border-green-500',  textColor: 'text-green-500',  bgColor: 'bg-green-500/5',  icon: 'muscle' },
+]);
 
 // ── Infinite scroll handle (module-level) ────────────────────────────
 let scrollObserver = null;
@@ -202,7 +204,7 @@ async function fetchFeed(reset = false) {
     }
   } catch (err) {
     if (err.name !== 'CanceledError' && err.name !== 'AbortError') {
-      error.value = err.response?.data?.message || 'Error al cargar la comunidad';
+      error.value = err.response?.data?.message || t('client_social.community_load_error');
     }
   } finally {
     loading.value = false;
@@ -245,7 +247,7 @@ async function createPost() {
     const newPost = {
       id: response.data.id,
       client_id: currentClientId.value,
-      client_name: localStorage.getItem('wc_user_name') || 'Yo',
+      client_name: localStorage.getItem('wc_user_name') || t('client_social.self_name_fallback'),
       content: displayContent,
       post_type: postType.value,
       image_url: response.data.image_url ?? null,
@@ -267,7 +269,7 @@ async function createPost() {
     if (err.response?.status === 422) {
       postErrors.value = err.response.data.errors || {};
     }
-    toast.apiError(err, 'No pudimos publicar tu post.');
+    toast.apiError(err, t('client_social.error_publish_failed'));
   } finally {
     submittingPost.value = false;
   }
@@ -306,7 +308,7 @@ async function toggleReaction(postId, reactionType) {
       counts[reactionType] = Math.max(0, (counts[reactionType] || 1) - 1);
     }
     post.reaction_counts = { ...counts };
-    toast.apiError(err, 'No pudimos registrar tu reacción.');
+    toast.apiError(err, t('client_social.error_react_failed'));
   }
 }
 
@@ -322,11 +324,11 @@ async function addComment(postId) {
 
   const text = (commentTexts.value[postId] || '').trim();
   if (!text) {
-    toast.warn('Escribe un comentario antes de enviar.');
+    toast.warn(t('client_social.error_comment_empty'));
     return;
   }
   if (text.length > 500) {
-    toast.warn('El comentario es muy largo (máx. 500).');
+    toast.warn(t('client_social.error_comment_too_long'));
     return;
   }
 
@@ -342,7 +344,7 @@ async function addComment(postId) {
       if (!post.comments) post.comments = [];
       post.comments.push({
         id: response.data.id,
-        client_name: response.data.client_name || localStorage.getItem('wc_user_name') || 'Yo',
+        client_name: response.data.client_name || localStorage.getItem('wc_user_name') || t('client_social.self_name_fallback'),
         client_id: currentClientId.value,
         content: text,
         created_at: response.data.created_at || new Date().toISOString(),
@@ -350,7 +352,7 @@ async function addComment(postId) {
       post.comments_count = (post.comments_count || 0) + 1;
     }
   } catch (err) {
-    toast.apiError(err, 'No pudimos publicar tu comentario.');
+    toast.apiError(err, t('client_social.error_comment_failed'));
   } finally {
     submittingComment.value[postId] = false;
   }
@@ -368,9 +370,9 @@ async function deletePost(postId) {
     await api.delete(`/api/v/client/community/${postId}`);
     posts.value = posts.value.filter(p => p.id !== postId);
     communityStats.value.total_posts = Math.max(0, communityStats.value.total_posts - 1);
-    toast.success('Post eliminado.');
+    toast.success(t('client_social.success_post_deleted'));
   } catch (err) {
-    toast.apiError(err, 'No pudimos eliminar el post.');
+    toast.apiError(err, t('client_social.error_delete_failed'));
   } finally {
     deletingPost.value = null;
     confirmDeleteId.value = null;
@@ -495,13 +497,13 @@ function timeAgo(dateStr) {
   const date = new Date(dateStr);
   const now = new Date();
   const seconds = Math.floor((now - date) / 1000);
-  if (seconds < 60) return 'hace un momento';
+  if (seconds < 60) return t('client_social.time_just_now');
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `hace ${minutes}m`;
+  if (minutes < 60) return t('client_social.time_minutes', { n: minutes });
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `hace ${hours}h`;
+  if (hours < 24) return t('client_social.time_hours', { n: hours });
   const days = Math.floor(hours / 24);
-  if (days < 7) return `hace ${days}d`;
+  if (days < 7) return t('client_social.time_days', { n: days });
   return date.toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
 }
 
@@ -510,9 +512,9 @@ function getInitials(name) {
 }
 
 function getPlaceholder() {
-  if (postType.value === 'achievement') return '\u00BFQu\u00E9 lograste hoy? Cu\u00E9ntalo...';
-  if (postType.value === 'pr') return 'Describe tu nuevo r\u00E9cord personal...';
-  return 'Comparte algo con la comunidad...';
+  if (postType.value === 'achievement') return t('client_social.create_placeholder_achievement');
+  if (postType.value === 'pr') return t('client_social.create_placeholder_pr');
+  return t('client_social.create_placeholder_text');
 }
 
 function isOwnPost(post) {
@@ -520,7 +522,7 @@ function isOwnPost(post) {
 }
 
 function getPostTypeInfo(type) {
-  return POST_TYPE_COLORS[type] || POST_TYPE_COLORS.text;
+  return POST_TYPE_COLORS.value[type] || POST_TYPE_COLORS.value.text;
 }
 
 function getVisibleComments(post) {
@@ -576,7 +578,7 @@ function getReactionCount(post, type) {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
               </svg>
             </div>
-            <span class="text-[10px] text-zinc-600">Tu Pulso</span>
+            <span class="text-[10px] text-zinc-600">{{ t('client_social.pulso_your_pulso') }}</span>
           </button>
 
           <!-- Pulsos de miembros -->
@@ -601,7 +603,7 @@ function getReactionCount(post, type) {
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
           </svg>
-          Sé el primero en publicar un Pulso
+          {{ t('client_social.pulso_be_first') }}
         </button>
       </div>
 
@@ -615,38 +617,38 @@ function getReactionCount(post, type) {
         <button
           @click="dismissTour"
           class="absolute right-4 top-4 text-wc-text-secondary hover:text-wc-text transition-colors"
-          aria-label="Cerrar"
+          :aria-label="t('client_social.tour_close')"
         >✕</button>
 
-        <p class="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-wc-accent">Bienvenido a la Comunidad</p>
+        <p class="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-wc-accent">{{ t('client_social.tour_welcome_eyebrow') }}</p>
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div class="flex items-start gap-3">
             <span class="mt-0.5 shrink-0 text-xl">🏆</span>
             <div>
-              <p class="text-sm font-semibold text-wc-text">Comparte un logro</p>
-              <p class="text-xs text-wc-text-secondary">Usa la pestaña "Logro" para celebrar tus victorias con el resto del equipo.</p>
+              <p class="text-sm font-semibold text-wc-text">{{ t('client_social.tour_achievement_title') }}</p>
+              <p class="text-xs text-wc-text-secondary">{{ t('client_social.tour_achievement_desc') }}</p>
             </div>
           </div>
           <div class="flex items-start gap-3">
             <span class="mt-0.5 shrink-0 text-xl">💪</span>
             <div>
-              <p class="text-sm font-semibold text-wc-text">Publica un PR</p>
-              <p class="text-xs text-wc-text-secondary">Rompiste tu récord personal? Compártelo en "Nuevo PR" y recibe el apoyo del grupo.</p>
+              <p class="text-sm font-semibold text-wc-text">{{ t('client_social.tour_pr_title') }}</p>
+              <p class="text-xs text-wc-text-secondary">{{ t('client_social.tour_pr_desc') }}</p>
             </div>
           </div>
           <div class="flex items-start gap-3">
             <span class="mt-0.5 shrink-0 text-xl">🔥</span>
             <div>
-              <p class="text-sm font-semibold text-wc-text">Reacciona a los posts</p>
-              <p class="text-xs text-wc-text-secondary">Dale fuego, fuerza o un aplauso a los posts de tus compañeros para motivarlos.</p>
+              <p class="text-sm font-semibold text-wc-text">{{ t('client_social.tour_react_title') }}</p>
+              <p class="text-xs text-wc-text-secondary">{{ t('client_social.tour_react_desc') }}</p>
             </div>
           </div>
           <div class="flex items-start gap-3">
             <span class="mt-0.5 shrink-0 text-xl">👥</span>
             <div>
-              <p class="text-sm font-semibold text-wc-text">Pestaña "Siguiendo"</p>
-              <p class="text-xs text-wc-text-secondary">Cuando sigas miembros, su contenido aparecerá en tu feed personalizado.</p>
+              <p class="text-sm font-semibold text-wc-text">{{ t('client_social.tour_following_title') }}</p>
+              <p class="text-xs text-wc-text-secondary">{{ t('client_social.tour_following_desc') }}</p>
             </div>
           </div>
         </div>
@@ -654,7 +656,7 @@ function getReactionCount(post, type) {
         <button
           @click="dismissTour"
           class="mt-5 w-full rounded-xl border border-wc-accent/40 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-wc-accent transition-colors hover:bg-wc-accent/10"
-        >Entendido, ¡vamos!</button>
+        >{{ t('client_social.tour_dismiss') }}</button>
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -664,19 +666,19 @@ function getReactionCount(post, type) {
         <div class="wc-orb-tr"></div>
         <div class="relative z-10 flex items-end justify-between">
           <div>
-            <p class="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-wc-accent">Comunidad WellCore</p>
-            <h1 class="wc-text-gradient font-display text-5xl sm:text-6xl tracking-wide leading-none">COMUNIDAD</h1>
-            <p class="mt-2 text-sm text-wc-text-secondary">Comparte tus logros &middot; Celebra los de otros</p>
+            <p class="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-wc-accent">{{ t('client_social.community_eyebrow') }}</p>
+            <h1 class="wc-text-gradient font-display text-5xl sm:text-6xl tracking-wide leading-none">{{ t('client_social.community_title') }}</h1>
+            <p class="mt-2 text-sm text-wc-text-secondary">{{ t('client_social.community_subtitle') }}</p>
           </div>
           <div class="hidden items-center gap-5 sm:flex">
             <div class="text-center">
               <p class="font-display text-4xl text-wc-accent tabular-nums">{{ communityStats.total_posts }}</p>
-              <p class="text-[10px] font-semibold tracking-[0.25em] uppercase text-wc-text-secondary">Posts</p>
+              <p class="text-[10px] font-semibold tracking-[0.25em] uppercase text-wc-text-secondary">{{ t('client_social.community_stats_posts') }}</p>
             </div>
             <div class="h-10 w-px bg-wc-border"></div>
             <div class="text-center">
               <p class="font-display text-4xl text-wc-accent tabular-nums">{{ communityStats.active_members }}</p>
-              <p class="text-[10px] font-semibold tracking-[0.25em] uppercase text-wc-text-secondary">Miembros</p>
+              <p class="text-[10px] font-semibold tracking-[0.25em] uppercase text-wc-text-secondary">{{ t('client_social.community_stats_members') }}</p>
             </div>
           </div>
         </div>
@@ -702,7 +704,7 @@ function getReactionCount(post, type) {
             ? 'bg-wc-bg-tertiary text-wc-text shadow-sm'
             : 'text-wc-text-tertiary hover:text-wc-text-secondary'"
         >
-          Latido
+          {{ t('client_social.community_tab_pulse') }}
         </button>
         <button
           type="button"
@@ -712,7 +714,7 @@ function getReactionCount(post, type) {
             ? 'bg-wc-bg-tertiary text-wc-text shadow-sm'
             : 'text-wc-text-tertiary hover:text-wc-text-secondary'"
         >
-          Comunidad
+          {{ t('client_social.community_tab_community') }}
         </button>
         <button
           type="button"
@@ -722,7 +724,7 @@ function getReactionCount(post, type) {
             ? 'bg-wc-bg-tertiary text-wc-text shadow-sm'
             : 'text-wc-text-tertiary hover:text-wc-text-secondary'"
         >
-          Siguiendo
+          {{ t('client_social.community_tab_following') }}
         </button>
       </div>
 
@@ -776,14 +778,14 @@ function getReactionCount(post, type) {
           <div v-if="postMediaPreview" class="mt-3 relative inline-block max-w-xs">
             <img
               :src="postMediaPreview"
-              alt="Vista previa"
+              :alt="t('client_social.create_preview_alt')"
               class="max-h-56 w-auto rounded-xl border border-wc-border object-cover"
             />
             <button
               type="button"
               @click="removePostMedia"
               class="absolute right-2 top-2 rounded-full bg-black/70 p-1.5 text-white transition-opacity hover:bg-black/90"
-              aria-label="Quitar foto"
+              :aria-label="t('client_social.create_remove_photo')"
             >
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -800,8 +802,8 @@ function getReactionCount(post, type) {
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
               </svg>
-              <span class="hidden sm:inline">{{ postMediaFile ? 'Cambiar foto' : 'Adjuntar foto' }}</span>
-              <span class="sm:hidden">Foto</span>
+              <span class="hidden sm:inline">{{ postMediaFile ? t('client_social.create_change_photo') : t('client_social.create_attach_photo') }}</span>
+              <span class="sm:hidden">{{ t('client_social.create_attach_photo_short') }}</span>
               <input
                 ref="postMediaInputRef"
                 type="file"
@@ -825,7 +827,7 @@ function getReactionCount(post, type) {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
               </svg>
-              Publicar
+              {{ t('client_social.create_publish') }}
             </button>
           </div>
         </form>
@@ -879,7 +881,7 @@ function getReactionCount(post, type) {
                     </div>
                     <div>
                       <div class="flex items-center gap-2 flex-wrap">
-                        <p class="text-sm font-semibold leading-tight text-wc-text group-hover:text-wc-accent transition-colors">{{ post.client_name || post.author_name || 'Miembro' }}</p>
+                        <p class="text-sm font-semibold leading-tight text-wc-text group-hover:text-wc-accent transition-colors">{{ post.client_name || post.author_name || t('client_social.badge_member_fallback') }}</p>
                         <CoachBadge v-if="post.author_type === 'coach'" size="xs" />
                         <OfficialBadge v-if="post.author_type === 'admin' || post.is_official" />
                         <!-- Post type badge -->
@@ -919,7 +921,7 @@ function getReactionCount(post, type) {
                     v-if="isOwnPost(post)"
                     @click="deletePost(post.id)"
                     :disabled="deletingPost === post.id"
-                    :title="confirmDeleteId === post.id ? 'Confirmar eliminar' : 'Eliminar publicacion'"
+                    :title="confirmDeleteId === post.id ? t('client_social.delete_tooltip_confirm') : t('client_social.delete_tooltip')"
                     class="rounded-lg p-1.5 text-wc-text-tertiary opacity-0 transition-all group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 disabled:opacity-50"
                     :class="confirmDeleteId === post.id ? 'opacity-100 bg-red-500/10 text-red-400' : ''"
                   >
@@ -940,9 +942,9 @@ function getReactionCount(post, type) {
                   v-if="confirmDeleteId === post.id && deletingPost !== post.id"
                   class="mt-2 flex items-center justify-between rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2"
                 >
-                  <p class="text-sm text-red-400">Haz clic de nuevo en el icono para confirmar</p>
+                  <p class="text-sm text-red-400">{{ t('client_social.delete_confirm_prompt') }}</p>
                   <button @click.stop="cancelDelete" class="text-[10px] font-semibold uppercase text-wc-text-tertiary hover:text-wc-text-secondary transition-colors">
-                    Cancelar
+                    {{ t('client_social.delete_cancel') }}
                   </button>
                 </div>
               </Transition>
@@ -954,7 +956,7 @@ function getReactionCount(post, type) {
               <div v-if="post.image_url" class="mt-3 overflow-hidden rounded-xl border border-wc-border bg-wc-bg-tertiary">
                 <img
                   :src="post.image_url"
-                  :alt="post.client_name + ' — foto del post'"
+                  :alt="(post.client_name || t('client_social.badge_member_fallback')) + ' — ' + t('client_social.badge_photo')"
                   loading="lazy"
                   class="w-full max-h-[480px] object-cover"
                 />
@@ -1003,7 +1005,7 @@ function getReactionCount(post, type) {
                         {{ (comment.client_name || 'M').charAt(0).toUpperCase() }}
                       </div>
                       <div class="min-w-0 flex-1">
-                        <span class="text-sm font-semibold text-wc-text">{{ comment.client_name || 'Miembro' }}</span>
+                        <span class="text-sm font-semibold text-wc-text">{{ comment.client_name || t('client_social.badge_member_fallback') }}</span>
                         <span class="ml-1.5 text-xs text-wc-text-tertiary">{{ timeAgo(comment.created_at) }}</span>
                         <p class="mt-0.5 text-sm leading-relaxed text-wc-text-secondary">{{ comment.content }}</p>
                       </div>
@@ -1011,11 +1013,11 @@ function getReactionCount(post, type) {
 
                     <!-- "X more" indicator -->
                     <p v-if="getHiddenCommentCount(post) > 0" class="pl-8 text-xs text-wc-text-tertiary">
-                      + {{ getHiddenCommentCount(post) }} comentarios mas
+                      {{ t('client_social.comments_more', { n: getHiddenCommentCount(post) }).split('|')[getHiddenCommentCount(post) === 1 ? 0 : 1] }}
                     </p>
                   </template>
 
-                  <p v-else class="py-2 text-center text-sm text-wc-text-tertiary">Sin comentarios aun</p>
+                  <p v-else class="py-2 text-center text-sm text-wc-text-tertiary">{{ t('client_social.comments_empty') }}</p>
 
                   <!-- Add comment input -->
                   <div class="mt-2 flex gap-2 border-t border-wc-border/40 pt-2">
@@ -1024,7 +1026,7 @@ function getReactionCount(post, type) {
                       v-model="commentTexts[post.id]"
                       @keydown.enter="addComment(post.id)"
                       :disabled="submittingComment[post.id]"
-                      placeholder="Comentar..."
+                      :placeholder="t('client_social.comments_placeholder')"
                       maxlength="500"
                       class="flex-1 rounded-xl border border-wc-border bg-wc-bg px-3 py-1.5 text-sm text-wc-text placeholder-wc-text-tertiary focus:border-wc-accent/50 focus:outline-none focus:ring-1 focus:ring-wc-accent/20 disabled:opacity-60"
                     />
@@ -1052,13 +1054,13 @@ function getReactionCount(post, type) {
         <div v-if="!loading && posts.length === 0 && feedTab === 'following'"
              class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-wc-border py-12 text-center gap-3">
           <span class="text-4xl leading-none">&#128101;</span>
-          <p class="font-semibold text-wc-text">Aún no sigues a nadie</p>
-          <p class="text-sm text-wc-text/50">Visita perfiles de tu comunidad y sigue a quien te inspire.</p>
+          <p class="font-semibold text-wc-text">{{ t('client_social.empty_following_title') }}</p>
+          <p class="text-sm text-wc-text/50">{{ t('client_social.empty_following_desc') }}</p>
           <button
             @click="switchFeedTab('all')"
             class="mt-2 rounded-xl bg-wc-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-wc-accent/90 active:scale-95"
           >
-            Ver comunidad
+            {{ t('client_social.empty_following_cta') }}
           </button>
         </div>
 
@@ -1070,8 +1072,8 @@ function getReactionCount(post, type) {
               <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
             </svg>
           </div>
-          <h3 class="relative z-10 mt-5 wc-text-gradient font-display text-3xl tracking-wide">SE EL PRIMERO</h3>
-          <p class="relative z-10 mt-2 text-sm text-wc-text-secondary">Comparte tu logro y motiva a la comunidad WellCore</p>
+          <h3 class="relative z-10 mt-5 wc-text-gradient font-display text-3xl tracking-wide">{{ t('client_social.empty_general_title') }}</h3>
+          <p class="relative z-10 mt-2 text-sm text-wc-text-secondary">{{ t('client_social.empty_general_desc') }}</p>
         </div>
 
         <!-- Load more button (explicit, matching Blade) -->
@@ -1080,7 +1082,7 @@ function getReactionCount(post, type) {
             @click="loadMore"
             class="btn-press flex items-center gap-2 rounded-xl border border-wc-border px-6 py-2.5 text-sm font-medium text-wc-text-secondary transition-all hover:border-wc-accent/40 hover:text-wc-accent"
           >
-            Cargar mas
+            {{ t('client_social.load_more') }}
           </button>
         </div>
 
@@ -1091,9 +1093,9 @@ function getReactionCount(post, type) {
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
             </svg>
-            <span class="text-sm text-wc-text-tertiary">Cargando mas...</span>
+            <span class="text-sm text-wc-text-tertiary">{{ t('client_social.loading_more') }}</span>
           </div>
-          <p v-else-if="!hasMore && posts.length > 0" class="text-sm text-wc-text-tertiary">Has visto todas las publicaciones</p>
+          <p v-else-if="!hasMore && posts.length > 0" class="text-sm text-wc-text-tertiary">{{ t('client_social.no_more_posts') }}</p>
         </div>
       </div>
 
@@ -1105,18 +1107,18 @@ function getReactionCount(post, type) {
 
         <!-- My Phase -->
         <div class="wc-glass rounded-2xl border border-wc-border p-4">
-          <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-wc-text-tertiary">Mi Fase</p>
+          <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-wc-text-tertiary">{{ t('client_social.sidebar_my_phase') }}</p>
           <div class="mt-3 flex items-center gap-3">
             <div class="relative flex h-3 w-3 shrink-0">
               <span class="absolute inset-0 animate-ping rounded-full bg-wc-accent opacity-30"></span>
               <span class="relative h-3 w-3 rounded-full bg-wc-accent"></span>
             </div>
-            <p class="font-display text-lg tracking-wide text-wc-text">S1 · Adaptación</p>
+            <p class="font-display text-lg tracking-wide text-wc-text">{{ t('client_social.sidebar_phase_label') }}</p>
           </div>
           <div class="mt-3">
             <div class="mb-1 flex justify-between text-[10px] text-wc-text-tertiary">
-              <span>Semana 1</span>
-              <span>de 4</span>
+              <span>{{ t('client_social.sidebar_phase_week') }}</span>
+              <span>{{ t('client_social.sidebar_phase_of') }}</span>
             </div>
             <div class="h-1 overflow-hidden rounded-full bg-wc-border">
               <div class="h-full rounded-full bg-wc-accent" style="width:25%"></div>
@@ -1126,30 +1128,30 @@ function getReactionCount(post, type) {
 
         <!-- Community stats 2×2 -->
         <div class="wc-glass rounded-2xl border border-wc-border p-4">
-          <p class="mb-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-wc-text-tertiary">Estadísticas</p>
+          <p class="mb-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-wc-text-tertiary">{{ t('client_social.sidebar_stats_title') }}</p>
           <div class="grid grid-cols-2 gap-2">
             <div class="rounded-xl bg-wc-bg-tertiary p-3 text-center">
               <p class="font-display text-2xl tabular-nums text-wc-accent">{{ communityStats.total_posts ?? 0 }}</p>
-              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Posts</p>
+              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('client_social.sidebar_stats_posts') }}</p>
             </div>
             <div class="rounded-xl bg-wc-bg-tertiary p-3 text-center">
               <p class="font-display text-2xl tabular-nums text-wc-accent">{{ communityStats.active_members ?? 0 }}</p>
-              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Miembros</p>
+              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('client_social.sidebar_stats_members') }}</p>
             </div>
             <div class="rounded-xl bg-wc-bg-tertiary p-3 text-center">
               <p class="font-display text-2xl tabular-nums text-yellow-500">{{ communityStats.total_achievements ?? 0 }}</p>
-              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">Logros</p>
+              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('client_social.sidebar_stats_achievements') }}</p>
             </div>
             <div class="rounded-xl bg-wc-bg-tertiary p-3 text-center">
               <p class="font-display text-2xl tabular-nums text-green-500">{{ communityStats.total_prs ?? 0 }}</p>
-              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">PRs</p>
+              <p class="mt-0.5 text-[9px] font-semibold uppercase tracking-wider text-wc-text-tertiary">{{ t('client_social.sidebar_stats_prs') }}</p>
             </div>
           </div>
         </div>
 
         <!-- Active members -->
         <div v-if="activeMembersList.length > 0" class="wc-glass rounded-2xl border border-wc-border p-4">
-          <p class="mb-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-wc-text-tertiary">Miembros Activos</p>
+          <p class="mb-3 text-[10px] font-semibold uppercase tracking-[0.25em] text-wc-text-tertiary">{{ t('client_social.sidebar_active_members') }}</p>
           <div class="space-y-2.5">
             <div v-for="member in activeMembersList" :key="member.id" class="flex items-center gap-2.5">
               <div class="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-wc-accent/30 to-wc-accent/10 text-xs font-bold text-wc-accent">

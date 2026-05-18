@@ -24,7 +24,10 @@
  * Notes are loaded via useCoachFeedback composable when activePhoto.id changes.
  */
 import { ref, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useCoachFeedback } from '../../composables/useCoachFeedback';
+
+const { t } = useI18n();
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -96,14 +99,14 @@ const initials = computed(() =>
       <!-- Header -->
       <header class="flex items-center justify-between border-b border-wc-border px-4 py-3">
         <h2 id="coach-feedback-title" class="font-display text-base font-semibold uppercase tracking-wider text-wc-text">
-          Notas de tu coach
+          {{ t('client_progress.photos_feedback_title') }}
         </h2>
         <div class="flex items-center gap-1.5">
           <button
             v-if="activePhoto?.id"
             type="button"
             class="flex h-9 w-9 items-center justify-center rounded-full border border-wc-border bg-wc-bg-tertiary text-wc-text-secondary transition-colors hover:border-red-500/40 hover:text-red-400"
-            aria-label="Eliminar foto"
+            :aria-label="t('client_progress.photos_feedback_delete_aria')"
             @click="$emit('delete-photo', activePhoto)"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
@@ -113,7 +116,7 @@ const initials = computed(() =>
           <button
             type="button"
             class="flex h-9 w-9 items-center justify-center rounded-full border border-wc-border bg-wc-bg-tertiary text-wc-text-secondary transition-colors hover:text-wc-text"
-            aria-label="Cerrar panel"
+            :aria-label="t('client_progress.photos_feedback_close_aria')"
             @click="$emit('close')"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
@@ -145,7 +148,7 @@ const initials = computed(() =>
               type="button"
               class="flex-1 overflow-hidden rounded-md border-[1.5px] transition-opacity"
               :class="activePhoto?.tipo === angle ? 'border-white opacity-100' : 'border-transparent opacity-50 hover:opacity-80'"
-              :aria-label="`Ver ${angle}`"
+              :aria-label="t('client_progress.photos_session_view_aria', { label: angle })"
               @click="session.photos[angle] && $emit('change-active', session.photos[angle])"
             >
               <div class="aspect-[3/4] w-full bg-wc-bg-tertiary">
@@ -168,11 +171,11 @@ const initials = computed(() =>
           </div>
           <div class="min-w-0 flex-1">
             <h5 class="font-display text-[15px] font-semibold uppercase tracking-wider text-wc-text">
-              Coach {{ coachName }}
+              {{ t('client_progress.photos_feedback_coach_prefix') }} {{ coachName }}
             </h5>
-            <p class="text-xs text-wc-text-tertiary">Tu coach 1:1</p>
+            <p class="text-xs text-wc-text-tertiary">{{ t('client_progress.photos_feedback_coach_role') }}</p>
           </div>
-          <time class="ml-auto font-mono text-[11px] tracking-wider text-wc-text-tertiary">hace 2 días</time>
+          <time class="ml-auto font-mono text-[11px] tracking-wider text-wc-text-tertiary">{{ t('client_progress.photos_feedback_time_relative') }}</time>
         </div>
 
         <!-- Summary quote — HTML ref 18px + max-36ch + 2px accent border-left -->
@@ -212,18 +215,18 @@ const initials = computed(() =>
 
         <!-- No notes -->
         <p v-else class="rounded-xl border border-dashed border-wc-border bg-wc-bg-tertiary p-4 text-center text-sm text-wc-text-tertiary">
-          Tu coach aún no ha dejado notas en esta foto.
+          {{ t('client_progress.photos_feedback_no_notes') }}
         </p>
       </div>
 
       <!-- Reply -->
       <footer class="border-t border-wc-border bg-wc-bg-secondary p-3">
-        <label class="sr-only" for="coach-reply">Responder al coach</label>
+        <label class="sr-only" for="coach-reply">{{ t('client_progress.photos_feedback_reply_label') }}</label>
         <textarea
           id="coach-reply"
           v-model="replyText"
           rows="2"
-          placeholder="Responde a tu coach..."
+          :placeholder="t('client_progress.photos_feedback_reply_placeholder')"
           class="w-full resize-none rounded-xl border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-base text-wc-text placeholder:text-wc-text-tertiary focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/20"
         ></textarea>
         <div class="mt-2 flex justify-end">
@@ -233,7 +236,7 @@ const initials = computed(() =>
             class="inline-flex min-h-[40px] items-center gap-2 rounded-lg bg-wc-accent px-4 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-wc-accent/40 disabled:cursor-not-allowed disabled:opacity-50"
             @click="send"
           >
-            {{ sending ? 'Enviando...' : 'Enviar' }}
+            {{ sending ? t('client_progress.photos_feedback_sending') : t('client_progress.photos_feedback_send') }}
           </button>
         </div>
       </footer>

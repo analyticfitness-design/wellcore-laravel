@@ -6,7 +6,7 @@
       </svg>
     </div>
     <div class="objetivo-banner__main">
-      <div class="objetivo-banner__lab">Objetivo del bloque</div>
+      <div class="objetivo-banner__lab">{{ t('client_plan.v2_objetivo_label') }}</div>
       <p class="objetivo-banner__body">{{ objetivo }}</p>
     </div>
   </div>
@@ -15,6 +15,10 @@
 <script setup>
 // PlanObjetivoBanner — bloque del objetivo de entrenamiento.
 // CSS lines 723-745 del HTML V2.1.
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 defineProps({
   objetivo: { type: String, required: true },
 });

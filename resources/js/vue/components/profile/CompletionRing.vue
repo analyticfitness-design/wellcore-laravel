@@ -14,7 +14,10 @@
  * prefers-reduced-motion respetado.
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useReducedMotion } from '../../composables/useReducedMotion';
+
+const { t } = useI18n();
 
 const props = defineProps({
     score: { type: Number, default: 0 },
@@ -64,7 +67,7 @@ const dashOffset = computed(
       :width="size"
       :height="size"
       role="img"
-      :aria-label="`Completitud del perfil ${clampedScore}%`"
+      :aria-label="`${t('client_account.profile_completion_label')} ${clampedScore}%`"
     >
       <circle
         class="completion-ring__track"

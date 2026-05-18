@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useGroupPulse } from '../../composables/useGroupPulse';
 
+const { t } = useI18n();
 const { fetchFeed, loading } = useGroupPulse();
 
 const time = ref('today');
@@ -9,11 +11,11 @@ const events = ref([]);
 const pagination = ref({ current_page: 1, last_page: 1, total: 0 });
 const page = ref(1);
 
-const TIME_OPTIONS = [
-    { key: 'today', label: 'Hoy' },
-    { key: 'week', label: 'Esta semana' },
-    { key: 'all', label: 'Todos' },
-];
+const TIME_OPTIONS = computed(() => [
+    { key: 'today', label: t('client_social.gpf_filter_today') },
+    { key: 'week',  label: t('client_social.gpf_filter_week') },
+    { key: 'all',   label: t('client_social.gpf_filter_all') },
+]);
 
 const hasMore = computed(() => page.value < pagination.value.last_page);
 
@@ -63,11 +65,11 @@ onMounted(() => load(true));
       </div>
 
       <div v-if="loading && events.length === 0" class="gpf-empty">
-        Cargando latido del grupo...
+        {{ t('client_social.gpf_loading') }}
       </div>
 
       <div v-else-if="events.length === 0" class="gpf-empty">
-        Sin actividad del grupo en este rango.
+        {{ t('client_social.gpf_empty') }}
       </div>
 
       <div v-else class="gpf-list">
@@ -95,7 +97,7 @@ onMounted(() => load(true));
               >{{ init }}</span>
             </div>
             <div v-if="ev.minutes_ago !== undefined" class="gpf-time tnum">
-              hace {{ ev.minutes_ago }}min
+              {{ t('client_social.gpf_minutes_ago', { n: ev.minutes_ago }) }}
             </div>
           </div>
         </article>
@@ -108,7 +110,7 @@ onMounted(() => load(true));
         :disabled="loading"
         @click="loadMore"
       >
-        {{ loading ? 'Cargando...' : 'Cargar más' }}
+        {{ loading ? t('client_social.gpf_loading_short') : t('client_social.gpf_load_more') }}
       </button>
     </section>
   </div>

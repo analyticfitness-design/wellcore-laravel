@@ -1,9 +1,11 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
+const { t } = useI18n();
 const api = useApi();
 const toast = useToast();
 
@@ -33,7 +35,7 @@ async function fetchReferrals() {
         stats.value = d.stats || { total: 0, registered: 0, active: 0 };
         history.value = d.history || [];
     } catch (err) {
-        error.value = err.response?.data?.message || 'Error al cargar los referidos';
+        error.value = err.response?.data?.message || t('client_account.referrals_load_error');
     } finally {
         loading.value = false;
     }
@@ -46,7 +48,7 @@ async function copyLink() {
         copied.value = true;
         setTimeout(() => { copied.value = false; }, 2500);
     }).catch(() => {
-        toast.info('Copia el link manualmente: ' + referralLink.value);
+        toast.info(t('client_account.referrals_copy_manual', { link: referralLink.value }));
     });
 }
 
@@ -58,7 +60,7 @@ async function sendInvite() {
     // Client-side email validation
     if (!email) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        inviteError.value = 'Escribe un email válido.';
+        inviteError.value = t('client_account.referrals_invite_email_invalid');
         return;
     }
 
@@ -69,12 +71,12 @@ async function sendInvite() {
         });
         inviteEmail.value = '';
         showSuccess.value = true;
-        successMessage.value = response.data.message || 'Invitacion enviada exitosamente';
+        successMessage.value = response.data.message || t('client_account.referrals_invite_success_default');
         setTimeout(() => { showSuccess.value = false; }, 4000);
         // Refresh data
         await fetchReferrals();
     } catch (err) {
-        inviteError.value = err.response?.data?.message || 'Error al enviar la invitacion';
+        inviteError.value = err.response?.data?.message || t('client_account.referrals_invite_error');
     } finally {
         inviteSending.value = false;
     }
@@ -88,7 +90,7 @@ function dismissSuccess() {
 function shareWhatsApp() {
     if (!referralLink.value) return;
     const text = encodeURIComponent(
-        `Hola! Te invito a unirte a WellCore Fitness, la plataforma de entrenamiento personalizado. Usa mi link: ${referralLink.value}`
+        t('client_account.referrals_whatsapp_message', { link: referralLink.value })
     );
     window.open(`https://wa.me/?text=${text}`, '_blank');
 }
@@ -101,9 +103,9 @@ function formatDate(dateStr) {
 
 function getStatusBadge(status) {
     const map = {
-        pending: { label: 'Pendiente', class: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
-        registered: { label: 'Registrado', class: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-        active: { label: 'Activo', class: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+        pending: { label: t('client_account.referrals_status_pending'), class: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
+        registered: { label: t('client_account.referrals_status_registered'), class: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+        active: { label: t('client_account.referrals_status_active'), class: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
     };
     return map[status] || map.pending;
 }
@@ -134,13 +136,13 @@ onMounted(() => {
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
         </svg>
       </div>
-      <h2 class="mt-5 font-display text-2xl tracking-wide text-wc-text">ERROR AL CARGAR</h2>
+      <h2 class="mt-5 font-display text-2xl tracking-wide text-wc-text">{{ t('client_account.referrals_error_title') }}</h2>
       <p class="mt-2 text-sm text-wc-text-secondary">{{ error }}</p>
       <button
         @click="fetchReferrals"
         class="mt-6 rounded-xl bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
       >
-        Reintentar
+        {{ t('client_account.referrals_retry') }}
       </button>
     </div>
 
@@ -161,14 +163,14 @@ onMounted(() => {
         </div>
         <div class="relative px-5 py-6 sm:px-7 sm:py-8">
           <span class="inline-block rounded-full bg-wc-accent/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-wc-accent ring-1 ring-wc-accent/20">
-            Gana recompensas
+            {{ t('client_account.referrals_eyebrow') }}
           </span>
           <h1 class="mt-3 font-display text-3xl tracking-wide text-wc-text leading-none sm:text-4xl">
-            PROGRAMA DE<br>
-            <span class="text-wc-accent">REFERIDOS</span>
+            {{ t('client_account.referrals_title_line1') }}<br>
+            <span class="text-wc-accent">{{ t('client_account.referrals_title_line2') }}</span>
           </h1>
           <p class="mt-3 max-w-md text-sm text-wc-text-secondary leading-relaxed">
-            Invita a tus amigos a WellCore Fitness y gana beneficios exclusivos por cada persona que se una a la comunidad.
+            {{ t('client_account.referrals_subtitle') }}
           </p>
         </div>
       </div>
@@ -206,7 +208,7 @@ onMounted(() => {
           <div class="absolute top-0 left-0 right-0 h-0.5 bg-wc-accent rounded-t-2xl"></div>
           <div class="p-3 text-center sm:p-5">
             <p class="font-data text-2xl font-bold text-wc-accent sm:text-4xl">{{ stats.total }}</p>
-            <p class="mt-1.5 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary sm:mt-2 sm:text-[10px]">Total referidos</p>
+            <p class="mt-1.5 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary sm:mt-2 sm:text-[10px]">{{ t('client_account.referrals_stat_total') }}</p>
           </div>
         </div>
         <!-- Registered -->
@@ -214,7 +216,7 @@ onMounted(() => {
           <div class="absolute top-0 left-0 right-0 h-0.5 bg-blue-500 rounded-t-2xl"></div>
           <div class="p-3 text-center sm:p-5">
             <p class="font-data text-2xl font-bold text-blue-400 sm:text-4xl">{{ stats.registered }}</p>
-            <p class="mt-1.5 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary sm:mt-2 sm:text-[10px]">Registrados</p>
+            <p class="mt-1.5 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary sm:mt-2 sm:text-[10px]">{{ t('client_account.referrals_stat_registered') }}</p>
           </div>
         </div>
         <!-- Active -->
@@ -222,7 +224,7 @@ onMounted(() => {
           <div class="absolute top-0 left-0 right-0 h-0.5 bg-emerald-500 rounded-t-2xl"></div>
           <div class="p-3 text-center sm:p-5">
             <p class="font-data text-2xl font-bold text-emerald-400 sm:text-4xl">{{ stats.active }}</p>
-            <p class="mt-1.5 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary sm:mt-2 sm:text-[10px]">Activos</p>
+            <p class="mt-1.5 text-[9px] font-semibold uppercase tracking-widest text-wc-text-tertiary sm:mt-2 sm:text-[10px]">{{ t('client_account.referrals_stat_active') }}</p>
           </div>
         </div>
       </div>
@@ -238,12 +240,12 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <h2 class="text-sm font-semibold text-wc-text">Tu link de referido</h2>
-              <p class="text-[11px] text-wc-text-tertiary">Comparte este enlace con tus amigos</p>
+              <h2 class="text-sm font-semibold text-wc-text">{{ t('client_account.referrals_your_code_title') }}</h2>
+              <p class="text-[11px] text-wc-text-tertiary">{{ t('client_account.referrals_your_code_sub') }}</p>
             </div>
           </div>
           <span class="rounded-full bg-wc-accent px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-white">
-            Tu link exclusivo
+            {{ t('client_account.referrals_exclusive_badge') }}
           </span>
         </div>
 
@@ -273,7 +275,7 @@ onMounted(() => {
                   <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                 </svg>
               </Transition>
-              <span>{{ copied ? 'Copiado' : 'Copiar link' }}</span>
+              <span>{{ copied ? t('client_account.referrals_copied') : t('client_account.referrals_copy_link') }}</span>
             </button>
 
             <!-- WhatsApp button -->
@@ -284,7 +286,7 @@ onMounted(() => {
               <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
               </svg>
-              Compartir por WhatsApp
+              {{ t('client_account.referrals_share_whatsapp') }}
             </button>
           </div>
         </div>
@@ -299,8 +301,8 @@ onMounted(() => {
             </svg>
           </div>
           <div>
-            <h3 class="text-sm font-semibold text-wc-text">Invitar por correo electronico</h3>
-            <p class="text-[11px] text-wc-text-tertiary">Envia una invitacion directa a la bandeja de entrada</p>
+            <h3 class="text-sm font-semibold text-wc-text">{{ t('client_account.referrals_invite_title') }}</h3>
+            <p class="text-[11px] text-wc-text-tertiary">{{ t('client_account.referrals_invite_sub') }}</p>
           </div>
         </div>
         <form @submit.prevent="sendInvite" class="flex flex-col gap-3 sm:flex-row sm:items-start">
@@ -308,7 +310,7 @@ onMounted(() => {
             <input
               v-model="inviteEmail"
               type="email"
-              placeholder="correo@ejemplo.com"
+              :placeholder="t('client_account.referrals_invite_placeholder')"
               :class="inviteError ? 'border-red-500/50 focus:border-red-500/70 focus:ring-red-500/20' : 'border-wc-border focus:border-wc-accent/50 focus:ring-wc-accent/20'"
               class="w-full rounded-xl border bg-wc-bg px-4 py-2.5 text-sm text-wc-text placeholder-wc-text-tertiary transition-colors focus:outline-none focus:ring-2"
             />
@@ -331,7 +333,7 @@ onMounted(() => {
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
             </svg>
-            <span>{{ inviteSending ? 'Enviando...' : 'Invitar' }}</span>
+            <span>{{ inviteSending ? t('client_account.referrals_invite_sending') : t('client_account.referrals_invite_button') }}</span>
           </button>
         </form>
       </div>
@@ -340,7 +342,7 @@ onMounted(() => {
       <div class="rounded-2xl border border-wc-border bg-wc-bg-secondary overflow-hidden">
         <!-- Section header -->
         <div class="flex items-center justify-between border-b border-wc-border px-4 py-3 sm:px-6 sm:py-4">
-          <h3 class="wc-caption">Historial de referidos</h3>
+          <h3 class="wc-caption">{{ t('client_account.referrals_history_title') }}</h3>
           <span v-if="history.length > 0" class="rounded-full bg-wc-bg-tertiary px-2.5 py-0.5 text-[10px] font-bold text-wc-text-secondary">
             {{ history.length }}
           </span>
@@ -384,9 +386,9 @@ onMounted(() => {
             <path d="M12 58c0-8.837 7.163-16 16-16h24c8.837 0 16 7.163 16 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             <path d="M40 20v8M36 24h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-          <h3 class="mt-5 font-display text-2xl tracking-wide text-wc-text">SIN REFERIDOS AUN</h3>
+          <h3 class="mt-5 font-display text-2xl tracking-wide text-wc-text">{{ t('client_account.referrals_empty_title') }}</h3>
           <p class="mx-auto mt-2 max-w-xs text-sm text-wc-text-secondary leading-relaxed">
-            Comparte tu link exclusivo con amigos y comienza a ganar recompensas increibles.
+            {{ t('client_account.referrals_empty_sub') }}
           </p>
           <button
             @click="copyLink"
@@ -395,7 +397,7 @@ onMounted(() => {
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
             </svg>
-            Copiar mi link
+            {{ t('client_account.referrals_copy_my_link') }}
           </button>
         </div>
       </div>

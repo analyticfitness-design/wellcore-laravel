@@ -16,7 +16,10 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useFoodIcon } from '@/composables/useFoodIcon';
+
+const { t } = useI18n();
 
 const props = defineProps({
   food: {
@@ -61,7 +64,7 @@ const parsed = computed(() => {
   } else {
     const numMatch = trimmed.match(/^([\d¼½¾]+(?:\.\d+)?(?:\/\d+)?)\s+/);
     if (numMatch) {
-      qty = numMatch[1].replace('1/2', '½').replace('1/4', '¼').replace('3/4', '¾') + ' und';
+      qty = numMatch[1].replace('1/2', '½').replace('1/4', '¼').replace('3/4', '¾') + ' ' + t('client_plan.meal_item_qty_units_short');
       rest = trimmed.slice(numMatch[0].length).trim();
     }
   }
@@ -72,8 +75,11 @@ const parsed = computed(() => {
 
 function splitDetail(str) {
   if (!str) return { name: '', detail: '' };
-  const conMatch = str.match(/^(.+?)\s+con\s+(.+)$/i);
-  if (conMatch) return { name: conMatch[1].trim(), detail: 'con ' + conMatch[2].trim() };
+  // Detecta "con" en español o "with" en inglés en el contenido del backend.
+  const conMatch = str.match(/^(.+?)\s+(?:con|with)\s+(.+)$/i);
+  if (conMatch) {
+    return { name: conMatch[1].trim(), detail: t('client_plan.meal_item_detail_with_prefix') + conMatch[2].trim() };
+  }
 
   const parenMatch = str.match(/^(.+?)\s*\(([^)]+)\)\s*$/);
   if (parenMatch) return { name: parenMatch[1].trim(), detail: parenMatch[2].trim() };

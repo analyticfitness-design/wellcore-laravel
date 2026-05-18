@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useMentions } from '../../composables/useMentions';
 
 const props = defineProps({
@@ -11,6 +12,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:modelValue', 'mention']);
 
+const { t } = useI18n();
 const { search } = useMentions();
 
 const textareaRef = ref(null);
@@ -22,10 +24,10 @@ const currentToken = ref('');
 const tokenStartPos = ref(0);
 const dropdownPos = ref({ top: 0, left: 0 });
 
-const SPECIAL_TOKENS = [
-    { type: 'special', id: null, name: 'coach', label: '@coach (tu coach)' },
-    { type: 'special', id: null, name: 'wellcore', label: '@wellcore (admin)' },
-];
+const SPECIAL_TOKENS = computed(() => [
+    { type: 'special', id: null, name: 'coach',    label: t('client_social.mention_coach_label')    },
+    { type: 'special', id: null, name: 'wellcore', label: t('client_social.mention_wellcore_label') },
+]);
 
 let searchTimer = null;
 
@@ -50,7 +52,7 @@ function detectMention() {
     tokenStartPos.value = cursor - match[0].length;
 
     const partial = match[1].toLowerCase();
-    const matchingSpecials = SPECIAL_TOKENS.filter(t => t.name.startsWith(partial));
+    const matchingSpecials = SPECIAL_TOKENS.value.filter(s => s.name.startsWith(partial));
 
     if (currentToken.value.length < 3) {
         dropdownItems.value = matchingSpecials.length ? matchingSpecials : [];
@@ -161,7 +163,7 @@ onBeforeUnmount(() => {
           <span v-if="item.type === 'special'" class="font-semibold text-wc-accent">{{ item.label }}</span>
           <span v-else>
             <span class="font-semibold text-wc-text">{{ item.name }}</span>
-            <span class="text-wc-text-tertiary text-xs ml-1">cliente</span>
+            <span class="text-wc-text-tertiary text-xs ml-1">{{ t('client_social.mention_client_suffix') }}</span>
           </span>
         </button>
       </div>

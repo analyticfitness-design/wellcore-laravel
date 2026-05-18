@@ -1,11 +1,13 @@
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import { safeStorage } from '../../utils/safeStorage';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import WcErrorState from '../../components/WcErrorState.vue';
 
+const { t } = useI18n();
 const api = useApi();
 const toast = useToast();
 
@@ -77,7 +79,7 @@ async function saveAutoshare() {
             autoshare_streak: autoshare.streak,
         });
     } catch (err) {
-        toast.apiError(err, 'No pudimos guardar tus preferencias de privacidad.');
+        toast.apiError(err, t('client_account.autoshare_save_error'));
     } finally {
         savingAutoshare.value = false;
     }
@@ -134,7 +136,7 @@ async function fetchSettings() {
         autoshare.weight = d.autoshare_weight !== false;
         autoshare.streak = d.autoshare_streak !== false;
     } catch (err) {
-        profileError.value = err.response?.data?.message || 'Error al cargar configuracion';
+        profileError.value = err.response?.data?.message || t('client_account.settings_profile_load_error');
     } finally {
         loadingProfile.value = false;
         // Marca hidratación completa DESPUÉS del flush reactivo de Vue
@@ -151,11 +153,11 @@ async function updateProfile() {
 
     // Client-side validation antes de llamar a la API
     if (!profileForm.value.name?.trim()) {
-        profileErrors.value.name = ['El nombre es obligatorio.'];
+        profileErrors.value.name = [t('client_account.settings_profile_name_required')];
         return;
     }
     if (profileForm.value.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileForm.value.email)) {
-        profileErrors.value.email = ['Ingresa un email válido.'];
+        profileErrors.value.email = [t('client_account.settings_profile_email_invalid')];
         return;
     }
 
@@ -176,7 +178,7 @@ async function updateProfile() {
         if (err.response?.status === 422) {
             profileErrors.value = err.response.data.errors || {};
         } else {
-            toast.apiError(err, 'No pudimos guardar los cambios.');
+            toast.apiError(err, t('client_account.settings_profile_save_error'));
         }
     } finally {
         savingProfile.value = false;
@@ -190,19 +192,19 @@ async function changePassword() {
 
     // Client-side: current password must not be empty
     if (!passwordForm.value.current_password?.trim()) {
-        passwordErrors.value = { current_password: ['Ingresa tu contraseña actual.'] };
+        passwordErrors.value = { current_password: [t('client_account.settings_security_current_required')] };
         return;
     }
 
     // Client-side: passwords must match
     if (passwordForm.value.password !== passwordForm.value.password_confirmation) {
-        passwordErrors.value = { password_confirmation: ['Las contraseñas no coinciden.'] };
+        passwordErrors.value = { password_confirmation: [t('client_account.settings_security_mismatch')] };
         return;
     }
 
     // Client-side: minimum length
     if (passwordForm.value.password.length < 10) {
-        passwordErrors.value = { password: ['La contraseña debe tener al menos 10 caracteres.'] };
+        passwordErrors.value = { password: [t('client_account.settings_security_min_length')] };
         return;
     }
 
@@ -220,7 +222,7 @@ async function changePassword() {
         if (err.response?.status === 422) {
             passwordErrors.value = err.response.data.errors || {};
         } else {
-            toast.apiError(err, 'No pudimos guardar los cambios.');
+            toast.apiError(err, t('client_account.settings_profile_save_error'));
         }
     } finally {
         savingPassword.value = false;
@@ -278,7 +280,7 @@ onBeforeUnmount(() => {
         <svg class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
         </svg>
-        <span class="text-sm font-medium text-green-400">Perfil actualizado correctamente</span>
+        <span class="text-sm font-medium text-green-400">{{ t('client_account.settings_profile_success') }}</span>
       </div>
     </Transition>
 
@@ -297,14 +299,14 @@ onBeforeUnmount(() => {
         <svg class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
         </svg>
-        <span class="text-sm font-medium text-green-400">Contrasena actualizada correctamente</span>
+        <span class="text-sm font-medium text-green-400">{{ t('client_account.settings_security_success') }}</span>
       </div>
     </Transition>
 
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="font-display text-3xl tracking-wide text-wc-text">CONFIGURACION</h1>
-      <p class="mt-1 text-sm text-wc-text-secondary">Gestiona tu cuenta, preferencias y seguridad</p>
+      <h1 class="font-display text-3xl tracking-wide text-wc-text">{{ t('client_account.settings_title') }}</h1>
+      <p class="mt-1 text-sm text-wc-text-secondary">{{ t('client_account.settings_subtitle') }}</p>
     </div>
 
     <!-- Tab Buttons -->
@@ -317,7 +319,7 @@ onBeforeUnmount(() => {
         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
         </svg>
-        Perfil
+        {{ t('client_account.settings_tab_profile') }}
       </button>
       <button
         @click="tab = 'notificaciones'"
@@ -327,7 +329,7 @@ onBeforeUnmount(() => {
         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
         </svg>
-        Notificaciones
+        {{ t('client_account.settings_tab_notifications') }}
       </button>
       <button
         @click="tab = 'apariencia'"
@@ -337,7 +339,7 @@ onBeforeUnmount(() => {
         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008Z" />
         </svg>
-        Apariencia
+        {{ t('client_account.settings_tab_appearance') }}
       </button>
       <button
         @click="tab = 'seguridad'"
@@ -347,7 +349,7 @@ onBeforeUnmount(() => {
         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
         </svg>
-        Seguridad
+        {{ t('client_account.settings_tab_security') }}
       </button>
     </div>
 
@@ -370,47 +372,47 @@ onBeforeUnmount(() => {
             </svg>
           </div>
           <div>
-            <h2 class="font-display text-lg tracking-wide text-wc-text">DATOS DE PERFIL</h2>
-            <p class="text-sm text-wc-text-tertiary">Actualiza tu informacion personal</p>
+            <h2 class="font-display text-lg tracking-wide text-wc-text">{{ t('client_account.settings_profile_title') }}</h2>
+            <p class="text-sm text-wc-text-tertiary">{{ t('client_account.settings_profile_sub') }}</p>
           </div>
         </div>
 
         <form @submit.prevent="updateProfile" class="space-y-4">
           <!-- Name -->
           <div>
-            <label for="settings-name" class="mb-1 block text-sm font-medium text-wc-text">Nombre completo</label>
+            <label for="settings-name" class="mb-1 block text-sm font-medium text-wc-text">{{ t('client_account.settings_profile_name') }}</label>
             <input
               v-model="profileForm.name"
               type="text"
               id="settings-name"
               class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-              placeholder="Tu nombre"
+              :placeholder="t('client_account.settings_profile_name_placeholder')"
             >
             <p v-if="profileErrors.name" class="mt-1 text-xs text-red-500">{{ profileErrors.name[0] }}</p>
           </div>
 
           <!-- Email -->
           <div>
-            <label for="settings-email" class="mb-1 block text-sm font-medium text-wc-text">Correo electronico</label>
+            <label for="settings-email" class="mb-1 block text-sm font-medium text-wc-text">{{ t('client_account.settings_profile_email') }}</label>
             <input
               v-model="profileForm.email"
               type="email"
               id="settings-email"
               class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-              placeholder="tu@email.com"
+              :placeholder="t('client_account.settings_profile_email_placeholder')"
             >
             <p v-if="profileErrors.email" class="mt-1 text-xs text-red-500">{{ profileErrors.email[0] }}</p>
           </div>
 
           <!-- Phone -->
           <div>
-            <label for="settings-phone" class="mb-1 block text-sm font-medium text-wc-text">Telefono</label>
+            <label for="settings-phone" class="mb-1 block text-sm font-medium text-wc-text">{{ t('client_account.settings_profile_phone') }}</label>
             <input
               v-model="profileForm.phone"
               type="tel"
               id="settings-phone"
               class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-              placeholder="+52 123 456 7890"
+              :placeholder="t('client_account.settings_profile_phone_placeholder')"
             >
             <p v-if="profileErrors.phone" class="mt-1 text-xs text-red-500">{{ profileErrors.phone[0] }}</p>
           </div>
@@ -425,8 +427,8 @@ onBeforeUnmount(() => {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <span v-if="!savingProfile">Guardar cambios</span>
-              <span v-else>Guardando...</span>
+              <span v-if="!savingProfile">{{ t('client_account.settings_profile_save') }}</span>
+              <span v-else>{{ t('client_account.settings_profile_saving') }}</span>
             </button>
           </div>
         </form>
@@ -445,8 +447,8 @@ onBeforeUnmount(() => {
               </svg>
             </div>
             <div>
-              <h2 class="font-display text-lg tracking-wide text-wc-text">PREFERENCIAS DE NOTIFICACION</h2>
-              <p class="text-sm text-wc-text-tertiary">Elige que notificaciones deseas recibir</p>
+              <h2 class="font-display text-lg tracking-wide text-wc-text">{{ t('client_account.settings_notif_title') }}</h2>
+              <p class="text-sm text-wc-text-tertiary">{{ t('client_account.settings_notif_sub') }}</p>
             </div>
           </div>
 
@@ -454,8 +456,8 @@ onBeforeUnmount(() => {
             <!-- Check-in reminders -->
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
-                <p class="text-sm font-medium text-wc-text">Recordatorios de check-in</p>
-                <p class="mt-0.5 text-sm text-wc-text-tertiary">Recibe avisos para no olvidar tu check-in semanal</p>
+                <p class="text-sm font-medium text-wc-text">{{ t('client_account.settings_notif_checkin') }}</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('client_account.settings_notif_checkin_desc') }}</p>
               </div>
               <button
                 type="button"
@@ -475,8 +477,8 @@ onBeforeUnmount(() => {
             <!-- Coach messages -->
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
-                <p class="text-sm font-medium text-wc-text">Mensajes del coach</p>
-                <p class="mt-0.5 text-sm text-wc-text-tertiary">Notificaciones cuando tu coach te envia feedback</p>
+                <p class="text-sm font-medium text-wc-text">{{ t('client_account.settings_notif_coach') }}</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('client_account.settings_notif_coach_desc') }}</p>
               </div>
               <button
                 type="button"
@@ -496,8 +498,8 @@ onBeforeUnmount(() => {
             <!-- Achievements -->
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
-                <p class="text-sm font-medium text-wc-text">Logros y rachas</p>
-                <p class="mt-0.5 text-sm text-wc-text-tertiary">Celebra records personales y rachas de entrenamiento</p>
+                <p class="text-sm font-medium text-wc-text">{{ t('client_account.settings_notif_achievements') }}</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('client_account.settings_notif_achievements_desc') }}</p>
               </div>
               <button
                 type="button"
@@ -517,8 +519,8 @@ onBeforeUnmount(() => {
             <!-- Payments -->
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
-                <p class="text-sm font-medium text-wc-text">Pagos y planes</p>
-                <p class="mt-0.5 text-sm text-wc-text-tertiary">Confirmaciones de pago y asignaciones de nuevos planes</p>
+                <p class="text-sm font-medium text-wc-text">{{ t('client_account.settings_notif_payments') }}</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('client_account.settings_notif_payments_desc') }}</p>
               </div>
               <button
                 type="button"
@@ -538,8 +540,8 @@ onBeforeUnmount(() => {
             <!-- Weekly summary -->
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
-                <p class="text-sm font-medium text-wc-text">Resumen semanal</p>
-                <p class="mt-0.5 text-sm text-wc-text-tertiary">Recibe un resumen de tu progreso cada semana</p>
+                <p class="text-sm font-medium text-wc-text">{{ t('client_account.settings_notif_weekly') }}</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('client_account.settings_notif_weekly_desc') }}</p>
               </div>
               <button
                 type="button"
@@ -559,8 +561,8 @@ onBeforeUnmount(() => {
             <!-- Sound -->
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
-                <p class="text-sm font-medium text-wc-text">Sonido al completar entrenamiento</p>
-                <p class="mt-0.5 text-sm text-wc-text-tertiary">Reproduce un sonido sutil cuando completas tu entrenamiento</p>
+                <p class="text-sm font-medium text-wc-text">{{ t('client_account.settings_notif_sound') }}</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('client_account.settings_notif_sound_desc') }}</p>
               </div>
               <button
                 type="button"
@@ -578,7 +580,7 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-          <p class="mt-4 text-xs text-wc-text-tertiary">Las preferencias se guardan automaticamente en este dispositivo.</p>
+          <p class="mt-4 text-xs text-wc-text-tertiary">{{ t('client_account.settings_notif_footnote') }}</p>
         </div>
 
         <!-- Privacidad de actividad — Latido del Grupo -->
@@ -591,8 +593,8 @@ onBeforeUnmount(() => {
               </svg>
             </div>
             <div>
-              <h2 class="font-display text-lg tracking-wide text-wc-text">PRIVACIDAD DE ACTIVIDAD</h2>
-              <p class="text-sm text-wc-text-tertiary">Controla qué eventos tuyos aparecen en el Latido del Grupo de tu coach</p>
+              <h2 class="font-display text-lg tracking-wide text-wc-text">{{ t('client_account.autoshare_title') }}</h2>
+              <p class="text-sm text-wc-text-tertiary">{{ t('client_account.autoshare_sub') }}</p>
             </div>
           </div>
 
@@ -600,8 +602,8 @@ onBeforeUnmount(() => {
             <!-- Entrenamientos -->
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
-                <p class="text-sm font-medium text-wc-text">Mostrar mis entrenamientos</p>
-                <p class="mt-0.5 text-sm text-wc-text-tertiary">Cuando completes un entrenamiento aparecerá en el feed del grupo</p>
+                <p class="text-sm font-medium text-wc-text">{{ t('client_account.autoshare_workout') }}</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('client_account.autoshare_workout_desc') }}</p>
               </div>
               <button
                 type="button"
@@ -621,8 +623,8 @@ onBeforeUnmount(() => {
             <!-- PRs (récords personales) -->
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
-                <p class="text-sm font-medium text-wc-text">Mostrar mis récords (PR)</p>
-                <p class="mt-0.5 text-sm text-wc-text-tertiary">Comparte tus levantamientos máximos para motivar al grupo</p>
+                <p class="text-sm font-medium text-wc-text">{{ t('client_account.autoshare_pr') }}</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('client_account.autoshare_pr_desc') }}</p>
               </div>
               <button
                 type="button"
@@ -642,8 +644,8 @@ onBeforeUnmount(() => {
             <!-- Medallas / logros -->
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
-                <p class="text-sm font-medium text-wc-text">Mostrar mis medallas</p>
-                <p class="mt-0.5 text-sm text-wc-text-tertiary">Tus medallas y logros aparecerán cuando los desbloquees</p>
+                <p class="text-sm font-medium text-wc-text">{{ t('client_account.autoshare_medal') }}</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('client_account.autoshare_medal_desc') }}</p>
               </div>
               <button
                 type="button"
@@ -663,8 +665,8 @@ onBeforeUnmount(() => {
             <!-- Peso / mediciones -->
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
-                <p class="text-sm font-medium text-wc-text">Mostrar cambios de peso</p>
-                <p class="mt-0.5 text-sm text-wc-text-tertiary">Tus actualizaciones de peso aparecerán como hitos en el grupo</p>
+                <p class="text-sm font-medium text-wc-text">{{ t('client_account.autoshare_weight') }}</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('client_account.autoshare_weight_desc') }}</p>
               </div>
               <button
                 type="button"
@@ -684,8 +686,8 @@ onBeforeUnmount(() => {
             <!-- Rachas -->
             <div class="flex items-center justify-between rounded-lg border border-wc-border bg-wc-bg p-4">
               <div>
-                <p class="text-sm font-medium text-wc-text">Mostrar mis rachas</p>
-                <p class="mt-0.5 text-sm text-wc-text-tertiary">Cuando alcances una racha de entrenamiento aparecerá en el grupo</p>
+                <p class="text-sm font-medium text-wc-text">{{ t('client_account.autoshare_streak') }}</p>
+                <p class="mt-0.5 text-sm text-wc-text-tertiary">{{ t('client_account.autoshare_streak_desc') }}</p>
               </div>
               <button
                 type="button"
@@ -708,7 +710,7 @@ onBeforeUnmount(() => {
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
             </svg>
-            <span>{{ savingAutoshare ? 'Guardando…' : 'Tus preferencias se sincronizan automáticamente.' }}</span>
+            <span>{{ savingAutoshare ? t('client_account.autoshare_saving') : t('client_account.autoshare_synced') }}</span>
           </p>
         </div>
       </div>
@@ -724,13 +726,13 @@ onBeforeUnmount(() => {
             </svg>
           </div>
           <div>
-            <h2 class="font-display text-lg tracking-wide text-wc-text">APARIENCIA</h2>
-            <p class="text-sm text-wc-text-tertiary">Personaliza el aspecto visual de la plataforma</p>
+            <h2 class="font-display text-lg tracking-wide text-wc-text">{{ t('client_account.settings_appearance_title') }}</h2>
+            <p class="text-sm text-wc-text-tertiary">{{ t('client_account.settings_appearance_sub') }}</p>
           </div>
         </div>
 
         <div class="rounded-lg border border-wc-border bg-wc-bg p-4">
-          <p class="mb-4 text-sm font-medium text-wc-text">Modo de visualizacion</p>
+          <p class="mb-4 text-sm font-medium text-wc-text">{{ t('client_account.settings_appearance_mode_label') }}</p>
 
           <div class="grid grid-cols-2 gap-3">
             <!-- Light mode card -->
@@ -745,7 +747,7 @@ onBeforeUnmount(() => {
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
                 </svg>
               </div>
-              <span class="text-sm font-medium text-gray-700">Modo Claro</span>
+              <span class="text-sm font-medium text-gray-700">{{ t('client_account.settings_appearance_light') }}</span>
               <div v-if="!darkMode" class="absolute right-2 top-2">
                 <div class="flex h-4 w-4 items-center justify-center rounded-full bg-wc-accent">
                   <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -767,7 +769,7 @@ onBeforeUnmount(() => {
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
                 </svg>
               </div>
-              <span class="text-sm font-medium text-gray-300">Modo Oscuro</span>
+              <span class="text-sm font-medium text-gray-300">{{ t('client_account.settings_appearance_dark') }}</span>
               <div v-if="darkMode" class="absolute right-2 top-2">
                 <div class="flex h-4 w-4 items-center justify-center rounded-full bg-wc-accent">
                   <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -791,8 +793,8 @@ onBeforeUnmount(() => {
             </svg>
           </div>
           <div>
-            <h2 class="font-display text-lg tracking-wide text-wc-text">CAMBIAR CONTRASENA</h2>
-            <p class="text-sm text-wc-text-tertiary">Actualiza tu contrasena de acceso</p>
+            <h2 class="font-display text-lg tracking-wide text-wc-text">{{ t('client_account.settings_security_title') }}</h2>
+            <p class="text-sm text-wc-text-tertiary">{{ t('client_account.settings_security_sub') }}</p>
           </div>
         </div>
 
@@ -804,21 +806,21 @@ onBeforeUnmount(() => {
         <form @submit.prevent="changePassword" class="space-y-4">
           <!-- Current Password -->
           <div>
-            <label for="current-password" class="mb-1 block text-sm font-medium text-wc-text">Contrasena actual</label>
+            <label for="current-password" class="mb-1 block text-sm font-medium text-wc-text">{{ t('client_account.settings_security_current') }}</label>
             <input
               v-model="passwordForm.current_password"
               type="password"
               id="current-password"
               autocomplete="current-password"
               class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-              placeholder="Tu contrasena actual"
+              :placeholder="t('client_account.settings_security_current_placeholder')"
             >
             <p v-if="passwordErrors.current_password" class="mt-1 text-xs text-red-500">{{ passwordErrors.current_password[0] }}</p>
           </div>
 
           <!-- New Password -->
           <div>
-            <label for="new-password" class="mb-1 block text-sm font-medium text-wc-text">Nueva contrasena</label>
+            <label for="new-password" class="mb-1 block text-sm font-medium text-wc-text">{{ t('client_account.settings_security_new') }}</label>
             <input
               v-model="passwordForm.password"
               type="password"
@@ -826,14 +828,14 @@ onBeforeUnmount(() => {
               autocomplete="new-password"
               minlength="10"
               class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-              placeholder="Minimo 10 caracteres"
+              :placeholder="t('client_account.settings_security_new_placeholder')"
             >
             <p v-if="passwordErrors.password" class="mt-1 text-xs text-red-500">{{ passwordErrors.password[0] }}</p>
           </div>
 
           <!-- Confirm Password -->
           <div>
-            <label for="confirm-password" class="mb-1 block text-sm font-medium text-wc-text">Confirmar contrasena</label>
+            <label for="confirm-password" class="mb-1 block text-sm font-medium text-wc-text">{{ t('client_account.settings_security_confirm') }}</label>
             <input
               v-model="passwordForm.password_confirmation"
               type="password"
@@ -841,7 +843,7 @@ onBeforeUnmount(() => {
               autocomplete="new-password"
               minlength="10"
               class="w-full rounded-lg border border-wc-border bg-wc-bg-tertiary px-3 py-2.5 text-sm text-wc-text focus:border-wc-accent focus:outline-none"
-              placeholder="Repite la nueva contrasena"
+              :placeholder="t('client_account.settings_security_confirm_placeholder')"
             >
             <p v-if="passwordErrors.password_confirmation" class="mt-1 text-xs text-red-500">{{ passwordErrors.password_confirmation[0] }}</p>
           </div>
@@ -856,8 +858,8 @@ onBeforeUnmount(() => {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <span v-if="!savingPassword">Actualizar contrasena</span>
-              <span v-else>Actualizando...</span>
+              <span v-if="!savingPassword">{{ t('client_account.settings_security_save') }}</span>
+              <span v-else>{{ t('client_account.settings_security_saving') }}</span>
             </button>
           </div>
         </form>
@@ -865,7 +867,7 @@ onBeforeUnmount(() => {
         <!-- Security tip -->
         <div class="mt-6 rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
           <p class="text-xs text-amber-400">
-            <strong>Consejo de seguridad:</strong> Usa una contrasena unica de al menos 8 caracteres con letras, numeros y simbolos.
+            <strong>{{ t('client_account.settings_security_tip_strong') }}</strong> {{ t('client_account.settings_security_tip_body') }}
           </p>
         </div>
       </div>

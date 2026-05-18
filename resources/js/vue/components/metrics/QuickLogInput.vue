@@ -1,4 +1,6 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 defineProps({
   modelValue: { type: [String, Number], default: '' },
   error: { type: String, default: '' },
@@ -12,7 +14,7 @@ const emit = defineEmits(['update:modelValue', 'expand', 'submit']);
   <div class="quick-log">
     <!-- Giant peso input -->
     <div class="quick-input" :class="{ 'quick-input--error': error }">
-      <label for="quick-peso" class="quick-label">PESO</label>
+      <label for="quick-peso" class="quick-label">{{ t('client_progress.metrics_quick_label') }}</label>
       <input
         id="quick-peso"
         type="number"
@@ -25,10 +27,10 @@ const emit = defineEmits(['update:modelValue', 'expand', 'submit']);
         @input="emit('update:modelValue', $event.target.value)"
         class="quick-field"
         autocomplete="off"
-        aria-label="Peso en kilogramos"
+        :aria-label="t('client_progress.metrics_quick_aria_weight')"
       />
-      <span class="quick-unit">kg</span>
-      <span class="quick-hint">en ayunas</span>
+      <span class="quick-unit">{{ t('client_progress.metrics_quick_kg') }}</span>
+      <span class="quick-hint">{{ t('client_progress.metrics_quick_hint') }}</span>
     </div>
     <p v-if="error" class="quick-error" role="alert">{{ error }}</p>
 
@@ -44,14 +46,14 @@ const emit = defineEmits(['update:modelValue', 'expand', 'submit']);
           <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:.25"/>
           <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" style="opacity:.75"/>
         </svg>
-        {{ saving ? 'Guardando...' : 'Guardar' }}
+        {{ saving ? t('client_progress.metrics_quick_saving') : t('client_progress.metrics_quick_save') }}
       </button>
 
       <button type="button" class="quick-expand" @click="emit('expand')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
-        Completo
+        {{ t('client_progress.metrics_quick_full') }}
       </button>
     </div>
   </div>

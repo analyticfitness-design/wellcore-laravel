@@ -6,11 +6,11 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
         </svg>
       </div>
-      <h3>Tu plan venció</h3>
+      <h3>{{ t('client_plan.v2_lock_title') }}</h3>
       <p>{{ resolvedReason }}</p>
-      <p v-if="formattedExpiry" class="lock-overlay__expiry">Vencimiento: {{ formattedExpiry }}</p>
+      <p v-if="formattedExpiry" class="lock-overlay__expiry">{{ t('client_plan.v2_lock_expiry_prefix', { date: formattedExpiry }) }}</p>
       <button type="button" class="lock-overlay__cta" @click="$emit('renew')">
-        Renovar plan
+        {{ t('client_plan.v2_lock_cta') }}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
         </svg>
@@ -23,6 +23,9 @@
 // PlanLockOverlay — plan vencido, renueva.
 // CSS lines 805-843 del HTML V2.1.
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t, locale } = useI18n();
 
 const props = defineProps({
   expiresAt: { type: [String, Number, Date], default: null },
@@ -33,7 +36,7 @@ defineEmits(['renew']);
 
 const resolvedReason = computed(() => {
   const r = (props.reason || '').trim();
-  return r.length ? r : 'Sigue accediendo a tu programa cuando renueves. Tu coach ya tiene listo el siguiente bloque para ti.';
+  return r.length ? r : t('client_plan.v2_lock_default_reason');
 });
 
 const formattedExpiry = computed(() => {
@@ -41,7 +44,8 @@ const formattedExpiry = computed(() => {
   try {
     const d = new Date(props.expiresAt);
     if (Number.isNaN(d.getTime())) return '';
-    return new Intl.DateTimeFormat('es-CO', {
+    const intlLocale = locale.value === 'en' ? 'en-US' : 'es-CO';
+    return new Intl.DateTimeFormat(intlLocale, {
       day: '2-digit', month: 'short', year: 'numeric',
     }).format(d);
   } catch {

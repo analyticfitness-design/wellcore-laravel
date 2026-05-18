@@ -1,6 +1,9 @@
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import DeltaBadge from './DeltaBadge.vue';
+
+const { t, locale } = useI18n();
 
 const props = defineProps({
   currentWeight: { type: [Number, String], default: null },
@@ -12,7 +15,8 @@ const props = defineProps({
 const formattedDate = computed(() => {
   if (!props.lastDate) return null;
   const d = new Date(props.lastDate + 'T00:00:00');
-  return d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
+  const localeTag = locale.value === 'en' ? 'en-US' : 'es-MX';
+  return d.toLocaleDateString(localeTag, { day: '2-digit', month: 'short', year: 'numeric' });
 });
 </script>
 
@@ -21,24 +25,24 @@ const formattedDate = computed(() => {
     <!-- Left: breadcrumb + title -->
     <div class="mhero-left">
       <nav class="mhero-crumb" aria-label="breadcrumb">
-        <span class="mhero-crumb-item">Dashboard</span>
+        <span class="mhero-crumb-item">{{ t('client_progress.metrics_breadcrumb_dashboard') }}</span>
         <span class="mhero-crumb-sep" aria-hidden="true">/</span>
-        <span class="mhero-crumb-item mhero-crumb-item--active" aria-current="page">Métricas</span>
+        <span class="mhero-crumb-item mhero-crumb-item--active" aria-current="page">{{ t('client_progress.metrics_breadcrumb_metrics') }}</span>
       </nav>
-      <h1 class="mhero-title">Métricas</h1>
-      <p class="mhero-sub">Tu peso, composición y mediciones — leídos en contexto por tu coach.</p>
+      <h1 class="mhero-title">{{ t('client_progress.metrics_section_title') }}</h1>
+      <p class="mhero-sub">{{ t('client_progress.metrics_hero_subtitle') }}</p>
     </div>
 
     <!-- Right: streak badge + last date -->
     <div class="mhero-right">
-      <span v-if="streak > 0" class="mhero-streak" :title="`${streak} semanas consecutivas`">
+      <span v-if="streak > 0" class="mhero-streak" :title="t('client_progress.metrics_streak_weeks_title', { n: streak })">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M13.5 2c0 0-9 7.5-9 13.5a9 9 0 0 0 18 0C22.5 9.5 13.5 2 13.5 2Z"/>
         </svg>
-        {{ streak }}sem
+        {{ t('client_progress.metrics_streak_weeks_short', { n: streak }) }}
       </span>
       <p v-if="formattedDate" class="mhero-last">
-        Último: <time :datetime="lastDate">{{ formattedDate }}</time>
+        {{ t('client_progress.metrics_last_prefix') }} <time :datetime="lastDate">{{ formattedDate }}</time>
       </p>
     </div>
   </header>

@@ -1,25 +1,37 @@
 <script setup>
 /**
- * ProfileHeader.vue — eyebrow + h1 "MI PERFIL" + subtítulo.
+ * ProfileHeader.vue — eyebrow + h1 "Tu perfil" + subtítulo.
  *
  * Tipografía: Oswald (font-display) en eyebrow + h1.
  * Subtítulo: Raleway/Inter (font-sans) max 56ch.
+ *
+ * Los textos por defecto vienen del namespace `client_account` para que
+ * el componente sea i18n-aware sin obligar al padre a pasarlos siempre.
  */
-defineProps({
-    eyebrow:  { type: String, default: 'Cuenta · Identidad' },
-    title:    { type: String, default: 'Mi Perfil' },
-    subtitle: { type: String, default: 'Tu identidad en WellCore. Esta información te conecta con tu coach y con la comunidad — actualízala cuando algo cambie.' },
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+const props = defineProps({
+    eyebrow:  { type: String, default: '' },
+    title:    { type: String, default: '' },
+    subtitle: { type: String, default: '' },
 });
+
+const eyebrowText  = computed(() => props.eyebrow  || t('client_account.profile_eyebrow'));
+const titleText    = computed(() => props.title    || t('client_account.profile_title'));
+const subtitleText = computed(() => props.subtitle || t('client_account.profile_subtitle'));
 </script>
 
 <template>
   <header class="profile-header">
-    <p v-if="eyebrow" class="eyebrow">
+    <p v-if="eyebrowText" class="eyebrow">
       <span class="eyebrow-dot" aria-hidden="true"></span>
-      <span>{{ eyebrow }}</span>
+      <span>{{ eyebrowText }}</span>
     </p>
-    <h1 class="page-h1 font-display">{{ title }}</h1>
-    <p v-if="subtitle" class="page-sub">{{ subtitle }}</p>
+    <h1 class="page-h1 font-display">{{ titleText }}</h1>
+    <p v-if="subtitleText" class="page-sub">{{ subtitleText }}</p>
   </header>
 </template>
 

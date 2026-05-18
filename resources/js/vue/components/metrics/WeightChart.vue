@@ -1,10 +1,13 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { Chart, registerables } from 'chart.js';
 import { useMetricsChart } from '../../composables/metrics/useMetricsChart';
 import EmptyStateChart from './EmptyStateChart.vue';
 
 Chart.register(...registerables);
+
+const { t } = useI18n();
 
 const props = defineProps({
   entries: { type: Array, default: () => [] },
@@ -50,11 +53,11 @@ watch(() => props.period, createChart);
   <section class="weight-chart-card">
     <div class="weight-chart-head">
       <div>
-        <h2 class="weight-chart-title">Peso Corporal</h2>
-        <p class="weight-chart-sub">Evolución de {{ period }}</p>
+        <h2 class="weight-chart-title">{{ t('client_progress.metrics_chart_title') }}</h2>
+        <p class="weight-chart-sub">{{ t('client_progress.metrics_chart_sub', { period }) }}</p>
       </div>
       <!-- Period tabs -->
-      <div class="period-tabs" role="tablist" aria-label="Período del gráfico">
+      <div class="period-tabs" role="tablist" :aria-label="t('client_progress.metrics_chart_period_aria')">
         <button
           v-for="p in PERIODS"
           :key="p.value"
@@ -72,7 +75,7 @@ watch(() => props.period, createChart);
     <!-- Legend -->
     <div v-if="entries.length" class="chart-legend">
       <span class="legend-item">
-        <span class="legend-dot legend-dot--line"></span> Peso
+        <span class="legend-dot legend-dot--line"></span> {{ t('client_progress.metrics_chart_legend_weight') }}
       </span>
     </div>
 
@@ -81,9 +84,9 @@ watch(() => props.period, createChart);
       <canvas v-show="entries.length" ref="canvasRef"></canvas>
       <EmptyStateChart
         v-if="!entries.length"
-        title="Sin datos de peso"
-        message="Registra tu primer peso para ver tu evolución en el tiempo."
-        cta-text="Registra tu primer dato →"
+        :title="t('client_progress.metrics_chart_empty_title')"
+        :message="t('client_progress.metrics_chart_empty_msg')"
+        :cta-text="t('client_progress.metrics_chart_empty_cta')"
         height="100%"
         @cta-click="emit('cta-click')"
       />

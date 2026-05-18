@@ -3,19 +3,19 @@
     <div class="cq-row">
       <div class="cq-avatar">{{ avatarLetter }}</div>
       <div class="cq-meta">
-        <div class="cq-name">{{ coachName }}</div>
-        <div class="cq-role">Coach · WellCore</div>
+        <div class="cq-name">{{ coachName || t('client_plan.v2_coach_default_name') }}</div>
+        <div class="cq-role">{{ t('client_plan.v2_coach_role') }}</div>
       </div>
       <div v-if="timeAgo" class="cq-time">{{ timeAgo }}</div>
     </div>
     <p class="cq-body">{{ message }}</p>
     <div class="cq-foot">
-      <span class="cq-sig">Notas del programa · {{ totalWeeks }} sem</span>
+      <span class="cq-sig">{{ t('client_plan.v2_coach_signature', { weeks: totalWeeks }) }}</span>
       <button v-if="canReply" type="button" class="cq-reply" @click="$emit('reply')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/>
         </svg>
-        Responder
+        {{ t('client_plan.v2_coach_reply') }}
       </button>
     </div>
   </div>
@@ -25,9 +25,12 @@
 // CoachQuoteV2 — bloque del mensaje del coach con avatar + body + foot.
 // CSS lines 348-403 del HTML V2.1.
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
-  coachName: { type: String, default: 'Tu coach' },
+  coachName: { type: String, default: '' },
   message: { type: String, default: '' },
   totalWeeks: { type: Number, default: 4 },
   timeAgo: { type: String, default: '' },

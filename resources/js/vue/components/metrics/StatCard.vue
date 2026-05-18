@@ -1,5 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
 import DeltaBadge from './DeltaBadge.vue';
+
+const { t } = useI18n();
 
 defineProps({
   variant: {
@@ -43,8 +46,8 @@ defineProps({
         ></div>
       </div>
       <div class="stat-card__goal-meta">
-        <span>Actual <b>{{ goalCurrent }}</b> kg</span>
-        <span>Objetivo <b>{{ goalTarget }}</b> kg</span>
+        <span>{{ t('client_progress.metrics_goal_current_prefix') }} <b>{{ goalCurrent }}</b> kg</span>
+        <span>{{ t('client_progress.metrics_goal_target_prefix') }} <b>{{ goalTarget }}</b> kg</span>
       </div>
     </template>
 

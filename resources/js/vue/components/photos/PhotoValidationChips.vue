@@ -9,6 +9,9 @@
  * Each chip is a button-less span; clicks bubble up — purely visual.
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   chips: {
@@ -20,21 +23,21 @@ const props = defineProps({
 const items = computed(() => {
   const out = [];
   if (props.chips.lighting === 'low') {
-    out.push({ key: 'light-low', label: 'Luz baja', tone: 'warn' });
+    out.push({ key: 'light-low', label: t('client_progress.photos_chips_lighting_low'), tone: 'warn' });
   } else {
-    out.push({ key: 'light-ok', label: 'Luz', tone: 'ok' });
+    out.push({ key: 'light-ok', label: t('client_progress.photos_chips_lighting_ok'), tone: 'ok' });
   }
   if (props.chips.framing === 'warn') {
-    out.push({ key: 'frame-warn', label: 'Encuadre', tone: 'warn' });
+    out.push({ key: 'frame-warn', label: t('client_progress.photos_chips_framing_warn'), tone: 'warn' });
   } else {
-    out.push({ key: 'frame-ok', label: 'Encuadre', tone: 'ok' });
+    out.push({ key: 'frame-ok', label: t('client_progress.photos_chips_framing_ok'), tone: 'ok' });
   }
   return out;
 });
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-1.5" role="list" aria-label="Validación de la foto">
+  <div class="flex flex-wrap gap-1.5" role="list" :aria-label="t('client_progress.photos_chips_aria')">
     <!-- HTML ref: .dz-check — fondo negro semi-transparente + texto verde/ámbar -->
     <span
       v-for="item in items"

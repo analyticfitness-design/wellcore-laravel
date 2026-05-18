@@ -16,7 +16,10 @@
  *   open-feedback(session)  click on badge / meta hint
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import CoachFeedbackBadge from './CoachFeedbackBadge.vue';
+
+const { t, locale } = useI18n();
 
 const props = defineProps({
   session: { type: Object, required: true },
@@ -28,19 +31,26 @@ const props = defineProps({
 defineEmits(['select', 'open-feedback']);
 
 const ANGLES = ['frente', 'perfil', 'espalda'];
-const ANGLE_LABELS = { frente: 'Frente', perfil: 'Perfil', espalda: 'Espalda' };
+const ANGLE_LABELS = computed(() => ({
+  frente:  t('client_progress.photos_front'),
+  perfil:  t('client_progress.photos_side'),
+  espalda: t('client_progress.photos_back'),
+}));
 
-const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const MESES_ES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const MESES_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DOW_ES = ['dom','lun','mar','mié','jue','vie','sáb'];
+const DOW_EN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 const formatted = computed(() => {
   if (!props.session?.date) return { day: '—', month: '', dow: '' };
   const d = new Date(props.session.date + 'T12:00:00');
   if (isNaN(d.getTime())) return { day: '—', month: '', dow: '' };
-  const DOW = ['dom','lun','mar','mié','jue','vie','sáb'];
+  const isEn = locale.value === 'en';
   return {
     day: String(d.getDate()).padStart(2, '0'),
-    month: MESES[d.getMonth()] || '',
-    dow: DOW[d.getDay()],
+    month: (isEn ? MESES_EN : MESES_ES)[d.getMonth()] || '',
+    dow: (isEn ? DOW_EN : DOW_ES)[d.getDay()],
   };
 });
 </script>
@@ -77,7 +87,7 @@ const formatted = computed(() => {
         :key="angle"
         type="button"
         class="group relative aspect-[3/4] overflow-hidden rounded-[10px] bg-wc-bg-secondary transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-wc-accent/40"
-        :aria-label="`Ver ${ANGLE_LABELS[angle]} de la sesión`"
+        :aria-label="t('client_progress.photos_session_view_aria', { label: ANGLE_LABELS[angle] })"
         @click="session.photos[angle] && $emit('select', session.photos[angle])"
       >
         <template v-if="session.photos[angle]">
@@ -104,7 +114,7 @@ const formatted = computed(() => {
         <span
           v-if="session.photos[angle]?.has_notes"
           class="absolute bottom-1.5 right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-white text-black"
-          aria-label="Tiene notas del coach"
+          :aria-label="t('client_progress.photos_has_notes_aria')"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-2.5 w-2.5" aria-hidden="true">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -117,8 +127,8 @@ const formatted = computed(() => {
       v-if="meta?.weight || meta?.waist"
       class="flex items-center gap-3 font-mono text-[11px] text-wc-text-tertiary"
     >
-      <span v-if="meta.weight"><strong class="font-semibold text-wc-text">{{ meta.weight }}</strong> kg</span>
-      <span v-if="meta.waist"><strong class="font-semibold text-wc-text">{{ meta.waist }}</strong> cm cintura</span>
+      <span v-if="meta.weight"><strong class="font-semibold text-wc-text">{{ meta.weight }}</strong> {{ t('client_progress.photos_meta_kg') }}</span>
+      <span v-if="meta.waist"><strong class="font-semibold text-wc-text">{{ meta.waist }}</strong> {{ t('client_progress.photos_meta_waist_cm') }}</span>
     </footer>
   </article>
 </template>

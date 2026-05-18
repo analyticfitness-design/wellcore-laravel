@@ -26,9 +26,12 @@
  *   - Touch targets ≥44px en interactivos críticos.
  */
 import { ref, computed, onMounted, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import { useProfileForm } from '../../composables/useProfileForm';
 import { useProfileCompletion } from '../../composables/useProfileCompletion';
+
+const { t } = useI18n();
 
 import ProfileHeader from '../../components/profile/ProfileHeader.vue';
 import IdentityHero from '../../components/profile/IdentityHero.vue';
@@ -193,7 +196,7 @@ onMounted(handleLoad);
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="20 6 9 17 4 12" />
           </svg>
-          <span>Perfil actualizado correctamente</span>
+          <span>{{ t('client_account.profile_saved') }}</span>
         </div>
       </Transition>
 
@@ -209,7 +212,7 @@ onMounted(handleLoad);
       >
         <div class="skeleton-card skeleton-card--hero"></div>
         <div class="skeleton-card skeleton-card--form"></div>
-        <span class="sr-only">Cargando tu perfil…</span>
+        <span class="sr-only">{{ t('client_account.profile_loading_sr') }}</span>
       </div>
 
       <!-- Error state ──────────────────────────────────────────── -->
@@ -230,7 +233,7 @@ onMounted(handleLoad);
           type="button"
           class="profile-error__retry"
           @click="handleLoad"
-        >Reintentar</button>
+        >{{ t('client_account.profile_retry') }}</button>
       </div>
 
       <!-- Main content ─────────────────────────────────────────── -->
@@ -276,7 +279,7 @@ onMounted(handleLoad);
             />
 
             <!-- Submit oculto para que Enter desde un input dispare save() -->
-            <button type="submit" class="sr-only" tabindex="-1" aria-hidden="true">Guardar</button>
+            <button type="submit" class="sr-only" tabindex="-1" aria-hidden="true">{{ t('client_account.profile_save_sr') }}</button>
           </fieldset>
         </form>
 

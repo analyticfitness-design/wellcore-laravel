@@ -2,7 +2,7 @@
   <button
     type="button"
     :disabled="applying"
-    :aria-label="`Reemplazar comida con ${recipe.name}`"
+    :aria-label="t('client_plan.swap_row_aria', { name: recipe.name })"
     class="grid w-full grid-cols-[auto_1fr_auto] items-center gap-x-3 gap-y-1.5 rounded-lg border border-wc-border bg-wc-bg-secondary px-3 py-2.5 text-left transition hover:border-wc-accent/30 hover:bg-wc-bg-secondary/60 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
     :class="{ 'opacity-50': score === 'fuera' }"
     @click="emit('apply')"
@@ -40,6 +40,9 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   recipe: {
@@ -59,21 +62,17 @@ const props = defineProps({
 
 const emit = defineEmits(['apply']);
 
-const SCORE_MAP = {
-  ideal: {
-    badgeClass: 'border-emerald-500/30 bg-emerald-500/15 text-emerald-400',
-    label: 'Ideal',
-  },
-  aceptable: {
-    badgeClass: 'border-amber-500/30 bg-amber-500/15 text-amber-400',
-    label: 'Aceptable',
-  },
-  fuera: {
-    badgeClass: 'border-wc-border bg-wc-bg-tertiary text-wc-text-tertiary',
-    label: 'Fuera',
-  },
+const SCORE_BADGES = {
+  ideal: 'border-emerald-500/30 bg-emerald-500/15 text-emerald-400',
+  aceptable: 'border-amber-500/30 bg-amber-500/15 text-amber-400',
+  fuera: 'border-wc-border bg-wc-bg-tertiary text-wc-text-tertiary',
+};
+const SCORE_LABEL_KEYS = {
+  ideal: 'client_plan.swap_score_ideal',
+  aceptable: 'client_plan.swap_score_aceptable',
+  fuera: 'client_plan.swap_score_fuera',
 };
 
-const badgeClass = computed(() => SCORE_MAP[props.score].badgeClass);
-const scoreLabel = computed(() => SCORE_MAP[props.score].label);
+const badgeClass = computed(() => SCORE_BADGES[props.score]);
+const scoreLabel = computed(() => t(SCORE_LABEL_KEYS[props.score]));
 </script>

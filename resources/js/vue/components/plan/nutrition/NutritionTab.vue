@@ -21,8 +21,8 @@
     <CoachNote
       v-if="nutritionPlan.notas_coach"
       :note="nutritionPlan.notas_coach"
-      :coach-name="coachInfo?.name || 'Tu coach'"
-      :coach-role="coachInfo?.role || 'Coach de nutrición'"
+      :coach-name="coachInfo?.name || t('client_plan.nutrition_coach_default_name')"
+      :coach-role="coachInfo?.role || t('client_plan.nutrition_coach_role')"
       :coach-avatar="coachInfo?.avatar"
       :timestamp="coachInfo?.lastNoteAt"
       @acknowledge="$emit('note-acknowledged')"
@@ -34,7 +34,7 @@
       class="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-5"
     >
       <p class="text-xs font-semibold tracking-widest uppercase text-emerald-400 mb-3">
-        Consejos de tu coach
+        {{ t('client_plan.nutrition_tips_title') }}
       </p>
       <ul class="space-y-2.5">
         <li
@@ -61,15 +61,15 @@
     <div v-if="hasMeals" class="space-y-3">
       <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 px-0.5 pb-2 border-b border-wc-border">
         <h3 class="font-display text-sm font-medium uppercase tracking-wider text-wc-text sm:text-base">
-          Plan del día
+          {{ t('client_plan.nutrition_day_plan_title') }}
         </h3>
         <p class="font-data text-[10px] text-wc-text-tertiary tabular-nums sm:text-[11px]">
           <strong class="text-wc-text">{{ doneCount }}</strong>
-          de
+          <span class="mx-0.5">/</span>
           <strong class="text-wc-text">{{ meals.length }}</strong>
           <template v-if="dayProgress.nextMealLabel.value">
             <span class="mx-1 text-wc-text-tertiary/60">·</span>
-            próxima {{ dayProgress.nextMealLabel.value }}
+            {{ t('client_plan.nutrition_next_meal_prefix', { meal: dayProgress.nextMealLabel.value }) }}
           </template>
         </p>
         <!-- Botón Lista de mercado -->
@@ -80,7 +80,7 @@
           @click="groceryOpen = true"
         >
           <ShoppingCart :size="14" class="shrink-0" />
-          Lista de mercado
+          {{ t('client_plan.nutrition_grocery_list_cta') }}
         </button>
       </div>
 
@@ -132,7 +132,7 @@
       class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-6 text-center"
     >
       <p class="text-sm text-wc-text-secondary">
-        Tu coach está preparando tu plan de nutrición.
+        {{ t('client_plan.nutrition_empty_meal_plan') }}
       </p>
     </div>
 
@@ -147,6 +147,7 @@
 
 <script setup>
 import { ref, computed, reactive } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { Check, ShoppingCart } from 'lucide-vue-next';
 import PlanStrip from './PlanStrip.vue';
 import NutritionDayHero from './NutritionDayHero.vue';
@@ -172,6 +173,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['swap-applied', 'open-ai-estimator', 'note-acknowledged']);
+
+const { t, locale } = useI18n();
 
 // ─── Derived data ──────────────────────────────────────────────────────
 const meals = computed(() =>
@@ -212,13 +215,14 @@ const hasMacros = computed(() =>
 );
 
 // ─── PlanStrip labels ──────────────────────────────────────────────────
-const planLabel = computed(() => `PLAN ${(props.clientPlanType || 'esencial').toUpperCase()}`);
+const planLabel = computed(() => t('client_plan.nutrition_strip_plan_prefix', { plan: (props.clientPlanType || 'esencial').toUpperCase() }));
 const currentWeek = computed(() => props.currentWeek);
 const totalWeeks = computed(() => props.totalWeeks);
 
 const dayLabel = computed(() => {
   try {
-    const fmt = new Intl.DateTimeFormat('es-CO', {
+    const intlLocale = locale.value === 'en' ? 'en-US' : 'es-CO';
+    const fmt = new Intl.DateTimeFormat(intlLocale, {
       weekday: 'short', day: '2-digit', month: 'short',
     });
     return fmt.format(new Date());

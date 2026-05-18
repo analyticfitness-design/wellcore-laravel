@@ -26,7 +26,7 @@ function handleClick(idx) {
 </script>
 
 <template>
-  <ol class="flex items-start gap-1.5 sm:gap-2" aria-label="Progreso del check-in">
+  <ol class="flex items-start gap-1.5 sm:gap-2">
     <li
       v-for="(step, idx) in steps"
       :key="step.key"

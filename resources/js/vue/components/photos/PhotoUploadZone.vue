@@ -22,8 +22,11 @@
  * Parent decides whether to call setFile(angle, droppedFile) directly.
  */
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import PhotoValidationChips from './PhotoValidationChips.vue';
 import PhotoFlashAlert from './PhotoFlashAlert.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
   angle: { type: String, required: true },
@@ -37,8 +40,12 @@ const props = defineProps({
 
 const emit = defineEmits(['select', 'drop', 'remove']);
 
-const ANGLE_LABELS = { frente: 'Frente', perfil: 'Perfil', espalda: 'Espalda' };
-const displayLabel = computed(() => props.label || ANGLE_LABELS[props.angle] || props.angle);
+const ANGLE_LABELS = computed(() => ({
+  frente:  t('client_progress.photos_front'),
+  perfil:  t('client_progress.photos_side'),
+  espalda: t('client_progress.photos_back'),
+}));
+const displayLabel = computed(() => props.label || ANGLE_LABELS.value[props.angle] || props.angle);
 
 // HTML ref: el "REQ" cambia de color y label según estado
 //   - empty:     "REQ" (gris) — todavía falta
@@ -47,18 +54,18 @@ const displayLabel = computed(() => props.label || ANGLE_LABELS[props.angle] || 
 //   - preview ok: "LISTA" (verde)
 const reqState = computed(() => {
   if (props.uploading) {
-    return { label: 'SUBIENDO', cls: 'text-amber-300' };
+    return { label: t('client_progress.photos_zone_uploading'), cls: 'text-amber-300' };
   }
   if (props.previewUrl && props.error) {
-    return { label: 'REVISAR', cls: 'text-amber-300' };
+    return { label: t('client_progress.photos_zone_review'), cls: 'text-amber-300' };
   }
   if (props.previewUrl && props.chips?.lighting === 'low') {
-    return { label: 'REVISAR', cls: 'text-amber-300' };
+    return { label: t('client_progress.photos_zone_review'), cls: 'text-amber-300' };
   }
   if (props.previewUrl) {
-    return { label: 'LISTA', cls: 'text-emerald-400' };
+    return { label: t('client_progress.photos_zone_ready'), cls: 'text-emerald-400' };
   }
-  return { label: 'REQ', cls: 'text-wc-text-tertiary' };
+  return { label: t('client_progress.photos_zone_req'), cls: 'text-wc-text-tertiary' };
 });
 
 const inputRef = ref(null);
@@ -120,7 +127,7 @@ const inputId = computed(() => `photo-upload-${props.angle}`);
         v-if="!previewUrl && !uploading"
         type="button"
         class="flex w-full min-h-[44px] cursor-pointer items-center gap-3.5 rounded-xl text-left transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
-        :aria-label="`Subir foto de ${displayLabel}`"
+        :aria-label="t('client_progress.photos_zone_upload_aria', { label: displayLabel })"
         @click="openPicker"
       >
         <div class="flex h-[84px] w-16 shrink-0 items-center justify-center rounded-lg border border-dashed border-wc-border bg-[repeating-linear-gradient(45deg,_rgba(255,255,255,0.02)_0_8px,_rgba(255,255,255,0.04)_8px_16px)]">
@@ -130,9 +137,9 @@ const inputId = computed(() => `photo-upload-${props.angle}`);
           </svg>
         </div>
         <div>
-          <p class="text-[13px] font-medium text-wc-text">Arrastra o toma la foto</p>
+          <p class="text-[13px] font-medium text-wc-text">{{ t('client_progress.photos_zone_drag_or_take') }}</p>
           <small class="mt-1 block font-mono text-[10px] uppercase tracking-widest text-wc-text-tertiary">
-            JPG · PNG · max 12MB
+            {{ t('client_progress.photos_zone_formats') }}
           </small>
         </div>
       </button>
@@ -142,7 +149,7 @@ const inputId = computed(() => `photo-upload-${props.angle}`);
         <div class="absolute inset-0">
           <img
             :src="previewUrl"
-            :alt="`Preview ${displayLabel}`"
+            :alt="t('client_progress.photos_zone_preview_alt', { label: displayLabel })"
             class="absolute inset-0 h-full w-full object-cover"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" aria-hidden="true"></div>
@@ -158,18 +165,18 @@ const inputId = computed(() => `photo-upload-${props.angle}`);
               type="button"
               class="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-white/20 bg-black/55 px-3 text-xs text-white backdrop-blur transition-colors hover:bg-black/75 focus:outline-none focus:ring-2 focus:ring-white/40"
               @click="openPicker"
-              :aria-label="`Cambiar foto de ${displayLabel}`"
+              :aria-label="t('client_progress.photos_zone_replace_aria', { label: displayLabel })"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3 w-3" aria-hidden="true">
                 <path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 12a9 9 0 0 1-15 6.7L3 16" />
               </svg>
-              Cambiar
+              {{ t('client_progress.photos_zone_change') }}
             </button>
             <button
               type="button"
               class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/55 text-white backdrop-blur transition-colors hover:bg-red-500/80 focus:outline-none focus:ring-2 focus:ring-white/40"
               @click="$emit('remove')"
-              :aria-label="`Eliminar foto de ${displayLabel}`"
+              :aria-label="t('client_progress.photos_zone_remove_aria', { label: displayLabel })"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5" aria-hidden="true">
                 <path d="M18 6 6 18M6 6l12 12" />
@@ -189,7 +196,7 @@ const inputId = computed(() => `photo-upload-${props.angle}`);
           style="border-top-color: #EF4444"
           aria-hidden="true"
         ></div>
-        <p class="text-xs text-wc-text">Subiendo {{ displayLabel.toLowerCase() }}...</p>
+        <p class="text-xs text-wc-text">{{ t('client_progress.photos_zone_uploading_label', { label: displayLabel.toLowerCase() }) }}</p>
       </div>
 
       <!-- Hidden input -->

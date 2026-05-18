@@ -24,8 +24,11 @@
  *   - error(err): si quieres handleo extra externo (toast ya se dispara aquí)
  */
 import { ref, computed, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
+
+const { t } = useI18n();
 
 const props = defineProps({
     avatarUrl: { type: String, default: null },
@@ -79,12 +82,12 @@ async function onFileSelect(e) {
     if (!file) return;
 
     if (!/^image\/(jpe?g|png|webp)$/i.test(file.type)) {
-        toast.warn('Formato no soportado. Usa JPG, PNG o WebP.');
+        toast.warn(t('client_account.profile_avatar_format_unsupported'));
         if (fileInput.value) fileInput.value.value = '';
         return;
     }
     if (file.size > MAX_BYTES) {
-        toast.warn('La foto debe ser menor a 5 MB.');
+        toast.warn(t('client_account.profile_avatar_too_large'));
         if (fileInput.value) fileInput.value.value = '';
         return;
     }
@@ -110,13 +113,13 @@ async function upload(file) {
             emit('uploaded', url);
             emit('update:avatarUrl', url);
         }
-        toast.success('Foto de perfil actualizada.');
+        toast.success(t('client_account.profile_avatar_success'));
         // El padre actualiza props.avatarUrl. Soltamos el preview para mostrar
         // la URL real en próximo render.
         clearObjectUrl();
         previewUrl.value = null;
     } catch (err) {
-        toast.apiError(err, 'No pudimos subir tu foto. Intenta de nuevo.');
+        toast.apiError(err, t('client_account.profile_avatar_error'));
         emit('error', err);
         // Restaurar: descartar preview si falló para no engañar al usuario.
         clearObjectUrl();
@@ -135,7 +138,7 @@ onBeforeUnmount(clearObjectUrl);
       <img
         v-if="displayUrl"
         :src="displayUrl"
-        :alt="name ? `Foto de ${name}` : 'Tu foto de perfil'"
+        :alt="name ? t('client_account.profile_avatar_alt_named', { name }) : t('client_account.profile_avatar_alt')"
         class="avatar-img"
         draggable="false"
       />
@@ -153,8 +156,8 @@ onBeforeUnmount(clearObjectUrl);
     <span
       v-if="avatarUrl && !previewUrl && !uploading"
       class="avatar-check"
-      aria-label="Foto subida"
-      title="Foto subida"
+      :aria-label="t('client_account.profile_avatar_uploaded_badge')"
+      :title="t('client_account.profile_avatar_uploaded_badge')"
     >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="20 6 9 17 4 12" />
@@ -167,7 +170,7 @@ onBeforeUnmount(clearObjectUrl);
       class="avatar-cam"
       :disabled="disabled || uploading"
       @click="openPicker"
-      :aria-label="avatarUrl ? 'Cambiar foto de perfil' : 'Subir foto de perfil'"
+      :aria-label="avatarUrl ? t('client_account.profile_avatar_button_label_change') : t('client_account.profile_avatar_button_label_upload')"
     >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />

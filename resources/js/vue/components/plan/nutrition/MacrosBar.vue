@@ -24,6 +24,9 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   proteinG: { type: Number, required: true },
@@ -64,6 +67,6 @@ const fatPct = computed(() => {
 
 const ariaLabel = computed(
   () =>
-    `Distribución de macros: ${protPct.value}% proteína, ${carbPct.value}% carbohidratos, ${fatPct.value}% grasas`
+    t('client_plan.macros_aria_distribution', { p: protPct.value, c: carbPct.value, f: fatPct.value })
 );
 </script>

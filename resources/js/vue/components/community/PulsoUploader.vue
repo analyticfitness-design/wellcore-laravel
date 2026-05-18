@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import PulsoStatCard from './PulsoStatCard.vue';
+
+const { t } = useI18n();
 
 interface StatsOverlay {
   volume_kg?: number;
@@ -37,15 +40,15 @@ const mediaFile = ref<File | null>(null);
 const mediaPreviewUrl = ref<string | null>(null);
 const uploading = ref<boolean>(false);
 
-// Static config — outside reactive scope
-const PULSO_TYPES = [
-  { value: 'entrenamiento', emoji: '🔥', label: 'Entrenamiento' },
-  { value: 'pr',            emoji: '🏆', label: 'Nuevo PR'      },
-  { value: 'nutricion',     emoji: '🥗', label: 'Nutrición'     },
-  { value: 'recuperacion',  emoji: '😴', label: 'Recuperación'  },
-  { value: 'logro',         emoji: '🏅', label: 'Logro'         },
-  { value: 'libre',         emoji: '📸', label: 'Libre'         },
-];
+// Config — recomputed for reactive label translation
+const PULSO_TYPES = computed(() => [
+  { value: 'entrenamiento', emoji: '🔥', label: t('client_social.uploader_type_training')    },
+  { value: 'pr',            emoji: '🏆', label: t('client_social.uploader_type_pr')          },
+  { value: 'nutricion',     emoji: '🥗', label: t('client_social.uploader_type_nutrition')   },
+  { value: 'recuperacion',  emoji: '😴', label: t('client_social.uploader_type_recovery')    },
+  { value: 'logro',         emoji: '🏅', label: t('client_social.uploader_type_achievement') },
+  { value: 'libre',         emoji: '📸', label: t('client_social.uploader_type_free')        },
+]);
 
 const ALLOWED_MIMES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime'];
 const MAX_BYTES = 30 * 1024 * 1024; // 30 MB
@@ -80,11 +83,11 @@ function onDrop(e: DragEvent) {
 
 function applyFile(file: File) {
   if (!ALLOWED_MIMES.includes(file.type)) {
-    toast.error('Formato no válido. Usa JPG, PNG, WebP o MP4/MOV.');
+    toast.error(t('client_social.uploader_error_format'));
     return;
   }
   if (file.size > MAX_BYTES) {
-    toast.error('El archivo excede el límite de 30 MB.');
+    toast.error(t('client_social.uploader_error_size'));
     return;
   }
   // Revoke previous object URL before creating a new one
@@ -143,10 +146,10 @@ async function submit() {
     const response = await api.post('/api/v/client/pulsos', formData);
     const id: number = response.data?.pulso?.id ?? response.data?.id;
 
-    toast.success('Pulso publicado. Disponible por 24 horas.');
+    toast.success(t('client_social.uploader_success'));
     emit('created', id);
   } catch (err: any) {
-    toast.apiError(err, 'No pudimos publicar tu pulso. Intenta de nuevo.');
+    toast.apiError(err, t('client_social.uploader_error_failed'));
   } finally {
     uploading.value = false;
   }
@@ -173,7 +176,7 @@ async function submit() {
 
           <!-- Header -->
           <div class="flex items-center justify-between px-5 pb-2 pt-4">
-            <h2 class="font-display text-2xl tracking-wide text-wc-text">NUEVO PULSO</h2>
+            <h2 class="font-display text-2xl tracking-wide text-wc-text">{{ t('client_social.uploader_title') }}</h2>
             <button
               type="button"
               class="rounded-lg p-1.5 text-wc-text-tertiary transition-colors hover:bg-wc-bg-tertiary hover:text-wc-text"
@@ -187,7 +190,7 @@ async function submit() {
 
             <!-- Type selector -->
             <div>
-              <p class="mb-2 text-xs font-semibold uppercase tracking-widest text-wc-text-tertiary">Tipo de momento</p>
+              <p class="mb-2 text-xs font-semibold uppercase tracking-widest text-wc-text-tertiary">{{ t('client_social.uploader_type_label') }}</p>
               <div class="grid grid-cols-3 gap-2">
                 <button
                   v-for="t in PULSO_TYPES"
@@ -232,7 +235,7 @@ async function submit() {
                 <img
                   :src="mediaPreviewUrl"
                   class="max-h-56 w-full object-cover"
-                  alt="Vista previa"
+                  :alt="t('client_social.uploader_preview_alt')"
                 />
                 <button
                   type="button"
@@ -284,21 +287,21 @@ async function submit() {
                   @change="handleFileSelect"
                 />
                 <i class="ph ph-cloud-arrow-up mx-auto mb-2 block text-3xl text-wc-text-tertiary"></i>
-                <p class="text-sm font-medium text-wc-text-secondary">Arrastra una foto o video</p>
-                <p class="mt-1 text-xs text-wc-text-tertiary">JPG, PNG, WebP, MP4, MOV — max 30 MB</p>
+                <p class="text-sm font-medium text-wc-text-secondary">{{ t('client_social.uploader_drop_title') }}</p>
+                <p class="mt-1 text-xs text-wc-text-tertiary">{{ t('client_social.uploader_drop_subtitle') }}</p>
               </div>
             </div>
 
             <!-- Caption textarea -->
             <div>
               <label class="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-wc-text-tertiary">
-                Descripcion (opcional)
+                {{ t('client_social.uploader_caption_label') }}
               </label>
               <textarea
                 v-model="caption"
                 rows="3"
                 maxlength="280"
-                placeholder="Cuenta algo sobre este momento..."
+                :placeholder="t('client_social.uploader_caption_placeholder')"
                 class="w-full resize-none rounded-xl border border-wc-border bg-wc-bg-tertiary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary outline-none transition-colors focus:border-wc-accent/60 focus:ring-1 focus:ring-wc-accent/30"
               ></textarea>
               <p class="mt-1 text-right text-[10px] text-wc-text-tertiary">{{ caption.length }}/280</p>
@@ -316,11 +319,11 @@ async function submit() {
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                 </svg>
-                Publicando...
+                {{ t('client_social.uploader_publishing') }}
               </template>
               <template v-else>
                 <span>⚡</span>
-                Publicar Pulso
+                {{ t('client_social.uploader_publish') }}
               </template>
             </button>
 

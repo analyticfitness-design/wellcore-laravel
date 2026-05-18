@@ -11,8 +11,11 @@
  *   toggle (newState: boolean)
  */
 import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import AnglesGrid from './AnglesGrid.vue';
 import TipsList from './TipsList.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
   defaultOpen: { type: Boolean, default: true },
@@ -77,9 +80,9 @@ defineExpose({ open: openGuide, close: closeGuide, toggle, isOpen: () => open.va
         </div>
         <div>
           <h2 id="photo-guide-title" class="font-display text-base font-semibold uppercase tracking-wider text-wc-text">
-            Guía para tus fotos
+            {{ t('client_progress.photos_guide_title') }}
           </h2>
-          <p class="text-xs text-wc-text-tertiary">Cómo tomarte las fotos para un progreso preciso</p>
+          <p class="text-xs text-wc-text-tertiary">{{ t('client_progress.photos_guide_sub') }}</p>
         </div>
       </div>
       <svg
@@ -103,13 +106,13 @@ defineExpose({ open: openGuide, close: closeGuide, toggle, isOpen: () => open.va
       >
         <div class="mb-5">
           <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.16em] text-wc-text-tertiary">
-            / guía visual
+            {{ t('client_progress.photos_guide_kicker') }}
           </p>
           <h3 class="font-display text-2xl font-medium uppercase tracking-wide text-wc-text sm:text-[28px]">
-            Tres ángulos. Una rutina.
+            {{ t('client_progress.photos_guide_headline') }}
           </h3>
           <p class="mt-1.5 max-w-[52ch] text-sm text-wc-text-secondary">
-            La técnica importa porque la comparativa solo es honesta si las fotos son consistentes.
+            {{ t('client_progress.photos_guide_intro') }}
           </p>
         </div>
         <AnglesGrid :genero="genero" />

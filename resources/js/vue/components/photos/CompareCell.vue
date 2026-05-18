@@ -11,6 +11,9 @@
  *   side:   'a' | 'b'  (used to position the divider)
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t, locale } = useI18n();
 
 const props = defineProps({
   photo: { type: Object, default: null },
@@ -19,14 +22,20 @@ const props = defineProps({
   side: { type: String, default: 'a' },
 });
 
-const ANGLE_LABELS = { frente: 'Frente', perfil: 'Perfil', espalda: 'Espalda' };
+const ANGLE_LABELS = computed(() => ({
+  frente:  t('client_progress.photos_front'),
+  perfil:  t('client_progress.photos_side'),
+  espalda: t('client_progress.photos_back'),
+}));
 
 const stamp = computed(() => {
   if (!props.date) return '';
   const [y, m, d] = props.date.split('-').map(Number);
   if (!y || !m || !d) return props.date;
-  const MESES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-  return `${String(d).padStart(2, '0')} ${MESES[m - 1]}`;
+  const MESES_ES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+  const MESES_EN = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const arr = locale.value === 'en' ? MESES_EN : MESES_ES;
+  return `${String(d).padStart(2, '0')} ${arr[m - 1]}`;
 });
 </script>
 
@@ -46,7 +55,7 @@ const stamp = computed(() => {
           <rect x="3" y="6" width="18" height="14" rx="2" />
           <circle cx="12" cy="13" r="3.5" />
         </svg>
-        <p class="text-xs text-wc-text-tertiary">Sin foto</p>
+        <p class="text-xs text-wc-text-tertiary">{{ t('client_progress.photos_compare_no_photo') }}</p>
       </div>
     </template>
 

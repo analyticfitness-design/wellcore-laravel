@@ -1,5 +1,8 @@
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   weeklyCheckins: { type: Array, default: () => [] },
@@ -33,12 +36,12 @@ const attendancePct = computed(() => {
   <div class="checkins-streak">
     <div class="streak-hd">
       <div>
-        <p class="streak-label">Check-ins Semanales</p>
-        <p class="streak-sub">Últimas 12 semanas</p>
+        <p class="streak-label">{{ t('client_progress.metrics_streak_title') }}</p>
+        <p class="streak-sub">{{ t('client_progress.metrics_streak_sub') }}</p>
       </div>
     </div>
 
-    <div v-if="weeklyCheckins.length" class="streak-grid" role="list" aria-label="Historial de check-ins">
+    <div v-if="weeklyCheckins.length" class="streak-grid" role="list" :aria-label="t('client_progress.metrics_streak_history_aria')">
       <div
         v-for="(cell, i) in cells"
         :key="i"
@@ -49,21 +52,21 @@ const attendancePct = computed(() => {
           'streak-cell--miss': cell.status === 'miss',
         }"
         role="listitem"
-        :title="`Semana ${i + 1}: ${cell.cnt} check-in(s)`"
+        :title="t('client_progress.metrics_streak_week_n', { n: i + 1, cnt: cell.cnt })"
       ></div>
     </div>
 
-    <p v-else class="streak-empty">Sin check-ins recientes</p>
+    <p v-else class="streak-empty">{{ t('client_progress.metrics_streak_empty') }}</p>
 
     <!-- Eje de tiempo -->
     <div v-if="weeklyCheckins.length" class="streak-meta">
-      <span>HACE 12 SEM</span>
-      <span>HOY</span>
+      <span>{{ t('client_progress.metrics_streak_axis_past') }}</span>
+      <span>{{ t('client_progress.metrics_streak_axis_today') }}</span>
     </div>
 
     <!-- Asistencia -->
     <div v-if="weeklyCheckins.length" class="streak-attendance">
-      <span class="streak-pct tnum">{{ attendancePct }}<small>% asistencia</small></span>
+      <span class="streak-pct tnum">{{ attendancePct }}<small>{{ t('client_progress.metrics_streak_attendance_suffix') }}</small></span>
     </div>
   </div>
 </template>

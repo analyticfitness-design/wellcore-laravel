@@ -32,7 +32,10 @@
 
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import TimelineNode from './TimelineNode.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
   meals: { type: Array, required: true },
@@ -49,9 +52,12 @@ const emit = defineEmits(['select-meal']);
 const scrollerRef = ref(null);
 const nodeRefs = ref([]);
 
-const ariaLabel = computed(
-  () => `Cronograma del día con ${props.meals.length} comida${props.meals.length === 1 ? '' : 's'}`
-);
+const ariaLabel = computed(() => {
+  const n = props.meals.length;
+  return n === 1
+    ? t('client_plan.nutrition_timeline_aria_one')
+    : t('client_plan.nutrition_timeline_aria_other', { n });
+});
 
 function resolveLabel(meal) {
   // Quitar hora embebida del nombre antes de extraer primera palabra:

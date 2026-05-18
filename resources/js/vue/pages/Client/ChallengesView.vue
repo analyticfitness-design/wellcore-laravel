@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import WcErrorState from '../../components/WcErrorState.vue';
 
+const { t } = useI18n();
 const api = useApi();
 const toast = useToast();
 
@@ -29,7 +31,7 @@ async function fetchChallenges() {
         joinedCount.value = d.joined_count || challenges.value.filter(c => c.is_joined).length;
         completedCount.value = d.completed_count || challenges.value.filter(c => c.is_completed).length;
     } catch (err) {
-        error.value = err.response?.data?.message || 'Error al cargar los retos';
+        error.value = err.response?.data?.message || t('client_social.challenges_load_error');
     } finally {
         loading.value = false;
     }
@@ -61,9 +63,9 @@ async function joinChallenge(challengeId) {
         }
         const status = err.response?.status;
         if (status === 404 || status === 405) {
-            toast.info('Proximamente disponible.');
+            toast.info(t('client_social.challenges_coming_soon'));
         } else {
-            toast.apiError(err, 'No se pudo unir al reto. Intenta de nuevo.');
+            toast.apiError(err, t('client_social.challenges_join_error'));
         }
     } finally {
         joiningId.value = null;
@@ -94,12 +96,12 @@ function formatDate(dateStr) {
 
 function getTypeConfig(type) {
     const configs = {
-        fuerza: { color: 'red', label: 'Fuerza' },
-        cardio: { color: 'orange', label: 'Cardio' },
-        nutricion: { color: 'green', label: 'Nutricion' },
-        habitos: { color: 'blue', label: 'Habitos' },
+        fuerza:    { color: 'red',    label: t('client_social.challenges_type_strength')  },
+        cardio:    { color: 'orange', label: t('client_social.challenges_type_cardio')    },
+        nutricion: { color: 'green',  label: t('client_social.challenges_type_nutrition') },
+        habitos:   { color: 'blue',   label: t('client_social.challenges_type_habits')    },
     };
-    return configs[type] || { color: 'red', label: 'General' };
+    return configs[type] || { color: 'red', label: t('client_social.challenges_type_general') };
 }
 
 function progressColor(pct) {
@@ -129,9 +131,9 @@ function progressColor(pct) {
       <!-- Header -->
       <div class="relative overflow-hidden rounded-2xl border border-wc-border bg-gradient-to-br from-wc-bg-secondary via-wc-bg-tertiary to-wc-bg-secondary p-6">
         <div class="relative z-10">
-          <p class="mb-1 text-xs font-semibold uppercase tracking-widest text-wc-accent">WellCore</p>
-          <h1 class="font-display text-4xl tracking-wide text-wc-text">RETOS</h1>
-          <p class="mt-1 text-sm text-wc-text-secondary">Supera tus limites - Compite - Gana reconocimientos</p>
+          <p class="mb-1 text-xs font-semibold uppercase tracking-widest text-wc-accent">{{ t('client_social.challenges_eyebrow') }}</p>
+          <h1 class="font-display text-4xl tracking-wide text-wc-text">{{ t('client_social.challenges_title') }}</h1>
+          <p class="mt-1 text-sm text-wc-text-secondary">{{ t('client_social.challenges_subtitle') }}</p>
 
           <div class="mt-4 flex items-center gap-4">
             <div class="flex items-center gap-1.5">
@@ -141,7 +143,7 @@ function progressColor(pct) {
                 </svg>
               </div>
               <span class="text-sm text-wc-text-secondary">
-                <span class="font-data font-bold text-wc-text">{{ joinedCount }}</span> activos
+                <span class="font-data font-bold text-wc-text">{{ joinedCount }}</span> {{ t('client_social.challenges_active') }}
               </span>
             </div>
             <div v-if="completedCount > 0" class="flex items-center gap-1.5">
@@ -151,7 +153,7 @@ function progressColor(pct) {
                 </svg>
               </div>
               <span class="text-sm text-wc-text-secondary">
-                <span class="font-data font-bold text-green-400">{{ completedCount }}</span> completados
+                <span class="font-data font-bold text-green-400">{{ completedCount }}</span> {{ t('client_social.challenges_completed') }}
               </span>
             </div>
           </div>
@@ -170,8 +172,8 @@ function progressColor(pct) {
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172" />
           </svg>
         </div>
-        <h3 class="mt-5 font-display text-2xl tracking-wide text-wc-text">SIN RETOS ACTIVOS</h3>
-        <p class="mx-auto mt-2 max-w-xs text-sm text-wc-text-secondary">No hay retos disponibles en este momento. Tu coach los activara pronto.</p>
+        <h3 class="mt-5 font-display text-2xl tracking-wide text-wc-text">{{ t('client_social.challenges_empty_title') }}</h3>
+        <p class="mx-auto mt-2 max-w-xs text-sm text-wc-text-secondary">{{ t('client_social.challenges_empty_desc') }}</p>
       </div>
 
       <!-- Challenges Grid -->
@@ -202,12 +204,12 @@ function progressColor(pct) {
               <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
               </svg>
-              Completado
+              {{ t('client_social.challenges_status_completed') }}
             </span>
           </div>
           <div v-else-if="challenge.is_joined" class="absolute right-3 top-4 z-10">
             <span class="flex items-center gap-1 rounded-full border border-wc-accent/20 bg-wc-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-wc-accent">
-              Participando
+              {{ t('client_social.challenges_status_participating') }}
             </span>
           </div>
 
@@ -226,7 +228,7 @@ function progressColor(pct) {
             <!-- Progress bar -->
             <div v-if="challenge.is_joined" class="mt-4">
               <div class="flex items-center justify-between text-sm">
-                <span class="text-wc-text-tertiary">Progreso</span>
+                <span class="text-wc-text-tertiary">{{ t('client_social.challenges_progress') }}</span>
                 <span class="font-data font-bold" :class="challenge.progress_pct >= 100 ? 'text-emerald-500' : 'text-wc-text'">
                   {{ challenge.progress_pct || 0 }}%
                 </span>
@@ -260,7 +262,7 @@ function progressColor(pct) {
               <!-- Days left -->
               <div v-if="!isExpired(challenge.end_date) && !challenge.is_completed" class="mt-2">
                 <span :class="daysLeft(challenge.end_date) <= 3 ? 'text-sm font-medium text-wc-accent' : 'text-sm text-wc-text-tertiary'">
-                  {{ daysLeft(challenge.end_date) }} dias restantes
+                  {{ t('client_social.challenges_days_left', { n: daysLeft(challenge.end_date) }).split('|')[daysLeft(challenge.end_date) === 1 ? 0 : 1] }}
                 </span>
               </div>
 
@@ -271,8 +273,8 @@ function progressColor(pct) {
                 :disabled="joiningId === challenge.id"
                 class="mt-3 w-full rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent/90 disabled:opacity-50"
               >
-                <span v-if="joiningId === challenge.id">Uniendose...</span>
-                <span v-else>Unirme al reto</span>
+                <span v-if="joiningId === challenge.id">{{ t('client_social.challenges_joining') }}</span>
+                <span v-else>{{ t('client_social.challenges_join') }}</span>
               </button>
             </div>
           </div>

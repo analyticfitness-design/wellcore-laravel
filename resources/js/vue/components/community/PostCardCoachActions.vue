@@ -1,6 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useModeration } from '../../composables/useModeration';
+
+const { t } = useI18n();
 
 const props = defineProps({
     post: { type: Object, required: true },
@@ -57,7 +60,7 @@ async function confirmDelete() {
 
 <template>
   <div class="relative">
-    <button @click="open = !open" class="rounded-lg p-1.5 text-wc-text-tertiary hover:text-wc-text hover:bg-wc-bg-tertiary" aria-label="Acciones coach">
+    <button @click="open = !open" class="rounded-lg p-1.5 text-wc-text-tertiary hover:text-wc-text hover:bg-wc-bg-tertiary" :aria-label="t('client_social.coach_actions_label')">
       <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zm0 6a.75.75 0 110-1.5.75.75 0 010 1.5zm0 6a.75.75 0 110-1.5.75.75 0 010 1.5z" />
       </svg>
@@ -71,18 +74,18 @@ async function confirmDelete() {
       <div v-if="open" class="absolute right-0 top-full mt-1 w-52 rounded-xl border border-wc-border bg-wc-bg-secondary shadow-xl z-20 py-1">
         <button @click="togglePin" class="w-full text-left px-3 py-2 text-sm hover:bg-wc-bg-tertiary flex items-center gap-2">
           <span>\u{1F4CC}</span>
-          <span>{{ isPinned ? 'Desfijar' : 'Fijar 7 días' }}</span>
+          <span>{{ isPinned ? t('client_social.coach_actions_unpin') : t('client_social.coach_actions_pin') }}</span>
         </button>
         <button v-if="!isOfficial" @click="makeOfficial" class="w-full text-left px-3 py-2 text-sm hover:bg-wc-bg-tertiary flex items-center gap-2">
           <span>⭐</span>
-          <span>Hacer Coach Pick</span>
+          <span>{{ t('client_social.coach_actions_make_official') }}</span>
         </button>
         <div class="my-1 border-t border-wc-border"></div>
         <button v-if="!confirmingDelete" @click="startDelete" class="w-full text-left px-3 py-2 text-sm text-rose-500 hover:bg-rose-500/10 flex items-center gap-2">
-          <span>\u{1F5D1}</span><span>Eliminar</span>
+          <span>\u{1F5D1}</span><span>{{ t('client_social.coach_actions_delete') }}</span>
         </button>
         <button v-else @click="confirmDelete" class="w-full text-left px-3 py-2 text-sm bg-rose-500/10 text-rose-600 font-semibold flex items-center gap-2">
-          <span>⚠️</span><span>Confirmar eliminar</span>
+          <span>⚠️</span><span>{{ t('client_social.coach_actions_confirm_delete') }}</span>
         </button>
       </div>
     </Transition>

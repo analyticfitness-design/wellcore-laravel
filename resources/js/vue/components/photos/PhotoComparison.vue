@@ -11,8 +11,11 @@
  * No emits — works against the singleton composable.
  */
 import { computed, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { usePhotoComparison } from '../../composables/usePhotoComparison';
 import CompareCell from './CompareCell.vue';
+
+const { t, locale } = useI18n();
 
 const props = defineProps({
   sessions: { type: Array, default: () => [] },
@@ -29,35 +32,41 @@ watchEffect(() => {
 });
 
 const ANGLES = ['frente', 'perfil', 'espalda'];
-const ANGLE_LABELS = { frente: 'Frente', perfil: 'Perfil', espalda: 'Espalda' };
+const ANGLE_LABELS = computed(() => ({
+  frente:  t('client_progress.photos_front'),
+  perfil:  t('client_progress.photos_side'),
+  espalda: t('client_progress.photos_back'),
+}));
 
 const dateOptions = computed(() =>
   (props.sessions || []).map((s) => ({ value: s.date, label: formatLabel(s.date) }))
 );
 
-const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const MESES_ES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const MESES_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function months() { return locale.value === 'en' ? MESES_EN : MESES_ES; }
 function formatLabel(date) {
   if (!date) return '';
   const d = new Date(date + 'T12:00:00');
   if (isNaN(d.getTime())) return date;
-  return `${String(d.getDate()).padStart(2, '0')} ${MESES[d.getMonth()]} ${d.getFullYear()}`;
+  return `${String(d.getDate()).padStart(2, '0')} ${months()[d.getMonth()]} ${d.getFullYear()}`;
 }
 function formatPill(date) {
   if (!date) return '—';
   const d = new Date(date + 'T12:00:00');
   if (isNaN(d.getTime())) return date;
-  return `${String(d.getDate()).padStart(2, '0')} ${MESES[d.getMonth()].toUpperCase()}`;
+  return `${String(d.getDate()).padStart(2, '0')} ${months()[d.getMonth()].toUpperCase()}`;
 }
 </script>
 
 <template>
-  <section class="space-y-4" aria-label="Comparativa de fotos">
+  <section class="space-y-4" :aria-label="t('client_progress.photos_compare_aria')">
     <!-- Controls — editorial pill style matching HTML ref -->
     <div class="flex flex-wrap items-center gap-3">
       <!-- Antes pill -->
       <label class="relative inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-3.5 py-2 transition-colors hover:border-wc-accent/40 focus-within:border-wc-accent focus-within:ring-2 focus-within:ring-wc-accent/20">
         <span class="flex flex-col">
-          <small class="font-mono text-[10px] uppercase tracking-widest text-wc-text-tertiary">Antes</small>
+          <small class="font-mono text-[10px] uppercase tracking-widest text-wc-text-tertiary">{{ t('client_progress.photos_compare_before') }}</small>
           <strong class="font-display text-[13px] font-medium uppercase tracking-wider text-wc-text">
             {{ formatPill(compare.fromDate.value) }}
           </strong>
@@ -66,7 +75,7 @@ function formatPill(date) {
           :value="compare.fromDate.value"
           @change="compare.setFromDate($event.target.value)"
           class="absolute inset-0 cursor-pointer opacity-0"
-          aria-label="Sesión antes"
+          :aria-label="t('client_progress.photos_compare_select_a_aria')"
         >
           <option value="">—</option>
           <option v-for="opt in dateOptions" :key="'a-' + opt.value" :value="opt.value">{{ opt.label }}</option>
@@ -78,7 +87,7 @@ function formatPill(date) {
       <!-- Después pill -->
       <label class="relative inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-3.5 py-2 transition-colors hover:border-wc-accent/40 focus-within:border-wc-accent focus-within:ring-2 focus-within:ring-wc-accent/20">
         <span class="flex flex-col">
-          <small class="font-mono text-[10px] uppercase tracking-widest text-wc-text-tertiary">Después</small>
+          <small class="font-mono text-[10px] uppercase tracking-widest text-wc-text-tertiary">{{ t('client_progress.photos_compare_after') }}</small>
           <strong class="font-display text-[13px] font-medium uppercase tracking-wider text-wc-text">
             {{ formatPill(compare.toDate.value) }}
           </strong>
@@ -87,7 +96,7 @@ function formatPill(date) {
           :value="compare.toDate.value"
           @change="compare.setToDate($event.target.value)"
           class="absolute inset-0 cursor-pointer opacity-0"
-          aria-label="Sesión después"
+          :aria-label="t('client_progress.photos_compare_select_b_aria')"
         >
           <option value="">—</option>
           <option v-for="opt in dateOptions" :key="'b-' + opt.value" :value="opt.value">{{ opt.label }}</option>
@@ -97,13 +106,13 @@ function formatPill(date) {
       <button
         type="button"
         class="ml-auto inline-flex min-h-[44px] items-center gap-2 rounded-full border border-wc-border bg-wc-bg-tertiary px-3.5 text-xs text-wc-text-secondary transition-colors hover:text-wc-text focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
-        aria-label="Intercambiar fechas"
+        :aria-label="t('client_progress.photos_compare_swap_aria')"
         @click="compare.swap()"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5" aria-hidden="true">
           <path d="M7 4l-3 3 3 3M4 7h16M17 14l3 3-3 3M20 17H4" />
         </svg>
-        Invertir
+        {{ t('client_progress.photos_compare_swap') }}
       </button>
     </div>
 
@@ -112,7 +121,7 @@ function formatPill(date) {
       v-if="!compare.ready.value"
       class="rounded-xl border border-dashed border-wc-border bg-wc-bg-tertiary p-6 text-center text-sm text-wc-text-secondary"
     >
-      Elige dos sesiones para comparar.
+      {{ t('client_progress.photos_compare_empty') }}
     </div>
 
     <!-- Grid: 3 rows × 2 cols on mobile, 3 cols on desktop -->
@@ -151,7 +160,7 @@ function formatPill(date) {
             {{ ANGLE_LABELS[angle] }}
           </h4>
           <small class="font-mono text-[10px] uppercase tracking-widest text-wc-text-tertiary">
-            comparativa
+            {{ t('client_progress.photos_compare_label') }}
           </small>
         </div>
       </div>

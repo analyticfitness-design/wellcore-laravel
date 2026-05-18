@@ -2,15 +2,15 @@
   <section class="hero" data-testid="plan-hero-v2">
     <div class="hero-pad">
       <div class="hero-eyebrow">
-        Programa activo · S{{ currentWeek }} / S{{ totalWeeks }}
+        {{ t('client_plan.v2_hero_eyebrow', { current: currentWeek, total: totalWeeks }) }}
       </div>
       <h1 class="hero-title">
-        Plan<br><span class="accent">{{ planTypeUpper }}</span>
+        {{ t('client_plan.v2_hero_title_prefix') }}<br><span class="accent">{{ planTypeUpper }}</span>
       </h1>
       <div class="hero-meta-row">
-        <span>{{ totalWeeks }} {{ totalWeeks === 1 ? 'SEMANA' : 'SEMANAS' }}</span>
+        <span>{{ totalWeeks }} {{ totalWeeks === 1 ? t('client_plan.v2_hero_weeks_one') : t('client_plan.v2_hero_weeks_other') }}</span>
         <template v-if="volLabel"><span class="dot"></span><span>{{ volLabel }}</span></template>
-        <template v-if="diasSemana"><span class="dot"></span><span>{{ diasSemana }} DÍAS / SEM</span></template>
+        <template v-if="diasSemana"><span class="dot"></span><span>{{ t('client_plan.v2_hero_days_per_week', { n: diasSemana }) }}</span></template>
       </div>
 
       <div class="macro-bar-wrap">
@@ -25,24 +25,24 @@
           </div>
         </div>
         <div class="macro-legend">
-          <span><span class="sw sw-acc"></span>Hoy</span>
-          <span><span class="sw sw-future"></span>Próximas</span>
-          <span v-if="hasDeloadWeek"><span class="sw sw-deload"></span>Descarga</span>
+          <span><span class="sw sw-acc"></span>{{ t('client_plan.v2_hero_legend_today') }}</span>
+          <span><span class="sw sw-future"></span>{{ t('client_plan.v2_hero_legend_upcoming') }}</span>
+          <span v-if="hasDeloadWeek"><span class="sw sw-deload"></span>{{ t('client_plan.v2_hero_legend_deload') }}</span>
         </div>
       </div>
     </div>
 
     <div v-if="hasStats" class="hero-stats">
       <div v-if="stats.volumen" class="hstat">
-        <div class="k">Volumen</div>
+        <div class="k">{{ t('client_plan.v2_hero_stat_volume') }}</div>
         <div class="v">{{ stats.volumen.value }} <small>{{ stats.volumen.label }}</small></div>
       </div>
       <div v-if="stats.frecuencia" class="hstat">
-        <div class="k">Frec.</div>
+        <div class="k">{{ t('client_plan.v2_hero_stat_frequency') }}</div>
         <div class="v">{{ stats.frecuencia.value }} <small>{{ stats.frecuencia.label }}</small></div>
       </div>
       <div v-if="stats.rir" class="hstat">
-        <div class="k">RIR</div>
+        <div class="k">{{ t('client_plan.v2_hero_stat_rir') }}</div>
         <div class="v">{{ stats.rir.value }} <small>{{ stats.rir.label }}</small></div>
       </div>
     </div>
@@ -53,6 +53,9 @@
 // PlanHeroV2 — hero cinematográfico con macro-tick bar (semanas) + stats grid.
 // CSS lines 211-321 del HTML V2.1.
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   planType: { type: String, default: '' },          // ej "elite"
@@ -66,8 +69,8 @@ const props = defineProps({
 });
 
 const planTypeUpper = computed(() => {
-  const t = (props.planType || 'plan').toString().trim().toUpperCase();
-  return t || 'PLAN';
+  const v = (props.planType || '').toString().trim().toUpperCase();
+  return v || t('client_plan.v2_hero_default_plan_label');
 });
 
 const volLabel = computed(() => (props.volumenLabel || '').toUpperCase());
@@ -92,13 +95,18 @@ function weekClass(weekNumber) {
 const stats = computed(() => {
   const out = {};
   if (props.totalSeriesSemana) {
-    out.volumen = { value: props.totalSeriesSemana, label: 'series/sem' };
+    out.volumen = { value: props.totalSeriesSemana, label: t('client_plan.v2_hero_stat_volume_label') };
   }
   if (props.diasSemana) {
-    out.frecuencia = { value: props.diasSemana, label: props.diasSemana === 1 ? 'día' : 'días' };
+    out.frecuencia = {
+      value: props.diasSemana,
+      label: props.diasSemana === 1
+        ? t('client_plan.v2_hero_stat_frequency_day_one')
+        : t('client_plan.v2_hero_stat_frequency_day_other'),
+    };
   }
   if (props.rirObjetivo) {
-    out.rir = { value: props.rirObjetivo, label: 'obj.' };
+    out.rir = { value: props.rirObjetivo, label: t('client_plan.v2_hero_stat_rir_label') };
   }
   return out;
 });

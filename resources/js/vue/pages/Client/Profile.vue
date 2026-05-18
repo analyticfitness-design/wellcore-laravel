@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 
+const { t } = useI18n();
 const api = useApi();
 const route = useRoute();
 
@@ -91,13 +93,13 @@ onMounted(fetchProfile);
           <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
         </svg>
       </div>
-      <p class="font-display text-xl tracking-wide text-wc-text">PERFIL NO DISPONIBLE</p>
-      <p class="text-sm text-wc-text-secondary">Este perfil no existe o pertenece a otra comunidad.</p>
+      <p class="font-display text-xl tracking-wide text-wc-text">{{ t('client_account.public_profile_unavailable_title') }}</p>
+      <p class="text-sm text-wc-text-secondary">{{ t('client_account.public_profile_unavailable_sub') }}</p>
       <RouterLink
         to="/client/community"
         class="mt-2 rounded-xl bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white hover:bg-wc-accent/90 transition-colors"
       >
-        Volver a la comunidad
+        {{ t('client_account.public_profile_back_to_community') }}
       </RouterLink>
     </div>
 
@@ -123,7 +125,7 @@ onMounted(fetchProfile);
             <h1 class="font-display text-3xl tracking-wide truncate text-wc-text">{{ profile.name }}</h1>
             <div class="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5">
               <p v-if="profile.started_at" class="text-sm text-wc-text-secondary">
-                Desde {{ formatDate(profile.started_at) }}
+                {{ t('client_account.public_profile_since', { date: formatDate(profile.started_at) }) }}
               </p>
               <p v-if="profile.city" class="flex items-center gap-1 text-sm text-wc-text-tertiary">
                 <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -149,9 +151,9 @@ onMounted(fetchProfile);
           >
             <span v-if="toggling" class="inline-block h-3 w-3 rounded-full border-2 border-current border-t-transparent animate-spin align-middle"></span>
             <template v-else>
-              <span v-if="profile.is_following" class="group-hover:hidden">Siguiendo ✓</span>
-              <span v-if="profile.is_following" class="hidden group-hover:inline">Dejar de seguir</span>
-              <span v-if="!profile.is_following">Seguir</span>
+              <span v-if="profile.is_following" class="group-hover:hidden">{{ t('client_account.public_profile_following') }}</span>
+              <span v-if="profile.is_following" class="hidden group-hover:inline">{{ t('client_account.public_profile_unfollow') }}</span>
+              <span v-if="!profile.is_following">{{ t('client_account.public_profile_follow') }}</span>
             </template>
           </button>
         </div>
@@ -161,15 +163,15 @@ onMounted(fetchProfile);
       <div class="grid grid-cols-3 gap-3">
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3 text-center">
           <p class="font-data text-2xl font-bold text-wc-accent">{{ profile.streak_days ?? 0 }}</p>
-          <p class="text-xs text-wc-text-secondary mt-0.5">Racha</p>
+          <p class="text-xs text-wc-text-secondary mt-0.5">{{ t('client_account.public_profile_streak') }}</p>
         </div>
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3 text-center">
           <p class="font-data text-2xl font-bold text-wc-text">L{{ profile.level ?? 1 }}</p>
-          <p class="text-xs text-wc-text-secondary mt-0.5">Nivel</p>
+          <p class="text-xs text-wc-text-secondary mt-0.5">{{ t('client_account.public_profile_level') }}</p>
         </div>
         <div class="rounded-xl border border-wc-border bg-wc-bg-tertiary p-3 text-center">
           <p class="font-data text-2xl font-bold text-wc-text">{{ profile.follower_count ?? 0 }}</p>
-          <p class="text-xs text-wc-text-secondary mt-0.5">Seguidores</p>
+          <p class="text-xs text-wc-text-secondary mt-0.5">{{ t('client_account.public_profile_followers') }}</p>
         </div>
       </div>
 
@@ -179,14 +181,14 @@ onMounted(fetchProfile);
           <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
         </svg>
         <div class="flex-1 min-w-0">
-          <p class="text-xs text-wc-text-secondary">XP Total</p>
+          <p class="text-xs text-wc-text-secondary">{{ t('client_account.public_profile_xp_total') }}</p>
           <p class="font-data text-lg font-bold text-wc-text leading-tight">{{ profile.xp_total.toLocaleString('es-CO') }}</p>
         </div>
       </div>
 
       <!-- Medals -->
       <div v-if="profile.medals && profile.medals.length > 0">
-        <h2 class="mb-3 wc-caption">Medallas</h2>
+        <h2 class="mb-3 wc-caption">{{ t('client_account.public_profile_medals') }}</h2>
         <div class="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
           <div
             v-for="medal in profile.medals"
@@ -203,7 +205,7 @@ onMounted(fetchProfile);
       <!-- Empty medals -->
       <div v-else class="rounded-xl border border-dashed border-wc-border py-8 text-center space-y-2">
         <span class="text-3xl leading-none">&#127885;</span>
-        <p class="text-sm text-wc-text/40">Aún no tiene medallas desbloqueadas.</p>
+        <p class="text-sm text-wc-text/40">{{ t('client_account.public_profile_no_medals') }}</p>
       </div>
 
     </div>

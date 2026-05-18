@@ -1,11 +1,14 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ClientLayout from '../../layouts/ClientLayout.vue';
 import MedalHex from '../../components/MedalHex.vue';
 import LogrosHero from '../../components/logros/LogrosHero.vue';
 import LogroBadgeCard from '../../components/logros/LogroBadgeCard.vue';
 import WcStatCard from '../../components/ui/wellcore/WcStatCard.vue';
 import { useMedals } from '../../composables/useMedals';
+
+const { t } = useI18n();
 
 const {
   medals,
@@ -18,21 +21,21 @@ const {
 } = useMedals();
 
 // ── Filters ──────────────────────────────────────────────────────────────────
-const STATUS_OPTS = [
-  { k: 'todas',      l: 'Todas' },
-  { k: 'logradas',   l: 'Logradas' },
-  { k: 'progreso',   l: 'En progreso' },
-  { k: 'bloqueadas', l: 'Bloqueadas' },
-];
+const STATUS_OPTS = computed(() => [
+  { k: 'todas',      l: t('client_account.achievements_filter_status_all') },
+  { k: 'logradas',   l: t('client_account.achievements_filter_status_achieved') },
+  { k: 'progreso',   l: t('client_account.achievements_filter_status_in_progress') },
+  { k: 'bloqueadas', l: t('client_account.achievements_filter_status_locked') },
+]);
 
-const TIERS = [
-  { key: 'todas',      label: 'Todas' },
-  { key: 'bronce',     label: 'Bronce' },
-  { key: 'plata',      label: 'Plata' },
-  { key: 'oro',        label: 'Oro' },
-  { key: 'platino',    label: 'Platino' },
-  { key: 'legendario', label: 'Legendario' },
-];
+const TIERS = computed(() => [
+  { key: 'todas',      label: t('client_account.achievements_tier_all') },
+  { key: 'bronce',     label: t('client_account.achievements_tier_bronze') },
+  { key: 'plata',      label: t('client_account.achievements_tier_silver') },
+  { key: 'oro',        label: t('client_account.achievements_tier_gold') },
+  { key: 'platino',    label: t('client_account.achievements_tier_platinum') },
+  { key: 'legendario', label: t('client_account.achievements_tier_legendary') },
+]);
 
 const tierFilter   = ref('todas');
 const statusFilter = ref('todas');
@@ -110,7 +113,7 @@ onMounted(fetchMedals);
         <section class="card section" style="text-align:center; padding:32px; grid-column:span 12;">
           <p style="color:var(--wc-accent); font-size:14px; margin-bottom:12px;">{{ error }}</p>
           <button class="btn-primary" style="margin:0 auto;" @click="fetchMedals">
-            Reintentar
+            {{ t('client_account.profile_retry') }}
           </button>
         </section>
       </main>
@@ -124,8 +127,8 @@ onMounted(fetchMedals);
         <LogrosHero v-if="stats" :stats="stats" />
         <section v-else class="hero grain section" :style="{ animationDelay: '40ms' }">
           <div class="hero-content">
-            <div class="hero-greeting tight"><span class="name">Logros</span></div>
-            <p class="hero-sub">Tus medallas de constancia, fuerza y progreso.</p>
+            <div class="hero-greeting tight"><span class="name">{{ t('client_account.achievements_title') }}</span></div>
+            <p class="hero-sub">{{ t('client_account.achievements_subtitle') }}</p>
           </div>
         </section>
 
@@ -135,28 +138,28 @@ onMounted(fetchMedals);
           class="stats-grid section wc-card-logros-stats"
           :style="{ animationDelay: '180ms' }"
         >
-          <WcStatCard variant="purple" label="Nivel" :value="stats.level || 1" sub="Tu progresión" :xp-percent="xpProgressPct">
+          <WcStatCard variant="purple" :label="t('client_account.achievements_level_label')" :value="stats.level || 1" :sub="t('client_account.achievements_your_journey')" :xp-percent="xpProgressPct">
             <template #ghost>
               <svg class="stat-ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
             </template>
           </WcStatCard>
-          <WcStatCard variant="amber" label="Logros" :value="`${unlockedCount}/${totalCount}`" sub="desbloqueados">
+          <WcStatCard variant="amber" :label="t('client_account.achievements_total_label')" :value="`${unlockedCount}/${totalCount}`" :sub="t('client_account.achievements_unlocked_sub')">
             <template #ghost>
               <svg class="stat-ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
                 <path d="M12 15C8.7 15 6 12.3 6 9V3h12v6c0 3.3-2.7 6-6 6z"/><path d="M8.5 15.5A5 5 0 0 0 7 19h10a5 5 0 0 0-1.5-3.5"/><line x1="12" y1="15" x2="12" y2="19"/>
               </svg>
             </template>
           </WcStatCard>
-          <WcStatCard variant="red" label="XP total" :value="(stats.totalXP || 0).toLocaleString()" unit="XP" sub="acumulado">
+          <WcStatCard variant="red" :label="t('client_account.achievements_xp_total')" :value="(stats.totalXP || 0).toLocaleString()" :unit="t('client_account.achievements_xp_unit')" :sub="t('client_account.achievements_xp_accumulated')">
             <template #ghost>
               <svg class="stat-ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
                 <circle cx="12" cy="12" r="10"/><path d="m8 12 2.5 2.5L16 9"/>
               </svg>
             </template>
           </WcStatCard>
-          <WcStatCard variant="green" label="Entrenamientos" :value="stats.totalWorkouts || 0" sub="completados">
+          <WcStatCard variant="green" :label="t('client_account.achievements_workouts')" :value="stats.totalWorkouts || 0" :sub="t('client_account.achievements_workouts_completed')">
             <template #ghost>
               <svg class="stat-ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
                 <path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 9h12M6 15h12"/>
@@ -202,8 +205,8 @@ onMounted(fetchMedals);
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
               </svg>
             </div>
-            <p class="empty-title">Sin resultados</p>
-            <p class="empty-sub">No hay medallas que coincidan con los filtros.</p>
+            <p class="empty-title">{{ t('client_account.achievements_empty_title') }}</p>
+            <p class="empty-sub">{{ t('client_account.achievements_empty_sub') }}</p>
           </div>
 
           <!-- Medal grid -->
@@ -238,11 +241,11 @@ onMounted(fetchMedals);
                 class="logros-sheet-status"
                 :style="{ color: selectedMedal.achieved ? 'var(--wc-green)' : 'var(--wc-text-3)' }"
               >
-                {{ selectedMedal.achieved ? 'Logrado' : 'Bloqueado' }} · {{ selectedMedal.tier }}
+                {{ selectedMedal.achieved ? t('client_account.achievements_status_achieved') : t('client_account.achievements_status_locked') }} · {{ selectedMedal.tier }}
               </p>
               <h3 class="logros-sheet-title">{{ selectedMedal.name }}</h3>
             </div>
-            <button type="button" class="logros-sheet-close" aria-label="Cerrar" @click="closeDetail">
+            <button type="button" class="logros-sheet-close" :aria-label="t('client_account.achievements_close')" @click="closeDetail">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 6L6 18M6 6l12 12"/>
               </svg>
@@ -257,14 +260,14 @@ onMounted(fetchMedals);
 
           <!-- Requisito -->
           <div class="logros-sheet-block">
-            <p class="logros-sheet-block-label">Requisito</p>
+            <p class="logros-sheet-block-label">{{ t('client_account.achievements_requirement') }}</p>
             <p class="logros-sheet-block-value">{{ selectedMedal.requirement }}</p>
           </div>
 
           <!-- Progreso (bloqueado con progreso parcial) -->
           <div v-if="!selectedMedal.achieved && selectedMedal.progress" class="logros-sheet-block">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <p class="logros-sheet-block-label" style="margin-bottom:0;">Progreso</p>
+              <p class="logros-sheet-block-label" style="margin-bottom:0;">{{ t('client_account.achievements_progress') }}</p>
               <span style="font:600 13px/1 var(--fm); color:var(--wc-text);" class="tnum">
                 {{ selectedMedal.progress.current }} / {{ selectedMedal.progress.target }}
               </span>
@@ -281,7 +284,7 @@ onMounted(fetchMedals);
           <div v-if="selectedMedal.achieved" class="logros-sheet-block" style="border-color:rgba(16,185,129,.25); background:rgba(16,185,129,.06);">
             <div style="display:flex; align-items:center; justify-content:space-between;">
               <div>
-                <p class="logros-sheet-block-label" style="color:var(--wc-green);">Desbloqueado</p>
+                <p class="logros-sheet-block-label" style="color:var(--wc-green);">{{ t('client_account.achievements_unlocked_at') }}</p>
                 <p class="logros-sheet-block-value">{{ formatDate(selectedMedal.achievedAt) || '—' }}</p>
               </div>
               <span class="logros-xp-badge">+{{ selectedMedal.xp }} XP</span>
@@ -290,7 +293,7 @@ onMounted(fetchMedals);
 
           <!-- Bloqueado: recompensa -->
           <div v-else class="logros-sheet-block" style="display:flex; align-items:center; justify-content:space-between;">
-            <p class="logros-sheet-block-label" style="margin-bottom:0;">Recompensa</p>
+            <p class="logros-sheet-block-label" style="margin-bottom:0;">{{ t('client_account.achievements_reward') }}</p>
             <span class="logros-xp-badge">+{{ selectedMedal.xp }} XP</span>
           </div>
         </div>

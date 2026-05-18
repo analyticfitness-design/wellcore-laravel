@@ -8,6 +8,9 @@
  * Si bio está vacía → estado italic placeholder.
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     name:       { type: String, default: '' },
@@ -41,25 +44,25 @@ const initials = computed(() => {
 
 const meta = computed(() => {
     const parts = [];
-    if (age.value !== null) parts.push(`${age.value} años`);
+    if (age.value !== null) parts.push(t('client_account.profile_preview_age', { n: age.value }));
     if (props.city) parts.push(props.city);
     if (props.plan) parts.push(props.plan);
     return parts.join(' · ');
 });
 
-const displayName = computed(() => props.name || 'Tu nombre');
+const displayName = computed(() => props.name || t('client_account.profile_preview_default_name'));
 </script>
 
 <template>
-  <div class="preview-card" aria-label="Vista previa de cómo se verá tu perfil en la comunidad">
-    <p class="preview-cap font-display">VISTA EN LA COMUNIDAD</p>
+  <div class="preview-card" :aria-label="t('client_account.profile_preview_label')">
+    <p class="preview-cap font-display">{{ t('client_account.profile_preview_caption') }}</p>
 
     <div class="preview-row">
       <div class="preview-av">
         <img
           v-if="avatarUrl"
           :src="avatarUrl"
-          :alt="`Foto de ${displayName}`"
+          :alt="t('client_account.profile_avatar_alt_named', { name: displayName })"
           class="preview-av__img"
           draggable="false"
         />
@@ -72,7 +75,7 @@ const displayName = computed(() => props.name || 'Tu nombre');
 
         <p v-if="bio" class="preview-bio">{{ bio }}</p>
         <p v-else class="preview-bio preview-bio--empty">
-          Escribe algo sobre ti…
+          {{ t('client_account.profile_preview_empty_bio') }}
         </p>
       </div>
     </div>

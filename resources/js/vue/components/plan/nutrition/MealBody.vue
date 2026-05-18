@@ -6,7 +6,7 @@
       <div class="rounded-xl border border-wc-accent/30 bg-wc-accent/5 p-3.5">
         <div class="mb-2.5 flex items-center gap-2">
           <span v-if="swappedRecipe.emoji" class="text-lg leading-none">{{ swappedRecipe.emoji }}</span>
-          <span class="font-display text-[11px] tracking-[0.2em] text-wc-accent">RECETA DE REEMPLAZO</span>
+          <span class="font-display text-[11px] tracking-[0.2em] text-wc-accent">{{ t('client_plan.meal_body_swap_recipe_chip') }}</span>
         </div>
         <p v-if="swappedRecipe.name" class="mb-3 font-display text-sm tracking-wide text-wc-text">
           {{ swappedRecipe.name.toUpperCase() }}
@@ -15,7 +15,7 @@
           {{ swappedRecipe.description }}
         </p>
 
-        <p class="mb-1.5 font-display text-[10px] tracking-[0.18em] text-wc-text-secondary">INGREDIENTES</p>
+        <p class="mb-1.5 font-display text-[10px] tracking-[0.18em] text-wc-text-secondary">{{ t('client_plan.meal_body_ingredients_heading') }}</p>
         <ul>
           <MealItem
             v-for="(ing, ii) in swappedRecipe.ingredients || []"
@@ -27,7 +27,7 @@
         </ul>
 
         <template v-if="swappedRecipe.steps && swappedRecipe.steps.length">
-          <p class="mt-3.5 mb-1.5 font-display text-[10px] tracking-[0.18em] text-wc-text-secondary">PREPARACIÓN</p>
+          <p class="mt-3.5 mb-1.5 font-display text-[10px] tracking-[0.18em] text-wc-text-secondary">{{ t('client_plan.meal_body_steps_heading') }}</p>
           <ol class="space-y-1.5">
             <li
               v-for="(step, si) in swappedRecipe.steps"
@@ -61,7 +61,7 @@
           :class="(activeOption || 'a') === optKey
             ? 'bg-wc-accent text-white'
             : 'bg-wc-bg-tertiary text-wc-text-secondary hover:text-wc-text border border-wc-border'"
-        >Opción {{ optKey.toUpperCase() }}</button>
+        >{{ t('client_plan.meal_body_option_label', { letter: optKey.toUpperCase() }) }}</button>
       </div>
       <ul>
         <MealItem
@@ -91,7 +91,7 @@
       <span aria-hidden="true" class="absolute left-0 top-3 bottom-3 w-[2px] rounded-full bg-wc-accent/60"></span>
       <p class="mb-1.5 flex items-center gap-1.5 font-data text-[9px] uppercase tracking-[0.14em] text-wc-accent">
         <span class="h-1 w-1 rounded-full bg-wc-accent"></span>
-        Por qué
+        {{ t('client_plan.meal_body_why_label') }}
       </p>
       <p class="text-xs leading-relaxed text-wc-text-secondary">{{ meal.notas }}</p>
     </div>
@@ -112,7 +112,7 @@
         ]"
       >
         <Check :size="14" :stroke-width="2.5" />
-        {{ checked ? 'Marcada' : 'Marcar' }}
+        {{ checked ? t('client_plan.meal_body_marked') : t('client_plan.meal_body_mark') }}
       </button>
       <button
         type="button"
@@ -120,7 +120,7 @@
         class="inline-flex flex-1 min-h-[44px] items-center justify-center gap-1.5 rounded-full border border-wc-accent/30 bg-wc-accent/[0.06] px-4 py-2.5 font-display text-[11px] uppercase tracking-[0.1em] text-wc-accent transition hover:border-wc-accent/50 hover:bg-wc-accent/[0.12] active:scale-[0.98] sm:flex-initial sm:min-w-[160px] sm:max-w-[220px] sm:px-6"
       >
         <Replace :size="14" :stroke-width="2.5" />
-        Cambiar
+        {{ t('client_plan.meal_body_swap_cta') }}
       </button>
     </div>
   </div>
@@ -128,9 +128,12 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { Check, Replace } from 'lucide-vue-next';
 import MealItem from './MealItem.vue';
 import { useFoodIcon } from '@/composables/useFoodIcon';
+
+const { t } = useI18n();
 
 const props = defineProps({
   meal: {

@@ -14,7 +14,10 @@
  *   open-feedback(session)
  */
 import { computed, ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import TimelineSession from './TimelineSession.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
   sessions: { type: Array, default: () => [] },
@@ -52,6 +55,7 @@ const enhanced = computed(() => {
     meta: props.metaByDate?.[s.date] || {},
     isLatest: idx === total - 1,
     isFirst: idx === 0,
+    weekLabelFallback: idx === 0 ? t('client_progress.photos_week_first') : (idx === total - 1 ? t('client_progress.photos_week_latest') : ''),
   }));
 });
 </script>
@@ -62,7 +66,7 @@ const enhanced = computed(() => {
       v-if="canScrollLeft"
       type="button"
       class="absolute left-1 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-wc-border bg-wc-bg/80 text-wc-text-secondary backdrop-blur transition-colors hover:text-wc-text sm:flex"
-      aria-label="Sesiones anteriores"
+      :aria-label="t('client_progress.photos_timeline_prev_aria')"
       @click="scrollBy(-300)"
     >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
@@ -80,7 +84,7 @@ const enhanced = computed(() => {
         v-for="(item, idx) in enhanced"
         :key="item.session.date"
         :session="item.session"
-        :week-label="item.meta.weekLabel || (item.isFirst ? 'Inicio' : (item.isLatest ? 'Reciente' : ''))"
+        :week-label="item.meta.weekLabel || item.weekLabelFallback"
         :review-status="item.meta.reviewStatus || (item.isLatest ? 'pending' : 'reviewed')"
         :notes-count="item.meta.notesCount || 0"
         :meta="{ weight: item.meta.weight, waist: item.meta.waist }"
@@ -93,7 +97,7 @@ const enhanced = computed(() => {
       v-if="canScrollRight"
       type="button"
       class="absolute right-1 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-wc-border bg-wc-bg/80 text-wc-text-secondary backdrop-blur transition-colors hover:text-wc-text sm:flex"
-      aria-label="Sesiones siguientes"
+      :aria-label="t('client_progress.photos_timeline_next_aria')"
       @click="scrollBy(300)"
     >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">

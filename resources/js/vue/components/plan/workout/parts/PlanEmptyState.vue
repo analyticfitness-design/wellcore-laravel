@@ -5,9 +5,9 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
       </svg>
     </div>
-    <h3>Tu coach está armando tu plan</h3>
-    <p>{{ resolvedCoach }} lo va a publicar en cuanto termine la planificación. Te avisamos por notificación cuando esté listo.</p>
-    <span class="empty-state__pulse">En preparación</span>
+    <h3>{{ t('client_plan.v2_empty_title') }}</h3>
+    <p>{{ t('client_plan.v2_empty_body', { coach: resolvedCoach }) }}</p>
+    <span class="empty-state__pulse">{{ t('client_plan.v2_empty_pulse') }}</span>
   </div>
 </template>
 
@@ -15,6 +15,9 @@
 // PlanEmptyState — sin plan asignado todavía.
 // CSS lines 845-873 del HTML V2.1.
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   coachName: { type: String, default: '' },
@@ -22,7 +25,7 @@ const props = defineProps({
 
 const resolvedCoach = computed(() => {
   const n = (props.coachName || '').trim();
-  return n.length ? n : 'Tu coach';
+  return n.length ? n : t('client_plan.v2_empty_default_coach');
 });
 </script>
 

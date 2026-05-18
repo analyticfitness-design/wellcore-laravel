@@ -15,7 +15,10 @@
  *   submit
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import DateField from './DateField.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
   modelValue: { type: String, default: '' },
@@ -35,10 +38,10 @@ const dashOffset = computed(() => {
 });
 
 const ctaLabel = computed(() => {
-  if (props.uploading) return 'Subiendo...';
-  if (props.selected === 0) return 'Selecciona al menos 1 foto';
-  if (props.selected < props.total) return `Subir ${props.selected} de ${props.total}`;
-  return 'Subir sesión';
+  if (props.uploading) return t('client_progress.photos_upload_uploading');
+  if (props.selected === 0) return t('client_progress.photos_upload_pick_one');
+  if (props.selected < props.total) return t('client_progress.photos_upload_partial', { selected: props.selected, total: props.total });
+  return t('client_progress.photos_upload_session_cta');
 });
 
 const ctaDisabled = computed(() => props.disabled || props.uploading || props.selected === 0);
@@ -70,8 +73,8 @@ const ctaDisabled = computed(() => props.disabled || props.uploading || props.se
         </div>
       </div>
       <div class="hidden flex-col sm:flex">
-        <span class="font-display text-[11px] uppercase tracking-widest text-wc-text-tertiary">Sesión</span>
-        <span class="text-xs text-wc-text-secondary">Frente · Perfil · Espalda</span>
+        <span class="font-display text-[11px] uppercase tracking-widest text-wc-text-tertiary">{{ t('client_progress.photos_upload_session_label') }}</span>
+        <span class="text-xs text-wc-text-secondary">{{ t('client_progress.photos_upload_session_angles') }}</span>
       </div>
     </div>
 
@@ -80,7 +83,7 @@ const ctaDisabled = computed(() => props.disabled || props.uploading || props.se
       <DateField
         :model-value="modelValue"
         @update:model-value="$emit('update:modelValue', $event)"
-        label="Fecha de la sesión"
+        :label="t('client_progress.photos_upload_date_label')"
         id="upload-session-date"
       />
     </div>

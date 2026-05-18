@@ -37,10 +37,10 @@
 
       <div class="min-w-0">
         <p class="font-display text-sm uppercase tracking-wide text-wc-text">
-          {{ coachName }}
+          {{ coachName || t('client_plan.nutrition_coach_default_name') }}
         </p>
         <p class="text-xs text-wc-text-tertiary">
-          <span>{{ coachRole }}</span>
+          <span>{{ coachRole || t('client_plan.nutrition_coach_role') }}</span>
           <template v-if="timestamp">
             <span class="mx-1">&middot;</span>
             <span>{{ timestamp }}</span>
@@ -53,11 +53,14 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   note: { type: String, required: true },
-  coachName: { type: String, default: 'Tu coach' },
-  coachRole: { type: String, default: 'Coach de nutrición' },
+  coachName: { type: String, default: '' },
+  coachRole: { type: String, default: '' },
   coachAvatar: { type: String, default: null },
   timestamp: { type: String, default: null },
 });
@@ -81,10 +84,11 @@ const showPhoto = computed(
 );
 
 const initials = computed(() => {
+  const fallback = t('client_plan.nutrition_coach_initials_fallback');
   const name = (props.coachName || '').trim();
-  if (!name) return 'C';
+  if (!name) return fallback;
   const parts = name.split(/\s+/).filter(Boolean);
   const letters = parts.slice(0, 2).map((p) => p.charAt(0).toUpperCase());
-  return letters.join('') || 'C';
+  return letters.join('') || fallback;
 });
 </script>

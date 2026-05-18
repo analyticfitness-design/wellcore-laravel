@@ -8,7 +8,7 @@
       <span v-if="hasWeek" class="text-wc-text-tertiary" aria-hidden="true">·</span>
 
       <span v-if="hasWeek" class="text-xs sm:text-sm text-wc-text-secondary">
-        Semana
+        {{ t('client_plan.nutrition_strip_week') }}
         <span class="font-data text-wc-text">{{ weekDisplay }}</span>
         <span class="text-wc-text-tertiary">/</span>
         <span class="font-data text-wc-text">{{ totalDisplay }}</span>
@@ -32,6 +32,9 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   planName: { type: String, required: true },

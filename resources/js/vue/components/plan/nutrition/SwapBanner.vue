@@ -4,7 +4,7 @@
     <div class="flex items-center gap-2 flex-wrap">
       <span class="inline-flex items-center gap-1 rounded-full bg-wc-accent/20 px-2 py-0.5 font-display text-[9px] font-semibold uppercase tracking-[0.14em] text-wc-accent">
         <span class="h-1 w-1 rounded-full bg-wc-accent"></span>
-        Reemplazada
+        {{ t('client_plan.swap_replaced_chip') }}
       </span>
       <span
         v-if="originalName"
@@ -23,17 +23,21 @@
       <button
         type="button"
         :disabled="restoring"
-        aria-label="Restaurar comida original"
+        :aria-label="t('client_plan.swap_restore_aria')"
         class="ml-auto inline-flex min-h-[44px] shrink-0 items-center gap-1 rounded-full border border-wc-accent/30 px-3 py-1.5 font-display text-[10px] uppercase tracking-[0.12em] text-wc-accent transition hover:bg-wc-accent/10 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
         @click="emit('restore')"
       >
-        Restaurar original
+        {{ t('client_plan.swap_restore_cta') }}
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 defineProps({
   originalName: {
     type: String,

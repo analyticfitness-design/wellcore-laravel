@@ -1,4 +1,6 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 defineProps({
   photos: { type: Array, default: () => [] },
   // Array of { thumbnail_url } — first 3 shown
@@ -27,12 +29,12 @@ defineProps({
       </div>
 
       <div class="crosslink-text">
-        <p class="crosslink-title">Fotos de progreso</p>
-        <p class="crosslink-sub">{{ photos.length ? `${photos.length} foto${photos.length > 1 ? 's' : ''} registradas` : 'La transformación visual supera a los números' }}</p>
+        <p class="crosslink-title">{{ t('client_progress.metrics_photos_title') }}</p>
+        <p class="crosslink-sub">{{ photos.length ? (photos.length > 1 ? t('client_progress.metrics_photos_count_plural', { n: photos.length }) : t('client_progress.metrics_photos_count_singular', { n: photos.length })) : t('client_progress.metrics_photos_empty') }}</p>
       </div>
 
       <a href="/client/photos" class="crosslink-cta">
-        Ver fotos
+        {{ t('client_progress.metrics_photos_view') }}
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
         </svg>

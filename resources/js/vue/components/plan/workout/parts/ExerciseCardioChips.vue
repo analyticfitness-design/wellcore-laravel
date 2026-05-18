@@ -1,17 +1,17 @@
 <template>
   <div class="cardio-wrap" data-testid="cardio-chips">
-    <span class="cardio-tag">Cardio LISS</span>
+    <span class="cardio-tag">{{ t('client_plan.v2_cardio_tag') }}</span>
     <div v-if="hasAnyMetric" class="chips">
       <span v-if="min != null && min !== ''" class="metric cardio-min">
-        <span class="k">Min</span>
+        <span class="k">{{ t('client_plan.v2_cardio_min') }}</span>
         <span class="v">{{ min }}</span>
       </span>
       <span v-if="velocidad != null && velocidad !== ''" class="metric cardio-vel">
-        <span class="k">Km/h</span>
+        <span class="k">{{ t('client_plan.v2_cardio_speed') }}</span>
         <span class="v">{{ velocidad }}</span>
       </span>
       <span v-if="inclinacion != null && inclinacion !== ''" class="metric cardio-incl">
-        <span class="k">Incl.</span>
+        <span class="k">{{ t('client_plan.v2_cardio_incline') }}</span>
         <span class="v">{{ inclinacion }}{{ inclSuffix }}</span>
       </span>
     </div>
@@ -22,6 +22,9 @@
 // ExerciseCardioChips — chips sky para min/km-h/inclinación.
 // CSS lines 710-721 del HTML V2.1.
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   min: { type: [Number, String], default: null },

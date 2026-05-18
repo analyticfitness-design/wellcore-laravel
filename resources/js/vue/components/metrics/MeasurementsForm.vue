@@ -1,5 +1,8 @@
 <script setup>
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 defineProps({
   form: { type: Object, required: true },
@@ -22,7 +25,7 @@ function updateField(key, value) {
       <!-- Peso -->
       <div class="meas-field meas-field--required">
         <label for="meas-peso" class="meas-label">
-          Peso (kg) <span class="req" aria-label="requerido">*</span>
+          {{ t('client_progress.metrics_meas_weight_kg') }} <span class="req" :aria-label="t('client_progress.metrics_meas_required_aria')">*</span>
         </label>
         <input
           id="meas-peso"
@@ -41,7 +44,7 @@ function updateField(key, value) {
 
       <!-- % Músculo -->
       <div class="meas-field">
-        <label for="meas-musculo" class="meas-label">% Músculo</label>
+        <label for="meas-musculo" class="meas-label">{{ t('client_progress.metrics_meas_muscle_pct') }}</label>
         <input id="meas-musculo" type="number" inputmode="decimal" step="0.1" min="0" max="100" placeholder="40.0"
           :value="form.porcentajeMusculo" @input="updateField('porcentajeMusculo', $event.target.value)"
           class="meas-input" :class="{ 'meas-input--error': errors.porcentaje_musculo }" autocomplete="off"/>
@@ -50,7 +53,7 @@ function updateField(key, value) {
 
       <!-- % Grasa -->
       <div class="meas-field">
-        <label for="meas-grasa" class="meas-label">% Grasa</label>
+        <label for="meas-grasa" class="meas-label">{{ t('client_progress.metrics_meas_fat_pct') }}</label>
         <input id="meas-grasa" type="number" inputmode="decimal" step="0.1" min="0" max="100" placeholder="18.0"
           :value="form.porcentajeGrasa" @input="updateField('porcentajeGrasa', $event.target.value)"
           class="meas-input" autocomplete="off"/>
@@ -58,8 +61,8 @@ function updateField(key, value) {
 
       <!-- Notas -->
       <div class="meas-field">
-        <label for="meas-notas" class="meas-label">Notas</label>
-        <input id="meas-notas" type="text" placeholder="En ayunas, post-entreno..."
+        <label for="meas-notas" class="meas-label">{{ t('client_progress.metrics_meas_notes') }}</label>
+        <input id="meas-notas" type="text" :placeholder="t('client_progress.metrics_meas_notes_placeholder')"
           :value="form.notas" @input="updateField('notas', $event.target.value)"
           class="meas-input" maxlength="500" autocomplete="off"/>
       </div>
@@ -74,34 +77,34 @@ function updateField(key, value) {
           </svg>
         </div>
         <div>
-          <p class="meas-section-title">Mediciones corporales</p>
-          <p class="meas-section-sub">Mide con cinta métrica, en la mañana</p>
+          <p class="meas-section-title">{{ t('client_progress.metrics_meas_section_title') }}</p>
+          <p class="meas-section-sub">{{ t('client_progress.metrics_meas_section_sub') }}</p>
         </div>
       </div>
 
       <div class="meas-grid meas-grid--body">
         <div class="meas-field">
-          <label for="meas-chest" class="meas-label">Pecho (cm)</label>
+          <label for="meas-chest" class="meas-label">{{ t('client_progress.metrics_meas_chest_cm') }}</label>
           <input id="meas-chest" type="number" inputmode="decimal" step="0.1" min="30" max="200" placeholder="95.0"
             :value="form.chest" @input="updateField('chest', $event.target.value)" class="meas-input" autocomplete="off"/>
         </div>
         <div class="meas-field">
-          <label for="meas-waist" class="meas-label">Cintura (cm)</label>
+          <label for="meas-waist" class="meas-label">{{ t('client_progress.metrics_meas_waist_cm') }}</label>
           <input id="meas-waist" type="number" inputmode="decimal" step="0.1" min="30" max="200" placeholder="80.0"
             :value="form.waist" @input="updateField('waist', $event.target.value)" class="meas-input" autocomplete="off"/>
         </div>
         <div class="meas-field">
-          <label for="meas-hip" class="meas-label">Cadera (cm)</label>
+          <label for="meas-hip" class="meas-label">{{ t('client_progress.metrics_meas_hip_cm') }}</label>
           <input id="meas-hip" type="number" inputmode="decimal" step="0.1" min="30" max="200" placeholder="95.0"
             :value="form.hip" @input="updateField('hip', $event.target.value)" class="meas-input" autocomplete="off"/>
         </div>
         <div class="meas-field">
-          <label for="meas-thigh" class="meas-label">Muslo (cm)</label>
+          <label for="meas-thigh" class="meas-label">{{ t('client_progress.metrics_meas_thigh_cm') }}</label>
           <input id="meas-thigh" type="number" inputmode="decimal" step="0.1" min="20" max="100" placeholder="55.0"
             :value="form.thigh" @input="updateField('thigh', $event.target.value)" class="meas-input" autocomplete="off"/>
         </div>
         <div class="meas-field">
-          <label for="meas-arm" class="meas-label">Brazo (cm)</label>
+          <label for="meas-arm" class="meas-label">{{ t('client_progress.metrics_meas_arm_cm') }}</label>
           <input id="meas-arm" type="number" inputmode="decimal" step="0.1" min="15" max="60" placeholder="32.0"
             :value="form.arm" @input="updateField('arm', $event.target.value)" class="meas-input" autocomplete="off"/>
         </div>
@@ -110,7 +113,7 @@ function updateField(key, value) {
       <!-- Guide accordion -->
       <div class="guide-accordion">
         <button type="button" class="guide-toggle" @click="showGuide = !showGuide" :aria-expanded="showGuide">
-          <span>Cómo tomar las mediciones correctamente</span>
+          <span>{{ t('client_progress.metrics_meas_guide_toggle') }}</span>
           <svg :style="{ transform: showGuide ? 'rotate(180deg)' : 'none', transition: 'transform 200ms' }"
             width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
@@ -118,12 +121,12 @@ function updateField(key, value) {
         </button>
         <Transition name="guide">
           <div v-show="showGuide" class="guide-content">
-            <p><strong>Pecho:</strong> Cinta a la altura de los pezones. Brazos relajados. No inflar el pecho.</p>
-            <p><strong>Cintura:</strong> En el punto más estrecho, 2-3 cm arriba del ombligo. Exhala normalmente.</p>
-            <p><strong>Cadera:</strong> En el punto más ancho de los glúteos. Pies juntos, de pie recto.</p>
-            <p><strong>Muslo:</strong> En el punto más grueso, justo debajo del glúteo. Pierna relajada.</p>
-            <p><strong>Brazo:</strong> En el punto más grueso del bíceps. Brazo relajado sin flexionar.</p>
-            <p class="guide-tip">Mide siempre en las mismas condiciones: por la mañana, antes de comer.</p>
+            <p><strong>{{ t('client_progress.metrics_chest') }}:</strong> {{ t('client_progress.metrics_meas_guide_chest') }}</p>
+            <p><strong>{{ t('client_progress.metrics_waist') }}:</strong> {{ t('client_progress.metrics_meas_guide_waist') }}</p>
+            <p><strong>{{ t('client_progress.metrics_hip') }}:</strong> {{ t('client_progress.metrics_meas_guide_hip') }}</p>
+            <p><strong>{{ t('client_progress.metrics_thigh') }}:</strong> {{ t('client_progress.metrics_meas_guide_thigh') }}</p>
+            <p><strong>{{ t('client_progress.metrics_arm') }}:</strong> {{ t('client_progress.metrics_meas_guide_arm') }}</p>
+            <p class="guide-tip">{{ t('client_progress.metrics_meas_guide_tip') }}</p>
           </div>
         </Transition>
       </div>
@@ -135,16 +138,16 @@ function updateField(key, value) {
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
         </svg>
-        <span>Solo tú y tu coach pueden ver estos datos</span>
+        <span>{{ t('client_progress.metrics_meas_privacy') }}</span>
       </div>
       <div class="meas-save-btns">
-        <button type="button" class="btn-draft" @click="emit('save-draft')">Guardar borrador</button>
+        <button type="button" class="btn-draft" @click="emit('save-draft')">{{ t('client_progress.metrics_meas_save_draft') }}</button>
         <button type="submit" class="btn-save" :disabled="saving" :aria-busy="saving">
           <svg v-if="saving" class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:.25"/>
             <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" style="opacity:.75"/>
           </svg>
-          {{ saving ? 'Guardando...' : 'Guardar registro' }}
+          {{ saving ? t('client_progress.metrics_meas_saving') : t('client_progress.metrics_meas_save') }}
         </button>
       </div>
     </div>

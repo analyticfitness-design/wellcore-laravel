@@ -72,7 +72,10 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { ChevronDown } from 'lucide-vue-next';
+
+const { t } = useI18n();
 
 const props = defineProps({
   meal: { type: Object, required: true },
@@ -126,7 +129,7 @@ const formattedTime = computed(() => {
 // → "DESAYUNO DE CARGA"). Tambien quita parentesis con info extra.
 const cleanName = computed(() => {
   const raw = (props.meal.nombre ?? props.meal.name ?? '').toString().trim();
-  if (!raw) return 'Comida ' + (props.mealIdx + 1);
+  if (!raw) return t('client_plan.meal_default_name', { n: props.mealIdx + 1 });
   return raw
     .replace(/\s*[—–-]\s*\d{1,2}:\d{2}\s*(AM|PM|am|pm)?(\s*\([^)]*\))?\s*$/, '')
     .replace(/\s*\(\d{1,2}:\d{2}.*?\)\s*$/, '')

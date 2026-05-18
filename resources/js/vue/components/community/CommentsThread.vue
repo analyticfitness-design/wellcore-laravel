@@ -1,9 +1,12 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import CoachBadge from './CoachBadge.vue';
 import OfficialBadge from './OfficialBadge.vue';
 import MentionRenderer from './MentionRenderer.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
   postId: {
@@ -32,7 +35,7 @@ function timeAgo(dateStr) {
   const date = new Date(dateStr);
   const now = new Date();
   const seconds = Math.floor((now - date) / 1000);
-  if (seconds < 60) return 'ahora';
+  if (seconds < 60) return t('client_social.comments_now');
   const minutes = Math.floor(seconds / 60);
   if (minutes < 60) return `${minutes}m`;
   const hours = Math.floor(minutes / 60);
@@ -106,7 +109,7 @@ watch(
     <!-- Comments list -->
     <div class="max-h-40 overflow-y-auto space-y-2 px-4 pt-3">
       <div v-if="comments.length === 0 && loaded" class="py-2 text-center text-xs text-wc-text-secondary">
-        Se el primero en comentar.
+        {{ t('client_social.comments_be_first') }}
       </div>
       <div
         v-for="c in sortedComments"
@@ -118,7 +121,7 @@ watch(
         </div>
         <div class="min-w-0 flex-1">
           <div class="flex items-baseline gap-1.5 flex-wrap">
-            <span class="font-semibold text-xs text-wc-text">{{ c.client?.name ?? c.author_name ?? 'Miembro' }}</span>
+            <span class="font-semibold text-xs text-wc-text">{{ c.client?.name ?? c.author_name ?? t('client_social.badge_member_fallback') }}</span>
             <CoachBadge v-if="c.author_type === 'coach'" size="xs" />
             <OfficialBadge v-if="c.author_type === 'admin'" />
             <span class="text-[10px] text-wc-text-tertiary tabular-nums">{{ timeAgo(c.created_at) }}</span>
@@ -133,7 +136,7 @@ watch(
       <input
         v-model="newComment"
         @keyup.enter="send"
-        placeholder="Comentar..."
+        :placeholder="t('client_social.comments_placeholder')"
         maxlength="500"
         class="flex-1 rounded-lg border border-wc-border bg-wc-bg px-3 py-1.5 text-sm text-wc-text placeholder-wc-text-tertiary outline-none transition-colors focus:border-wc-accent focus:ring-1 focus:ring-wc-accent/50"
       />
@@ -142,7 +145,7 @@ watch(
         :disabled="sending || !newComment.trim()"
         class="rounded-lg bg-wc-accent px-3 py-1.5 text-xs font-semibold text-white transition-all duration-150 hover:bg-wc-accent/90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <span v-if="!sending">Enviar</span>
+        <span v-if="!sending">{{ t('client_social.comments_send') }}</span>
         <svg v-else class="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>

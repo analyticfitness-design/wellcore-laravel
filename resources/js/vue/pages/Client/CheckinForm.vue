@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick, useTemplateRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { useMedals } from '../../composables/useMedals';
 import { useToast } from '../../composables/useToast';
@@ -11,31 +12,32 @@ import WcRangeSlider from '../../components/checkin/WcRangeSlider.vue';
 import DaysPicker from '../../components/checkin/DaysPicker.vue';
 
 const api = useApi();
+const { t } = useI18n();
 const { fetchMedals } = useMedals();
 const toast = useToast();
 const haptics = useHaptics();
 
 // ─── Wizard configuration ─────────────────────────────────────────
-const WIZARD_STEPS = [
-  { key: 'bienestar',    label: 'Bienestar' },
-  { key: 'entrenamiento', label: 'Entreno' },
-  { key: 'nutricion',    label: 'Nutrición' },
-  { key: 'comentario',   label: 'Notas' },
-];
+const WIZARD_STEPS = computed(() => [
+  { key: 'bienestar',    label: t('client_progress.checkin_step_wellbeing') },
+  { key: 'entrenamiento', label: t('client_progress.checkin_step_training') },
+  { key: 'nutricion',    label: t('client_progress.checkin_step_nutrition') },
+  { key: 'comentario',   label: t('client_progress.checkin_step_notes') },
+]);
 
-const NUTRICION_OPTIONS = [
-  { value: 'Si',      label: 'La seguí bien',   hint: 'Apegué mi plan al menos 80% de la semana.' },
-  { value: 'Parcial', label: 'Parcialmente',     hint: 'Tuve algunos desvíos pero me mantuve en general.' },
-  { value: 'No',      label: 'No la seguí',      hint: 'Esta semana se me complicó. Necesito apoyo.' },
-];
+const NUTRICION_OPTIONS = computed(() => [
+  { value: 'Si',      label: t('client_progress.checkin_nutrition_followed_label'), hint: t('client_progress.checkin_nutrition_followed_hint') },
+  { value: 'Parcial', label: t('client_progress.checkin_nutrition_partial_label'),  hint: t('client_progress.checkin_nutrition_partial_hint') },
+  { value: 'No',      label: t('client_progress.checkin_nutrition_no_label'),       hint: t('client_progress.checkin_nutrition_no_hint') },
+]);
 
-const BIENESTAR_LABELS = {
-  1: { word: 'Muy mal',  hint: 'Cansado, sin energía, ánimo bajo.' },
-  2: { word: 'Mal',      hint: 'No fue una buena semana en general.' },
-  3: { word: 'Normal',   hint: 'Equilibrado: ni alto ni bajo.' },
-  4: { word: 'Bien',     hint: 'Buena energía y ánimo la mayor parte.' },
-  5: { word: 'Muy bien', hint: 'Semana excelente, energía top.' },
-};
+const BIENESTAR_LABELS = computed(() => ({
+  1: { word: t('client_progress.checkin_scale_very_bad'),  hint: t('client_progress.checkin_scale_very_bad_hint') },
+  2: { word: t('client_progress.checkin_scale_bad'),       hint: t('client_progress.checkin_scale_bad_hint') },
+  3: { word: t('client_progress.checkin_scale_ok'),        hint: t('client_progress.checkin_scale_ok_hint') },
+  4: { word: t('client_progress.checkin_scale_good'),      hint: t('client_progress.checkin_scale_good_hint') },
+  5: { word: t('client_progress.checkin_scale_very_good'), hint: t('client_progress.checkin_scale_very_good_hint') },
+}));
 
 // ─── Confetti pieces (static, module-level) ───────────────────────
 const confettiPieces = [
@@ -90,16 +92,21 @@ const currentWeekNum = computed(() => {
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
   return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
 });
-const currentWeekLabel = computed(() => 'Semana ' + currentWeekNum.value);
+const currentWeekLabel = computed(() => t('client_progress.checkin_week_label', { n: currentWeekNum.value }));
+const MONTH_KEYS = ['month_jan','month_feb','month_mar','month_apr','month_may','month_jun','month_jul','month_aug','month_sep','month_oct','month_nov','month_dec'];
 const currentDateLabel = computed(() => {
   const now = new Date();
-  const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  return now.getDate() + ' de ' + months[now.getMonth()] + ', ' + now.getFullYear();
+  const monthName = t('client_progress.' + MONTH_KEYS[now.getMonth()]);
+  return t('client_progress.date_format_long', {
+    d: now.getDate(),
+    month: monthName,
+    year: now.getFullYear(),
+  });
 });
 
-const bienestarMeta = computed(() => BIENESTAR_LABELS[bienestar.value] ?? BIENESTAR_LABELS[3]);
-const totalSteps = WIZARD_STEPS.length;
-const isLastStep = computed(() => currentStep.value === totalSteps);
+const bienestarMeta = computed(() => BIENESTAR_LABELS.value[bienestar.value] ?? BIENESTAR_LABELS.value[3]);
+const totalSteps = computed(() => WIZARD_STEPS.value.length);
+const isLastStep = computed(() => currentStep.value === totalSteps.value);
 const isFirstStep = computed(() => currentStep.value === 1);
 
 // Last submitted data for success overlay
@@ -108,7 +115,7 @@ const lastDiasEntrenados = ref(0);
 
 // ─── Wizard navigation ────────────────────────────────────────────
 function goToStep(step) {
-  if (step < 1 || step > totalSteps) return;
+  if (step < 1 || step > totalSteps.value) return;
   currentStep.value = step;
   haptics.light?.();
   // Scroll suave al inicio del paso
@@ -120,7 +127,7 @@ function goToStep(step) {
 }
 function nextStep() {
   if (!validateCurrentStep()) return;
-  if (currentStep.value < totalSteps) goToStep(currentStep.value + 1);
+  if (currentStep.value < totalSteps.value) goToStep(currentStep.value + 1);
 }
 function prevStep() {
   if (currentStep.value > 1) goToStep(currentStep.value - 1);
@@ -131,29 +138,29 @@ function validateCurrentStep() {
   formErrors.value = {};
   if (currentStep.value === 1) {
     if (!bienestar.value || bienestar.value < 1 || bienestar.value > 5) {
-      formErrors.value.bienestar = 'Selecciona tu nivel de bienestar (1-5)';
+      formErrors.value.bienestar = t('client_progress.checkin_err_wellbeing_required');
       return false;
     }
   }
   if (currentStep.value === 2) {
     if (diasEntrenados.value < 0 || diasEntrenados.value > 7) {
-      formErrors.value.dias_entrenados = 'Días entrenados debe estar entre 0 y 7';
+      formErrors.value.dias_entrenados = t('client_progress.checkin_err_days_range');
       return false;
     }
     if (rpe.value < 1 || rpe.value > 10) {
-      formErrors.value.rpe = 'RPE debe estar entre 1 y 10';
+      formErrors.value.rpe = t('client_progress.checkin_err_rpe_range');
       return false;
     }
   }
   if (currentStep.value === 3) {
     if (!['Si','Parcial','No'].includes(nutricion.value)) {
-      formErrors.value.nutricion = 'Selecciona una opción de nutrición';
+      formErrors.value.nutricion = t('client_progress.checkin_err_nutrition_required');
       return false;
     }
   }
   if (currentStep.value === 4) {
     if (comentario.value.length > 1000) {
-      formErrors.value.comentario = `El comentario no puede superar 1000 caracteres (${comentario.value.length}/1000)`;
+      formErrors.value.comentario = t('client_progress.checkin_err_notes_max', { n: comentario.value.length });
       return false;
     }
   }
@@ -195,7 +202,7 @@ async function fetchCheckin() {
     showTutorial.value = d.show_tutorial ?? false;
     recentCheckins.value = d.recent_checkins ?? [];
   } catch (err) {
-    error.value = err.response?.data?.message || 'Error al cargar check-in';
+    error.value = err.response?.data?.message || t('client_progress.checkin_err_load');
   } finally {
     loading.value = false;
   }
@@ -208,7 +215,7 @@ async function submitCheckin() {
 
   // Validación final agregada (todos los pasos)
   if (!bienestar.value) {
-    formErrors.value.bienestar = 'Selecciona tu nivel de bienestar';
+    formErrors.value.bienestar = t('client_progress.checkin_err_wellbeing_required_short');
     goToStep(1);
     return;
   }
@@ -226,7 +233,7 @@ async function submitCheckin() {
     lastBienestar.value = bienestar.value;
     lastDiasEntrenados.value = diasEntrenados.value;
     showSuccess.value = true;
-    toast.success('Check-in enviado.');
+    toast.success(t('client_progress.checkin_toast_sent'));
     haptics.pattern?.('success');
     fetchMedals().catch(() => {});
 
@@ -257,10 +264,10 @@ async function submitCheckin() {
       } else if (err.response.data.message) {
         formErrors.value.submit = err.response.data.message;
       }
-      toast.apiError(err, 'Revisa los datos del formulario.');
+      toast.apiError(err, t('client_progress.checkin_toast_form_review'));
     } else {
-      formErrors.value.submit = err.response?.data?.message || 'Error al enviar el check-in';
-      toast.apiError(err, 'No pudimos enviar tu check-in.');
+      formErrors.value.submit = err.response?.data?.message || t('client_progress.checkin_err_send_generic');
+      toast.apiError(err, t('client_progress.checkin_toast_send_failed'));
     }
   } finally {
     submitting.value = false;
@@ -273,9 +280,9 @@ function dismissSuccess() {
 
 // ─── Recent checkin badges ────────────────────────────────────────
 function nutricionBadgeText(value) {
-  if (value === 'Si') return 'Nutri 100%';
-  if (value === 'Parcial') return 'Nutri Parcial';
-  if (value === 'No') return 'Nutri No';
+  if (value === 'Si') return t('client_progress.checkin_recent_nutrition_full');
+  if (value === 'Parcial') return t('client_progress.checkin_recent_nutrition_partial');
+  if (value === 'No') return t('client_progress.checkin_recent_nutrition_no');
   return value;
 }
 
@@ -294,13 +301,13 @@ onBeforeUnmount(() => {
       <!-- Title -->
       <div class="flex items-start justify-between gap-4">
         <div>
-          <h1 class="font-display text-3xl uppercase tracking-wide text-wc-text">Check-in semanal</h1>
+          <h1 class="font-display text-3xl uppercase tracking-wide text-wc-text">{{ t('client_progress.checkin_title') }}</h1>
           <p class="mt-1 text-sm text-wc-text-secondary">
             {{ currentWeekLabel }} &middot; {{ currentDateLabel }}
           </p>
         </div>
         <p class="hidden text-right text-xs text-wc-text-secondary sm:block">
-          Tu coach responde en<br /><span class="font-semibold text-wc-text">menos de 24 h</span>
+          {{ t('client_progress.checkin_coach_replies_prefix') }}<br /><span class="font-semibold text-wc-text">{{ t('client_progress.checkin_coach_replies_value') }}</span>
         </p>
       </div>
 
@@ -324,10 +331,9 @@ onBeforeUnmount(() => {
             </svg>
           </div>
           <div>
-            <p class="text-sm font-bold text-wc-accent">Check-in no disponible hoy</p>
+            <p class="text-sm font-bold text-wc-accent">{{ t('client_progress.checkin_not_available_title') }}</p>
             <p class="mt-0.5 text-sm text-wc-text-secondary">
-              El check-in semanal estará disponible el próximo <span class="font-semibold text-wc-text">viernes o sábado</span>.
-              Sigue entrenando — la consistencia es tu superpoder.
+              {{ t('client_progress.checkin_not_available_body_prefix') }} <span class="font-semibold text-wc-text">{{ t('client_progress.checkin_not_available_body_days') }}</span>{{ t('client_progress.checkin_not_available_body_suffix') }}
             </p>
           </div>
         </div>
@@ -341,12 +347,13 @@ onBeforeUnmount(() => {
           class="rounded-card border border-wc-border bg-wc-bg-tertiary p-5 shadow-sm sm:p-6 pb-32 sm:pb-6"
           aria-labelledby="checkin-wizard-title"
         >
-          <h2 id="checkin-wizard-title" class="sr-only">Formulario de check-in</h2>
+          <h2 id="checkin-wizard-title" class="sr-only">{{ t('client_progress.checkin_form_title_sr') }}</h2>
 
           <!-- Progress -->
           <CheckinProgress
             :steps="WIZARD_STEPS"
             :current="currentStep"
+            :aria-label="t('client_progress.checkin_progress_aria')"
             @go="goToStep"
             class="mb-6"
           />
@@ -362,17 +369,17 @@ onBeforeUnmount(() => {
               novalidate
             >
               <header>
-                <p class="font-display text-lg uppercase tracking-wider text-wc-text">Bienestar general</p>
-                <p class="mt-0.5 text-xs text-wc-text-tertiary">¿Cómo te has sentido en general esta semana? (energía, ánimo, descanso)</p>
+                <p class="font-display text-lg uppercase tracking-wider text-wc-text">{{ t('client_progress.checkin_q_wellbeing_title') }}</p>
+                <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ t('client_progress.checkin_q_wellbeing_hint') }}</p>
               </header>
 
               <WcRangeSlider
                 v-model="bienestar"
-                label="Tu nivel de bienestar"
+                :label="t('client_progress.checkin_q_wellbeing_label')"
                 :min="1"
                 :max="5"
-                left-label="Muy mal"
-                right-label="Muy bien"
+                :left-label="t('client_progress.checkin_scale_very_bad')"
+                :right-label="t('client_progress.checkin_scale_very_good')"
                 suffix="/5"
                 id="cf-bienestar"
               />
@@ -389,7 +396,7 @@ onBeforeUnmount(() => {
                   type="submit"
                   class="btn-press inline-flex items-center gap-2 rounded-button bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg"
                 >
-                  Siguiente
+                  {{ t('client_progress.checkin_btn_next') }}
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 </button>
               </div>
@@ -404,36 +411,36 @@ onBeforeUnmount(() => {
               novalidate
             >
               <header>
-                <p class="font-display text-lg uppercase tracking-wider text-wc-text">Entrenamiento</p>
-                <p class="mt-0.5 text-xs text-wc-text-tertiary">¿Cuántos días entrenaste? ¿Cómo se sintió la carga?</p>
+                <p class="font-display text-lg uppercase tracking-wider text-wc-text">{{ t('client_progress.checkin_q_training_title') }}</p>
+                <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ t('client_progress.checkin_q_training_hint') }}</p>
               </header>
 
               <div>
-                <p class="mb-2 wc-caption">Días entrenados</p>
-                <DaysPicker v-model="diasEntrenados" :max="7" />
+                <p class="mb-2 wc-caption">{{ t('client_progress.checkin_q_days_trained') }}</p>
+                <DaysPicker v-model="diasEntrenados" :max="7" :aria-label="t('client_progress.checkin_q_days_picker_aria')" />
                 <p class="mt-2 text-xs text-wc-text-tertiary">
                   <span class="font-data font-semibold text-wc-text">{{ diasEntrenados }}</span>
-                  de 7 días &middot; {{ diasEntrenados >= 4 ? 'Excelente consistencia.' : diasEntrenados >= 2 ? 'Vas construyendo el hábito.' : 'Esta semana fue tranquila — recupérate bien.' }}
+                  {{ t('client_progress.checkin_days_of_7') }} &middot; {{ diasEntrenados >= 4 ? t('client_progress.checkin_days_excellent') : diasEntrenados >= 2 ? t('client_progress.checkin_days_building') : t('client_progress.checkin_days_quiet') }}
                 </p>
                 <p v-if="formErrors.dias_entrenados" class="mt-1 text-xs text-red-500">{{ formErrors.dias_entrenados }}</p>
               </div>
 
               <WcRangeSlider
                 v-model="rpe"
-                label="RPE promedio de la semana"
+                :label="t('client_progress.checkin_q_rpe_label')"
                 :min="1"
                 :max="10"
-                left-label="Muy fácil (1)"
-                right-label="Máximo esfuerzo (10)"
+                :left-label="t('client_progress.checkin_rpe_left')"
+                :right-label="t('client_progress.checkin_rpe_right')"
                 suffix="/10"
                 id="cf-rpe"
               />
               <p v-if="formErrors.rpe" class="text-xs text-red-500">{{ formErrors.rpe }}</p>
 
               <div class="hidden gap-3 sm:flex sm:justify-between">
-                <button type="button" @click="prevStep" class="rounded-button border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm font-semibold text-wc-text-secondary transition-colors hover:text-wc-text">← Atrás</button>
+                <button type="button" @click="prevStep" class="rounded-button border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm font-semibold text-wc-text-secondary transition-colors hover:text-wc-text">← {{ t('client_progress.checkin_btn_back') }}</button>
                 <button type="submit" class="btn-press inline-flex items-center gap-2 rounded-button bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover">
-                  Siguiente
+                  {{ t('client_progress.checkin_btn_next') }}
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 </button>
               </div>
@@ -448,11 +455,11 @@ onBeforeUnmount(() => {
               novalidate
             >
               <header>
-                <p class="font-display text-lg uppercase tracking-wider text-wc-text">Nutrición</p>
-                <p class="mt-0.5 text-xs text-wc-text-tertiary">¿Qué tan bien seguiste tu plan nutricional esta semana?</p>
+                <p class="font-display text-lg uppercase tracking-wider text-wc-text">{{ t('client_progress.checkin_q_nutrition_title') }}</p>
+                <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ t('client_progress.checkin_q_nutrition_hint') }}</p>
               </header>
 
-              <div role="radiogroup" aria-label="Adherencia al plan nutricional" class="space-y-2">
+              <div role="radiogroup" :aria-label="t('client_progress.checkin_nutrition_aria')" class="space-y-2">
                 <button
                   v-for="opt in NUTRICION_OPTIONS"
                   :key="opt.value"
@@ -489,9 +496,9 @@ onBeforeUnmount(() => {
               <p v-if="formErrors.nutricion" class="text-xs text-red-500">{{ formErrors.nutricion }}</p>
 
               <div class="hidden gap-3 sm:flex sm:justify-between">
-                <button type="button" @click="prevStep" class="rounded-button border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm font-semibold text-wc-text-secondary transition-colors hover:text-wc-text">← Atrás</button>
+                <button type="button" @click="prevStep" class="rounded-button border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm font-semibold text-wc-text-secondary transition-colors hover:text-wc-text">← {{ t('client_progress.checkin_btn_back') }}</button>
                 <button type="submit" class="btn-press inline-flex items-center gap-2 rounded-button bg-wc-accent px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover">
-                  Siguiente
+                  {{ t('client_progress.checkin_btn_next') }}
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 </button>
               </div>
@@ -506,22 +513,22 @@ onBeforeUnmount(() => {
               novalidate
             >
               <header>
-                <p class="font-display text-lg uppercase tracking-wider text-wc-text">Notas para tu coach</p>
-                <p class="mt-0.5 text-xs text-wc-text-tertiary">Cuéntale cómo te fue, qué dudas tienes o qué quieres ajustar. (opcional)</p>
+                <p class="font-display text-lg uppercase tracking-wider text-wc-text">{{ t('client_progress.checkin_q_notes_title') }}</p>
+                <p class="mt-0.5 text-xs text-wc-text-tertiary">{{ t('client_progress.checkin_q_notes_hint') }}</p>
               </header>
 
               <div>
-                <label for="cf-comentario" class="sr-only">Comentario para tu coach</label>
+                <label for="cf-comentario" class="sr-only">{{ t('client_progress.checkin_notes_label_sr') }}</label>
                 <textarea
                   v-model="comentario"
                   id="cf-comentario"
                   rows="5"
                   maxlength="1000"
-                  placeholder="Ej: Esta semana sentí el press inclinado más fuerte, llegué a 80kg × 8. La nutrición estuvo al 75% por una salida de trabajo. ¿Podemos ajustar las porciones del almuerzo?"
+                  :placeholder="t('client_progress.checkin_notes_placeholder')"
                   class="w-full rounded-card border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm text-wc-text placeholder-wc-text-tertiary transition-colors focus:border-wc-accent focus:outline-none focus:ring-2 focus:ring-wc-accent/30"
                 ></textarea>
                 <div class="mt-1 flex items-center justify-between text-[11px] text-wc-text-tertiary">
-                  <p>Tu coach lo recibe al instante.</p>
+                  <p>{{ t('client_progress.checkin_notes_realtime_hint') }}</p>
                   <p class="font-data tabular-nums">{{ comentario.length }} / 1000</p>
                 </div>
                 <p v-if="formErrors.comentario" class="mt-1 text-xs text-red-500">{{ formErrors.comentario }}</p>
@@ -529,22 +536,22 @@ onBeforeUnmount(() => {
 
               <!-- Resumen previo al envío -->
               <div class="rounded-card border border-wc-border bg-wc-bg-secondary p-4">
-                <p class="mb-3 wc-caption">Resumen</p>
+                <p class="mb-3 wc-caption">{{ t('client_progress.checkin_summary_title') }}</p>
                 <dl class="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <div>
-                    <dt class="text-[11px] text-wc-text-tertiary">Bienestar</dt>
+                    <dt class="text-[11px] text-wc-text-tertiary">{{ t('client_progress.checkin_summary_wellbeing') }}</dt>
                     <dd class="font-data text-base font-semibold text-wc-text">{{ bienestar }}/5</dd>
                   </div>
                   <div>
-                    <dt class="text-[11px] text-wc-text-tertiary">Días</dt>
+                    <dt class="text-[11px] text-wc-text-tertiary">{{ t('client_progress.checkin_summary_days') }}</dt>
                     <dd class="font-data text-base font-semibold text-wc-text">{{ diasEntrenados }}/7</dd>
                   </div>
                   <div>
-                    <dt class="text-[11px] text-wc-text-tertiary">Nutrición</dt>
-                    <dd class="text-base font-semibold capitalize text-wc-text">{{ nutricion === 'Si' ? 'Bien' : nutricion === 'Parcial' ? 'Parcial' : 'No' }}</dd>
+                    <dt class="text-[11px] text-wc-text-tertiary">{{ t('client_progress.checkin_summary_nutrition') }}</dt>
+                    <dd class="text-base font-semibold capitalize text-wc-text">{{ nutricion === 'Si' ? t('client_progress.checkin_summary_nutrition_well') : nutricion === 'Parcial' ? t('client_progress.checkin_summary_nutrition_partial') : t('client_progress.checkin_summary_nutrition_no') }}</dd>
                   </div>
                   <div>
-                    <dt class="text-[11px] text-wc-text-tertiary">RPE</dt>
+                    <dt class="text-[11px] text-wc-text-tertiary">{{ t('client_progress.checkin_summary_rpe') }}</dt>
                     <dd class="font-data text-base font-semibold text-wc-text">{{ rpe }}/10</dd>
                   </div>
                 </dl>
@@ -559,22 +566,22 @@ onBeforeUnmount(() => {
               </div>
 
               <div class="hidden gap-3 sm:flex sm:justify-between">
-                <button type="button" @click="prevStep" class="rounded-button border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm font-semibold text-wc-text-secondary transition-colors hover:text-wc-text">← Atrás</button>
+                <button type="button" @click="prevStep" class="rounded-button border border-wc-border bg-wc-bg-secondary px-4 py-2.5 text-sm font-semibold text-wc-text-secondary transition-colors hover:text-wc-text">← {{ t('client_progress.checkin_btn_back') }}</button>
                 <button
                   type="submit"
                   :disabled="!isCheckinAvailable || submitting"
-                  :title="!isCheckinAvailable ? 'Solo disponible viernes y sábado' : undefined"
+                  :title="!isCheckinAvailable ? t('client_progress.checkin_btn_unavailable_title') : undefined"
                   :aria-disabled="!isCheckinAvailable || undefined"
                   class="btn-press inline-flex items-center gap-2 rounded-button bg-wc-accent px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-wc-bg disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <template v-if="submitting">
                     <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                    Enviando...
+                    {{ t('client_progress.checkin_btn_sending') }}
                   </template>
-                  <template v-else-if="!isCheckinAvailable">Disponible el viernes</template>
+                  <template v-else-if="!isCheckinAvailable">{{ t('client_progress.checkin_btn_unavailable') }}</template>
                   <template v-else>
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                    Enviar check-in
+                    {{ t('client_progress.checkin_btn_submit') }}
                   </template>
                 </button>
               </div>
@@ -592,7 +599,7 @@ onBeforeUnmount(() => {
               @click="prevStep"
               :disabled="submitting"
               class="rounded-button border border-wc-border bg-wc-bg-secondary px-4 py-3 text-sm font-semibold text-wc-text-secondary transition-colors hover:text-wc-text disabled:opacity-50"
-              aria-label="Paso anterior"
+              :aria-label="t('client_progress.checkin_btn_back_aria')"
             >
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
             </button>
@@ -603,25 +610,25 @@ onBeforeUnmount(() => {
               :disabled="submitting"
               class="btn-press flex-1 rounded-button bg-wc-accent py-3 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Siguiente paso
+              {{ t('client_progress.checkin_btn_next_step') }}
             </button>
             <button
               v-else
               type="button"
               @click="submitCheckin"
               :disabled="!isCheckinAvailable || submitting"
-              :title="!isCheckinAvailable ? 'Solo disponible viernes y sábado' : undefined"
+              :title="!isCheckinAvailable ? t('client_progress.checkin_btn_unavailable_title') : undefined"
               :aria-disabled="!isCheckinAvailable || undefined"
               class="btn-press flex flex-1 items-center justify-center gap-2 rounded-button bg-wc-accent py-3 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
             >
               <template v-if="submitting">
                 <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                Enviando...
+                {{ t('client_progress.checkin_btn_sending') }}
               </template>
-              <template v-else-if="!isCheckinAvailable">Disponible el viernes</template>
+              <template v-else-if="!isCheckinAvailable">{{ t('client_progress.checkin_btn_unavailable') }}</template>
               <template v-else>
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                Enviar check-in
+                {{ t('client_progress.checkin_btn_submit') }}
               </template>
             </button>
           </div>
@@ -629,7 +636,7 @@ onBeforeUnmount(() => {
 
         <!-- ===== Recent Check-ins ===== -->
         <div v-if="recentCheckins.length > 0">
-          <h2 class="mb-4 font-display text-xl uppercase tracking-wide text-wc-text">Check-ins anteriores</h2>
+          <h2 class="mb-4 font-display text-xl uppercase tracking-wide text-wc-text">{{ t('client_progress.checkin_recent_title') }}</h2>
           <div class="space-y-3">
             <div v-for="(checkin, cIdx) in recentCheckins" :key="checkin.id || cIdx" class="rounded-card border border-wc-border bg-wc-bg-tertiary p-4">
               <!-- Header -->
@@ -638,16 +645,16 @@ onBeforeUnmount(() => {
                   <span class="font-data text-sm font-semibold text-wc-text">{{ checkin.week_label }}</span>
                   <span class="text-xs text-wc-text-tertiary">{{ checkin.checkin_date }}</span>
                 </div>
-                <span v-if="checkin.coach_reply" class="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-500">Respondido</span>
-                <span v-else class="rounded-full bg-yellow-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-500">En revisión</span>
+                <span v-if="checkin.coach_reply" class="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-500">{{ t('client_progress.checkin_recent_status_replied') }}</span>
+                <span v-else class="rounded-full bg-yellow-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-500">{{ t('client_progress.checkin_recent_status_pending') }}</span>
               </div>
 
               <!-- Quick badges -->
               <div class="mb-3 flex flex-wrap gap-1.5">
-                <span class="rounded bg-wc-accent/10 px-2 py-0.5 text-[10px] font-bold text-wc-accent">Bienestar {{ checkin.bienestar }}/5</span>
-                <span class="rounded bg-blue-500/10 px-2 py-0.5 text-[10px] font-bold text-blue-400">RPE {{ checkin.rpe }}/10</span>
+                <span class="rounded bg-wc-accent/10 px-2 py-0.5 text-[10px] font-bold text-wc-accent">{{ t('client_progress.checkin_recent_badge_wellbeing', { value: checkin.bienestar }) }}</span>
+                <span class="rounded bg-blue-500/10 px-2 py-0.5 text-[10px] font-bold text-blue-400">{{ t('client_progress.checkin_recent_badge_rpe', { value: checkin.rpe }) }}</span>
                 <span class="rounded bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-500">{{ nutricionBadgeText(checkin.nutricion) }}</span>
-                <span class="rounded bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-500">{{ checkin.dias_entrenados }}/7 días</span>
+                <span class="rounded bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-500">{{ t('client_progress.checkin_recent_badge_days', { value: checkin.dias_entrenados }) }}</span>
               </div>
 
               <!-- Comentario -->
@@ -657,7 +664,7 @@ onBeforeUnmount(() => {
               <div v-if="checkin.coach_reply" class="mt-3 rounded-card border border-wc-accent/20 bg-wc-accent/5 p-3">
                 <div class="mb-1 flex items-center gap-2">
                   <svg class="h-4 w-4 text-wc-accent" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" /></svg>
-                  <span class="text-[11px] font-semibold uppercase tracking-wide text-wc-accent">Respuesta del coach</span>
+                  <span class="text-[11px] font-semibold uppercase tracking-wide text-wc-accent">{{ t('client_progress.checkin_recent_coach_reply_label') }}</span>
                   <span v-if="checkin.replied_at" class="text-[11px] text-wc-text-tertiary">{{ checkin.replied_at }}</span>
                 </div>
                 <p class="text-sm leading-relaxed text-wc-text">{{ checkin.coach_reply }}</p>
@@ -719,34 +726,34 @@ onBeforeUnmount(() => {
                   <span class="wc-emoji-bounce mb-4 block text-6xl" aria-hidden="true">&#x2705;</span>
 
                   <div class="mb-3 flex items-center justify-center gap-2">
-                    <span class="font-display text-xl uppercase tracking-[0.25em] text-white/90">WellCore</span>
+                    <span class="font-display text-xl uppercase tracking-[0.25em] text-white/90">{{ t('client_progress.checkin_success_brand') }}</span>
                     <span class="h-2 w-2 rounded-full bg-white/30" aria-hidden="true"></span>
                   </div>
 
-                  <h2 id="checkin-success-title" class="mb-2 font-sans text-2xl font-bold text-white">Check-in enviado</h2>
+                  <h2 id="checkin-success-title" class="mb-2 font-sans text-2xl font-bold text-white">{{ t('client_progress.checkin_success_title') }}</h2>
 
                   <!-- Stats grid -->
                   <div class="my-5 grid grid-cols-3 gap-3">
                     <div class="rounded-xl border border-white/10 bg-white/[0.06] p-3">
                       <p class="font-data text-2xl font-bold text-white">{{ lastDiasEntrenados }}</p>
-                      <p class="mt-0.5 text-[11px] text-white/50">días entren.</p>
+                      <p class="mt-0.5 text-[11px] text-white/50">{{ t('client_progress.checkin_success_days_short') }}</p>
                     </div>
                     <div class="rounded-xl border border-white/10 bg-white/[0.06] p-3">
                       <p class="font-data text-2xl font-bold text-white">{{ lastBienestar }}/5</p>
-                      <p class="mt-0.5 text-[11px] text-white/50">bienestar</p>
+                      <p class="mt-0.5 text-[11px] text-white/50">{{ t('client_progress.checkin_success_wellbeing_short') }}</p>
                     </div>
                     <div class="rounded-xl border border-white/10 bg-white/[0.06] p-3">
-                      <p class="font-data text-2xl font-bold text-white">S{{ currentWeekNum }}</p>
-                      <p class="mt-0.5 text-[11px] text-white/50">semana</p>
+                      <p class="font-data text-2xl font-bold text-white">{{ t('client_progress.checkin_success_week_prefix') }}{{ currentWeekNum }}</p>
+                      <p class="mt-0.5 text-[11px] text-white/50">{{ t('client_progress.checkin_success_week_short') }}</p>
                     </div>
                   </div>
 
-                  <p class="mb-6 text-sm text-white/70">Tu coach revisará tu reporte esta semana. Sigue así.</p>
+                  <p class="mb-6 text-sm text-white/70">{{ t('client_progress.checkin_success_body') }}</p>
 
                   <button
                     @click="dismissSuccess"
                     class="w-full rounded-xl bg-wc-accent px-6 py-3 font-display text-lg uppercase tracking-wider text-white transition-colors hover:bg-wc-accent-hover focus:outline-none focus:ring-2 focus:ring-wc-accent focus:ring-offset-2 focus:ring-offset-black"
-                  >Perfecto</button>
+                  >{{ t('client_progress.checkin_success_dismiss') }}</button>
                 </div>
               </div>
             </Transition>
@@ -778,8 +785,8 @@ onBeforeUnmount(() => {
               <div v-if="showTutorial" class="w-full max-w-sm rounded-2xl border border-wc-border bg-wc-bg p-6 shadow-2xl">
                 <!-- Header -->
                 <div class="mb-4 flex items-center justify-between">
-                  <h3 class="font-display text-lg uppercase tracking-widest text-wc-text">Check-in semanal</h3>
-                  <button @click="dismissTutorial" class="text-wc-text-tertiary transition-colors hover:text-wc-text" aria-label="Cerrar" type="button">
+                  <h3 class="font-display text-lg uppercase tracking-widest text-wc-text">{{ t('client_progress.checkin_tutorial_title') }}</h3>
+                  <button @click="dismissTutorial" class="text-wc-text-tertiary transition-colors hover:text-wc-text" :aria-label="t('client_progress.checkin_tutorial_close_aria')" type="button">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                   </button>
                 </div>
@@ -789,8 +796,8 @@ onBeforeUnmount(() => {
                   <div class="flex items-start gap-4">
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">1</div>
                     <div>
-                      <p class="text-sm font-semibold text-wc-text">¿Qué es el check-in?</p>
-                      <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">Es tu reporte semanal al coach. Con esta información tu coach ajusta tu plan de entrenamiento y nutrición para maximizar tus resultados semana a semana.</p>
+                      <p class="text-sm font-semibold text-wc-text">{{ t('client_progress.checkin_tutorial_step1_title') }}</p>
+                      <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">{{ t('client_progress.checkin_tutorial_step1_body') }}</p>
                     </div>
                   </div>
                 </div>
@@ -800,8 +807,8 @@ onBeforeUnmount(() => {
                   <div class="flex items-start gap-4">
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">2</div>
                     <div>
-                      <p class="text-sm font-semibold text-wc-text">Sé honesto</p>
-                      <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">No hay respuestas malas. Si tuviste una semana difícil, dilo. Tu coach solo puede ayudarte si conoce tu realidad — no la versión perfecta.</p>
+                      <p class="text-sm font-semibold text-wc-text">{{ t('client_progress.checkin_tutorial_step2_title') }}</p>
+                      <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">{{ t('client_progress.checkin_tutorial_step2_body') }}</p>
                     </div>
                   </div>
                 </div>
@@ -811,8 +818,8 @@ onBeforeUnmount(() => {
                   <div class="flex items-start gap-4">
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-wc-accent text-sm font-bold text-white">3</div>
                     <div>
-                      <p class="text-sm font-semibold text-wc-text">Hazlo cada semana</p>
-                      <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">Los clientes que completan su check-in semanalmente progresan 3× más rápido. El seguimiento constante es lo que diferencia los resultados promedio de los extraordinarios.</p>
+                      <p class="text-sm font-semibold text-wc-text">{{ t('client_progress.checkin_tutorial_step3_title') }}</p>
+                      <p class="mt-1 text-xs leading-relaxed text-wc-text-secondary">{{ t('client_progress.checkin_tutorial_step3_body') }}</p>
                     </div>
                   </div>
                 </div>
@@ -834,19 +841,19 @@ onBeforeUnmount(() => {
                     @click="prevTutorialStep"
                     type="button"
                     class="flex-1 rounded-xl border border-wc-border bg-wc-bg-secondary py-2.5 text-sm font-medium text-wc-text-secondary transition-colors hover:text-wc-text"
-                  >Atrás</button>
+                  >{{ t('client_progress.checkin_tutorial_back') }}</button>
                   <button
                     v-if="tutorialStep < tutorialTotal"
                     @click="nextTutorialStep"
                     type="button"
                     class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover"
-                  >Siguiente</button>
+                  >{{ t('client_progress.checkin_tutorial_next') }}</button>
                   <button
                     v-if="tutorialStep === tutorialTotal"
                     @click="dismissTutorial"
                     type="button"
                     class="flex-1 rounded-xl bg-wc-accent py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wc-accent-hover"
-                  >Listo, comenzar</button>
+                  >{{ t('client_progress.checkin_tutorial_start') }}</button>
                 </div>
               </div>
             </Transition>

@@ -78,20 +78,20 @@
             @click="toggleWeek(sIdx)"
           >
             <div class="week-num">
-              <div class="lab">SEM</div>
+              <div class="lab">{{ weekShortLabel }}</div>
               <div class="n">{{ String(semana?.numero ?? sIdx + 1).padStart(2, '0') }}</div>
             </div>
             <div class="week-info">
               <div class="week-title-row">
-                <span class="week-title">{{ semana?.titulo || `Semana ${sIdx + 1}` }}</span>
+                <span class="week-title">{{ semana?.titulo || t('client_plan.v2_week_default_title', { n: sIdx + 1 }) }}</span>
                 <span v-if="weekPhaseLabel(semana)" class="week-phase" :class="weekPhaseClass(semana)">
                   {{ weekPhaseLabel(semana) }}
                 </span>
               </div>
               <div v-if="weekMeta(semana)" class="week-meta">{{ weekMeta(semana) }}</div>
             </div>
-            <span v-if="isCurrentWeek(sIdx)" class="week-pill-now">Ahora</span>
-            <span v-else-if="semana?.completada" class="week-pill-done">Listo</span>
+            <span v-if="isCurrentWeek(sIdx)" class="week-pill-now">{{ t('client_plan.v2_week_now') }}</span>
+            <span v-else-if="semana?.completada" class="week-pill-done">{{ t('client_plan.v2_week_done') }}</span>
             <svg
               class="week-chev"
               :class="{ open: isWeekOpen(sIdx) }"
@@ -114,7 +114,7 @@
             >
               <div class="day-head" @click="toggleDay(sIdx, dIdx)">
                 <div class="day-num">
-                  <div class="lab">DÍA</div>
+                  <div class="lab">{{ dayShortLabel }}</div>
                   <div class="n">{{ String(dia?.numero ?? dIdx + 1).padStart(2, '0') }}</div>
                 </div>
                 <div class="day-info">
@@ -128,13 +128,13 @@
                       <span class="sw" :style="{ background: g.color }"></span>{{ g.label }}
                     </span>
                   </div>
-                  <h3 class="day-title">{{ dia?.titulo || dia?.nombre || `Día ${dIdx + 1}` }}</h3>
+                  <h3 class="day-title">{{ dia?.titulo || dia?.nombre || t('client_plan.v2_day_default_name', { n: dIdx + 1 }) }}</h3>
                   <div v-if="daySubline(dia)" class="day-subline">{{ daySubline(dia) }}</div>
                 </div>
                 <div v-if="dia?.completado" class="day-status">
                   <span class="status-chip done">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
-                    Listo
+                    {{ t('client_plan.v2_day_status_done') }}
                   </span>
                 </div>
               </div>
@@ -145,7 +145,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z"/>
                     </svg>
-                    Calent.
+                    {{ t('client_plan.v2_day_warmup_label') }}
                   </span>
                   <p class="warmup-tx">{{ dia.calentamiento }}</p>
                 </div>
@@ -160,8 +160,8 @@
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.25 5.65c0-.86.92-1.4 1.67-.99l11.54 6.35a1.13 1.13 0 0 1 0 1.97L6.92 19.34a1.13 1.13 0 0 1-1.67-.99V5.65Z"/></svg>
                   </span>
                   <span class="tx">
-                    <span class="lab">{{ dia?.es_hoy ? 'Sesión de hoy' : 'Próxima sesión' }}</span>
-                    <span class="ttl">{{ dia?.es_hoy ? 'Entrenar ahora' : 'Empezar' }}</span>
+                    <span class="lab">{{ dia?.es_hoy ? t('client_plan.v2_day_cta_today_label') : t('client_plan.v2_day_cta_upcoming_label') }}</span>
+                    <span class="ttl">{{ dia?.es_hoy ? t('client_plan.v2_day_cta_today_title') : t('client_plan.v2_day_cta_upcoming_title') }}</span>
                   </span>
                   <svg class="arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
                 </button>
@@ -199,8 +199,8 @@
         <button type="button" class="phone-sticky" @click="onTrainNow(todayDayMeta.semana, todayDayMeta.dia)">
           <span class="icn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.25 5.65c0-.86.92-1.4 1.67-.99l11.54 6.35a1.13 1.13 0 0 1 0 1.97L6.92 19.34a1.13 1.13 0 0 1-1.67-.99V5.65Z"/></svg></span>
           <div class="phone-sticky-tx">
-            <span class="lab">Sesión de hoy</span>
-            <span class="ttl">Entrenar ahora</span>
+            <span class="lab">{{ t('client_plan.v2_sticky_label') }}</span>
+            <span class="ttl">{{ t('client_plan.v2_sticky_title') }}</span>
           </div>
           <svg class="arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
         </button>
@@ -215,6 +215,7 @@
 // Wired al composable usePlanViewer para el toggle de variation con optimistic UI.
 import { ref, computed, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import PlanSkeleton from './parts/PlanSkeleton.vue';
 import PlanErrorState from './parts/PlanErrorState.vue';
 import PlanEmptyState from './parts/PlanEmptyState.vue';
@@ -242,7 +243,12 @@ const props = defineProps({
 const emit = defineEmits(['retry', 'open-week-detail']);
 
 const router = useRouter();
+const { t, locale } = useI18n();
 const { toggleVariation, isToggling } = usePlanViewer();
+
+// Short labels for the week/day number badges (3-letter style for hero stack).
+const weekShortLabel = computed(() => (locale.value === 'en' ? 'WK' : 'SEM'));
+const dayShortLabel = computed(() => (locale.value === 'en' ? 'DAY' : 'DÍA'));
 
 const semanas = computed(() => Array.isArray(props.trainingPlan?.semanas) ? props.trainingPlan.semanas : []);
 const objetivoBloque = computed(() => {
@@ -253,11 +259,21 @@ const weeklySchedule = computed(() => {
   // Defensive fallback: derive from first/current semana
   const sem = semanas.value.find((s) => s?.es_actual) || semanas.value[0];
   if (!sem || !Array.isArray(sem.dias)) return [];
-  const LETTERS = ['L','M','X','J','V','S','D'];
-  const LABELS = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+  const LETTERS_ES = ['L','M','X','J','V','S','D'];
+  const LETTERS_EN = ['M','T','W','T','F','S','S'];
+  const LETTERS = locale.value === 'en' ? LETTERS_EN : LETTERS_ES;
+  const LABEL_KEYS = [
+    'client_plan.weekly_day_monday',
+    'client_plan.weekly_day_tuesday',
+    'client_plan.weekly_day_wednesday',
+    'client_plan.weekly_day_thursday',
+    'client_plan.weekly_day_friday',
+    'client_plan.weekly_day_saturday',
+    'client_plan.weekly_day_sunday',
+  ];
   return sem.dias.slice(0, 7).map((d, i) => ({
     day_letter: LETTERS[i] || '·',
-    day_label: LABELS[i] || '',
+    day_label: LABEL_KEYS[i] ? t(LABEL_KEYS[i]) : '',
     muscle_groups: d?.titulo || d?.nombre || (Array.isArray(d?.grupos) ? d.grupos.join(' · ') : ''),
   }));
 });
@@ -287,7 +303,7 @@ const coachShortName = computed(() => {
 });
 
 const coachDisplayName = computed(() => {
-  return props.coach?.name || props.coach?.nombre || 'Tu coach';
+  return props.coach?.name || props.coach?.nombre || t('client_plan.v2_coach_default_name');
 });
 
 const coachMessage = computed(() => {
@@ -328,8 +344,8 @@ const PHASE_MAP = {
 // viene server-side y se renderiza en .week-title — no se duplica acá.
 function weekPhaseLabel(s) {
   if (!s) return '';
-  if (s.es_actual) return 'En curso';
-  if (s.completada) return 'Listo';
+  if (s.es_actual) return t('client_plan.v2_week_in_progress');
+  if (s.completada) return t('client_plan.v2_week_done');
   return '';
 }
 function weekPhaseClass(s) {
@@ -344,9 +360,9 @@ function weekMeta(s) {
   const series = s?.total_series ?? null;
   const minutos = s?.total_minutos ?? null;
   const parts = [];
-  if (dias) parts.push(`${dias} días`);
-  if (minutos) parts.push(`~${Math.round(minutos / 60)}h ${minutos % 60}m total`);
-  if (series) parts.push(`${series} series`);
+  if (dias) parts.push(t('client_plan.v2_week_meta_days', { n: dias }));
+  if (minutos) parts.push(t('client_plan.v2_week_meta_minutes', { h: Math.floor(minutos / 60), m: minutos % 60 }));
+  if (series) parts.push(t('client_plan.v2_week_meta_series', { n: series }));
   return parts.join(' · ');
 }
 
@@ -457,9 +473,9 @@ function daySubline(dia) {
   const min = dia?.total_minutos ?? null;
   const rir = dia?.rir_promedio ?? null;
   const parts = [];
-  if (ej) parts.push(`${ej} EJ.`);
-  if (min) parts.push(`~${min} MIN`);
-  if (rir) parts.push(`RIR ${rir}`);
+  if (ej) parts.push(t('client_plan.v2_day_exercises_short', { n: ej }));
+  if (min) parts.push(t('client_plan.v2_day_minutes_short', { n: min }));
+  if (rir) parts.push(t('client_plan.v2_day_rir_short', { n: rir }));
   return parts.join(' · ');
 }
 
@@ -491,7 +507,7 @@ function blockMeta(ejercicios, idx) {
     if (ej?.block_id === bid) count++;
   }
   if (!count) return '';
-  return `${count} ejercicios`;
+  return t('client_plan.v2_block_meta_exercises', { n: count });
 }
 
 function ejKey(ej, idx) {
@@ -504,7 +520,10 @@ const effectiveTotalWeeks = computed(() => {
 });
 const totalWeeksLabel = computed(() => {
   const n = effectiveTotalWeeks.value;
-  return n > 0 ? `${n} ${n === 1 ? 'semana' : 'semanas'}` : '';
+  if (n <= 0) return '';
+  return n === 1
+    ? t('client_plan.v2_weeks_total_one', { n })
+    : t('client_plan.v2_weeks_total_other', { n });
 });
 
 // Sticky CTA on mobile — solo si hay día de hoy en alguna semana

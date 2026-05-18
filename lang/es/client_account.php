@@ -1,0 +1,348 @@
+<?php
+
+return [
+
+    // ─────────────────────────────────────────────────────────────────────
+    // PROFILE EDITOR (ProfileV2 + legacy)
+    // ─────────────────────────────────────────────────────────────────────
+
+    // Page header
+    'profile_eyebrow' => 'Cuenta · Identidad',
+    'profile_title' => 'Mi perfil',
+    'profile_subtitle' => 'Tu identidad en WellCore. Esta información te conecta con tu coach y con la comunidad — actualízala cuando algo cambie.',
+    'profile_title_legacy' => 'MI PERFIL',
+    'profile_subtitle_legacy' => 'Actualiza tu información personal y datos de entrenamiento',
+
+    // IdentityHero
+    'profile_no_name' => 'Sin nombre',
+    'profile_completion_label' => 'Completitud del perfil',
+    'profile_completion_complete' => 'Tu perfil está completo y visible en la comunidad.',
+    'profile_completion_missing_one' => 'Falta 1 dato para completar tu perfil.',
+    'profile_completion_missing_many' => 'Faltan :n datos para completar tu perfil.',
+    'profile_completion_pending_label' => 'Campos pendientes',
+    'profile_completion_complete_legacy' => 'Perfil completo — apareces con toda tu info en la comunidad.',
+    'profile_completion_missing_intro_legacy' => 'Un perfil completo te hace destacar en la comunidad. Faltan:',
+
+    // Toast & status
+    'profile_saved' => 'Perfil actualizado correctamente',
+    'profile_loading_sr' => 'Cargando tu perfil…',
+    'profile_retry' => 'Reintentar',
+
+    // Avatar
+    'profile_avatar_alt' => 'Tu foto de perfil',
+    'profile_avatar_alt_named' => 'Foto de :name',
+    'profile_avatar_upload' => 'Subir foto',
+    'profile_change_avatar' => 'Cambiar foto',
+    'profile_avatar_save' => 'Guardar foto',
+    'profile_avatar_uploading' => 'Subiendo...',
+    'profile_avatar_button_label_upload' => 'Subir foto de perfil',
+    'profile_avatar_button_label_change' => 'Cambiar foto de perfil',
+    'profile_avatar_uploaded_badge' => 'Foto subida',
+    'profile_avatar_format_unsupported' => 'Formato no soportado. Usa JPG, PNG o WebP.',
+    'profile_avatar_too_large' => 'La foto debe ser menor a 5 MB.',
+    'profile_avatar_success' => 'Foto de perfil actualizada.',
+    'profile_avatar_error' => 'No pudimos subir tu foto. Intenta de nuevo.',
+    'profile_avatar_hint' => 'JPG, PNG o WebP · máx 5 MB',
+    'profile_avatar_hint_community' => 'Se muestra en la comunidad',
+
+    // Personal data section
+    'profile_section_personal_num' => '01 · IDENTIDAD',
+    'profile_section_personal_title' => 'DATOS PERSONALES',
+    'profile_section_personal_sub' => 'Información básica de tu cuenta. Esto aparece en tu perfil de comunidad.',
+    'profile_section_personal_sub_legacy' => 'Información básica de tu cuenta',
+
+    'profile_field_name' => 'Nombre completo',
+    'profile_field_name_placeholder' => 'Tu nombre',
+    'profile_field_email' => 'Email',
+    'profile_field_email_placeholder' => 'tu@email.com',
+    'profile_field_city' => 'Ciudad',
+    'profile_field_city_placeholder' => 'Tu ciudad',
+    'profile_field_birthdate' => 'Fecha de nacimiento',
+    'profile_field_whatsapp' => 'WhatsApp',
+    'profile_field_whatsapp_placeholder' => '300 123 4567',
+    'profile_field_whatsapp_placeholder_legacy' => '+52 123 456 7890',
+    'profile_field_bio' => 'Bio',
+    'profile_field_bio_hint' => 'visible en la comunidad',
+    'profile_field_bio_placeholder' => 'Cuenta en una línea quién eres y qué te motiva. Aparecerá en tu perfil de comunidad.',
+    'profile_field_bio_placeholder_legacy' => 'Ej: 28 años · Medellín · Entreno para competir en 2026. Método desde hace 3 meses.',
+
+    // Fitness data section
+    'profile_section_fitness_num' => '02 · ENTRENAMIENTO',
+    'profile_section_fitness_title' => 'DATOS DE ENTRENAMIENTO',
+    'profile_section_fitness_sub' => 'Información para que tu coach personalice tu plan según tu nivel y disponibilidad.',
+    'profile_section_fitness_title_legacy' => 'DATOS FITNESS',
+    'profile_section_fitness_sub_legacy' => 'Tu información de entrenamiento',
+
+    'profile_field_weight' => 'Peso',
+    'profile_field_weight_legacy' => 'Peso (kg)',
+    'profile_field_weight_placeholder' => '75.0',
+    'profile_field_height' => 'Altura',
+    'profile_field_height_legacy' => 'Altura (cm)',
+    'profile_field_height_placeholder' => '175',
+    'profile_field_height_placeholder_legacy' => '175.0',
+    'profile_field_goal' => 'Objetivo',
+    'profile_field_goal_hint' => 'Descríbelo en una frase: lo que quieres lograr en los próximos 3-6 meses.',
+    'profile_field_goal_placeholder' => 'Ej: bajar grasa y mantener fuerza, ganar 3 kg de masa magra…',
+    'profile_field_goal_placeholder_legacy' => 'Ej: Perder grasa, ganar músculo...',
+    'profile_field_level' => 'Nivel',
+    'profile_field_level_placeholder' => 'Selecciona tu nivel',
+    'profile_field_level_beginner' => 'Principiante',
+    'profile_field_level_beginner_desc' => '0–6 meses entrenando',
+    'profile_field_level_intermediate' => 'Intermedio',
+    'profile_field_level_intermediate_desc' => '6 meses–2 años con técnica sólida',
+    'profile_field_level_advanced' => 'Avanzado',
+    'profile_field_level_advanced_desc' => '2+ años entrenando regularmente',
+
+    'profile_field_place' => 'Lugar de entrenamiento',
+    'profile_field_place_placeholder' => '¿Dónde entrenas?',
+    'profile_field_place_placeholder_legacy' => 'Selecciona lugar',
+    'profile_field_place_gym' => 'Gimnasio',
+    'profile_field_place_gym_desc' => 'Acceso a equipo completo',
+    'profile_field_place_home' => 'Casa',
+    'profile_field_place_home_desc' => 'Equipo limitado o peso corporal',
+    'profile_field_place_both' => 'Ambos',
+    'profile_field_place_both_desc' => 'Combinas gym y entrenamiento en casa',
+
+    'profile_field_days' => 'Días disponibles',
+    'profile_field_days_hint' => 'Marca los días en los que puedes entrenar regularmente.',
+    'profile_field_days_singular' => 'día',
+    'profile_field_days_plural' => 'días',
+    'profile_field_days_per_week' => '/semana',
+    'profile_field_days_sr' => 'Días disponibles para entrenar',
+    'profile_day_monday_short' => 'LUN',
+    'profile_day_tuesday_short' => 'MAR',
+    'profile_day_wednesday_short' => 'MIE',
+    'profile_day_thursday_short' => 'JUE',
+    'profile_day_friday_short' => 'VIE',
+    'profile_day_saturday_short' => 'SAB',
+    'profile_day_sunday_short' => 'DOM',
+
+    'profile_field_restrictions' => 'Restricciones o lesiones',
+    'profile_field_restrictions_optional' => 'opcional',
+    'profile_field_restrictions_placeholder' => 'Ej: lesión en rodilla derecha, alergia al gluten, hombro con poca movilidad…',
+    'profile_field_restrictions_placeholder_legacy' => 'Ej: Lesión en rodilla derecha, alergia al gluten...',
+
+    // Save bar / actions
+    'profile_save' => 'Guardar cambios',
+    'profile_save_legacy' => 'Guardar Cambios',
+    'profile_save_sr' => 'Guardar',
+    'profile_saving' => 'Guardando…',
+    'profile_saving_legacy' => 'Guardando...',
+    'profile_discard' => 'Descartar',
+    'profile_savebar_label' => 'Cambios sin guardar',
+    'profile_unsaved_changes' => 'Hay cambios sin guardar',
+    'profile_unsaved_changes_one' => '1 cambio sin guardar',
+    'profile_unsaved_changes_many' => ':n cambios sin guardar',
+
+    // Community preview
+    'profile_preview_caption' => 'VISTA EN LA COMUNIDAD',
+    'profile_preview_default_name' => 'Tu nombre',
+    'profile_preview_empty_bio' => 'Escribe algo sobre ti…',
+    'profile_preview_age' => ':n años',
+    'profile_preview_label' => 'Vista previa de cómo se verá tu perfil en la comunidad',
+
+    // Public profile (Profile.vue — /client/profile/:id)
+    'public_profile_unavailable_title' => 'PERFIL NO DISPONIBLE',
+    'public_profile_unavailable_sub' => 'Este perfil no existe o pertenece a otra comunidad.',
+    'public_profile_back_to_community' => 'Volver a la comunidad',
+    'public_profile_since' => 'Desde :date',
+    'public_profile_follow' => 'Seguir',
+    'public_profile_following' => 'Siguiendo ✓',
+    'public_profile_unfollow' => 'Dejar de seguir',
+    'public_profile_streak' => 'Racha',
+    'public_profile_level' => 'Nivel',
+    'public_profile_followers' => 'Seguidores',
+    'public_profile_xp_total' => 'XP Total',
+    'public_profile_medals' => 'Medallas',
+    'public_profile_no_medals' => 'Aún no tiene medallas desbloqueadas.',
+
+    // ─────────────────────────────────────────────────────────────────────
+    // SETTINGS (ClientSettings.vue)
+    // ─────────────────────────────────────────────────────────────────────
+    'settings_title' => 'CONFIGURACIÓN',
+    'settings_subtitle' => 'Gestiona tu cuenta, preferencias y seguridad',
+
+    'settings_tab_profile' => 'Perfil',
+    'settings_tab_notifications' => 'Notificaciones',
+    'settings_tab_appearance' => 'Apariencia',
+    'settings_tab_security' => 'Seguridad',
+
+    // Profile tab
+    'settings_profile_title' => 'DATOS DE PERFIL',
+    'settings_profile_sub' => 'Actualiza tu información personal',
+    'settings_profile_name' => 'Nombre completo',
+    'settings_profile_name_placeholder' => 'Tu nombre',
+    'settings_profile_email' => 'Correo electrónico',
+    'settings_profile_email_placeholder' => 'tu@email.com',
+    'settings_profile_phone' => 'Teléfono',
+    'settings_profile_phone_placeholder' => '+52 123 456 7890',
+    'settings_profile_save' => 'Guardar cambios',
+    'settings_profile_saving' => 'Guardando...',
+    'settings_profile_success' => 'Perfil actualizado correctamente',
+    'settings_profile_name_required' => 'El nombre es obligatorio.',
+    'settings_profile_email_invalid' => 'Ingresa un email válido.',
+    'settings_profile_save_error' => 'No pudimos guardar los cambios.',
+    'settings_profile_load_error' => 'Error al cargar configuración',
+
+    // Notifications tab
+    'settings_notif_title' => 'PREFERENCIAS DE NOTIFICACIÓN',
+    'settings_notif_sub' => 'Elige qué notificaciones deseas recibir',
+    'settings_notif_checkin' => 'Recordatorios de check-in',
+    'settings_notif_checkin_desc' => 'Recibe avisos para no olvidar tu check-in semanal',
+    'settings_notif_coach' => 'Mensajes del coach',
+    'settings_notif_coach_desc' => 'Notificaciones cuando tu coach te envía feedback',
+    'settings_notif_achievements' => 'Logros y rachas',
+    'settings_notif_achievements_desc' => 'Celebra records personales y rachas de entrenamiento',
+    'settings_notif_payments' => 'Pagos y planes',
+    'settings_notif_payments_desc' => 'Confirmaciones de pago y asignaciones de nuevos planes',
+    'settings_notif_weekly' => 'Resumen semanal',
+    'settings_notif_weekly_desc' => 'Recibe un resumen de tu progreso cada semana',
+    'settings_notif_sound' => 'Sonido al completar entrenamiento',
+    'settings_notif_sound_desc' => 'Reproduce un sonido sutil cuando completas tu entrenamiento',
+    'settings_notif_footnote' => 'Las preferencias se guardan automáticamente en este dispositivo.',
+
+    // Autoshare / Latido del grupo
+    'autoshare_title' => 'PRIVACIDAD DE ACTIVIDAD',
+    'autoshare_sub' => 'Controla qué eventos tuyos aparecen en el Latido del Grupo de tu coach',
+    'autoshare_workout' => 'Mostrar mis entrenamientos',
+    'autoshare_workout_desc' => 'Cuando completes un entrenamiento aparecerá en el feed del grupo',
+    'autoshare_pr' => 'Mostrar mis récords (PR)',
+    'autoshare_pr_desc' => 'Comparte tus levantamientos máximos para motivar al grupo',
+    'autoshare_medal' => 'Mostrar mis medallas',
+    'autoshare_medal_desc' => 'Tus medallas y logros aparecerán cuando los desbloquees',
+    'autoshare_weight' => 'Mostrar cambios de peso',
+    'autoshare_weight_desc' => 'Tus actualizaciones de peso aparecerán como hitos en el grupo',
+    'autoshare_streak' => 'Mostrar mis rachas',
+    'autoshare_streak_desc' => 'Cuando alcances una racha de entrenamiento aparecerá en el grupo',
+    'autoshare_saving' => 'Guardando…',
+    'autoshare_synced' => 'Tus preferencias se sincronizan automáticamente.',
+    'autoshare_save_error' => 'No pudimos guardar tus preferencias de privacidad.',
+
+    // Appearance tab
+    'settings_appearance_title' => 'APARIENCIA',
+    'settings_appearance_sub' => 'Personaliza el aspecto visual de la plataforma',
+    'settings_appearance_mode_label' => 'Modo de visualización',
+    'settings_appearance_light' => 'Modo Claro',
+    'settings_appearance_dark' => 'Modo Oscuro',
+
+    // Security tab
+    'settings_security_title' => 'CAMBIAR CONTRASEÑA',
+    'settings_security_sub' => 'Actualiza tu contraseña de acceso',
+    'settings_security_current' => 'Contraseña actual',
+    'settings_security_current_placeholder' => 'Tu contraseña actual',
+    'settings_security_new' => 'Nueva contraseña',
+    'settings_security_new_placeholder' => 'Mínimo 10 caracteres',
+    'settings_security_confirm' => 'Confirmar contraseña',
+    'settings_security_confirm_placeholder' => 'Repite la nueva contraseña',
+    'settings_security_save' => 'Actualizar contraseña',
+    'settings_security_saving' => 'Actualizando...',
+    'settings_security_success' => 'Contraseña actualizada correctamente',
+    'settings_security_current_required' => 'Ingresa tu contraseña actual.',
+    'settings_security_mismatch' => 'Las contraseñas no coinciden.',
+    'settings_security_min_length' => 'La contraseña debe tener al menos 10 caracteres.',
+    'settings_security_tip_strong' => 'Consejo de seguridad:',
+    'settings_security_tip_body' => 'Usa una contraseña única de al menos 8 caracteres con letras, números y símbolos.',
+
+    // ─────────────────────────────────────────────────────────────────────
+    // NOTIFICATIONS PREFERENCES (NotificationsPreferences.vue)
+    // ─────────────────────────────────────────────────────────────────────
+    'notif_prefs_title' => 'Notificaciones',
+    'notif_prefs_subtitle' => 'Decide qué eventos quieres recibir y cómo.',
+    'notif_prefs_channels' => 'Canales',
+    'notif_prefs_push' => 'Push (navegador)',
+    'notif_prefs_in_app' => 'In-app (campana)',
+    'notif_prefs_when' => 'Cuándo notificarme',
+    'notif_prefs_post_reactions' => 'Cuando alguien reacciona a mi post',
+    'notif_prefs_comments_on_my_post' => 'Cuando comentan en mi post',
+    'notif_prefs_mentions' => 'Cuando alguien me menciona',
+    'notif_prefs_coach_messages' => 'Cuando mi coach me escribe',
+    'notif_prefs_coach_announcements' => 'Anuncios de mi coach',
+    'notif_prefs_wellcore_announcements' => 'Anuncios de WellCore',
+    'notif_prefs_saving' => 'Guardando…',
+    'notif_prefs_load_error' => 'No pudimos cargar preferencias.',
+    'notif_prefs_save_error' => 'No pudimos guardar.',
+
+    // ─────────────────────────────────────────────────────────────────────
+    // ACHIEVEMENTS / LOGROS
+    // ─────────────────────────────────────────────────────────────────────
+    'achievements_title' => 'Logros',
+    'achievements_subtitle' => 'Tus medallas de constancia, fuerza y progreso.',
+    'achievements_your_journey' => 'Tu progresión',
+    'achievements_level' => 'Nivel',
+    'achievements_level_label' => 'Nivel',
+    'achievements_total_label' => 'Logros',
+    'achievements_unlocked_sub' => 'desbloqueados',
+    'achievements_xp_total' => 'XP total',
+    'achievements_xp_unit' => 'XP',
+    'achievements_xp_accumulated' => 'acumulado',
+    'achievements_workouts' => 'Entrenamientos',
+    'achievements_workouts_completed' => 'completados',
+    'achievements_streak_days' => ':n días de racha',
+    'achievements_xp_to_next' => ':current de :max XP para subir al nivel :level',
+
+    'achievements_filter_status_all' => 'Todas',
+    'achievements_filter_status_achieved' => 'Logradas',
+    'achievements_filter_status_in_progress' => 'En progreso',
+    'achievements_filter_status_locked' => 'Bloqueadas',
+
+    'achievements_tier_all' => 'Todas',
+    'achievements_tier_bronze' => 'Bronce',
+    'achievements_tier_silver' => 'Plata',
+    'achievements_tier_gold' => 'Oro',
+    'achievements_tier_platinum' => 'Platino',
+    'achievements_tier_legendary' => 'Legendario',
+
+    'achievements_empty_title' => 'Sin resultados',
+    'achievements_empty_sub' => 'No hay medallas que coincidan con los filtros.',
+
+    'achievements_status_achieved' => 'Logrado',
+    'achievements_status_locked' => 'Bloqueado',
+    'achievements_close' => 'Cerrar',
+    'achievements_requirement' => 'Requisito',
+    'achievements_progress' => 'Progreso',
+    'achievements_unlocked_at' => 'Desbloqueado',
+    'achievements_reward' => 'Recompensa',
+
+    // ─────────────────────────────────────────────────────────────────────
+    // REFERRALS (ReferralProgram.vue)
+    // ─────────────────────────────────────────────────────────────────────
+    'referrals_eyebrow' => 'Gana recompensas',
+    'referrals_title_line1' => 'PROGRAMA DE',
+    'referrals_title_line2' => 'REFERIDOS',
+    'referrals_subtitle' => 'Invita a tus amigos a WellCore Fitness y gana beneficios exclusivos por cada persona que se una a la comunidad.',
+
+    'referrals_error_title' => 'ERROR AL CARGAR',
+    'referrals_retry' => 'Reintentar',
+    'referrals_load_error' => 'Error al cargar los referidos',
+
+    'referrals_stat_total' => 'Total referidos',
+    'referrals_stat_registered' => 'Registrados',
+    'referrals_stat_active' => 'Activos',
+
+    'referrals_your_code_title' => 'Tu link de referido',
+    'referrals_your_code_sub' => 'Comparte este enlace con tus amigos',
+    'referrals_exclusive_badge' => 'Tu link exclusivo',
+    'referrals_copy_link' => 'Copiar link',
+    'referrals_copied' => 'Copiado',
+    'referrals_copy_manual' => 'Copia el link manualmente: :link',
+    'referrals_share_whatsapp' => 'Compartir por WhatsApp',
+    'referrals_whatsapp_message' => '¡Hola! Te invito a unirte a WellCore Fitness, la plataforma de entrenamiento personalizado. Usa mi link: :link',
+
+    'referrals_invite_title' => 'Invitar por correo electrónico',
+    'referrals_invite_sub' => 'Envía una invitación directa a la bandeja de entrada',
+    'referrals_invite_placeholder' => 'correo@ejemplo.com',
+    'referrals_invite_button' => 'Invitar',
+    'referrals_invite_sending' => 'Enviando...',
+    'referrals_invite_email_invalid' => 'Escribe un email válido.',
+    'referrals_invite_success_default' => 'Invitación enviada exitosamente',
+    'referrals_invite_error' => 'Error al enviar la invitación',
+
+    'referrals_history_title' => 'Historial de referidos',
+    'referrals_empty_title' => 'SIN REFERIDOS AÚN',
+    'referrals_empty_sub' => 'Comparte tu link exclusivo con amigos y comienza a ganar recompensas increíbles.',
+    'referrals_copy_my_link' => 'Copiar mi link',
+
+    'referrals_status_pending' => 'Pendiente',
+    'referrals_status_registered' => 'Registrado',
+    'referrals_status_active' => 'Activo',
+];

@@ -7,13 +7,13 @@
       <!-- Lado izquierdo: kcal hero (matching m-day-hero del HTML target v2) -->
       <div class="min-w-0">
         <p class="mb-1 text-[10px] uppercase tracking-[0.2em] text-wc-text-secondary sm:text-xs sm:tracking-widest">
-          Calorías del día
+          {{ t('client_plan.nutrition_calories_title') }}
         </p>
         <div class="flex flex-wrap items-baseline gap-x-2">
           <span class="font-display text-[56px] font-bold leading-none tabular-nums text-wc-text sm:text-[96px]">
-            {{ totalKcal.toLocaleString('es-CO') }}
+            {{ totalKcal.toLocaleString(numberLocale) }}
           </span>
-          <span class="font-sans text-xs font-normal text-wc-text-tertiary sm:text-sm">kcal · objetivo</span>
+          <span class="font-sans text-xs font-normal text-wc-text-tertiary sm:text-sm">{{ t('client_plan.nutrition_calories_unit') }}</span>
         </div>
       </div>
 
@@ -57,8 +57,12 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import MacrosBar from './MacrosBar.vue';
 import MacroLegend from './MacroLegend.vue';
+
+const { t, locale } = useI18n();
+const numberLocale = computed(() => (locale.value === 'en' ? 'en-US' : 'es-CO'));
 
 const props = defineProps({
   nutritionPlan: {

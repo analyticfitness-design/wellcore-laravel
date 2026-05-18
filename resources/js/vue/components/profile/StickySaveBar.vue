@@ -21,25 +21,31 @@
  *   - saving: boolean (disable botones + spinner en Guardar)
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useReducedMotion } from '../../composables/useReducedMotion';
+
+const { t } = useI18n();
 
 const props = defineProps({
     visible:    { type: Boolean, default: false },
     dirtyCount: { type: Number, default: 0 },
     saving:     { type: Boolean, default: false },
-    saveLabel:    { type: String, default: 'Guardar cambios' },
-    discardLabel: { type: String, default: 'Descartar' },
+    saveLabel:    { type: String, default: '' },
+    discardLabel: { type: String, default: '' },
 });
 
 const emit = defineEmits(['save', 'discard']);
 
 const reduced = useReducedMotion();
 
+const saveLabelText    = computed(() => props.saveLabel    || t('client_account.profile_save'));
+const discardLabelText = computed(() => props.discardLabel || t('client_account.profile_discard'));
+
 const message = computed(() => {
     const n = props.dirtyCount;
-    if (n <= 0) return 'Hay cambios sin guardar';
-    if (n === 1) return '1 cambio sin guardar';
-    return `${n} cambios sin guardar`;
+    if (n <= 0) return t('client_account.profile_unsaved_changes');
+    if (n === 1) return t('client_account.profile_unsaved_changes_one');
+    return t('client_account.profile_unsaved_changes_many', { n });
 });
 
 function onSave() {
@@ -58,7 +64,7 @@ function onDiscard() {
     class="savebar"
     :class="{ 'is-visible': visible, 'is-reduced': reduced }"
     role="region"
-    aria-label="Cambios sin guardar"
+    :aria-label="t('client_account.profile_savebar_label')"
     :aria-hidden="!visible"
   >
     <div class="savebar__msg">
@@ -73,7 +79,7 @@ function onDiscard() {
         :disabled="saving || !visible"
         :tabindex="visible ? 0 : -1"
         @click="onDiscard"
-      >{{ discardLabel }}</button>
+      >{{ discardLabelText }}</button>
 
       <button
         type="button"
@@ -90,7 +96,7 @@ function onDiscard() {
         >
           <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="32 32"/>
         </svg>
-        <span>{{ saving ? 'Guardando…' : saveLabel }}</span>
+        <span>{{ saving ? t('client_account.profile_saving') : saveLabelText }}</span>
       </button>
     </div>
   </div>

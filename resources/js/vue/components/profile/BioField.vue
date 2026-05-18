@@ -8,18 +8,25 @@
  * v-model standard.
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     id:          { type: String, default: 'bio' },
-    label:       { type: String, default: 'Bio' },
-    hintLabel:   { type: String, default: 'visible en la comunidad' },
-    placeholder: { type: String, default: 'Cuenta en una línea quién eres y qué te motiva. Aparecerá en tu perfil de comunidad.' },
+    label:       { type: String, default: '' },
+    hintLabel:   { type: String, default: '' },
+    placeholder: { type: String, default: '' },
     maxlength:   { type: Number, default: 160 },
     error:       { type: String, default: '' },
     disabled:    { type: Boolean, default: false },
 });
 
 const model = defineModel({ default: '' });
+
+const labelText       = computed(() => props.label       || t('client_account.profile_field_bio'));
+const hintLabelText   = computed(() => props.hintLabel   || t('client_account.profile_field_bio_hint'));
+const placeholderText = computed(() => props.placeholder || t('client_account.profile_field_bio_placeholder'));
 
 const length = computed(() => (model.value || '').length);
 const counter = computed(() => `${length.value}/${props.maxlength}`);
@@ -37,8 +44,8 @@ const describedBy = computed(() => {
       <div class="bio-input-col">
         <div class="field-label-row">
           <label :for="id" class="field-label">
-            {{ label }}
-            <span v-if="hintLabel" class="field-label__hint">{{ hintLabel }}</span>
+            {{ labelText }}
+            <span v-if="hintLabelText" class="field-label__hint">{{ hintLabelText }}</span>
           </label>
           <span
             class="field-counter tabular-nums"
@@ -52,7 +59,7 @@ const describedBy = computed(() => {
           v-model="model"
           class="textarea"
           :class="{ 'is-invalid': !!error }"
-          :placeholder="placeholder"
+          :placeholder="placeholderText"
           :maxlength="maxlength"
           :disabled="disabled"
           :aria-invalid="error ? 'true' : 'false'"

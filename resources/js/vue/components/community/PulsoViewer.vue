@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { useToast } from '../../composables/useToast';
 import PulsoStatCard from './PulsoStatCard.vue';
+
+const { t } = useI18n();
 
 interface PulsoDetail {
   id: number;
@@ -103,10 +106,10 @@ async function deletePulso() {
   deleting.value = true;
   try {
     await api.delete(`/api/v/client/pulsos/${pulso.value.id}`);
-    toast.success('Pulso eliminado');
+    toast.success(t('client_social.pulso_deleted'));
     emit('deleted');
   } catch {
-    toast.error('No se pudo eliminar');
+    toast.error(t('client_social.pulso_delete_failed'));
   } finally {
     deleting.value = false;
   }
@@ -114,7 +117,7 @@ async function deletePulso() {
 
 function formatTimeLeft(expiresAt: string): string {
   const ms = new Date(expiresAt).getTime() - Date.now();
-  if (ms <= 0) return 'Expirado';
+  if (ms <= 0) return t('client_social.pulso_expired');
   const h = Math.floor(ms / 3_600_000);
   const m = Math.floor((ms % 3_600_000) / 60_000);
   return h > 0 ? `${h}h ${m}m` : `${m}m`;
@@ -134,8 +137,8 @@ function formatTimeLeft(expiresAt: string): string {
     <!-- Error -->
     <div v-else-if="loadError" class="flex flex-col items-center gap-3 text-zinc-400">
       <i class="ph ph-warning-circle text-4xl text-zinc-600"></i>
-      <p class="text-sm">No se pudo cargar este Pulso.</p>
-      <button @click="emit('close')" class="text-xs text-wc-accent hover:underline">Cerrar</button>
+      <p class="text-sm">{{ t('client_social.pulso_load_error') }}</p>
+      <button @click="emit('close')" class="text-xs text-wc-accent hover:underline">{{ t('client_social.pulso_close') }}</button>
     </div>
 
     <!-- Content -->
@@ -157,7 +160,7 @@ function formatTimeLeft(expiresAt: string): string {
           </div>
           <div>
             <p class="text-sm font-semibold text-wc-text">{{ pulso.client_name }}</p>
-            <p class="text-[10px] text-wc-text-secondary">Expira en {{ formatTimeLeft(pulso.expires_at) }}</p>
+            <p class="text-[10px] text-wc-text-secondary">{{ t('client_social.pulso_expires_in', { time: formatTimeLeft(pulso.expires_at) }) }}</p>
           </div>
         </div>
         <div class="flex items-center gap-1">
@@ -166,14 +169,14 @@ function formatTimeLeft(expiresAt: string): string {
             @click="deletePulso"
             :disabled="deleting"
             class="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 hover:text-red-400 transition-colors"
-            title="Eliminar Pulso"
+            :title="t('client_social.pulso_delete_tooltip')"
           >
             <i class="ph ph-trash-simple text-base"></i>
           </button>
           <button
             @click="emit('close')"
             class="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-800 transition-colors"
-            aria-label="Cerrar"
+            :aria-label="t('client_social.pulso_close')"
           >
             <i class="ph ph-x text-base"></i>
           </button>
@@ -192,7 +195,7 @@ function formatTimeLeft(expiresAt: string): string {
           v-else-if="pulso.media_type === 'photo' && pulso.media_url"
           :src="pulso.media_url"
           class="h-full w-full object-cover"
-          :alt="pulso.caption ?? 'Pulso'"
+          :alt="pulso.caption ?? t('client_social.pulso_alt_default')"
         />
         <PulsoStatCard
           v-else
@@ -237,7 +240,7 @@ function formatTimeLeft(expiresAt: string): string {
         >
           <span class="flex items-center gap-1.5">
             <i class="ph ph-eye text-base"></i>
-            {{ pulso.views_count }} vieron tu Pulso
+            {{ t('client_social.pulso_viewers', { n: pulso.views_count }).split('|')[pulso.views_count === 1 ? 0 : 1] }}
           </span>
           <i :class="['ph ph-caret-down text-base transition-transform', showViewers ? 'rotate-180' : '']"></i>
         </button>
@@ -253,7 +256,7 @@ function formatTimeLeft(expiresAt: string): string {
             <span class="text-[11px] text-zinc-300">{{ v.name.split(' ')[0] }}</span>
           </div>
         </div>
-        <p v-else-if="showViewers" class="mt-2 text-xs text-zinc-600">Nadie lo ha visto todavía.</p>
+        <p v-else-if="showViewers" class="mt-2 text-xs text-zinc-600">{{ t('client_social.pulso_no_viewers') }}</p>
       </div>
     </div>
   </div>

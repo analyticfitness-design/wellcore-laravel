@@ -19,10 +19,10 @@
 
     <span class="flex min-w-0 flex-1 flex-col">
       <span class="font-display text-sm uppercase tracking-[0.18em] text-wc-text">
-        Sube una foto de tu plato
+        {{ t('client_plan.nutrition_ai_camera_title') }}
       </span>
       <span class="mt-0.5 text-xs text-wc-text-secondary">
-        Te decimos los macros y si encaja con tu plan.
+        {{ t('client_plan.nutrition_ai_camera_subtitle') }}
       </span>
     </span>
 
@@ -36,6 +36,9 @@
 
 <script setup>
 import { Camera, ChevronRight } from 'lucide-vue-next';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   disabled: {

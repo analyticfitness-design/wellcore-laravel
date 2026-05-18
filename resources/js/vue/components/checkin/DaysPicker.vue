@@ -21,7 +21,6 @@ function selectDay(d) {
   <div
     class="grid grid-cols-8 gap-1.5 sm:gap-2"
     role="radiogroup"
-    aria-label="Días entrenados esta semana"
   >
     <button
       v-for="d in max + 1"

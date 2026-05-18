@@ -10,6 +10,9 @@
 // BlockDivider — superset/circuito header divider.
 // CSS lines 660-682 del HTML V2.1.
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   type: {
@@ -22,7 +25,7 @@ const props = defineProps({
 });
 
 const pillText = computed(() => {
-  const base = props.type === 'circuito' ? 'Circuito' : 'Superset';
+  const base = props.type === 'circuito' ? t('client_plan.v2_block_circuito') : t('client_plan.v2_block_superset');
   if (props.label) return `${base} · ${props.label}`;
   return base;
 });

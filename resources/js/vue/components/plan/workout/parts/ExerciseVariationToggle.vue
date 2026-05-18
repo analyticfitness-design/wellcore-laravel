@@ -4,7 +4,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
       </svg>
-      Usando variación{{ variantName ? ` · ${variantName}` : '' }}
+      {{ variantName ? t('client_plan.v2_exercise_using_variation_named', { name: variantName }) : t('client_plan.v2_exercise_using_variation') }}
     </span>
     <button
       type="button"
@@ -12,7 +12,7 @@
       :class="{ 'is-loading': isToggling, 'is-disabled': !hasVariation }"
       :disabled="isToggling || !hasVariation"
       :aria-pressed="isUsingVariant"
-      :title="!hasVariation ? 'Tu coach no asignó variación para este ejercicio' : ''"
+      :title="!hasVariation ? t('client_plan.v2_variation_disabled_title') : ''"
       data-testid="variation-toggle-btn"
       @click="onClick"
     >
@@ -29,6 +29,9 @@
 // CSS lines 684-708 del HTML V2.1.
 // El backend persiste el flag en plan_exercise_variations sin tocar gif_url original.
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   hasVariation: { type: Boolean, default: false },
@@ -40,9 +43,9 @@ const props = defineProps({
 const emit = defineEmits(['toggle']);
 
 const buttonLabel = computed(() => {
-  if (props.isToggling) return 'Cambiando...';
-  if (!props.hasVariation) return 'Sin variación';
-  return props.isUsingVariant ? 'Volver al original' : 'Variación';
+  if (props.isToggling) return t('client_plan.v2_variation_changing');
+  if (!props.hasVariation) return t('client_plan.v2_variation_none');
+  return props.isUsingVariant ? t('client_plan.v2_variation_back_original') : t('client_plan.v2_variation_use');
 });
 
 function onClick() {

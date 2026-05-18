@@ -12,10 +12,13 @@
  * Bind two-way sobre props.state (mismo patrón que PersonalDataForm).
  */
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import InputField from './InputField.vue';
 import UnitInput from './UnitInput.vue';
 import VisualSelect from './VisualSelect.vue';
 import DaysPicker from './DaysPicker.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
     state:  { type: Object, required: true },
@@ -52,49 +55,49 @@ const ICON_GYM = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 const ICON_HOME = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
 const ICON_BOTH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`;
 
-const NIVEL_OPTIONS = [
-    { value: 'principiante', label: 'Principiante', desc: '0–6 meses entrenando', icon: ICON_BEGINNER },
-    { value: 'intermedio',   label: 'Intermedio',   desc: '6 meses–2 años con técnica sólida', icon: ICON_INTER },
-    { value: 'avanzado',     label: 'Avanzado',     desc: '2+ años entrenando regularmente', icon: ICON_ADVANCED },
-];
+const NIVEL_OPTIONS = computed(() => [
+    { value: 'principiante', label: t('client_account.profile_field_level_beginner'),     desc: t('client_account.profile_field_level_beginner_desc'),     icon: ICON_BEGINNER },
+    { value: 'intermedio',   label: t('client_account.profile_field_level_intermediate'), desc: t('client_account.profile_field_level_intermediate_desc'), icon: ICON_INTER },
+    { value: 'avanzado',     label: t('client_account.profile_field_level_advanced'),     desc: t('client_account.profile_field_level_advanced_desc'),     icon: ICON_ADVANCED },
+]);
 
-const LUGAR_OPTIONS = [
-    { value: 'gym',   label: 'Gimnasio', desc: 'Acceso a equipo completo', icon: ICON_GYM },
-    { value: 'casa',  label: 'Casa',     desc: 'Equipo limitado o peso corporal', icon: ICON_HOME },
-    { value: 'ambos', label: 'Ambos',    desc: 'Combinas gym y entrenamiento en casa', icon: ICON_BOTH },
-];
+const LUGAR_OPTIONS = computed(() => [
+    { value: 'gym',   label: t('client_account.profile_field_place_gym'),  desc: t('client_account.profile_field_place_gym_desc'),  icon: ICON_GYM },
+    { value: 'casa',  label: t('client_account.profile_field_place_home'), desc: t('client_account.profile_field_place_home_desc'), icon: ICON_HOME },
+    { value: 'ambos', label: t('client_account.profile_field_place_both'), desc: t('client_account.profile_field_place_both_desc'), icon: ICON_BOTH },
+]);
 </script>
 
 <template>
   <section class="section" aria-labelledby="section-fitness-title">
     <header class="section-head">
       <div class="section-head__l">
-        <span class="section-num font-display">02 · ENTRENAMIENTO</span>
-        <h2 id="section-fitness-title" class="section-title font-display">DATOS DE ENTRENAMIENTO</h2>
+        <span class="section-num font-display">{{ t('client_account.profile_section_fitness_num') }}</span>
+        <h2 id="section-fitness-title" class="section-title font-display">{{ t('client_account.profile_section_fitness_title') }}</h2>
       </div>
-      <p class="section-sub">Información para que tu coach personalice tu plan según tu nivel y disponibilidad.</p>
+      <p class="section-sub">{{ t('client_account.profile_section_fitness_sub') }}</p>
     </header>
 
     <div class="field-grid field-grid--2">
       <UnitInput
         id="profile-peso"
         v-model="pesoModel.value"
-        label="Peso"
+        :label="t('client_account.profile_field_weight')"
         unit="KG"
         :step="0.1"
         :min="0"
-        placeholder="75.0"
+        :placeholder="t('client_account.profile_field_weight_placeholder')"
         :error="err('peso')"
       />
 
       <UnitInput
         id="profile-altura"
         v-model="alturaModel.value"
-        label="Altura"
+        :label="t('client_account.profile_field_height')"
         unit="CM"
         :step="0.1"
         :min="0"
-        placeholder="175"
+        :placeholder="t('client_account.profile_field_height_placeholder')"
         :error="err('altura')"
       />
 
@@ -102,9 +105,9 @@ const LUGAR_OPTIONS = [
         <InputField
           id="profile-objetivo"
           v-model="objetivoModel.value"
-          label="Objetivo"
-          hint="Descríbelo en una frase: lo que quieres lograr en los próximos 3-6 meses."
-          placeholder="Ej: bajar grasa y mantener fuerza, ganar 3 kg de masa magra…"
+          :label="t('client_account.profile_field_goal')"
+          :hint="t('client_account.profile_field_goal_hint')"
+          :placeholder="t('client_account.profile_field_goal_placeholder')"
           :error="err('objetivo')"
         />
       </div>
@@ -112,8 +115,8 @@ const LUGAR_OPTIONS = [
       <VisualSelect
         id="profile-nivel"
         v-model="nivelModel.value"
-        label="Nivel"
-        placeholder="Selecciona tu nivel"
+        :label="t('client_account.profile_field_level')"
+        :placeholder="t('client_account.profile_field_level_placeholder')"
         :options="NIVEL_OPTIONS"
         :error="err('nivel')"
       />
@@ -121,8 +124,8 @@ const LUGAR_OPTIONS = [
       <VisualSelect
         id="profile-lugarEntreno"
         v-model="lugarModel.value"
-        label="Lugar de entrenamiento"
-        placeholder="¿Dónde entrenas?"
+        :label="t('client_account.profile_field_place')"
+        :placeholder="t('client_account.profile_field_place_placeholder')"
         :options="LUGAR_OPTIONS"
         :error="err('lugar_entreno') || err('lugarEntreno')"
       />
@@ -130,8 +133,8 @@ const LUGAR_OPTIONS = [
       <div class="field-grid--span-2">
         <DaysPicker
           v-model="diasModel.value"
-          legend="Días disponibles"
-          hint="Marca los días en los que puedes entrenar regularmente."
+          :legend="t('client_account.profile_field_days')"
+          :hint="t('client_account.profile_field_days_hint')"
         />
         <p
           v-if="err('dias_disponibles')"
@@ -142,8 +145,8 @@ const LUGAR_OPTIONS = [
 
       <div class="field-grid--span-2">
         <label for="profile-restricciones" class="field-label">
-          Restricciones o lesiones
-          <span class="field-label__hint">opcional</span>
+          {{ t('client_account.profile_field_restrictions') }}
+          <span class="field-label__hint">{{ t('client_account.profile_field_restrictions_optional') }}</span>
         </label>
         <textarea
           id="profile-restricciones"
@@ -151,7 +154,7 @@ const LUGAR_OPTIONS = [
           class="textarea"
           :class="{ 'is-invalid': !!err('restricciones') }"
           rows="3"
-          placeholder="Ej: lesión en rodilla derecha, alergia al gluten, hombro con poca movilidad…"
+          :placeholder="t('client_account.profile_field_restrictions_placeholder')"
           :aria-invalid="err('restricciones') ? 'true' : 'false'"
           :aria-describedby="err('restricciones') ? 'profile-restricciones-error' : undefined"
         />

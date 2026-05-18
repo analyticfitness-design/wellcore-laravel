@@ -25,12 +25,12 @@
           <div class="flex items-center gap-2.5">
             <ShoppingCart :size="18" class="text-wc-accent shrink-0" />
             <h2 class="font-display text-sm tracking-widest uppercase text-wc-text">
-              Lista de mercado
+              {{ t('client_plan.grocery_title') }}
             </h2>
           </div>
           <button
             type="button"
-            aria-label="Cerrar lista de mercado"
+            :aria-label="t('client_plan.grocery_close_aria')"
             class="flex h-8 w-8 items-center justify-center rounded-lg text-wc-text-tertiary hover:text-wc-text hover:bg-wc-bg-tertiary transition-colors"
             @click="$emit('close')"
           >
@@ -49,7 +49,7 @@
                 : 'text-wc-text-secondary hover:text-wc-text'"
               @click="view = 'category'"
             >
-              Semanal
+              {{ t('client_plan.grocery_view_weekly') }}
             </button>
             <button
               type="button"
@@ -59,18 +59,18 @@
                 : 'text-wc-text-secondary hover:text-wc-text'"
               @click="view = 'meal'"
             >
-              Por comida
+              {{ t('client_plan.grocery_view_by_meal') }}
             </button>
           </div>
           <p class="mt-2 text-[10px] text-wc-text-tertiary text-center">
-            {{ view === 'category' ? 'Todo lo que necesitas mercar para tu semana' : 'Filtra por comida para mercar día a día' }}
+            {{ view === 'category' ? t('client_plan.grocery_view_weekly_subtitle') : t('client_plan.grocery_view_by_meal_subtitle') }}
           </p>
         </div>
 
         <!-- Selector de opción A / B / C -->
         <div v-if="availableOptions.length > 0" class="px-5 pb-3 shrink-0 border-b border-wc-border">
           <p class="font-display text-[9px] tracking-[0.2em] uppercase text-wc-text-tertiary mb-2.5">
-            Elige tu opción esta semana
+            {{ t('client_plan.grocery_option_picker_title') }}
           </p>
           <div class="flex gap-2">
             <button
@@ -81,7 +81,7 @@
               :class="optionBtnClass(opt)"
               @click="activeOption = opt"
             >
-              Opción {{ opt.toUpperCase() }}
+              {{ t('client_plan.grocery_option_label', { letter: opt.toUpperCase() }) }}
             </button>
           </div>
         </div>
@@ -94,7 +94,7 @@
             v-if="isEmpty"
             class="py-12 text-center"
           >
-            <p class="text-sm text-wc-text-tertiary">Tu coach está preparando el plan de nutrición.</p>
+            <p class="text-sm text-wc-text-tertiary">{{ t('client_plan.grocery_empty') }}</p>
           </div>
 
           <!-- Vista: Semanal (por categoría) -->
@@ -169,11 +169,11 @@
           <!-- Guía de compra — siempre visible al final -->
           <div class="mt-6 rounded-xl border border-wc-border/60 bg-wc-bg-tertiary/60 p-4">
             <p class="font-display text-[10px] tracking-[0.2em] uppercase text-wc-text-secondary mb-3">
-              📋 Guía de compra
+              {{ t('client_plan.grocery_guide_title') }}
             </p>
             <ul class="space-y-2.5">
               <li
-                v-for="(tip, i) in SHOPPING_TIPS"
+                v-for="(tip, i) in shoppingTips"
                 :key="i"
                 class="flex items-start gap-2.5"
               >
@@ -191,8 +191,11 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { ShoppingCart, X } from 'lucide-vue-next';
 import { useGroceryList } from '@/composables/useGroceryList';
+
+const { t } = useI18n();
 
 const props = defineProps({
   open: { type: Boolean, required: true },
@@ -245,14 +248,14 @@ watch(availableOptions, (opts) => {
 }, { immediate: true });
 
 
-const SHOPPING_TIPS = [
-  'Compra proteínas frescas el mismo día que las consumas o máximo 2 días antes y guárdalas refrigeradas.',
-  'Para carnes: elige cortes de color rojizo brillante, sin olor fuerte y sin líquido oscuro en el empaque.',
-  'Para vegetales: busca que estén firmes, con color vivo y sin manchas oscuras ni humedad excesiva.',
-  'Lee las etiquetas: el primer ingrediente es el más abundante. Evita azúcar en los primeros 3 ingredientes de productos empacados.',
-  'Prefiere productos con lista de ingredientes corta: entre menos procesado, mejor calidad nutricional.',
-  'Organiza tu carrito siguiendo el orden de secciones de esta lista para hacer el mercado más eficiente.',
-];
+const shoppingTips = computed(() => [
+  t('client_plan.grocery_tip_1'),
+  t('client_plan.grocery_tip_2'),
+  t('client_plan.grocery_tip_3'),
+  t('client_plan.grocery_tip_4'),
+  t('client_plan.grocery_tip_5'),
+  t('client_plan.grocery_tip_6'),
+]);
 </script>
 
 <style scoped>
