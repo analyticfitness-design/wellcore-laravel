@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useApi } from '../../composables/useApi';
 import { localDateStr } from '../../composables/useDate';
 import ClientLayout from '../../layouts/ClientLayout.vue';
@@ -42,6 +43,7 @@ const { pullDistance, isRefreshing } = usePullToRefresh(async () => {
 
 const api = useApi();
 const router = useRouter();
+const { t } = useI18n();
 
 // State
 const loading = ref(true);
@@ -65,7 +67,9 @@ function dismissProfileBanner() {
 // Greeting (time-based, computed client-side)
 const greeting = computed(() => {
     const h = new Date().getHours();
-    return h < 12 ? 'Buenos dias' : h < 18 ? 'Buenas tardes' : 'Buenas noches';
+    if (h < 12) return t('client_nav.greeting_morning');
+    if (h < 18) return t('client_nav.greeting_afternoon');
+    return t('client_nav.greeting_evening');
 });
 
 // Fetch dashboard data

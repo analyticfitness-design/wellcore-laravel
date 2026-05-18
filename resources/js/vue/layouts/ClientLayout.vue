@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, onBeforeUnmount, provide } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../stores/auth';
 import { useApi } from '../composables/useApi';
 import NotificationBell from '../components/NotificationBell.vue';
@@ -26,6 +27,7 @@ const authStore = useAuthStore();
 const api = useApi();
 const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
 
 const sidebarOpen = ref(false);
 const loggingOut = ref(false);
@@ -190,56 +192,56 @@ onUnmounted(() => {
     if (unwatch) unwatch();
 });
 
-// Navigation sections
-const navSections = [
+// Navigation sections — reactive con i18n
+const navSections = computed(() => [
     {
-        label: 'Entrenamiento',
+        label: t('client_nav.sec_entrenamiento'),
         items: [
-            { name: 'Dashboard', to: '/client', icon: 'wc-home', routeName: 'client-dashboard' },
-            { name: 'Mi Plan', to: '/client/plan', icon: 'wc-calendar', routeName: 'client-plan' },
-            { name: 'Entrenamiento', to: '/client/training', icon: 'wc-barbell', routeName: 'client-training' },
+            { name: t('client_nav.dashboard'), to: '/client', icon: 'wc-home', routeName: 'client-dashboard' },
+            { name: t('client_nav.plan'), to: '/client/plan', icon: 'wc-calendar', routeName: 'client-plan' },
+            { name: t('client_nav.training'), to: '/client/training', icon: 'wc-barbell', routeName: 'client-training' },
         ],
     },
     {
-        label: 'Progreso',
+        label: t('client_nav.sec_progreso'),
         items: [
-            { name: 'Metricas', to: '/client/metrics', icon: 'wc-chart-line-up', routeName: 'client-metrics' },
-            { name: 'Fotos', to: '/client/photos', icon: 'wc-camera', routeName: 'client-photos' },
-            { name: 'Mi Alimentacion', to: '/client/food-tracking', icon: 'wc-camera', routeName: 'client-food-tracking' },
-            { name: 'Logros', to: '/client/logros', icon: 'wc-trophy', routeName: 'client-logros' },
-            { name: 'Bienestar', to: '/client/mindfulness', icon: 'wc-moon', routeName: 'client-mindfulness' },
+            { name: t('client_nav.metrics'), to: '/client/metrics', icon: 'wc-chart-line-up', routeName: 'client-metrics' },
+            { name: t('client_nav.photos'), to: '/client/photos', icon: 'wc-camera', routeName: 'client-photos' },
+            { name: t('client_nav.food_tracking'), to: '/client/food-tracking', icon: 'wc-camera', routeName: 'client-food-tracking' },
+            { name: t('client_nav.achievements'), to: '/client/logros', icon: 'wc-trophy', routeName: 'client-logros' },
+            { name: t('client_nav.wellbeing'), to: '/client/mindfulness', icon: 'wc-moon', routeName: 'client-mindfulness' },
         ],
     },
     {
-        label: 'Social',
+        label: t('client_nav.sec_social'),
         items: [
-            { name: 'Chat', to: '/client/chat', icon: 'wc-chat-bubble', routeName: 'client-chat' },
-            { name: 'Comunidad', to: '/client/community', icon: 'wc-users', routeName: 'client-community' },
-            { name: 'Retos', to: '/client/challenges', icon: 'wc-fire', routeName: 'client-challenges' },
-            { name: 'Referidos', to: '/client/referrals', icon: 'wc-share', routeName: 'client-referrals' },
+            { name: t('client_nav.chat'), to: '/client/chat', icon: 'wc-chat-bubble', routeName: 'client-chat' },
+            { name: t('client_nav.community'), to: '/client/community', icon: 'wc-users', routeName: 'client-community' },
+            { name: t('client_nav.challenges'), to: '/client/challenges', icon: 'wc-fire', routeName: 'client-challenges' },
+            { name: t('client_nav.referrals'), to: '/client/referrals', icon: 'wc-share', routeName: 'client-referrals' },
         ],
     },
     {
-        label: 'Cuenta',
+        label: t('client_nav.sec_cuenta'),
         items: [
-            { name: 'Perfil', to: '/client/profile', icon: 'wc-user', routeName: 'client-profile' },
-            { name: 'Configuracion', to: '/client/settings', icon: 'wc-settings', routeName: 'client-settings' },
+            { name: t('client_nav.profile'), to: '/client/profile', icon: 'wc-user', routeName: 'client-profile' },
+            { name: t('client_nav.settings'), to: '/client/settings', icon: 'wc-settings', routeName: 'client-settings' },
         ],
     },
-];
+]);
 
 function isActive(routeName) {
     return route.name === routeName;
 }
 
-// Mobile bottom nav items
-const bottomNav = [
-    { name: 'Dashboard', to: '/client', icon: 'wc-home', routeName: 'client-dashboard' },
-    { name: 'Plan', to: '/client/plan', icon: 'wc-calendar', routeName: 'client-plan' },
-    { name: 'Metricas', to: '/client/metrics', icon: 'wc-chart-line-up', routeName: 'client-metrics' },
-    { name: 'Chat', to: '/client/chat', icon: 'wc-chat-bubble', routeName: 'client-chat' },
-    { name: 'Perfil', to: '/client/profile', icon: 'wc-user', routeName: 'client-profile' },
-];
+// Mobile bottom nav items — reactive con i18n
+const bottomNav = computed(() => [
+    { name: t('client_nav.mobile_dashboard'), to: '/client', icon: 'wc-home', routeName: 'client-dashboard' },
+    { name: t('client_nav.mobile_plan'), to: '/client/plan', icon: 'wc-calendar', routeName: 'client-plan' },
+    { name: t('client_nav.mobile_metrics'), to: '/client/metrics', icon: 'wc-chart-line-up', routeName: 'client-metrics' },
+    { name: t('client_nav.mobile_chat'), to: '/client/chat', icon: 'wc-chat-bubble', routeName: 'client-chat' },
+    { name: t('client_nav.mobile_profile'), to: '/client/profile', icon: 'wc-user', routeName: 'client-profile' },
+]);
 </script>
 
 <template>
@@ -342,7 +344,7 @@ const bottomNav = [
           class="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-wc-text-secondary hover:bg-wc-bg-tertiary hover:text-wc-text transition-colors disabled:opacity-50"
         >
           <WcIcon name="wc-arrow-left" :size="22" class="shrink-0 grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-200" />
-          {{ loggingOut ? 'Cerrando...' : 'Cerrar sesion' }}
+          {{ loggingOut ? t('client_nav.logout') + '...' : t('client_nav.logout') }}
         </button>
       </div>
     </aside>
@@ -360,7 +362,7 @@ const bottomNav = [
           <button
             @click="sidebarOpen = !sidebarOpen"
             class="shrink-0 flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text lg:hidden"
-            aria-label="Abrir menu"
+            :aria-label="t('client_nav.open_menu')"
           >
             <WcIcon name="wc-menu" :size="20" />
           </button>
@@ -383,8 +385,8 @@ const bottomNav = [
             @click="toggleDarkMode"
             type="button"
             class="flex h-9 w-9 items-center justify-center rounded-lg border border-wc-border bg-wc-bg-secondary text-wc-text-secondary hover:text-wc-text"
-            title="Cambiar modo"
-            aria-label="Cambiar modo oscuro"
+            :title="t('client_nav.change_mode')"
+            :aria-label="t('client_nav.change_mode_dark')"
           >
             <span class="dark:hidden"><WcIcon name="wc-moon" :size="20" /></span>
             <span class="hidden dark:block"><WcIcon name="wc-sun" :size="20" /></span>
@@ -445,7 +447,7 @@ const bottomNav = [
               :disabled="loggingOut"
               class="block w-full rounded-xl border border-wc-border py-3 text-center text-sm font-medium text-wc-text-secondary transition-colors hover:bg-wc-bg-tertiary disabled:opacity-50"
             >
-              {{ loggingOut ? 'Cerrando...' : 'Cerrar sesion' }}
+              {{ loggingOut ? t('client_nav.logout') + '...' : t('client_nav.logout') }}
             </button>
           </div>
         </div>
