@@ -53,6 +53,20 @@ MySQL wellcore_fitness · 60+ tablas · NO migraciones destructivas · Todos los
 - NEVER `Rebuild Docker image` — solo `silvia-gitpull-load`
 - NEVER `git push --force` a main
 
+## Workflow planes: auto-deploy terminado el plan (autoritativa Daniel 2026-05-18)
+Cuando el motor v2 termina de generar un plan (`plan:bundle` con status=validated):
+1. Generar script PHP standalone con `plan:export-bundle-prod-script`
+2. Editar el archivo cambiar `DRY_RUN = false` (autorización implícita ya dada)
+3. `git add + commit + push origin main`
+4. EasyPanel: `silvia-gitpull-load` via Chrome MCP
+5. Consola del container: ejecutar el script (insert real)
+6. Invalidar cache: `php artisan tinker --execute="Cache::forget('client_plan_v3_<X>'); Cache::forget('wp:plan:<X>'); Cache::forget('wp:weekdays:<X>'); Cache::forget('dashboard:<X>');"`
+
+**NO pedir confirmación intermedia** entre pasos. La revisión final la hace Daniel o el coach en el portal del cliente. Solo parar y preguntar si:
+- Hay error de schema/migración detectado en DRY-RUN
+- El LintEngine devuelve violations severity=error
+- Hay conflictos no resueltos en el ticket (edad/peso/género irreconciliables)
+
 ## Ley dura Motor v2: ejercicios solo del repo v2 (autoritativa Daniel 2026-05-18)
 **Todo plan de entrenamiento DEBE usar ejercicios del repo oficial `analyticfitness-design/wellcore-exercise-gifs-v2`.**
 - Los nombres de los GIFs en el repo SON los nombres canónicos. No se inventan.
