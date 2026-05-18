@@ -19,7 +19,7 @@
  *   const DRY_RUN = true;  → const DRY_RUN = false;
  */
 
-const DRY_RUN    = true;  // ⚠️ Cambiar a false para escribir real.
+const DRY_RUN    = false;  // ✓ Insert real autorizado por Daniel 2026-05-18
 const CLIENT_ID  = 97;
 const COACH_ID   = 9;
 const VALID_FROM = '2026-06-01';
