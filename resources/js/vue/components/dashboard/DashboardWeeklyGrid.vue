@@ -1,11 +1,13 @@
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     weekDays: { type: Array, default: () => [] },
 });
 
-// ── ISO week + rango Lun-Dom calculado en frontend ──
+const { t } = useI18n();
+
 function getIsoWeek(date) {
     const target = new Date(date.valueOf());
     const dayNr = (date.getDay() + 6) % 7;
@@ -20,7 +22,7 @@ function getIsoWeek(date) {
 
 function startOfIsoWeek(date) {
     const d = new Date(date);
-    const day = (d.getDay() + 6) % 7; // 0 = Lun
+    const day = (d.getDay() + 6) % 7;
     d.setDate(d.getDate() - day);
     d.setHours(0, 0, 0, 0);
     return d;
@@ -32,21 +34,23 @@ const monday = startOfIsoWeek(today);
 const sunday = new Date(monday);
 sunday.setDate(monday.getDate() + 6);
 
-const monthFmt = new Intl.DateTimeFormat('es', { month: 'short' });
+const monthFmt = computed(() => new Intl.DateTimeFormat(t('client_home.weekly_grid_intl_locale'), { month: 'short' }));
 
 function fmtDayMonth(d) {
-    let m = monthFmt.format(d).replace('.', '');
+    let m = monthFmt.value.format(d).replace('.', '');
     return `${d.getDate()} ${m}`;
 }
 
 const weekRangeLabel = computed(() => {
-    return `Sem. ${isoWeek} · ${fmtDayMonth(monday)} — ${fmtDayMonth(sunday)}`;
+    return t('client_home.weekly_grid_week_range', {
+        week: isoWeek,
+        start: fmtDayMonth(monday),
+        end: fmtDayMonth(sunday),
+    });
 });
 
-// Construir array Lun..Dom con número de día y estado.
-// `weekDays` (del backend) trae .label, .completed, .isToday en orden Lun..Dom.
 const weekCells = computed(() => {
-    const labels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    const labels = t('client_home.weekly_grid_short');
     const cells = [];
     for (let i = 0; i < 7; i++) {
         const d = new Date(monday);
@@ -54,10 +58,6 @@ const weekCells = computed(() => {
         const backendDay = (props.weekDays && props.weekDays[i]) || {};
         const isToday = d.toDateString() === today.toDateString();
         const completed = !!backendDay.completed;
-        // Domingo y miércoles tipicamente son rest si no está completed y no es today
-        // pero solo marcar "rest" si sabemos que es no-entrenamiento y no completado
-        // Heurística simple: si i === 6 (Dom) o si backend dice rest. Como backend
-        // no lo manda, dejamos solo: done | today | (default).
         let status = '';
         if (completed) status = 'done';
         else if (isToday) status = 'today';
@@ -75,7 +75,7 @@ const weekCells = computed(() => {
   <section class="card section wc-card-dashboard-week" :style="{ animationDelay: '440ms' }">
     <div class="card-head">
       <div class="card-head-left" style="min-width:0; overflow:hidden;">
-        <span class="card-title" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Sem. entrenamiento</span>
+        <span class="card-title" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ t('client_home.weekly_grid_title') }}</span>
       </div>
       <span class="card-meta tnum" style="white-space:nowrap; flex-shrink:0; padding-left:8px;">{{ weekRangeLabel }}</span>
     </div>
@@ -92,9 +92,9 @@ const weekCells = computed(() => {
       </div>
     </div>
     <div class="week-legend">
-      <span><i style="background:#10B981"></i>Completado</span>
-      <span><i style="background:#DC2626"></i>Hoy</span>
-      <span><i class="legend-pending"></i>Pendiente</span>
+      <span><i style="background:#10B981"></i>{{ t('client_home.weekly_grid_completed') }}</span>
+      <span><i style="background:#DC2626"></i>{{ t('client_home.weekly_grid_today') }}</span>
+      <span><i class="legend-pending"></i>{{ t('client_home.weekly_grid_pending') }}</span>
     </div>
   </section>
 </template>

@@ -1,11 +1,13 @@
 <script setup>
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     weightChartData: { type: Array, default: () => [] },
 });
 
 const router = useRouter();
+const { t } = useI18n();
 
 function goToMetrics() {
     router.push('/client/metrics');
@@ -18,13 +20,12 @@ function getWeightBarHeight(weight, min, range) {
 </script>
 
 <template>
-  <!-- Con datos: chart simple usando estética del dashboard-mobile -->
   <section v-if="weightChartData && weightChartData.length > 0" class="card section wc-card-dashboard-weight" :style="{ animationDelay: '400ms' }">
     <div class="card-head">
       <div class="card-head-left">
-        <span class="card-title">Peso corporal</span>
+        <span class="card-title">{{ t('client_home.weight_title') }}</span>
       </div>
-      <span class="card-meta">Últimos 90 días</span>
+      <span class="card-meta">{{ t('client_home.weight_meta_period') }}</span>
     </div>
     <div style="padding: 6px 20px 20px;">
       <div class="flex items-end justify-center gap-1 sm:gap-2 overflow-x-auto" style="height: 140px;">
@@ -55,13 +56,12 @@ function getWeightBarHeight(weight, min, range) {
     </div>
   </section>
 
-  <!-- Empty state -->
   <section v-else class="card section wc-card-dashboard-weight" :style="{ animationDelay: '400ms' }">
     <div class="card-head">
       <div class="card-head-left">
-        <span class="card-title">Peso corporal</span>
+        <span class="card-title">{{ t('client_home.weight_title') }}</span>
       </div>
-      <span class="card-meta">Sin datos</span>
+      <span class="card-meta">{{ t('client_home.weight_meta_empty') }}</span>
     </div>
     <div class="empty">
       <div class="empty-art">
@@ -74,12 +74,12 @@ function getWeightBarHeight(weight, min, range) {
         </svg>
       </div>
       <div>
-        <div class="empty-title">Sin datos de peso aún</div>
-        <p class="empty-sub">Registra tu peso semanal para ver tu progreso a lo largo del plan.</p>
+        <div class="empty-title">{{ t('client_home.weight_empty_title') }}</div>
+        <p class="empty-sub">{{ t('client_home.weight_empty_sub') }}</p>
       </div>
       <button class="empty-cta" @click="goToMetrics">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
-        Registrar peso
+        {{ t('client_home.weight_log') }}
       </button>
     </div>
   </section>

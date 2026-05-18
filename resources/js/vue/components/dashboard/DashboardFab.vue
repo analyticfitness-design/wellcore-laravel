@@ -1,11 +1,13 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useHaptics } from '../../composables/useHaptics';
 
 const router = useRouter();
 const route = useRoute();
 const haptics = useHaptics();
+const { t } = useI18n();
 
 const open = ref(false);
 const fabEl = ref(null);
@@ -14,29 +16,29 @@ const fabEl = ref(null);
 const isInActiveWorkout = computed(() => /^\/client\/workout(\/|$)/.test(route.path));
 const bottomOffset = computed(() => isInActiveWorkout.value ? '11rem' : '5rem');
 
-const actions = [
+const actions = computed(() => [
     {
         key: 'training',
-        label: 'Registrar entreno',
+        label: t('client_home.fab_log_workout'),
         to: '/client/plan',
         color: 'bg-wc-accent',
         iconPath: 'M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5',
     },
     {
         key: 'checkin',
-        label: 'Hacer check-in',
+        label: t('client_home.fab_do_checkin'),
         to: '/client/checkin',
         color: 'bg-emerald-500',
         iconPath: 'M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
     },
     {
         key: 'weight',
-        label: 'Registrar peso',
+        label: t('client_home.fab_log_weight'),
         to: '/client/metrics',
         color: 'bg-sky-500',
         iconPath: 'M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0 0 12 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52 2.62 10.726',
     },
-];
+]);
 
 function toggle() {
     open.value = !open.value;
@@ -138,7 +140,7 @@ onBeforeUnmount(() => {
       type="button"
       @click="toggle"
       :aria-expanded="open"
-      aria-label="Acciones rápidas"
+      :aria-label="t('client_home.fab_open')"
       :class="[
         'relative flex h-14 w-14 items-center justify-center rounded-full bg-wc-accent text-white shadow-lg shadow-wc-accent/40 transition-all active:scale-90',
         open ? 'rotate-45' : 'rotate-0'

@@ -402,9 +402,9 @@ const weekMarkers = computed(() => {
       >
         <div class="card-head">
           <div class="card-head-left">
-            <span class="card-title">Perfil de comunidad</span>
+            <span class="card-title">{{ t('client_home.profile_card_title') }}</span>
           </div>
-          <span class="card-meta tnum">{{ data.profileCompletion.score }}% completo</span>
+          <span class="card-meta tnum">{{ t('client_home.profile_card_meta', { pct: data.profileCompletion.score }) }}</span>
         </div>
         <div class="profile-row">
           <div class="profile-art">
@@ -414,15 +414,15 @@ const weekMarkers = computed(() => {
             </svg>
           </div>
           <div class="profile-body">
-            <div class="profile-title">Completa tu perfil</div>
+            <div class="profile-title">{{ t('client_home.profile_card_title_full') }}</div>
             <div v-if="data.profileCompletion.missing.length" class="profile-sub">
-              Falta: {{ data.profileCompletion.missing.slice(0, 3).map(m => m.label).join(', ') }}{{ data.profileCompletion.missing.length > 3 ? '…' : '' }}
+              {{ t('client_home.profile_card_missing', { items: data.profileCompletion.missing.slice(0, 3).map(m => m.label).join(', ') + (data.profileCompletion.missing.length > 3 ? '…' : '') }) }}
             </div>
           </div>
           <button class="profile-cta" @click="$router.push('/client/profile')">
-            Completar
+            {{ t('client_home.profile_card_cta') }}
           </button>
-          <button class="profile-close" @click="dismissProfileBanner" aria-label="Cerrar">
+          <button class="profile-close" @click="dismissProfileBanner" :aria-label="t('client_home.profile_card_dismiss')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 18 18 6M6 6l12 12"/></svg>
           </button>
         </div>

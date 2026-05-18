@@ -1,10 +1,12 @@
 <script setup>
 import { onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useGroupPulse } from '../../composables/useGroupPulse';
 import { useReducedMotion } from '../../composables/useReducedMotion';
 
 const router = useRouter();
+const { t } = useI18n();
 const { summary, loading, fetchSummary } = useGroupPulse();
 const reducedMotion = useReducedMotion();
 
@@ -26,9 +28,9 @@ const heartbeatStyle = computed(() => ({
 // Meta line: cuando el grupo es solo el usuario (1) o no hay actividad,
 // mostramos copy más humano que "0 activos · 50 BPM".
 const metaText = computed(() => {
-    if (groupSize.value <= 1) return 'Tu grupo crece pronto';
-    if (isQuiet.value) return 'Grupo descansando';
-    return `${activeNow.value} activos · ${bpm.value} BPM`;
+    if (groupSize.value <= 1) return t('client_home.gp_group_growing');
+    if (isQuiet.value) return t('client_home.gp_group_resting');
+    return t('client_home.gp_active_bpm', { n: activeNow.value, bpm: bpm.value });
 });
 
 function goToCommunity() {
@@ -47,22 +49,22 @@ function goToCommunity() {
     <div class="card-head">
       <div class="card-head-left">
         <span class="gp-pulse-dot" :style="heartbeatStyle" aria-hidden="true"></span>
-        <span class="card-title">Latido del Grupo</span>
+        <span class="card-title">{{ t('client_home.gp_title') }}</span>
       </div>
       <span class="card-meta">{{ metaText }}</span>
     </div>
 
     <div class="gp-stats">
       <div class="stat-card red">
-        <div class="stat-label">Entrenos hoy</div>
+        <div class="stat-label">{{ t('client_home.gp_workouts_today') }}</div>
         <div class="stat-value tight tnum">{{ stats.workouts_today }}</div>
       </div>
       <div class="stat-card green">
-        <div class="stat-label">PRs semana</div>
+        <div class="stat-label">{{ t('client_home.gp_prs_week') }}</div>
         <div class="stat-value tight tnum">{{ stats.prs_week }}</div>
       </div>
       <div class="stat-card amber">
-        <div class="stat-label">Logros hoy</div>
+        <div class="stat-label">{{ t('client_home.gp_achievements_today') }}</div>
         <div class="stat-value tight tnum">{{ stats.achievements_today }}</div>
       </div>
     </div>
@@ -79,13 +81,13 @@ function goToCommunity() {
           <span>{{ ev.headline }}</span>
         </span>
         <span v-if="ev.minutes_ago !== undefined" class="gp-event-time tnum">
-          hace {{ ev.minutes_ago }}min
+          {{ t('client_home.gp_minutes_ago', { n: ev.minutes_ago }) }}
         </span>
       </div>
     </div>
 
     <button type="button" class="gp-see-all" @click="goToCommunity">
-      Ver todo el latido
+      {{ t('client_home.gp_see_all') }}
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M5 12h14M13 5l7 7-7 7"/>
       </svg>

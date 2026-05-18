@@ -1,12 +1,28 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
+
 defineProps({
     activities: { type: Array, default: () => [] },
 });
 
+const { t, locale } = useI18n();
+
 // Normaliza el "hace 2 días" → "hace 2d" / "hace 1 sem" estilo target.
+// En inglés: "2d ago", "1w ago", etc. Backend devuelve string es; mapeamos.
 function shortTimeAgo(timeAgo) {
     if (!timeAgo) return '';
     let s = String(timeAgo);
+    if (locale.value === 'en') {
+        s = s
+            .replace(/^hace\s+/i, '')
+            .replace(/\s+d[ií]as?\b/g, 'd')
+            .replace(/\s+horas?\b/g, 'h')
+            .replace(/\s+minutos?\b/g, 'min')
+            .replace(/\s+semanas?\b/g, 'w')
+            .replace(/\s+mes(es)?\b/g, 'mo')
+            .trim();
+        return s + ' ago';
+    }
     s = s.replace(/^hace\s+/i, 'hace ');
     s = s.replace(/\s+d[ií]as?\b/g, 'd');
     s = s.replace(/\s+horas?\b/g, 'h');
@@ -17,18 +33,16 @@ function shortTimeAgo(timeAgo) {
 }
 
 // Fallback descripción detallada (target muestra "Fuerza · 48 min · 12 ejercicios").
-// Si backend no manda detalles, usar tipo genérico.
 function buildMeta(activity) {
     const parts = [];
     if (activity.session_type) parts.push(activity.session_type);
     if (activity.duration_minutes) parts.push(`${activity.duration_minutes} min`);
-    if (activity.exercises_count) parts.push(`${activity.exercises_count} ejercicios`);
+    if (activity.exercises_count) parts.push(`${activity.exercises_count} ${t('client_home.activity_exercises')}`);
     if (parts.length === 0) {
-        // fallback genérico por type
-        if (activity.type === 'training') parts.push('Entrenamiento');
-        else if (activity.type === 'checkin') parts.push('Check-in semanal');
-        else if (activity.type === 'payment') parts.push('Pago');
-        else parts.push('Actividad');
+        if (activity.type === 'training') parts.push(t('client_home.activity_type_training'));
+        else if (activity.type === 'checkin') parts.push(t('client_home.activity_type_checkin'));
+        else if (activity.type === 'payment') parts.push(t('client_home.activity_type_payment'));
+        else parts.push(t('client_home.activity_type_other'));
     }
     return parts.join(' · ');
 }
@@ -38,9 +52,9 @@ function buildMeta(activity) {
   <section class="card section wc-card-dashboard-activity" :style="{ animationDelay: '480ms' }">
     <div class="card-head">
       <div class="card-head-left">
-        <span class="card-title">Actividad reciente</span>
+        <span class="card-title">{{ t('client_home.activity_title') }}</span>
       </div>
-      <span class="card-meta">Últimos 5</span>
+      <span class="card-meta">{{ t('client_home.activity_last_n') }}</span>
     </div>
     <div v-if="activities && activities.length > 0" class="activity">
       <div
@@ -62,7 +76,7 @@ function buildMeta(activity) {
       </div>
     </div>
     <div v-else style="padding: 24px 20px; text-align: center; color: var(--wc-text-3); font-size: 13px;">
-      Sin actividad reciente
+      {{ t('client_home.activity_empty') }}
     </div>
   </section>
 </template>

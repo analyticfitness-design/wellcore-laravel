@@ -1,8 +1,11 @@
 <script setup>
 import { computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useHaptics } from '../../composables/useHaptics';
 import { useCelebration } from '../../composables/useCelebration';
+
+const { t } = useI18n();
 
 const props = defineProps({
     missions: { type: Array, default: () => [] },
@@ -64,8 +67,8 @@ watch(() => props.missions, (next) => {
             haptics.pattern('success');
             if (celebration?.celebrate) {
                 celebration.celebrate('mission-complete', {
-                    title: '¡Misión completada!',
-                    message: mission.title || 'Un paso más hacia tu objetivo',
+                    title: t('client_home.missions_celebration_title'),
+                    message: mission.title || t('client_home.missions_celebration_subtitle'),
                 });
             }
             break;
@@ -79,9 +82,9 @@ watch(() => props.missions, (next) => {
   <section v-if="missions && missions.length > 0" class="card section wc-card-dashboard-missions" :style="{ animationDelay: '340ms' }">
     <div class="card-head">
       <div class="card-head-left">
-        <span class="card-title">Misiones diarias</span>
+        <span class="card-title">{{ t('client_home.missions_title') }}</span>
       </div>
-      <span class="card-meta tnum">{{ completedCount }} / {{ totalCount }} hoy</span>
+      <span class="card-meta tnum">{{ t('client_home.missions_completed_today', { done: completedCount, total: totalCount }) }}</span>
     </div>
     <div class="missions-progress">
       <div class="mp-bar">
@@ -108,11 +111,11 @@ watch(() => props.missions, (next) => {
                 <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5Z"></path>
               </svg>
               <span class="tnum">{{ peerCounts[mission.key] }}</span>
-              contigo
+              {{ t('client_home.missions_with_you') }}
             </span>
           </div>
           <div class="mission-status">
-            {{ mission.completed ? 'Completada' : 'Pendiente' }} · +{{ getMissionXp(mission) }} XP
+            {{ mission.completed ? t('client_home.missions_done') : t('client_home.missions_pending') }} · +{{ getMissionXp(mission) }} XP
           </div>
         </div>
         <svg class="mission-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>

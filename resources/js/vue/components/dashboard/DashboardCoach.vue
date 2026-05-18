@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useHaptics } from '../../composables/useHaptics';
 
 const props = defineProps({
@@ -9,6 +10,7 @@ const props = defineProps({
 
 const router = useRouter();
 const haptics = useHaptics();
+const { t } = useI18n();
 
 const coachInitial = computed(() => {
     if (props.data.coachInitials) return props.data.coachInitials.charAt(0);
@@ -17,7 +19,7 @@ const coachInitial = computed(() => {
 });
 
 const coachRole = computed(() => {
-    return props.data.coachRole || 'Tu coach';
+    return props.data.coachRole || t('client_home.coach_default_role');
 });
 
 function goToChat() {
@@ -30,7 +32,7 @@ function goToChat() {
   <section v-if="data.coachName" class="coach section grain wc-card-dashboard-coach" :style="{ animationDelay: '320ms' }">
     <div class="coach-av">{{ coachInitial }}</div>
     <div class="coach-body">
-      <div class="coach-label">Tu coach</div>
+      <div class="coach-label">{{ t('client_home.coach_label') }}</div>
       <div class="coach-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ data.coachName }}</div>
       <div class="coach-role">{{ coachRole }}</div>
     </div>
@@ -38,7 +40,7 @@ function goToChat() {
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"></path>
       </svg>
-      Enviar mensaje
+      {{ t('client_home.coach_send_message') }}
     </button>
   </section>
 </template>

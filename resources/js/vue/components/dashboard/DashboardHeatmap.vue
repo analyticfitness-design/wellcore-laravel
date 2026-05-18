@@ -1,14 +1,15 @@
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     data: { type: Object, required: true },
     calendarDays: { type: Array, default: () => [] },
     userVsGroup: { type: Object, default: null },
-    // shape: { user: number, group_avg: number, rank_pct: number } | null
 });
 
-// Convertir flat [day...] en columnas de 7 filas (Lun-Dom).
+const { t, tc, locale } = useI18n();
+
 const heatColumns = computed(() => {
     const cols = [];
     const days = props.calendarDays || [];
@@ -28,10 +29,7 @@ function getCellClass(day) {
     if (!day) return '';
     const classes = [];
     if (day.isToday) classes.push('today');
-    if (day.isFuture || day.isBeforeRange) {
-        // empty / hidden
-        return classes.join(' ');
-    }
+    if (day.isFuture || day.isBeforeRange) return classes.join(' ');
     const count = getCount(day);
     if (count >= 5) classes.push('l4');
     else if (count >= 3) classes.push('l3');
@@ -40,46 +38,58 @@ function getCellClass(day) {
     return classes.join(' ');
 }
 
-// Today color usa l1 al menos para el ring; si hay sesión hoy, usar el nivel real.
 function getCellStyle(day) {
     if (!day) return { visibility: 'hidden' };
     if (day.isFuture && !day.isToday) return { visibility: 'hidden' };
     return null;
 }
 
-// Sesiones totales en los 90 días
+function cellTitle(day) {
+    if (!day) return '';
+    const c = getCount(day);
+    if (!c) return day.displayDate;
+    // Pluralize via array selection
+    const unit = c === 1
+        ? t('client_home.heatmap_session_count', { n: c }).split('|')[0]
+        : t('client_home.heatmap_session_count', { n: c }).split('|')[1] || t('client_home.heatmap_session_count', { n: c });
+    return `${day.displayDate} · ${unit}`;
+}
+
 const totalSessions = computed(() => {
     const cal = props.data?.streakCalendar || {};
     return Object.values(cal).reduce((sum, c) => sum + (Number(c) || 0), 0);
 });
 
-// Mejor racha: usar data.calendarStreak si existe
 const bestStreak = computed(() => props.data?.calendarStreak || 0);
 
-// Etiquetas de meses: distribuir Feb/Mar/Abr/May según rango ~3 meses pasados
+const dayLabels = computed(() => t('client_home.heatmap_days'));
+
 const monthLabels = computed(() => {
     const today = new Date();
     const labels = [];
-    // 4 etiquetas: hace 3 meses, hace 2, hace 1, mes actual
-    const fmt = new Intl.DateTimeFormat('es', { month: 'short' });
+    const intlLocale = t('client_home.heatmap_intl_month'); // 'es' | 'en'
+    const fmt = new Intl.DateTimeFormat(intlLocale, { month: 'short' });
     for (let m = 3; m >= 0; m--) {
         const d = new Date(today.getFullYear(), today.getMonth() - m, 1);
         let label = fmt.format(d).replace('.', '');
-        // Capitalizar primera letra
         label = label.charAt(0).toUpperCase() + label.slice(1);
         labels.push(label);
     }
     return labels;
 });
+
+const bestStreakUnit = computed(() => bestStreak.value === 1
+    ? t('client_home.stat_streak_day_singular')
+    : t('client_home.stat_streak_day_plural'));
 </script>
 
 <template>
   <section class="card section wc-card-dashboard-heatmap" :style="{ animationDelay: '380ms' }">
     <div class="card-head">
       <div class="card-head-left">
-        <span class="card-title">Racha de entrenamiento</span>
+        <span class="card-title">{{ t('client_home.heatmap_title') }}</span>
       </div>
-      <span class="card-meta">90 días</span>
+      <span class="card-meta">{{ t('client_home.heatmap_meta') }}</span>
     </div>
     <div class="heatmap">
       <div class="heat-months">
@@ -87,7 +97,7 @@ const monthLabels = computed(() => {
       </div>
       <div class="heat-grid">
         <div class="heat-days">
-          <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+          <span v-for="(d, idx) in dayLabels" :key="idx">{{ d }}</span>
         </div>
         <div class="heat-cols">
           <div v-for="(col, ci) in heatColumns" :key="ci" class="heat-col">
@@ -97,13 +107,13 @@ const monthLabels = computed(() => {
               class="heat-cell"
               :class="getCellClass(day)"
               :style="getCellStyle(day)"
-              :title="day ? day.displayDate + (getCount(day) ? ' · ' + getCount(day) + ' sesión(es)' : '') : ''"
+              :title="cellTitle(day)"
             ></div>
           </div>
         </div>
       </div>
       <div class="heat-legend">
-        <span>Menos</span>
+        <span>{{ t('client_home.heatmap_less') }}</span>
         <div class="heat-legend-cells">
           <div class="heat-cell"></div>
           <div class="heat-cell l1"></div>
@@ -111,91 +121,45 @@ const monthLabels = computed(() => {
           <div class="heat-cell l3"></div>
           <div class="heat-cell l4"></div>
         </div>
-        <span>Más</span>
+        <span>{{ t('client_home.heatmap_more') }}</span>
       </div>
     </div>
     <hr class="divider" />
     <div class="heat-summary">
       <div class="heat-count tnum">
-        <span class="accent">{{ totalSessions }}</span><small>sesiones · 90 días</small>
+        <span class="accent">{{ totalSessions }}</span><small>{{ t('client_home.heatmap_sessions_total') }}</small>
       </div>
       <div class="heat-count tnum">
-        Mejor racha <span class="accent">{{ bestStreak }}</span><small>{{ bestStreak === 1 ? 'día' : 'días' }}</small>
+        {{ t('client_home.heatmap_best_streak') }} <span class="accent">{{ bestStreak }}</span><small>{{ bestStreakUnit }}</small>
       </div>
     </div>
     <div v-if="userVsGroup" class="hm-vs-group">
       <span class="hm-vs-item">
-        <span class="hm-vs-label">Tu promedio</span>
-        <span class="hm-vs-num tnum">{{ userVsGroup.user }}<span class="hm-vs-unit">/sem</span></span>
+        <span class="hm-vs-label">{{ t('client_home.heatmap_vs_user') }}</span>
+        <span class="hm-vs-num tnum">{{ userVsGroup.user }}<span class="hm-vs-unit">{{ t('client_home.heatmap_vs_unit') }}</span></span>
       </span>
       <span class="hm-vs-divider" aria-hidden="true"></span>
       <span class="hm-vs-item">
-        <span class="hm-vs-label">Grupo</span>
-        <span class="hm-vs-num tnum">{{ userVsGroup.group_avg }}<span class="hm-vs-unit">/sem</span></span>
+        <span class="hm-vs-label">{{ t('client_home.heatmap_vs_group') }}</span>
+        <span class="hm-vs-num tnum">{{ userVsGroup.group_avg }}<span class="hm-vs-unit">{{ t('client_home.heatmap_vs_unit') }}</span></span>
       </span>
       <span class="hm-vs-rank">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
           <polyline points="16 7 22 7 22 13"></polyline>
         </svg>
-        Top {{ userVsGroup.rank_pct }}%
+        {{ t('client_home.heatmap_vs_top', { pct: userVsGroup.rank_pct }) }}
       </span>
     </div>
   </section>
 </template>
 
 <style scoped>
-/* Tu vs Grupo comparativa — tokens-only, hereda .wc-shell--dashboard tokens */
-.hm-vs-group {
-    display: flex;
-    align-items: center;
-    gap: var(--s12);
-    margin-top: var(--s12);
-    padding-top: var(--s12);
-    border-top: 1px solid var(--wc-border);
-    font-family: var(--fs);
-}
-.hm-vs-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-.hm-vs-label {
-    font-size: 10px;
-    color: var(--wc-text-3);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-.hm-vs-num {
-    font-family: var(--fd);
-    font-weight: 600;
-    font-size: 16px;
-    color: var(--wc-text);
-    letter-spacing: -0.01em;
-}
-.hm-vs-unit {
-    font-size: 11px;
-    color: var(--wc-text-3);
-    font-weight: 400;
-    margin-left: 2px;
-}
-.hm-vs-divider {
-    width: 1px;
-    align-self: stretch;
-    background: var(--wc-border);
-}
-.hm-vs-rank {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    margin-left: auto;
-    padding: 4px 10px;
-    border-radius: var(--r-pill);
-    /* var(--wc-amber) #F59E0B con transparencias para bg/border de la pill */
-    background: rgba(245, 158, 11, 0.12);
-    border: 1px solid rgba(245, 158, 11, 0.30);
-    color: var(--wc-amber);
-    font: 600 11px/1 var(--fs);
-    letter-spacing: 0.02em;
-}
+.hm-vs-group { display: flex; align-items: center; gap: var(--s12); margin-top: var(--s12); padding-top: var(--s12); border-top: 1px solid var(--wc-border); font-family: var(--fs); }
+.hm-vs-item { display: flex; flex-direction: column; gap: 2px; }
+.hm-vs-label { font-size: 10px; color: var(--wc-text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+.hm-vs-num { font-family: var(--fd); font-weight: 600; font-size: 16px; color: var(--wc-text); letter-spacing: -0.01em; }
+.hm-vs-unit { font-size: 11px; color: var(--wc-text-3); font-weight: 400; margin-left: 2px; }
+.hm-vs-divider { width: 1px; align-self: stretch; background: var(--wc-border); }
+.hm-vs-rank { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; padding: 4px 10px; border-radius: var(--r-pill); background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.30); color: var(--wc-amber); font: 600 11px/1 var(--fs); letter-spacing: 0.02em; }
 </style>
